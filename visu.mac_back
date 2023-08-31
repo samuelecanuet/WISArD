@@ -1,0 +1,24 @@
+#---------------------------------------------------------------
+#
+# execution:
+#       /control/execute visu.mac
+#
+#---------------------------------------------------------------
+/run/initialize
+# verbose levels
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+#
+
+
+#---------------------------------------------------------------
+#   generate events
+#---------------------------------------------------------------
+#
+/input/openFile ../../../../../../mnt/hgfs/shared/CRADLE_files/GIF/Ar_gif_Gcs0.15.txt
+#/input/openFile Ar32_e5_all.txt
+/run/printProgress 10000
+/run/beamOn 3000000
+#
+#

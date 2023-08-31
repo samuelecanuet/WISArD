@@ -1,0 +1,130 @@
+#!/bin/bash
+
+RED="\e[1;31m"
+GREEN="\e[1;32m"
+YELLOW="\e[1;33m"
+COLOR="\e[0m"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    nuclei=*)
+      Nuclei="${1#*=}"
+      ;;
+    n=*)
+      RunEnd="${1#*=}"
+      ;;
+    angle=*)
+      angle="${1#*=}"
+      ;;
+    offset=*)
+      offset="${1#*=}"
+      ;;
+    *)
+      echo "Argument inconnu : $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+param="${angle}_${offset}"
+
+if [ "$Nuclei" == "Ar" ]; then
+    impl=32
+    std_impl=14
+    A=32
+    Z=18
+fi
+if [ "$Nuclei" == "Mg" ]; then
+    impl=53
+    std_impl=31
+    A=20
+    Z=12
+fi
+if [ "$Nuclei" == "Si" ]; then
+    impl=39
+    std_impl=19
+    A=28
+    Z=16
+fi
+if [ "$Nuclei" == "S" ]; then
+    impl=35
+    std_impl=16
+    A=24
+    Z=14
+fi
+
+echo -e "$RED"
+rm -vf "LOG/During_$Nuclei.txt"
+echo -e "$COLOR"
+
+TimeStart=$SECONDS
+
+Analysis="wisard"
+
+RunStart=1
+nProcess=5
+TH=()
+THRun=()
+Saver=0
+RunN=$(($RunStart+$nProcess))
+TimeCheck=60 # in seconds
+
+Saver=$RunStart
+i=0
+
+while [ $Saver -le $RunEnd ]; do
+    th=${TH[i]}
+    run=${THRun[i]}
+    if kill -0 $th >/dev/null 2>&1; then
+	      file_path="../../../../../../mnt/hgfs/shared/save_geo/${Nuclei}_${param}_center_${run}.root"
+        if [ $(($(date +%s)-$(stat -c %Y "$file_path"))) -ge 600 ]; then
+            # Le processus est bloqué depuis plus de 10 min, on le tue
+            echo "Process $th stopped more than 10 min.  Killing process..."
+            kill $th
+
+        fi
+    else
+        TimeCurrent=$SECONDS
+        DureeCurrent=$(($TimeCurrent-$TimeStart))
+        SecondCurrent=$(printf "%02d" "$(($DureeCurrent%60))")
+        MinuteCurrent=$(printf "%02d" "$((($DureeCurrent/60)%60))")
+        HeureCurrent=$(printf "%02d" "$((($DureeCurrent/3600)%24))")
+        JourCurrent=$(printf "%d" "$((($DureeCurrent/(3600*24))))")
+        RunKilled=$run
+        if [[ $Saver -gt $RunN ]]; then
+            echo "Duree Run $RunKilled : ${JourCurrent}j:${HeureCurrent}h:${MinuteCurrent}m:${SecondCurrent}s" >> "LOG/During_$Nuclei.txt"
+        fi
+
+        cp macro_base.mac tempory/macro_${Saver}_${Nuclei}_SM_bis.mac
+        sed -e "s/%input/${Nuclei}_SM_${Saver}.txt/g" tempory/macro_${Saver}_${Nuclei}_SM_bis.mac > tempory/macro_${Saver}_${Nuclei}_SM.mac
+        rm tempory/macro_${Saver}_${Nuclei}_SM_bis.mac
+
+        cp src/WISArD_base.cfg src/WISArD_bis.cfg
+        sed -e "s/%angle/${angle}/g; s/%offset/${offset}/g" src/WISArD_bis.cfg > src/WISArD.cfg
+        rm src/WISArD_bis.cfg
+
+        cmdAnalysis="${Analysis} tempory/macro_${Saver}_${Nuclei}_SM.mac ../../../../../../mnt/hgfs/shared/save_geo/${Nuclei}_${param}_center_${Saver} ${impl} ${std_impl}"
+        echo -e "$GREEN $cmdAnalysis $COLOR"
+        $cmdAnalysis &
+
+        TH[$i]=${!}
+        THRun[$i]=$Saver
+        Saver=$(($Saver+1))
+    fi
+    i=$(($i+1))
+    if [ $i -eq $nProcess ]; then
+        i=0
+        sleep $TimeCheck
+    fi
+done
+
+wait
+TimeEnd=$SECONDS
+
+Duree=$(($TimeEnd-$TimeStart))
+Second=$(printf "%02d" "$(($Duree%60))")
+Minute=$(printf "%02d" "$((($Duree/60)%60))")
+Heure=$(printf "%02d" "$((($Duree/3600)%24))")
+Jour=$(printf "%d" "$((($Duree/(3600*24))))")
+echo -e "$RED Duree total : ${Jour}"
