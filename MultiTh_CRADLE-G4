@@ -12,6 +12,9 @@ DEFAULT_CSP=0
 DEFAULT_a=1
 DEFAULT_b=0
 
+DEFAULT_N=3
+DEFAULT_n=1
+
 a_change=false
 b_change=false
 
@@ -20,7 +23,10 @@ while [[ $# -gt 0 ]]; do
     nuclei=*)
       Nuclei="${1#*=}"
       ;;
-    n=*)
+    N=*)
+      RunEnd="${1#*=}"
+      ;;
+    N=*)
       RunEnd="${1#*=}"
       ;;
     CV=*)
@@ -57,6 +63,9 @@ CS=${CS:-$DEFAULT_CS}
 CSP=${CSP:-$DEFAULT_CSP}
 a=${a:-$DEFAULT_a}
 b=${b:-$DEFAULT_b}
+
+nProcess=${n:-$DEFAULT_n}
+RunEnd=${N:-$DEFAULT_N}
 
 if [[ $a_change -eq true || $b_change -eq true ]]; then
   constants="a${a}_b${b}"
@@ -100,7 +109,6 @@ TimeStart=$SECONDS
 Analysis="wisard"
 
 RunStart=1
-nProcess=10
 TH=()
 THRun=()
 Saver=0
@@ -110,16 +118,18 @@ TimeCheck=60 # in seconds
 Saver=$RunStart
 i=0
 
+rootCRADLEfile="../../../../../../mnt/hgfs/shared/"
+
 while [ $Saver -le $RunEnd ]; do
     th=${TH[i]}
     run=${THRun[i]}
     if kill -0 $th >/dev/null 2>&1; then
-	      file_path="../../../../../../mnt/hgfs/shared/save_geo/${Nuclei}_${constants}_${run}.root"
+	      file_path="../../../../../../mnt/hgfs/shared/${Nuclei}_${constants}_${run}.root"
         if [ $(($(date +%s)-$(stat -c %Y "$file_path"))) -ge 600 ]; then
             # Le processus est bloqué depuis plus de 10 min, on le tue
             echo "Process $th stopped more than 10 min.  Killing process..."
             kill $th
-            rm ../../../../../../mnt/hgfs/shared/data/${Nuclei}_${constants}_${run}.txt
+            rm "${rootCRADLEfile}data/${Nuclei}_${constants}_${run}.txt"
 
         fi
     else
@@ -138,7 +148,7 @@ while [ $Saver -le $RunEnd ]; do
         cp macro_base.mac tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
         sed -e "s/%input/${Nuclei}_${constants}_${Saver}.txt/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
         rm tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        cmdAnalysis="${Analysis} tempory/macro_${Saver}_${Nuclei}_${constants}.mac ../../../../../../mnt/hgfs/shared/save_geo/${Nuclei}_${constants}_${Saver} ${impl} ${std_impl}"
+        cmdAnalysis="${Analysis} tempory/macro_${Saver}_${Nuclei}_${constants}.mac ${rootCRADLEfile}${Nuclei}_${constants}_${Saver} ${impl} ${std_impl}"
         echo -e "$GREEN $cmdAnalysis $COLOR"
 
 	      cd ../CRADLE-master/build

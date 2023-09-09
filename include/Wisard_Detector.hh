@@ -171,14 +171,14 @@ inline std::tuple<std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
   std::pair<G4LogicalVolume*, G4VPhysicalVolume*> Vide = MakeVide(num, dir, vide_att, vide_mat);
   std::pair<G4LogicalVolume*, G4VPhysicalVolume*> Strips[10];
   
-  for (int i = 1; i <= 5; i++)
+  for (int i = 1; i < 6; i++)
   {
     cout<<i<<endl;
     Strips[i-1] = MakeStrip(i, num, dir, Vide.first, strip_att, strip_mat);
-    Strips[i+5] = MakeDL(i, num, dir, Strips[i-1].first, vide_att, strip_mat);
+    Strips[i+4] = MakeDL(i, num, dir, Strips[i-1].first, vide_att, strip_mat);
 
-    // Strips[i].first->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector((num+dir+"_Strip_"+std::to_string(i)).Data()) );
-    // Strips[i+5].first->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector((num+dir+"_Strip_"+std::to_string(i)+"_dl").Data()) );
+    Strips[i-1].first->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector((num+dir+"_Strip_"+i).Data()) );
+    Strips[i+4].first->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector((num+dir+"_Strip_"+i+"_dl").Data()) );
   } 
 
   return std::make_tuple(Support, Cooling, Vide, Strips[0], Strips[1], Strips[2], Strips[3], Strips[4], Strips[5], Strips[6], Strips[7], Strips[8], Strips[9]);
