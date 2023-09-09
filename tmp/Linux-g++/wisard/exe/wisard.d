@@ -662,6 +662,51 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4ExtrudedSolid.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4MultiUnion.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4Vector3D.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VisAttributes.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/graphics_reps_defs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Colour.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Color.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VisAttributes.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Box.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Tubs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Tubs.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4LogicalVolume.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4PVPlacement.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Material.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NistManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NistElementBuilder.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NistMaterialBuilder.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ICRU90StoppingData.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Pow.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Torus.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Torus.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TransportationManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SafetyHelper.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TransportationManager.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4EqMagElectricField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ChargeState.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4EquationOfMotion.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Field.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4EquationOfMotion.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ElectroMagneticField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ChordFinder.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VIntegrationDriver.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4FieldTrack.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4FieldTrack.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4MagIntegratorStepper.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4MagIntegratorStepper.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ChordFinder.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4FieldManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4FieldManager.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NystromRK4.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Mag_EqRhs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4CachedMagneticField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4MagneticField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NystromRK4.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Mag_UsualEqRhs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Trap.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Trap.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VSolid.hh \
  include/Wisard_PhysList.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VUserPhysicsList.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ProductionCutsTable.hh \
@@ -697,10 +742,6 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4ModelingParameters.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VisExtent.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VisAttributes.hh \
- /usr/local/geant4.11.0.0/include/Geant4/graphics_reps_defs.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4Colour.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4Color.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4VisAttributes.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4ModelingParameters.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4NullModel.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VModel.hh \

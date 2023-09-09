@@ -18,7 +18,7 @@
 #
 /input/openFile ../../../../../../mnt/hgfs/shared/CRADLE_files/GIF/Ar_gif_Gcs0.15.txt
 #/input/openFile Ar32_e5_all.txt
-/run/printProgress 10000
-/run/beamOn 3000000
+/run/printProgress 1000
+/run/beamOn 1001
 #
 #

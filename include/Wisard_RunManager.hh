@@ -11,6 +11,9 @@
 #include "TTree.h"
 #include "TH1D.h"
 
+#include <unordered_map>
+#include <utility> // Pour std::pair
+
 //----------------------------------------------------------------------
 // This class defines the simulation core (from the base class G4RunManager)
 // including information to get the required information
@@ -23,114 +26,9 @@ class Wisard_RunManager: public G4RunManager
   protected:
 
     Wisard_Sensor * wisard_sensor_PlasticScintillator;
-
-    Wisard_Sensor * wisard_sensor_1Up_Strip_1;
-    Wisard_Sensor * wisard_sensor_1Up_Strip_2;
-    Wisard_Sensor * wisard_sensor_1Up_Strip_3;
-    Wisard_Sensor * wisard_sensor_1Up_Strip_4;
-    Wisard_Sensor * wisard_sensor_1Up_Strip_5;
-    Wisard_Sensor * wisard_sensor_1Up_Support;
-
-    Wisard_Sensor * wisard_sensor_2Up_Strip_1;
-    Wisard_Sensor * wisard_sensor_2Up_Strip_2;
-    Wisard_Sensor * wisard_sensor_2Up_Strip_3;
-    Wisard_Sensor * wisard_sensor_2Up_Strip_4;
-    Wisard_Sensor * wisard_sensor_2Up_Strip_5;
-    Wisard_Sensor * wisard_sensor_2Up_Support;
-
-    Wisard_Sensor * wisard_sensor_3Up_Strip_1;
-    Wisard_Sensor * wisard_sensor_3Up_Strip_2;
-    Wisard_Sensor * wisard_sensor_3Up_Strip_3;
-    Wisard_Sensor * wisard_sensor_3Up_Strip_4;
-    Wisard_Sensor * wisard_sensor_3Up_Strip_5;
-    Wisard_Sensor * wisard_sensor_3Up_Support;
-
-    Wisard_Sensor * wisard_sensor_4Up_Strip_1;
-    Wisard_Sensor * wisard_sensor_4Up_Strip_2;
-    Wisard_Sensor * wisard_sensor_4Up_Strip_3;
-    Wisard_Sensor * wisard_sensor_4Up_Strip_4;
-    Wisard_Sensor * wisard_sensor_4Up_Strip_5;
-    Wisard_Sensor * wisard_sensor_4Up_Support;
-
-    Wisard_Sensor * wisard_sensor_1Down_Strip_1;
-    Wisard_Sensor * wisard_sensor_1Down_Strip_2;
-    Wisard_Sensor * wisard_sensor_1Down_Strip_3;
-    Wisard_Sensor * wisard_sensor_1Down_Strip_4;
-    Wisard_Sensor * wisard_sensor_1Down_Strip_5;
-    Wisard_Sensor * wisard_sensor_1Down_Support;
-
-    Wisard_Sensor * wisard_sensor_2Down_Strip_1;
-    Wisard_Sensor * wisard_sensor_2Down_Strip_2;
-    Wisard_Sensor * wisard_sensor_2Down_Strip_3;
-    Wisard_Sensor * wisard_sensor_2Down_Strip_4;
-    Wisard_Sensor * wisard_sensor_2Down_Strip_5;
-    Wisard_Sensor * wisard_sensor_2Down_Support;
-
-    Wisard_Sensor * wisard_sensor_3Down_Strip_1;
-    Wisard_Sensor * wisard_sensor_3Down_Strip_2;
-    Wisard_Sensor * wisard_sensor_3Down_Strip_3;
-    Wisard_Sensor * wisard_sensor_3Down_Strip_4;
-    Wisard_Sensor * wisard_sensor_3Down_Strip_5;
-    Wisard_Sensor * wisard_sensor_3Down_Support;
-
-    Wisard_Sensor * wisard_sensor_4Down_Strip_1;
-    Wisard_Sensor * wisard_sensor_4Down_Strip_2;
-    Wisard_Sensor * wisard_sensor_4Down_Strip_3;
-    Wisard_Sensor * wisard_sensor_4Down_Strip_4;
-    Wisard_Sensor * wisard_sensor_4Down_Strip_5;
-    Wisard_Sensor * wisard_sensor_4Down_Support;
-
     Wisard_Sensor * wisard_sensor_CatcherMylar;
-    // Wisard_Sensor * wisard_sensor_CatcherAl1;
-    // Wisard_Sensor * wisard_sensor_CatcherAl2;
-
-    Wisard_Sensor * wisard_sensor_1Up_Strip_1_dl;
-    Wisard_Sensor * wisard_sensor_1Up_Strip_2_dl;
-    Wisard_Sensor * wisard_sensor_1Up_Strip_3_dl;
-    Wisard_Sensor * wisard_sensor_1Up_Strip_4_dl;
-    Wisard_Sensor * wisard_sensor_1Up_Strip_5_dl;
-
-    Wisard_Sensor * wisard_sensor_2Up_Strip_1_dl;
-    Wisard_Sensor * wisard_sensor_2Up_Strip_2_dl;
-    Wisard_Sensor * wisard_sensor_2Up_Strip_3_dl;
-    Wisard_Sensor * wisard_sensor_2Up_Strip_4_dl;
-    Wisard_Sensor * wisard_sensor_2Up_Strip_5_dl;
-
-    Wisard_Sensor * wisard_sensor_3Up_Strip_1_dl;
-    Wisard_Sensor * wisard_sensor_3Up_Strip_2_dl;
-    Wisard_Sensor * wisard_sensor_3Up_Strip_3_dl;
-    Wisard_Sensor * wisard_sensor_3Up_Strip_4_dl;
-    Wisard_Sensor * wisard_sensor_3Up_Strip_5_dl;
-
-    Wisard_Sensor * wisard_sensor_4Up_Strip_1_dl;
-    Wisard_Sensor * wisard_sensor_4Up_Strip_2_dl;
-    Wisard_Sensor * wisard_sensor_4Up_Strip_3_dl;
-    Wisard_Sensor * wisard_sensor_4Up_Strip_4_dl;
-    Wisard_Sensor * wisard_sensor_4Up_Strip_5_dl;
-
-    Wisard_Sensor * wisard_sensor_1Down_Strip_1_dl;
-    Wisard_Sensor * wisard_sensor_1Down_Strip_2_dl;
-    Wisard_Sensor * wisard_sensor_1Down_Strip_3_dl;
-    Wisard_Sensor * wisard_sensor_1Down_Strip_4_dl;
-    Wisard_Sensor * wisard_sensor_1Down_Strip_5_dl;
-
-    Wisard_Sensor * wisard_sensor_2Down_Strip_1_dl;
-    Wisard_Sensor * wisard_sensor_2Down_Strip_2_dl;
-    Wisard_Sensor * wisard_sensor_2Down_Strip_3_dl;
-    Wisard_Sensor * wisard_sensor_2Down_Strip_4_dl;
-    Wisard_Sensor * wisard_sensor_2Down_Strip_5_dl;
-
-    Wisard_Sensor * wisard_sensor_3Down_Strip_1_dl;
-    Wisard_Sensor * wisard_sensor_3Down_Strip_2_dl;
-    Wisard_Sensor * wisard_sensor_3Down_Strip_3_dl;
-    Wisard_Sensor * wisard_sensor_3Down_Strip_4_dl;
-    Wisard_Sensor * wisard_sensor_3Down_Strip_5_dl;
-
-    Wisard_Sensor * wisard_sensor_4Down_Strip_1_dl;
-    Wisard_Sensor * wisard_sensor_4Down_Strip_2_dl;
-    Wisard_Sensor * wisard_sensor_4Down_Strip_3_dl;
-    Wisard_Sensor * wisard_sensor_4Down_Strip_4_dl;
-    Wisard_Sensor * wisard_sensor_4Down_Strip_5_dl;
+    Wisard_Sensor * wisard_sensor_CatcherAl1;
+    Wisard_Sensor * wisard_sensor_CatcherAl2;
 
     // event counter
     int counts, wisard_counts;
@@ -151,22 +49,12 @@ class Wisard_RunManager: public G4RunManager
     vector<double> y_vec;
     vector<double> z_vec;
 
-    // this array stores the event's germanium energy
-
-          ////--------------------------------------------------
-          ////  JG 2013/07/08   - move with protected variable
-          ////                    (not important)
-          ////                  - added file name variable
    ifstream input;
    string   input_name;
    double   input_implantation;
 
-          ////--------------------------------------------------
-          ////  JG 2013/07/08   - adding user interface commands
-  Wisard_Messenger * messenger;       // commands for the simulation
-                                  // (there is no need that it is defined in
-                                  //  the run manager, but here the run
-                                  //  manager class connects all objects...)
+   Wisard_Messenger * messenger;
+
 
   //------------------------------------------------------------
   // class functions definition
@@ -177,124 +65,36 @@ class Wisard_RunManager: public G4RunManager
     Wisard_RunManager();
     ~Wisard_RunManager();
 
+    static const int nb_det = 40;
+
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
     G4String filename = analysisManager->GetFileName();
 
     TFile* f = new TFile(filename, "recreate");
 
     TTree* MyTree;
-    TH1D* histos_coinc[40];
-    TH1D* histos_nocoinc[40];
+    TH1D* histos_coinc[nb_det];
+    TH1D* histos_nocoinc[nb_det];
 
+    std::string Detector_Name[nb_det] = {
+    "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
+    "2Up_Strip_1", "2Up_Strip_2", "2Up_Strip_3", "2Up_Strip_4", "2Up_Strip_5",
+    "3Up_Strip_1", "3Up_Strip_2", "3Up_Strip_3", "3Up_Strip_4", "3Up_Strip_5",
+    "4Up_Strip_1", "4Up_Strip_2", "4Up_Strip_3", "4Up_Strip_4", "4Up_Strip_5",
+    "1Down_Strip_1", "1Down_Strip_2", "1Down_Strip_3", "1Down_Strip_4", "1Down_Strip_5",
+    "2Down_Strip_1", "2Down_Strip_2", "2Down_Strip_3", "2Down_Strip_4", "2Down_Strip_5",
+    "3Down_Strip_1", "3Down_Strip_2", "3Down_Strip_3", "3Down_Strip_4", "3Down_Strip_5",
+    "4Down_Strip_1", "4Down_Strip_2", "4Down_Strip_3", "4Down_Strip_4", "4Down_Strip_5"
+    };
+
+    std::unordered_map<std::string,  std::pair<Wisard_Sensor *, Wisard_Sensor *>> dic_detector;
+
+  
     Wisard_Sensor * GetWisardSensor_PlasticScintillator();
-
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_1();
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_2();
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_3();
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_4();
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_5();
-    Wisard_Sensor * GetWisardSensor_1Up_Support();
-
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_1();
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_2();
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_3();
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_4();
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_5();
-    Wisard_Sensor * GetWisardSensor_2Up_Support();
-
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_1();
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_2();
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_3();
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_4();
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_5();
-    Wisard_Sensor * GetWisardSensor_3Up_Support();
-
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_1();
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_2();
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_3();
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_4();
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_5();
-    Wisard_Sensor * GetWisardSensor_4Up_Support();
-
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_1();
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_2();
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_3();
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_4();
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_5();
-    Wisard_Sensor * GetWisardSensor_1Down_Support();
-
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_1();
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_2();
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_3();
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_4();
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_5();
-    Wisard_Sensor * GetWisardSensor_2Down_Support();
-
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_1();
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_2();
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_3();
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_4();
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_5();
-    Wisard_Sensor * GetWisardSensor_3Down_Support();
-
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_1();
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_2();
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_3();
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_4();
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_5();
-    Wisard_Sensor * GetWisardSensor_4Down_Support();
-
+    Wisard_Sensor * GetWisardSensor_Detector(string name);
     Wisard_Sensor * GetWisardSensor_CatcherMylar();
-    // Wisard_Sensor * GetWisardSensor_CatcherAl1();
-    // Wisard_Sensor * GetWisardSensor_CatcherAl2();
-
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_1_dl();
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_2_dl();
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_3_dl();
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_4_dl();
-    Wisard_Sensor * GetWisardSensor_1Up_Strip_5_dl();
-
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_1_dl();
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_2_dl();
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_3_dl();
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_4_dl();
-    Wisard_Sensor * GetWisardSensor_2Up_Strip_5_dl();
-
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_1_dl();
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_2_dl();
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_3_dl();
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_4_dl();
-    Wisard_Sensor * GetWisardSensor_3Up_Strip_5_dl();
-
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_1_dl();
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_2_dl();
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_3_dl();
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_4_dl();
-    Wisard_Sensor * GetWisardSensor_4Up_Strip_5_dl();
-
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_1_dl();
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_2_dl();
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_3_dl();
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_4_dl();
-    Wisard_Sensor * GetWisardSensor_1Down_Strip_5_dl();
-
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_1_dl();
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_2_dl();
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_3_dl();
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_4_dl();
-    Wisard_Sensor * GetWisardSensor_2Down_Strip_5_dl();
-
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_1_dl();
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_2_dl();
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_3_dl();
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_4_dl();
-    Wisard_Sensor * GetWisardSensor_3Down_Strip_5_dl();
-
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_1_dl();
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_2_dl();
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_3_dl();
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_4_dl();
-    Wisard_Sensor * GetWisardSensor_4Down_Strip_5_dl();
+    Wisard_Sensor * GetWisardSensor_CatcherAl1();
+    Wisard_Sensor * GetWisardSensor_CatcherAl2();
 
         //----------------------------------------------------------
     // Commands definitions
@@ -326,115 +126,42 @@ class Wisard_RunManager: public G4RunManager
 //----------------------------------------------------------------------
 // inline functions for the class
 
+inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_Detector(string name)
+{
+
+  if (name.substr(name.length()-2) == "dl")
+    {
+      if (dic_detector.find(name.substr(0, name.length()-3)) != dic_detector.end())
+      {
+        return(dic_detector[name.substr(0,name.length()-3)].second);
+      }
+      else
+      {
+        G4Exception("GetWisard_Sensor_GetDetector", ("Detector Name not found : "+name).c_str(), JustWarning, "");
+        return nullptr;
+      }
+    }
+
+  else
+    {
+      if (dic_detector.find(name) != dic_detector.end())
+      {
+        return(dic_detector[name].first);
+      }
+      else
+      {
+        G4Exception("GetWisard_Sensor_GetDetector", ("Detector Name not found : "+name).c_str(), JustWarning, "");
+        return nullptr;
+      }
+    }
+  
+
+}
+
 inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_PlasticScintillator(){return(wisard_sensor_PlasticScintillator);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_1(){return(wisard_sensor_1Up_Strip_1);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_2(){return(wisard_sensor_1Up_Strip_2);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_3(){return(wisard_sensor_1Up_Strip_3);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_4(){return(wisard_sensor_1Up_Strip_4);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_5(){return(wisard_sensor_1Up_Strip_5);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Support(){return(wisard_sensor_1Up_Support);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_1(){return(wisard_sensor_2Up_Strip_1);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_2(){return(wisard_sensor_2Up_Strip_2);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_3(){return(wisard_sensor_2Up_Strip_3);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_4(){return(wisard_sensor_2Up_Strip_4);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_5(){return(wisard_sensor_2Up_Strip_5);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Support(){return(wisard_sensor_2Up_Support);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_1(){return(wisard_sensor_3Up_Strip_1);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_2(){return(wisard_sensor_3Up_Strip_2);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_3(){return(wisard_sensor_3Up_Strip_3);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_4(){return(wisard_sensor_3Up_Strip_4);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_5(){return(wisard_sensor_3Up_Strip_5);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Support(){return(wisard_sensor_3Up_Support);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_1(){return(wisard_sensor_4Up_Strip_1);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_2(){return(wisard_sensor_4Up_Strip_2);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_3(){return(wisard_sensor_4Up_Strip_3);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_4(){return(wisard_sensor_4Up_Strip_4);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_5(){return(wisard_sensor_4Up_Strip_5);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Support(){return(wisard_sensor_4Up_Support);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_1(){return(wisard_sensor_1Down_Strip_1);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_2(){return(wisard_sensor_1Down_Strip_2);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_3(){return(wisard_sensor_1Down_Strip_3);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_4(){return(wisard_sensor_1Down_Strip_4);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_5(){return(wisard_sensor_1Down_Strip_5);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Support(){return(wisard_sensor_1Down_Support);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_1(){return(wisard_sensor_2Down_Strip_1);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_2(){return(wisard_sensor_2Down_Strip_2);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_3(){return(wisard_sensor_2Down_Strip_3);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_4(){return(wisard_sensor_2Down_Strip_4);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_5(){return(wisard_sensor_2Down_Strip_5);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Support(){return(wisard_sensor_2Down_Support);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_1(){return(wisard_sensor_3Down_Strip_1);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_2(){return(wisard_sensor_3Down_Strip_2);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_3(){return(wisard_sensor_3Down_Strip_3);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_4(){return(wisard_sensor_3Down_Strip_4);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_5(){return(wisard_sensor_3Down_Strip_5);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Support(){return(wisard_sensor_3Down_Support);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_1(){return(wisard_sensor_4Down_Strip_1);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_2(){return(wisard_sensor_4Down_Strip_2);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_3(){return(wisard_sensor_4Down_Strip_3);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_4(){return(wisard_sensor_4Down_Strip_4);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_5(){return(wisard_sensor_4Down_Strip_5);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Support(){return(wisard_sensor_4Down_Support);}
-//
 inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_CatcherMylar(){return(wisard_sensor_CatcherMylar);}
-// inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_CatcherAl1(){return(wisard_sensor_CatcherAl1);}
-// inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_CatcherAl2(){return(wisard_sensor_CatcherAl2);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_1_dl(){return(wisard_sensor_1Up_Strip_1_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_2_dl(){return(wisard_sensor_1Up_Strip_2_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_3_dl(){return(wisard_sensor_1Up_Strip_3_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_4_dl(){return(wisard_sensor_1Up_Strip_4_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Up_Strip_5_dl(){return(wisard_sensor_1Up_Strip_5_dl);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_1_dl(){return(wisard_sensor_2Up_Strip_1_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_2_dl(){return(wisard_sensor_2Up_Strip_2_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_3_dl(){return(wisard_sensor_2Up_Strip_3_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_4_dl(){return(wisard_sensor_2Up_Strip_4_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Up_Strip_5_dl(){return(wisard_sensor_2Up_Strip_5_dl);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_1_dl(){return(wisard_sensor_3Up_Strip_1_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_2_dl(){return(wisard_sensor_3Up_Strip_2_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_3_dl(){return(wisard_sensor_3Up_Strip_3_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_4_dl(){return(wisard_sensor_3Up_Strip_4_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Up_Strip_5_dl(){return(wisard_sensor_3Up_Strip_5_dl);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_1_dl(){return(wisard_sensor_4Up_Strip_1_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_2_dl(){return(wisard_sensor_4Up_Strip_2_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_3_dl(){return(wisard_sensor_4Up_Strip_3_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_4_dl(){return(wisard_sensor_4Up_Strip_4_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Up_Strip_5_dl(){return(wisard_sensor_4Up_Strip_5_dl);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_1_dl(){return(wisard_sensor_1Down_Strip_1_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_2_dl(){return(wisard_sensor_1Down_Strip_2_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_3_dl(){return(wisard_sensor_1Down_Strip_3_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_4_dl(){return(wisard_sensor_1Down_Strip_4_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_1Down_Strip_5_dl(){return(wisard_sensor_1Down_Strip_5_dl);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_1_dl(){return(wisard_sensor_2Down_Strip_1_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_2_dl(){return(wisard_sensor_2Down_Strip_2_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_3_dl(){return(wisard_sensor_2Down_Strip_3_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_4_dl(){return(wisard_sensor_2Down_Strip_4_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_2Down_Strip_5_dl(){return(wisard_sensor_2Down_Strip_5_dl);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_1_dl(){return(wisard_sensor_3Down_Strip_1_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_2_dl(){return(wisard_sensor_3Down_Strip_2_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_3_dl(){return(wisard_sensor_3Down_Strip_3_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_4_dl(){return(wisard_sensor_3Down_Strip_4_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_3Down_Strip_5_dl(){return(wisard_sensor_3Down_Strip_5_dl);}
-
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_1_dl(){return(wisard_sensor_4Down_Strip_1_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_2_dl(){return(wisard_sensor_4Down_Strip_2_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_3_dl(){return(wisard_sensor_4Down_Strip_3_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_4_dl(){return(wisard_sensor_4Down_Strip_4_dl);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_4Down_Strip_5_dl(){return(wisard_sensor_4Down_Strip_5_dl);}
+inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_CatcherAl1(){return(wisard_sensor_CatcherAl1);}
+inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_CatcherAl2(){return(wisard_sensor_CatcherAl2);}
 
 // Close the input file
 inline void Wisard_RunManager::CloseInput ( )

@@ -8,7 +8,7 @@
 # verbose levels
 /run/verbose      0
 /event/verbose    0
-/tracking/verbose 1
+/tracking/verbose 0
 #
 #
 #---------------------------------------------------------------
@@ -113,7 +113,7 @@
 /input/openFile ../../../../../../mnt/hgfs/shared/CRADLE_files/GIF/Ar_gif_Gcs0.25.txt
 #/input/openFile Ar32_e5_all.txt
 /run/printProgress 1000
-/run/beamOn 1
+/run/beamOn 5
 /input/closeFile
 #
 #

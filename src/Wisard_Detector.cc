@@ -19,6 +19,10 @@
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4Trap.hh"
 
+#include <unordered_map>
+#include <utility> // Pour std::pair
+#include "G4SDManager.hh"
+
 
 //----------------------------------------------------------------------
 // constructor of the detector definition
@@ -28,6 +32,113 @@ Wisard_Detector::Wisard_Detector ( Wisard_RunManager * mgr)
 {
   cout << "Constructor Wisard_Detectors" << endl;
   manager_ptr = mgr;
+
+    pDz    = 1.5*mm;    // Spessore del supporto (su cui soo messe le strip
+    G4double pTheta = 0.*degree;
+    G4double pPhi   = 0.*degree;
+    pDy1   = 34.12*mm;  // Altezza (y) del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDy2
+    G4double pDx1   = 83.3*mm;   // Lunghezza (x) della base maggiore del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDx3
+    G4double pDx2   = 31.*mm;    // Lunghezza (x) della base minore del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDx4
+    G4double pAlp1  = 0*degree;  // Angolo tra i centri delle due facce
+    G4double pDy2   = 34.12*mm;  // Altezza (y) del trapezio sulla prima faccia
+    G4double pDx3   = 83.3*mm;   // Lunghezza (x) della base maggiore del trapezio sulla prima faccia
+    G4double pDx4   = 31.*mm;    // Lunghezza (x) della base minore del trapezio sulla prima faccia
+    G4double pAlp2  = 0.*degree;
+
+     thicknessSiDetector                        = 300.*um;
+    spazio_tra_Bordo_e_strip5                  = 1.29*mm + 0.225*mm; //spazio tra bordo superiore e strip 5 (la più lunga). Per dettagli guardare disegno di Sean.
+    spazio_tra_Strip                           = 0.07*mm; //spazio tra ciascuna strip
+     thetaInclinazione_SiDetector               = 52.64*degree;
+    G4double spazio_tra_Scintillatore_e_BordoSiDetector = 3.745*mm;
+    //G4double lunghezzaLatoObliquoSupporto               = pDy1 / sin(thetaInclinazione_SiDetector); //giusto calcolo semplice di trigonometria (su postit giallo)
+    //G4double x_CentralLength_SupportSiliconDetector     = pDx1 - (2 * (pDy1/2) * (cos(thetaInclinazione_SiDetector)/sin(thetaInclinazione_SiDetector)));
+
+    // Riferito al disegno di Sean e di Mathieu (foto su telegram, piani stampati in data 17/05/2021 su formato A1)
+     xLow_SiDet_Strip_5  = 63.63*mm;
+     y_SiDet_Strip_5     = 4.11*mm;
+     xHigh_SiDet_Strip_5 = xLow_SiDet_Strip_5 + (2 * y_SiDet_Strip_5 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+     xLow_SiDet_Strip_4  = 56.58*mm;
+     y_SiDet_Strip_4     = 4.55*mm;
+     xHigh_SiDet_Strip_4 = xLow_SiDet_Strip_4 + (2 * y_SiDet_Strip_4 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+     xLow_SiDet_Strip_3  = 48.52*mm;
+     y_SiDet_Strip_3     = 5.21*mm;
+     xHigh_SiDet_Strip_3 = xLow_SiDet_Strip_3 + (2 * y_SiDet_Strip_3 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+     xLow_SiDet_Strip_2  = 38.82*mm;
+     y_SiDet_Strip_2     = 6.28*mm;
+     xHigh_SiDet_Strip_2 = xLow_SiDet_Strip_2 + (2 * y_SiDet_Strip_2 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+     xLow_SiDet_Strip_1  = 25.65*mm;
+     y_SiDet_Strip_1     = 8.56*mm;
+     xHigh_SiDet_Strip_1 = xLow_SiDet_Strip_1 + (2 * y_SiDet_Strip_1 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+
+    
+
+     theta = 40.*degree;
+    G4double z_height_Source_biggerBaseSiDet_inVerticale = 24.92*mm;
+     r = fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2 - (pDy1/2*(1-cos(theta)));
+     r_vide = (pDz+thicknessSiDetector)/2*-sin(theta);
+     z_vide = -(pDz+thicknessSiDetector)/2*cos(theta);
+     z = z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector));
+
+
+    //___________ Supporto in rame della placca in PBC sulla quale é montato il Si detector  ____________
+  length_x_SupportoRame_SiDetector                            = 56.*mm;
+  height_y_SupportoRame_SiDetector                            = 33.548*mm;
+  thickness_z_SupportoRame_SiDetector                         = 1.5*mm;
+  x_smallBox_daTagliare_SupportoRame_SiDetector               = 10.*mm; //6
+  y_smallBox_daTagliare_SupportoRame_SiDetector               = 10.*mm; //5
+  distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector = 3.2*mm;
+
+  //G4double y_AngoloInferioreSx_BordoDaTagliare   = (pDy1/2) - y_smallBox_daTagliare_SupportoRame_SiDetector;
+  //G4double angCoeff_retta_LatoObliquoDx_Trapezio = (-2*pDy1)/(pDx1 - pDx2);
+  //G4double intercetta_retta_LatoObliquoTrapezio  = (-pDy1/2) - (angCoeff_retta_LatoObliquoDx_Trapezio * (pDx1/2));
+  //G4double x_AngoloInferioreSx_BordoDaTagliare   = (y_AngoloInferioreSx_BordoDaTagliare - intercetta_retta_LatoObliquoTrapezio)/angCoeff_retta_LatoObliquoDx_Trapezio;
+
+  
+    /// colors ///
+    G4VisAttributes* SiliconDetector_att   = new G4VisAttributes(G4Colour(1., 0., 0.));//red (r,g,b) ->red
+    SiliconDetector_att->SetForceWireframe(false);
+    SiliconDetector_att->SetForceSolid(true);
+
+
+    /// Materials ///
+    G4Material*   materialSiliconDetector  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Si");
+    G4Element * elSi = new G4Element("Silicon",  "Si", 14., 28.0855*g/mole);
+ 
+    G4Element * elO  = new G4Element("Oxigen" ,  "O", 8. , 15.9994 *g/mole);
+    G4Material* materialSupportSiliconDetector  = new G4Material("Vetronite", 2.*g/cm3, 2);//vetro epossidico, ossia PCB
+    materialSupportSiliconDetector->AddElement(elSi, 1);
+    materialSupportSiliconDetector->AddElement(elO , 2);
+
+   
+  dic_position["1Up"] = G4ThreeVector(0, r, z);
+    dic_position["2Up"] = G4ThreeVector(r, 0, z);
+    dic_position["3Up"] = G4ThreeVector(0, -r, z);
+    dic_position["4Up"] = G4ThreeVector(-r, 0, z);
+    dic_position["1Down"] = G4ThreeVector(0, r, -z);
+    dic_position["2Down"] = G4ThreeVector(r, 0, -z);
+    dic_position["3Down"] = G4ThreeVector(0, -r, -z);
+    dic_position["4Down"] = G4ThreeVector(-r, 0, -z);
+
+
+  dic_positionvide["1Up"] = G4ThreeVector(0, r+r_vide, z+z_vide);
+    dic_positionvide["2Up"] = G4ThreeVector(r+r_vide, 0, z+z_vide);
+    dic_positionvide["3Up"] = G4ThreeVector(0, -r-r_vide, z+z_vide);
+    dic_positionvide["4Up"] = G4ThreeVector(-r-r_vide, 0, z+z_vide);
+    dic_positionvide["1Down"] = G4ThreeVector(0, r+r_vide, -z-z_vide);
+    dic_positionvide["2Down"] = G4ThreeVector(r+r_vide, 0, -z-z_vide);
+    dic_positionvide["3Down"] = G4ThreeVector(0, -r-r_vide, -z-z_vide);
+    dic_positionvide["4Down"] = G4ThreeVector(-r-r_vide, 0, -z-z_vide);
+
+    dic_rotate["1Up"] = std::make_tuple(theta, 180.*deg, 180*deg);
+    dic_rotate["2Up"] = std::make_tuple(0, 180.*deg - theta, 90.*deg);
+    dic_rotate["3Up"] = std::make_tuple(-theta, 180.*deg, 0.*deg);
+    dic_rotate["4Up"] = std::make_tuple(0., 180.*deg+theta, -90.*deg);
+    dic_rotate["1Down"] = std::make_tuple(-theta, 0.*deg, 180.*deg);
+    dic_rotate["2Down"] = std::make_tuple(180*deg, 180*deg - theta, 90.*deg);
+    dic_rotate["3Down"] = std::make_tuple(theta, 0., 0.);
+    dic_rotate["4Down"] = std::make_tuple(180.*deg, 180.*deg + theta, -90.*deg);
+
+
 }
 
 // destructor
@@ -291,103 +402,262 @@ false);                        //copy number
     if(fPhysiMYCILINDER_B2 == NULL) {}
 
 
-      // ===========================================================================================================
-      // ================================ CATCHER/SORGENTE RAD./SUPPORTO  ==========================================
-      // ===========================================================================================================
-      // Guardiamo il supporto del catcher dalla parte attaccata al perno verso la sorgente.
-      // La parte 1 è il supporto rettangolare lungo, la parte 2 è il il supporto rettangolare largo su cui si trovano i buchi per il catcher e il posizionamento sorgente radioattiva.
-      // Per maggiori dettagli vedere mail M. Roche 10/06/2021 alle ore 11-50 circa (e foto su cui ho scritto ed evidenziato salvata su telegram).
-       G4double x_baseCatcher_Spessa_1          = 14.*mm;
-       G4double y_baseCatcher_Spessa_1          = 16.*mm;
-       G4double thickness_baseCatcher_Spessa_1  = 12.*mm;
-       G4double radius_buco_baseSpessa          = 5.*mm;
-       G4double pos_buco_baseSpessa             = 0.8963*mm;
-       G4double x_baseCatcher_Sottile_1         = x_baseCatcher_Spessa_1;
-       G4double y_baseCatcher_Sottile_1         = 24.*mm;
-       G4double thickness_baseCatcher_Sottile_1 = 4.*mm;
-       G4double x_baseCatcher_2                 = 60.*mm;
-       G4double y_baseCatcher_2                 = 32.*mm;
-       G4double z_baseCatcher_2                 = thickness_baseCatcher_Sottile_1; //NB: tutte le misure precedenti sono state prese direttamente dai disegni tecnici di M. Roche
-       G4double radius_ext_bucoCatcher          = (25./2)*mm;
-       G4double radius_bucoCatcher              = (15./2)*mm;
-       G4double thickness_supp_catcher          = 2.*mm;
-       G4double radius_bucoSource               = (20./2)*mm;
-       //G4double thickness_supp_radSource        = 3.*mm;
-       //G4double altezza_supp_radSource          = 0.5*mm; //Da Verificare
-       G4double x_pos_bucoCatcher               = (25.88/2)*mm;
-      // G4double x_pos_bucoSource                = x_pos_bucoCatcher;
-       G4double x_y_triangularCut_baseSpessa    = 5.*mm;
-       G4double x_y_triangularCut_baseSottile   = 8.*mm;
-       G4Material* materialSupport_Catcher_source  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+//       // ===========================================================================================================
+//       // ================================ CATCHER/SORGENTE RAD./SUPPORTO  ==========================================
+//       // ===========================================================================================================
+//       // Guardiamo il supporto del catcher dalla parte attaccata al perno verso la sorgente.
+//       // La parte 1 è il supporto rettangolare lungo, la parte 2 è il il supporto rettangolare largo su cui si trovano i buchi per il catcher e il posizionamento sorgente radioattiva.
+//       // Per maggiori dettagli vedere mail M. Roche 10/06/2021 alle ore 11-50 circa (e foto su cui ho scritto ed evidenziato salvata su telegram).
+//        G4double x_baseCatcher_Spessa_1          = 14.*mm;
+//        G4double y_baseCatcher_Spessa_1          = 16.*mm;
+//        G4double thickness_baseCatcher_Spessa_1  = 12.*mm;
+//        G4double radius_buco_baseSpessa          = 5.*mm;
+//        G4double pos_buco_baseSpessa             = 0.8963*mm;
+//        G4double x_baseCatcher_Sottile_1         = x_baseCatcher_Spessa_1;
+//        G4double y_baseCatcher_Sottile_1         = 24.*mm;
+//        G4double thickness_baseCatcher_Sottile_1 = 4.*mm;
+//        G4double x_baseCatcher_2                 = 60.*mm;
+//        G4double y_baseCatcher_2                 = 32.*mm;
+//        G4double z_baseCatcher_2                 = thickness_baseCatcher_Sottile_1; //NB: tutte le misure precedenti sono state prese direttamente dai disegni tecnici di M. Roche
+//        G4double radius_ext_bucoCatcher          = (25./2)*mm;
+//        G4double radius_bucoCatcher              = (15./2)*mm;
+//        G4double thickness_supp_catcher          = 2.*mm;
+//        G4double radius_bucoSource               = (20./2)*mm;
+//        //G4double thickness_supp_radSource        = 3.*mm;
+//        //G4double altezza_supp_radSource          = 0.5*mm; //Da Verificare
+//        G4double x_pos_bucoCatcher               = (25.88/2)*mm;
+//       // G4double x_pos_bucoSource                = x_pos_bucoCatcher;
+//        G4double x_y_triangularCut_baseSpessa    = 5.*mm;
+//        G4double x_y_triangularCut_baseSottile   = 8.*mm;
+//        G4Material* materialSupport_Catcher_source  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
 
-       G4RotationMatrix* myRotation_trSupp = new G4RotationMatrix();
-       myRotation_trSupp->rotateX(0.*deg);
-       myRotation_trSupp->rotateY(180.*deg);
-       myRotation_trSupp->rotateZ(0.*rad);
+//        G4RotationMatrix* myRotation_trSupp = new G4RotationMatrix();
+//        myRotation_trSupp->rotateX(0.*deg);
+//        myRotation_trSupp->rotateY(180.*deg);
+//        myRotation_trSupp->rotateZ(0.*rad);
 
-       G4RotationMatrix* myRotation_trSupp2 = new G4RotationMatrix();
-       myRotation_trSupp2->rotateX(180.*deg);
-       myRotation_trSupp2->rotateY(180.*deg);
-       myRotation_trSupp2->rotateZ(0.*rad);
+//        G4RotationMatrix* myRotation_trSupp2 = new G4RotationMatrix();
+//        myRotation_trSupp2->rotateX(180.*deg);
+//        myRotation_trSupp2->rotateY(180.*deg);
+//        myRotation_trSupp2->rotateZ(0.*rad);
 
-       G4RotationMatrix* myRotation_trSupp3 = new G4RotationMatrix();
-       myRotation_trSupp3->rotateX(180.*deg);
-       myRotation_trSupp3->rotateY(0.*deg);
-       myRotation_trSupp3->rotateZ(0.*rad);
+//        G4RotationMatrix* myRotation_trSupp3 = new G4RotationMatrix();
+//        myRotation_trSupp3->rotateX(180.*deg);
+//        myRotation_trSupp3->rotateY(0.*deg);
+//        myRotation_trSupp3->rotateZ(0.*rad);
 
-       G4Box* SuppCatcher_baseSpessa_senzaBuco  = new G4Box("SuppCatcher_baseSpessa_senzaBuco", x_baseCatcher_Spessa_1/2, y_baseCatcher_Spessa_1/2, thickness_baseCatcher_Spessa_1/2);
-       G4Tubs* bucoBaseSpessa                   = new G4Tubs("bucoBaseSpessa", 0., radius_buco_baseSpessa, 2*thickness_baseCatcher_Spessa_1, 0., 360*deg);
-       G4VSolid* SuppCatcher_baseSpessa_intera  = new G4SubtractionSolid("SuppCatcher_baseSpessa_intera", SuppCatcher_baseSpessa_senzaBuco, bucoBaseSpessa, 0, G4ThreeVector(0.,-0.2962*mm,0.));
+//        G4Box* SuppCatcher_baseSpessa_senzaBuco  = new G4Box("SuppCatcher_baseSpessa_senzaBuco", x_baseCatcher_Spessa_1/2, y_baseCatcher_Spessa_1/2, thickness_baseCatcher_Spessa_1/2);
+//        G4Tubs* bucoBaseSpessa                   = new G4Tubs("bucoBaseSpessa", 0., radius_buco_baseSpessa, 2*thickness_baseCatcher_Spessa_1, 0., 360*deg);
+//        G4VSolid* SuppCatcher_baseSpessa_intera  = new G4SubtractionSolid("SuppCatcher_baseSpessa_intera", SuppCatcher_baseSpessa_senzaBuco, bucoBaseSpessa, 0, G4ThreeVector(0.,-0.2962*mm,0.));
 
-       const G4int nsect = 3;
-       std::vector<G4TwoVector> polygon(nsect);
-       polygon[0].set(x_y_triangularCut_baseSpessa, 0.);
-       polygon[1].set(0., 0.);
-       polygon[2].set(x_y_triangularCut_baseSpessa, x_y_triangularCut_baseSpessa);
+//        const G4int nsect = 3;
+//        std::vector<G4TwoVector> polygon(nsect);
+//        polygon[0].set(x_y_triangularCut_baseSpessa, 0.);
+//        polygon[1].set(0., 0.);
+//        polygon[2].set(x_y_triangularCut_baseSpessa, x_y_triangularCut_baseSpessa);
 
-       G4TwoVector offsetA(0,0), offsetB(0,0);
-       G4double scaleA = 1, scaleB = 1;
-       G4VSolid* triangularCut_baseSpessa = new G4ExtrudedSolid("triangularCut_baseSpessa", polygon, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
+//        G4TwoVector offsetA(0,0), offsetB(0,0);
+//        G4double scaleA = 1, scaleB = 1;
+//        G4VSolid* triangularCut_baseSpessa = new G4ExtrudedSolid("triangularCut_baseSpessa", polygon, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
 
-       G4VSolid* SuppCatcher_baseSpessa_parziale  = new G4SubtractionSolid("SuppCatcher_baseSpessa_parziale", SuppCatcher_baseSpessa_intera, triangularCut_baseSpessa, 0, G4ThreeVector(x_baseCatcher_Spessa_1/2 - x_y_triangularCut_baseSpessa+0.5*mm, -y_baseCatcher_Spessa_1/2, 0.));
-       G4VSolid* SuppCatcher_baseSpessa           = new G4SubtractionSolid("SuppCatcher_baseSpessa", SuppCatcher_baseSpessa_parziale, triangularCut_baseSpessa, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_Spessa_1/2 + x_y_triangularCut_baseSpessa-0.5*mm, -y_baseCatcher_Spessa_1/2 -0.5*mm, 0.));
+//        G4VSolid* SuppCatcher_baseSpessa_parziale  = new G4SubtractionSolid("SuppCatcher_baseSpessa_parziale", SuppCatcher_baseSpessa_intera, triangularCut_baseSpessa, 0, G4ThreeVector(x_baseCatcher_Spessa_1/2 - x_y_triangularCut_baseSpessa+0.5*mm, -y_baseCatcher_Spessa_1/2, 0.));
+//        G4VSolid* SuppCatcher_baseSpessa           = new G4SubtractionSolid("SuppCatcher_baseSpessa", SuppCatcher_baseSpessa_parziale, triangularCut_baseSpessa, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_Spessa_1/2 + x_y_triangularCut_baseSpessa-0.5*mm, -y_baseCatcher_Spessa_1/2 -0.5*mm, 0.));
 
-       G4ThreeVector pos_SuppCatcher_baseSpessa = G4ThreeVector(0., pos_buco_baseSpessa, 0.);
-       G4Transform3D tr_SuppCatcher_baseSpessa  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSpessa);
+//        G4ThreeVector pos_SuppCatcher_baseSpessa = G4ThreeVector(0., pos_buco_baseSpessa, 0.);
+//        G4Transform3D tr_SuppCatcher_baseSpessa  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSpessa);
 
-       G4Box* SuppCatcher_baseSottile            = new G4Box("SuppCatcher_baseSottile", x_baseCatcher_Sottile_1/2, y_baseCatcher_Sottile_1/2, thickness_baseCatcher_Sottile_1/2);
-       G4ThreeVector pos_SuppCatcher_baseSottile = G4ThreeVector(0., y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1/2, thickness_baseCatcher_Spessa_1/2 - thickness_baseCatcher_Sottile_1/2);
-       G4Transform3D tr_SuppCatcher_baseSottile  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSottile);
+//        G4Box* SuppCatcher_baseSottile            = new G4Box("SuppCatcher_baseSottile", x_baseCatcher_Sottile_1/2, y_baseCatcher_Sottile_1/2, thickness_baseCatcher_Sottile_1/2);
+//        G4ThreeVector pos_SuppCatcher_baseSottile = G4ThreeVector(0., y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1/2, thickness_baseCatcher_Spessa_1/2 - thickness_baseCatcher_Sottile_1/2);
+//        G4Transform3D tr_SuppCatcher_baseSottile  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSottile);
 
-       G4Box* SuppCatcher_base_2_senzaBuco         = new G4Box("SuppCatcher_base_2_senzaBuco", x_baseCatcher_2/2, y_baseCatcher_2/2, z_baseCatcher_2/2);
-       G4Tubs* bucoCatcher                         = new G4Tubs("bucoCatcher", 0., radius_bucoCatcher, 2*z_baseCatcher_2, 0., 360*deg);
-       G4VSolid* SuppCatcher_base_2_conBucoCatcher = new G4SubtractionSolid("SuppCatcher_baseSpessa_conbucoCatcher", SuppCatcher_base_2_senzaBuco, bucoCatcher, 0, G4ThreeVector(-x_pos_bucoCatcher, 0., 0.));
-       G4Tubs* bucoSource                          = new G4Tubs("bucoSource", 0., radius_bucoSource, 2*z_baseCatcher_2, 0., 360*deg);
-       G4VSolid* SuppCatcher_base_2_intero         = new G4SubtractionSolid("SuppCatcher_base_2_intero", SuppCatcher_base_2_conBucoCatcher, bucoSource, 0, G4ThreeVector(x_pos_bucoCatcher, 0., 0.));
+//        G4Box* SuppCatcher_base_2_senzaBuco         = new G4Box("SuppCatcher_base_2_senzaBuco", x_baseCatcher_2/2, y_baseCatcher_2/2, z_baseCatcher_2/2);
+//        G4Tubs* bucoCatcher                         = new G4Tubs("bucoCatcher", 0., radius_bucoCatcher, 2*z_baseCatcher_2, 0., 360*deg);
+//        G4VSolid* SuppCatcher_base_2_conBucoCatcher = new G4SubtractionSolid("SuppCatcher_baseSpessa_conbucoCatcher", SuppCatcher_base_2_senzaBuco, bucoCatcher, 0, G4ThreeVector(-x_pos_bucoCatcher, 0., 0.));
+//        G4Tubs* bucoSource                          = new G4Tubs("bucoSource", 0., radius_bucoSource, 2*z_baseCatcher_2, 0., 360*deg);
+//        G4VSolid* SuppCatcher_base_2_intero         = new G4SubtractionSolid("SuppCatcher_base_2_intero", SuppCatcher_base_2_conBucoCatcher, bucoSource, 0, G4ThreeVector(x_pos_bucoCatcher, 0., 0.));
 
-       std::vector<G4TwoVector> polygon2(nsect);
-       polygon2[0].set(x_y_triangularCut_baseSottile, 0.);
-       polygon2[1].set(0., 0.);
-       polygon2[2].set(x_y_triangularCut_baseSottile, x_y_triangularCut_baseSottile);
+//        std::vector<G4TwoVector> polygon2(nsect);
+//        polygon2[0].set(x_y_triangularCut_baseSottile, 0.);
+//        polygon2[1].set(0., 0.);
+//        polygon2[2].set(x_y_triangularCut_baseSottile, x_y_triangularCut_baseSottile);
 
-       G4VSolid* triangularCut_baseSottile     = new G4ExtrudedSolid("triangularCut_baseSottile", polygon2, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
-       G4VSolid* SuppCatcher_base_2_unAngolo   = new G4SubtractionSolid("SuppCatcher_base_2_unAngolo", SuppCatcher_base_2_intero, triangularCut_baseSottile, 0, G4ThreeVector(+x_baseCatcher_2/2 - x_y_triangularCut_baseSottile +0.5*mm, -y_baseCatcher_2/2 -0.5*mm, 0.));
-       G4VSolid* SuppCatcher_base_2_dueAngoli  = new G4SubtractionSolid("SuppCatcher_base_2_dueAngoli", SuppCatcher_base_2_unAngolo, triangularCut_baseSottile, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_2/2 + x_y_triangularCut_baseSottile -0.5*mm, -y_baseCatcher_2/2 -0.5*mm, 0.));
-       G4VSolid* SuppCatcher_base_2_treAngoli  = new G4SubtractionSolid("SuppCatcher_base_2_treAngoli", SuppCatcher_base_2_dueAngoli, triangularCut_baseSottile, myRotation_trSupp2, G4ThreeVector(-x_baseCatcher_2/2 + x_y_triangularCut_baseSottile -0.5*mm, +y_baseCatcher_2/2 +0.5*mm, 0.));
-       G4VSolid* SuppCatcher_base_2            = new G4SubtractionSolid("SuppCatcher_base_2", SuppCatcher_base_2_treAngoli, triangularCut_baseSottile, myRotation_trSupp3, G4ThreeVector(x_baseCatcher_2/2 - x_y_triangularCut_baseSottile +0.5*mm, +y_baseCatcher_2/2 +0.5*mm, 0.));
+//        G4VSolid* triangularCut_baseSottile     = new G4ExtrudedSolid("triangularCut_baseSottile", polygon2, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
+//        G4VSolid* SuppCatcher_base_2_unAngolo   = new G4SubtractionSolid("SuppCatcher_base_2_unAngolo", SuppCatcher_base_2_intero, triangularCut_baseSottile, 0, G4ThreeVector(+x_baseCatcher_2/2 - x_y_triangularCut_baseSottile +0.5*mm, -y_baseCatcher_2/2 -0.5*mm, 0.));
+//        G4VSolid* SuppCatcher_base_2_dueAngoli  = new G4SubtractionSolid("SuppCatcher_base_2_dueAngoli", SuppCatcher_base_2_unAngolo, triangularCut_baseSottile, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_2/2 + x_y_triangularCut_baseSottile -0.5*mm, -y_baseCatcher_2/2 -0.5*mm, 0.));
+//        G4VSolid* SuppCatcher_base_2_treAngoli  = new G4SubtractionSolid("SuppCatcher_base_2_treAngoli", SuppCatcher_base_2_dueAngoli, triangularCut_baseSottile, myRotation_trSupp2, G4ThreeVector(-x_baseCatcher_2/2 + x_y_triangularCut_baseSottile -0.5*mm, +y_baseCatcher_2/2 +0.5*mm, 0.));
+//        G4VSolid* SuppCatcher_base_2            = new G4SubtractionSolid("SuppCatcher_base_2", SuppCatcher_base_2_treAngoli, triangularCut_baseSottile, myRotation_trSupp3, G4ThreeVector(x_baseCatcher_2/2 - x_y_triangularCut_baseSottile +0.5*mm, +y_baseCatcher_2/2 +0.5*mm, 0.));
 
-       G4ThreeVector pos_SuppCatcher_base_2 = G4ThreeVector(0., y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2, thickness_baseCatcher_Spessa_1/2 - z_baseCatcher_2/2);
-       G4Transform3D tr_SuppCatcher_base_2  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_base_2);
+//        G4ThreeVector pos_SuppCatcher_base_2 = G4ThreeVector(0., y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2, thickness_baseCatcher_Spessa_1/2 - z_baseCatcher_2/2);
+//        G4Transform3D tr_SuppCatcher_base_2  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_base_2);
 
-       G4MultiUnion* munion_supportCatcher_Source = new G4MultiUnion("munion_supportCatcher_Source");
+//        G4MultiUnion* munion_supportCatcher_Source = new G4MultiUnion("munion_supportCatcher_Source");
+// munion_supportCatcher_Source->AddNode(*SuppCatcher_baseSpessa, tr_SuppCatcher_baseSpessa);
+// munion_supportCatcher_Source->AddNode(*SuppCatcher_baseSottile, tr_SuppCatcher_baseSottile);
+// munion_supportCatcher_Source->AddNode(*SuppCatcher_base_2     , tr_SuppCatcher_base_2);
+//        munion_supportCatcher_Source->Voxelize();
+
+//        G4LogicalVolume* logic_munion_supportCatcher_Source  = new G4LogicalVolume(munion_supportCatcher_Source, materialSupport_Catcher_source, "logic_munion_supportCatcher_Source");
+//        G4VPhysicalVolume* phys_munion_supportCatcher_Source = new G4PVPlacement(0,                        //no rotation
+// G4ThreeVector(x_pos_bucoCatcher, - (y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2), -(thickness_baseCatcher_Spessa_1/2 + 0/2 + 0/2)),     //+thickness_supp_catcher/2   //at (0,0,0) //thickness_baseCatcher_Sottile_1
+// logic_munion_supportCatcher_Source,                //its fLogical volume
+// "phys_munion_supportCatcher_Source",                //its name
+// fLogicWorld,                        //its mother  volume
+// false,                        //no boolean operation
+// 0,
+// false);                        //copy number
+
+//        G4VisAttributes* visAtt_munion_supportCatcher_Source  = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
+// visAtt_munion_supportCatcher_Source->SetVisibility(true);
+// visAtt_munion_supportCatcher_Source->SetForceWireframe(false);
+// visAtt_munion_supportCatcher_Source->SetForceSolid(true);
+//        logic_munion_supportCatcher_Source ->SetVisAttributes(visAtt_munion_supportCatcher_Source);
+
+//        if(phys_munion_supportCatcher_Source == NULL) {}
+
+//        //G4double x_pos_Catcher_risp_munion   = x_pos_bucoCatcher;
+//        G4double y_pos_Catcher_risp_munion   = y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2;
+
+//        G4Tubs* Supp_catcher                 = new G4Tubs("Supp_catcher", radius_bucoCatcher, radius_ext_bucoCatcher, thickness_supp_catcher/2, 0., 360*deg);
+//        G4LogicalVolume* logic_Supp_catcher  = new G4LogicalVolume(Supp_catcher, materialSupport_Catcher_source, "logic_Supp_catcher");
+//        G4VPhysicalVolume* phys_Supp_catcher = new G4PVPlacement(0,                        //no rotation
+// G4ThreeVector(-x_pos_bucoCatcher, y_pos_Catcher_risp_munion, thickness_baseCatcher_Spessa_1/2),        //at (0,0,0)
+// logic_Supp_catcher,                //its fLogical volume
+// "phys_Supp_catcher",                //its name
+// logic_munion_supportCatcher_Source,                        //its mother  volume
+// false,                        //no boolean operation
+// 0,
+// false);                        //copy number
+
+//       G4VisAttributes* visAtt_Supp_catcher  = new G4VisAttributes(G4Colour(0.3,0.3,0.3));
+//       visAtt_Supp_catcher->SetVisibility(true);
+//       visAtt_Supp_catcher->SetForceWireframe(false);
+//       visAtt_Supp_catcher->SetForceSolid(true);
+//       logic_Supp_catcher ->SetVisAttributes(visAtt_Supp_catcher );
+
+//       if(phys_Supp_catcher == NULL) {}
+
+//       G4Material* Mylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
+
+//       //G4double thicknessMylarSource    = 500.*nm;
+//       G4double thicknessMylarSource    = 6.*um;
+//       G4double outerRadius_MylarSource = radius_bucoCatcher;
+
+//       G4Tubs*              MylarSource          = new G4Tubs("MylarSource", 0., outerRadius_MylarSource, thicknessMylarSource/2, 0., 360.*deg);
+//       G4LogicalVolume*     Logic_MylarSource    = new G4LogicalVolume(MylarSource, Mylar, "LogicMylarSource"); //solid, material, name
+//       G4VPhysicalVolume*   Physics_MylarSource  = new G4PVPlacement(0,                //no rotation
+// G4ThreeVector(0., 0., 0.),    //position
+// Logic_MylarSource,"LogicMylarSource",        //its fLogical volume
+// fLogicWorld,            //its mother volume
+// false,                //no boolean op.
+// 0,
+// true);                //copy nb.
+
+//       G4VisAttributes* MylarSource_att = new G4VisAttributes(G4Colour(0.94, 0.5, 0.5)); //pink
+//       MylarSource_att->SetVisibility(true);
+//       MylarSource_att->SetForceWireframe(false);
+//       MylarSource_att->SetForceSolid(true);
+//       Logic_MylarSource->SetVisAttributes(MylarSource_att);
+
+//      if(Physics_MylarSource == NULL) {}
+
+///////////////////////NEW SUPPORT CATCHER//////////////////
+G4double x_baseCatcher_Spessa_1          = 14.*mm;
+G4double y_baseCatcher_Spessa_1          = 16.*mm;
+G4double thickness_baseCatcher_Spessa_1  = 12.*mm;
+G4double radius_buco_baseSpessa          = 5.*mm;
+G4double pos_buco_baseSpessa             = 0.8963*mm;
+G4double x_baseCatcher_Sottile_1         = x_baseCatcher_Spessa_1;
+G4double y_baseCatcher_Sottile_1         = 24.*mm;
+G4double thickness_baseCatcher_Sottile_1 = 2.*mm;
+G4double x_baseCatcher_2                 = 60.*mm;
+G4double y_baseCatcher_2                 = 32.*mm;
+G4double z_baseCatcher_2                 = thickness_baseCatcher_Sottile_1; //NB: tutte le misure precedenti sono state prese direttamente dai disegni tecnici di M. Roche
+G4double radius_int_bucoCatcher          = 7.5*mm;  /// a revoir
+G4double radius_bucoCatcher              = 9*mm;
+G4double thickness_supp_catcher          = 1.5*mm;
+G4double radius_bucoSource               = (20./2)*mm;
+//G4double thickness_supp_radSource        = 3.*mm;
+//G4double altezza_supp_radSource          = 0.5*mm; //Da Verificare
+G4double x_pos_bucoCatcher               = (25.88/2)*mm;
+// G4double x_pos_bucoSource                = x_pos_bucoCatcher;
+G4double x_y_triangularCut_baseSpessa    = 5.*mm;
+G4double x_y_triangularCut_baseSottile   = 8.*mm;
+G4Material* materialSupport_Catcher_source  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+
+G4RotationMatrix* myRotation_trSupp = new G4RotationMatrix();
+myRotation_trSupp->rotateX(0.*deg);
+myRotation_trSupp->rotateY(180.*deg);
+myRotation_trSupp->rotateZ(0.*rad);
+
+G4RotationMatrix* myRotation_trSupp2 = new G4RotationMatrix();
+myRotation_trSupp2->rotateX(180.*deg);
+myRotation_trSupp2->rotateY(180.*deg);
+myRotation_trSupp2->rotateZ(0.*rad);
+
+G4RotationMatrix* myRotation_trSupp3 = new G4RotationMatrix();
+myRotation_trSupp3->rotateX(180.*deg);
+myRotation_trSupp3->rotateY(0.*deg);
+myRotation_trSupp3->rotateZ(0.*rad);
+
+G4Box* SuppCatcher_baseSpessa_senzaBuco  = new G4Box("SuppCatcher_baseSpessa_senzaBuco", x_baseCatcher_Spessa_1/2, y_baseCatcher_Spessa_1/2, thickness_baseCatcher_Spessa_1/2);
+G4Tubs* bucoBaseSpessa                   = new G4Tubs("bucoBaseSpessa", 0., radius_buco_baseSpessa, 2*thickness_baseCatcher_Spessa_1, 0., 360*deg);
+G4VSolid* SuppCatcher_baseSpessa_intera  = new G4SubtractionSolid("SuppCatcher_baseSpessa_intera", SuppCatcher_baseSpessa_senzaBuco, bucoBaseSpessa, 0, G4ThreeVector(0.,-0.2962*mm,0.));
+
+const G4int nsect = 3;
+std::vector<G4TwoVector> polygon(nsect);
+polygon[0].set(x_y_triangularCut_baseSpessa, 0.);
+polygon[1].set(0., 0.);
+polygon[2].set(x_y_triangularCut_baseSpessa, x_y_triangularCut_baseSpessa);
+
+G4TwoVector offsetA(0,0), offsetB(0,0);
+G4double scaleA = 1, scaleB = 1;
+G4VSolid* triangularCut_baseSpessa = new G4ExtrudedSolid("triangularCut_baseSpessa", polygon, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
+
+G4VSolid* SuppCatcher_baseSpessa_parziale  = new G4SubtractionSolid("SuppCatcher_baseSpessa_parziale", SuppCatcher_baseSpessa_intera, triangularCut_baseSpessa, 0, G4ThreeVector(x_baseCatcher_Spessa_1/2 - x_y_triangularCut_baseSpessa+0.5*mm, -y_baseCatcher_Spessa_1/2, 0.));
+G4VSolid* SuppCatcher_baseSpessa           = new G4SubtractionSolid("SuppCatcher_baseSpessa", SuppCatcher_baseSpessa_parziale, triangularCut_baseSpessa, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_Spessa_1/2 + x_y_triangularCut_baseSpessa-0.5*mm, -y_baseCatcher_Spessa_1/2 -0.5*mm, 0.));
+
+G4ThreeVector pos_SuppCatcher_baseSpessa = G4ThreeVector(0., pos_buco_baseSpessa, 0.);
+G4Transform3D tr_SuppCatcher_baseSpessa  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSpessa);
+
+G4Box* SuppCatcher_baseSottile            = new G4Box("SuppCatcher_baseSottile", x_baseCatcher_Sottile_1/2, y_baseCatcher_Sottile_1/2, thickness_baseCatcher_Sottile_1/2);
+G4ThreeVector pos_SuppCatcher_baseSottile = G4ThreeVector(0., y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1/2, thickness_baseCatcher_Spessa_1/2 - thickness_baseCatcher_Sottile_1/2);
+G4Transform3D tr_SuppCatcher_baseSottile  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSottile);
+
+G4Box* SuppCatcher_base_2_senzaBuco         = new G4Box("SuppCatcher_base_2_senzaBuco", x_baseCatcher_2/2, y_baseCatcher_2/2, z_baseCatcher_2/2);
+G4Tubs* bucoCatcher                         = new G4Tubs("bucoCatcher", 0., radius_bucoCatcher, thickness_supp_catcher/2, 0., 360*deg);
+G4VSolid* SuppCatcher_base_2_conBucoCatcher = new G4SubtractionSolid("SuppCatcher_baseSpessa_conbucoCatcher", SuppCatcher_base_2_senzaBuco, bucoCatcher, 0, G4ThreeVector(-x_pos_bucoCatcher, 0., thickness_baseCatcher_Sottile_1-thickness_supp_catcher-0.25*mm));
+
+G4Tubs* bucoCatcher1                         = new G4Tubs("bucoCatcher1", 0., radius_int_bucoCatcher, thickness_baseCatcher_Sottile_1-thickness_supp_catcher, 0., 360*deg);
+G4VSolid* SuppCatcher_base_2_conBucoCatcher1 = new G4SubtractionSolid("SuppCatcher_baseSpessa_conbucoCatcher1", SuppCatcher_base_2_conBucoCatcher, bucoCatcher1, 0, G4ThreeVector(-x_pos_bucoCatcher, 0., thickness_baseCatcher_Sottile_1/2-thickness_supp_catcher));
+
+
+
+G4Tubs* bucoSource                          = new G4Tubs("bucoSource", 0., radius_bucoSource, 2*z_baseCatcher_2, 0., 360*deg);
+G4VSolid* SuppCatcher_base_2_intero         = new G4SubtractionSolid("SuppCatcher_base_2_intero", SuppCatcher_base_2_conBucoCatcher1, bucoSource, 0, G4ThreeVector(x_pos_bucoCatcher, 0., 0.));
+
+std::vector<G4TwoVector> polygon2(nsect);
+polygon2[0].set(x_y_triangularCut_baseSottile, 0.);
+polygon2[1].set(0., 0.);
+polygon2[2].set(x_y_triangularCut_baseSottile, x_y_triangularCut_baseSottile);
+
+G4VSolid* triangularCut_baseSottile     = new G4ExtrudedSolid("triangularCut_baseSottile", polygon2, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
+G4VSolid* SuppCatcher_base_2_unAngolo   = new G4SubtractionSolid("SuppCatcher_base_2_unAngolo", SuppCatcher_base_2_intero, triangularCut_baseSottile, 0, G4ThreeVector(+x_baseCatcher_2/2 - x_y_triangularCut_baseSottile +0.5*mm, -y_baseCatcher_2/2 -0.5*mm, 0.));
+G4VSolid* SuppCatcher_base_2_dueAngoli  = new G4SubtractionSolid("SuppCatcher_base_2_dueAngoli", SuppCatcher_base_2_unAngolo, triangularCut_baseSottile, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_2/2 + x_y_triangularCut_baseSottile -0.5*mm, -y_baseCatcher_2/2 -0.5*mm, 0.));
+G4VSolid* SuppCatcher_base_2_treAngoli  = new G4SubtractionSolid("SuppCatcher_base_2_treAngoli", SuppCatcher_base_2_dueAngoli, triangularCut_baseSottile, myRotation_trSupp2, G4ThreeVector(-x_baseCatcher_2/2 + x_y_triangularCut_baseSottile -0.5*mm, +y_baseCatcher_2/2 +0.5*mm, 0.));
+G4VSolid* SuppCatcher_base_2            = new G4SubtractionSolid("SuppCatcher_base_2", SuppCatcher_base_2_treAngoli, triangularCut_baseSottile, myRotation_trSupp3, G4ThreeVector(x_baseCatcher_2/2 - x_y_triangularCut_baseSottile +0.5*mm, +y_baseCatcher_2/2 +0.5*mm, 0.));
+
+G4ThreeVector pos_SuppCatcher_base_2 = G4ThreeVector(0., y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2, thickness_baseCatcher_Spessa_1/2 - z_baseCatcher_2/2);
+G4Transform3D tr_SuppCatcher_base_2  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_base_2);
+
+G4MultiUnion* munion_supportCatcher_Source = new G4MultiUnion("munion_supportCatcher_Source");
 munion_supportCatcher_Source->AddNode(*SuppCatcher_baseSpessa, tr_SuppCatcher_baseSpessa);
 munion_supportCatcher_Source->AddNode(*SuppCatcher_baseSottile, tr_SuppCatcher_baseSottile);
 munion_supportCatcher_Source->AddNode(*SuppCatcher_base_2     , tr_SuppCatcher_base_2);
-       munion_supportCatcher_Source->Voxelize();
+munion_supportCatcher_Source->Voxelize();
 
-       G4LogicalVolume* logic_munion_supportCatcher_Source  = new G4LogicalVolume(munion_supportCatcher_Source, materialSupport_Catcher_source, "logic_munion_supportCatcher_Source");
-       G4VPhysicalVolume* phys_munion_supportCatcher_Source = new G4PVPlacement(0,                        //no rotation
-G4ThreeVector(x_pos_bucoCatcher, - (y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2), -(thickness_baseCatcher_Spessa_1/2 + 0/2 + 0/2)),     //+thickness_supp_catcher/2   //at (0,0,0) //thickness_baseCatcher_Sottile_1
+G4LogicalVolume* logic_munion_supportCatcher_Source  = new G4LogicalVolume(munion_supportCatcher_Source, materialSupport_Catcher_source, "logic_munion_supportCatcher_Source");
+G4VPhysicalVolume* phys_munion_supportCatcher_Source = new G4PVPlacement(0,                        //no rotation
+G4ThreeVector(x_pos_bucoCatcher, - (y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2), -thickness_baseCatcher_Spessa_1/2+thickness_baseCatcher_Sottile_1+thickness_baseCatcher_Sottile_1/2-thickness_supp_catcher),     //+thickness_supp_catcher/2   //at (0,0,0) //thickness_baseCatcher_Sottile_1
 logic_munion_supportCatcher_Source,                //its fLogical volume
 "phys_munion_supportCatcher_Source",                //its name
 fLogicWorld,                        //its mother  volume
@@ -395,21 +665,27 @@ false,                        //no boolean operation
 0,
 false);                        //copy number
 
-       G4VisAttributes* visAtt_munion_supportCatcher_Source  = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
+G4VisAttributes* visAtt_munion_supportCatcher_Source  = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
 visAtt_munion_supportCatcher_Source->SetVisibility(true);
 visAtt_munion_supportCatcher_Source->SetForceWireframe(false);
 visAtt_munion_supportCatcher_Source->SetForceSolid(true);
-       logic_munion_supportCatcher_Source ->SetVisAttributes(visAtt_munion_supportCatcher_Source);
+logic_munion_supportCatcher_Source ->SetVisAttributes(visAtt_munion_supportCatcher_Source);
 
-       if(phys_munion_supportCatcher_Source == NULL) {}
+if(phys_munion_supportCatcher_Source == NULL) {}
 
-       //G4double x_pos_Catcher_risp_munion   = x_pos_bucoCatcher;
-       G4double y_pos_Catcher_risp_munion   = y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2;
+//G4double x_pos_Catcher_risp_munion   = x_pos_bucoCatcher;
+G4double y_pos_Catcher_risp_munion   = y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2;
 
-       G4Tubs* Supp_catcher                 = new G4Tubs("Supp_catcher", radius_bucoCatcher, radius_ext_bucoCatcher, thickness_supp_catcher/2, 0., 360*deg);
-       G4LogicalVolume* logic_Supp_catcher  = new G4LogicalVolume(Supp_catcher, materialSupport_Catcher_source, "logic_Supp_catcher");
-       G4VPhysicalVolume* phys_Supp_catcher = new G4PVPlacement(0,                        //no rotation
-G4ThreeVector(-x_pos_bucoCatcher, y_pos_Catcher_risp_munion, thickness_baseCatcher_Spessa_1/2),        //at (0,0,0)
+G4NistManager* man = G4NistManager::Instance();
+G4Material* material_Catcher_Ring  = new G4Material("PEEKS", 1.32*g/cm3, 3); //Plastic
+material_Catcher_Ring->AddElement(man->FindOrBuildElement("C"), 19);
+material_Catcher_Ring->AddElement(man->FindOrBuildElement("H"), 12);
+material_Catcher_Ring->AddElement(man->FindOrBuildElement("O"), 3);
+
+G4Tubs* Supp_catcher                 = new G4Tubs("Supp_catcher", radius_int_bucoCatcher, radius_bucoCatcher, thickness_supp_catcher/2, 0., 360*deg);
+G4LogicalVolume* logic_Supp_catcher  = new G4LogicalVolume(Supp_catcher, material_Catcher_Ring, "logic_Supp_catcher");
+G4VPhysicalVolume* phys_Supp_catcher = new G4PVPlacement(0,                        //no rotation
+G4ThreeVector(-x_pos_bucoCatcher, y_pos_Catcher_risp_munion, thickness_baseCatcher_Spessa_1/2-thickness_supp_catcher/2),        //at (0,0,0)
 logic_Supp_catcher,                //its fLogical volume
 "phys_Supp_catcher",                //its name
 logic_munion_supportCatcher_Source,                        //its mother  volume
@@ -417,241 +693,64 @@ false,                        //no boolean operation
 0,
 false);                        //copy number
 
-      G4VisAttributes* visAtt_Supp_catcher  = new G4VisAttributes(G4Colour(0.3,0.3,0.3));
-      visAtt_Supp_catcher->SetVisibility(true);
-      visAtt_Supp_catcher->SetForceWireframe(false);
-      visAtt_Supp_catcher->SetForceSolid(true);
-      logic_Supp_catcher ->SetVisAttributes(visAtt_Supp_catcher );
+G4VisAttributes* visAtt_Supp_catcher  = new G4VisAttributes(G4Colour(1.,1.,1.));
+visAtt_Supp_catcher->SetVisibility(true);
+visAtt_Supp_catcher->SetForceWireframe(false);
+visAtt_Supp_catcher->SetForceSolid(true);
+logic_Supp_catcher ->SetVisAttributes(visAtt_Supp_catcher );
 
-      if(phys_Supp_catcher == NULL) {}
+if(phys_Supp_catcher == NULL) {}
 
-      G4Material* Mylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
+G4Material* Mylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
+G4Material* Al = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
 
-      //G4double thicknessMylarSource    = 500.*nm;
-      G4double thicknessMylarSource    = 6.*um;
-      G4double outerRadius_MylarSource = radius_bucoCatcher;
+G4double thicknessMylarSource    = 0.5*um;
+G4double thicknessAlSource    = 50.*nm;
+G4double outerRadius_MylarSource = radius_bucoCatcher;
 
-      G4Tubs*              MylarSource          = new G4Tubs("MylarSource", 0., outerRadius_MylarSource, thicknessMylarSource/2, 0., 360.*deg);
-      G4LogicalVolume*     Logic_MylarSource    = new G4LogicalVolume(MylarSource, Mylar, "LogicMylarSource"); //solid, material, name
-      G4VPhysicalVolume*   Physics_MylarSource  = new G4PVPlacement(0,                //no rotation
-G4ThreeVector(0., 0., 0.),    //position
-Logic_MylarSource,"LogicMylarSource",        //its fLogical volume
+G4Tubs*              AlSource1          = new G4Tubs("AlSource1", 0., outerRadius_MylarSource, thicknessAlSource/2, 0., 360.*deg);
+G4LogicalVolume*     Logic_AlSource1    = new G4LogicalVolume(AlSource1, Al, "LogicAlSource1"); //solid, material, name
+G4VPhysicalVolume*   Physics_AlSource1  = new G4PVPlacement(0,                //no rotation
+G4ThreeVector(0., 0., thicknessAlSource/2),    //position
+Logic_AlSource1,"LogicAlSource1",        //its fLogical volume
 fLogicWorld,            //its mother volume
 false,                //no boolean op.
-0,
-true);                //copy nb.
+0);                //copy nb.
 
-      G4VisAttributes* MylarSource_att = new G4VisAttributes(G4Colour(0.94, 0.5, 0.5)); //pink
-      MylarSource_att->SetVisibility(true);
-      MylarSource_att->SetForceWireframe(false);
-      MylarSource_att->SetForceSolid(true);
-      Logic_MylarSource->SetVisAttributes(MylarSource_att);
+G4Tubs*              MylarSource          = new G4Tubs("MylarSource", 0., outerRadius_MylarSource, thicknessMylarSource/2, 0., 360.*deg);
+G4LogicalVolume*     Logic_MylarSource    = new G4LogicalVolume(MylarSource, Mylar, "LogicMylarSource"); //solid, material, name
+G4VPhysicalVolume*   Physics_MylarSource  = new G4PVPlacement(0,                //no rotation
+G4ThreeVector(0., 0., thicknessMylarSource/2+thicknessAlSource),    //position
+Logic_MylarSource,"Logic_MylarSource",        //its fLogical volume
+fLogicWorld,            //its mother volume
+false,                //no boolean op.
+0);                //copy nb.
 
-     if(Physics_MylarSource == NULL) {}
+G4Tubs*              AlSource2         = new G4Tubs("AlSource2", 0., outerRadius_MylarSource, thicknessAlSource/2, 0., 360.*deg);
+G4LogicalVolume*     Logic_AlSource2    = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2"); //solid, material, name
+G4VPhysicalVolume*   Physics_AlSource2  = new G4PVPlacement(0,                //no rotation
+G4ThreeVector(0., 0., thicknessAlSource/2+thicknessMylarSource+thicknessAlSource),    //position
+Logic_AlSource2,"LogicAlSource2",        //its fLogical volume
+fLogicWorld,            //its mother volume
+false,                //no boolean op.
+0);                //copy nb.
 
-/////////////////////////NEW SUPPORT CATCHER//////////////////
-// G4double x_baseCatcher_Spessa_1          = 14.*mm;
-// G4double y_baseCatcher_Spessa_1          = 16.*mm;
-// G4double thickness_baseCatcher_Spessa_1  = 12.*mm;
-// G4double radius_buco_baseSpessa          = 5.*mm;
-// G4double pos_buco_baseSpessa             = 0.8963*mm;
-// G4double x_baseCatcher_Sottile_1         = x_baseCatcher_Spessa_1;
-// G4double y_baseCatcher_Sottile_1         = 24.*mm;
-// G4double thickness_baseCatcher_Sottile_1 = 2.*mm;
-// G4double x_baseCatcher_2                 = 60.*mm;
-// G4double y_baseCatcher_2                 = 32.*mm;
-// G4double z_baseCatcher_2                 = thickness_baseCatcher_Sottile_1; //NB: tutte le misure precedenti sono state prese direttamente dai disegni tecnici di M. Roche
-// G4double radius_int_bucoCatcher          = 7.5*mm;  /// a revoir
-// G4double radius_bucoCatcher              = 9*mm;
-// G4double thickness_supp_catcher          = 1.5*mm;
-// G4double radius_bucoSource               = (20./2)*mm;
-// //G4double thickness_supp_radSource        = 3.*mm;
-// //G4double altezza_supp_radSource          = 0.5*mm; //Da Verificare
-// G4double x_pos_bucoCatcher               = (25.88/2)*mm;
-// // G4double x_pos_bucoSource                = x_pos_bucoCatcher;
-// G4double x_y_triangularCut_baseSpessa    = 5.*mm;
-// G4double x_y_triangularCut_baseSottile   = 8.*mm;
-// G4Material* materialSupport_Catcher_source  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
-//
-// G4RotationMatrix* myRotation_trSupp = new G4RotationMatrix();
-// myRotation_trSupp->rotateX(0.*deg);
-// myRotation_trSupp->rotateY(180.*deg);
-// myRotation_trSupp->rotateZ(0.*rad);
-//
-// G4RotationMatrix* myRotation_trSupp2 = new G4RotationMatrix();
-// myRotation_trSupp2->rotateX(180.*deg);
-// myRotation_trSupp2->rotateY(180.*deg);
-// myRotation_trSupp2->rotateZ(0.*rad);
-//
-// G4RotationMatrix* myRotation_trSupp3 = new G4RotationMatrix();
-// myRotation_trSupp3->rotateX(180.*deg);
-// myRotation_trSupp3->rotateY(0.*deg);
-// myRotation_trSupp3->rotateZ(0.*rad);
-//
-// G4Box* SuppCatcher_baseSpessa_senzaBuco  = new G4Box("SuppCatcher_baseSpessa_senzaBuco", x_baseCatcher_Spessa_1/2, y_baseCatcher_Spessa_1/2, thickness_baseCatcher_Spessa_1/2);
-// G4Tubs* bucoBaseSpessa                   = new G4Tubs("bucoBaseSpessa", 0., radius_buco_baseSpessa, 2*thickness_baseCatcher_Spessa_1, 0., 360*deg);
-// G4VSolid* SuppCatcher_baseSpessa_intera  = new G4SubtractionSolid("SuppCatcher_baseSpessa_intera", SuppCatcher_baseSpessa_senzaBuco, bucoBaseSpessa, 0, G4ThreeVector(0.,-0.2962*mm,0.));
-//
-// const G4int nsect = 3;
-// std::vector<G4TwoVector> polygon(nsect);
-// polygon[0].set(x_y_triangularCut_baseSpessa, 0.);
-// polygon[1].set(0., 0.);
-// polygon[2].set(x_y_triangularCut_baseSpessa, x_y_triangularCut_baseSpessa);
-//
-// G4TwoVector offsetA(0,0), offsetB(0,0);
-// G4double scaleA = 1, scaleB = 1;
-// G4VSolid* triangularCut_baseSpessa = new G4ExtrudedSolid("triangularCut_baseSpessa", polygon, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
-//
-// G4VSolid* SuppCatcher_baseSpessa_parziale  = new G4SubtractionSolid("SuppCatcher_baseSpessa_parziale", SuppCatcher_baseSpessa_intera, triangularCut_baseSpessa, 0, G4ThreeVector(x_baseCatcher_Spessa_1/2 - x_y_triangularCut_baseSpessa+0.5*mm, -y_baseCatcher_Spessa_1/2, 0.));
-// G4VSolid* SuppCatcher_baseSpessa           = new G4SubtractionSolid("SuppCatcher_baseSpessa", SuppCatcher_baseSpessa_parziale, triangularCut_baseSpessa, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_Spessa_1/2 + x_y_triangularCut_baseSpessa-0.5*mm, -y_baseCatcher_Spessa_1/2 -0.5*mm, 0.));
-//
-// G4ThreeVector pos_SuppCatcher_baseSpessa = G4ThreeVector(0., pos_buco_baseSpessa, 0.);
-// G4Transform3D tr_SuppCatcher_baseSpessa  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSpessa);
-//
-// G4Box* SuppCatcher_baseSottile            = new G4Box("SuppCatcher_baseSottile", x_baseCatcher_Sottile_1/2, y_baseCatcher_Sottile_1/2, thickness_baseCatcher_Sottile_1/2);
-// G4ThreeVector pos_SuppCatcher_baseSottile = G4ThreeVector(0., y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1/2, thickness_baseCatcher_Spessa_1/2 - thickness_baseCatcher_Sottile_1/2);
-// G4Transform3D tr_SuppCatcher_baseSottile  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSottile);
-//
-// G4Box* SuppCatcher_base_2_senzaBuco         = new G4Box("SuppCatcher_base_2_senzaBuco", x_baseCatcher_2/2, y_baseCatcher_2/2, z_baseCatcher_2/2);
-// G4Tubs* bucoCatcher                         = new G4Tubs("bucoCatcher", 0., radius_bucoCatcher, thickness_supp_catcher/2, 0., 360*deg);
-// G4VSolid* SuppCatcher_base_2_conBucoCatcher = new G4SubtractionSolid("SuppCatcher_baseSpessa_conbucoCatcher", SuppCatcher_base_2_senzaBuco, bucoCatcher, 0, G4ThreeVector(-x_pos_bucoCatcher, 0., thickness_baseCatcher_Sottile_1-thickness_supp_catcher-0.25*mm));
-//
-// G4Tubs* bucoCatcher1                         = new G4Tubs("bucoCatcher1", 0., radius_int_bucoCatcher, thickness_baseCatcher_Sottile_1-thickness_supp_catcher, 0., 360*deg);
-// G4VSolid* SuppCatcher_base_2_conBucoCatcher1 = new G4SubtractionSolid("SuppCatcher_baseSpessa_conbucoCatcher1", SuppCatcher_base_2_conBucoCatcher, bucoCatcher1, 0, G4ThreeVector(-x_pos_bucoCatcher, 0., thickness_baseCatcher_Sottile_1/2-thickness_supp_catcher));
-//
-//
-//
-// G4Tubs* bucoSource                          = new G4Tubs("bucoSource", 0., radius_bucoSource, 2*z_baseCatcher_2, 0., 360*deg);
-// G4VSolid* SuppCatcher_base_2_intero         = new G4SubtractionSolid("SuppCatcher_base_2_intero", SuppCatcher_base_2_conBucoCatcher1, bucoSource, 0, G4ThreeVector(x_pos_bucoCatcher, 0., 0.));
-//
-// std::vector<G4TwoVector> polygon2(nsect);
-// polygon2[0].set(x_y_triangularCut_baseSottile, 0.);
-// polygon2[1].set(0., 0.);
-// polygon2[2].set(x_y_triangularCut_baseSottile, x_y_triangularCut_baseSottile);
-//
-// G4VSolid* triangularCut_baseSottile     = new G4ExtrudedSolid("triangularCut_baseSottile", polygon2, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
-// G4VSolid* SuppCatcher_base_2_unAngolo   = new G4SubtractionSolid("SuppCatcher_base_2_unAngolo", SuppCatcher_base_2_intero, triangularCut_baseSottile, 0, G4ThreeVector(+x_baseCatcher_2/2 - x_y_triangularCut_baseSottile +0.5*mm, -y_baseCatcher_2/2 -0.5*mm, 0.));
-// G4VSolid* SuppCatcher_base_2_dueAngoli  = new G4SubtractionSolid("SuppCatcher_base_2_dueAngoli", SuppCatcher_base_2_unAngolo, triangularCut_baseSottile, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_2/2 + x_y_triangularCut_baseSottile -0.5*mm, -y_baseCatcher_2/2 -0.5*mm, 0.));
-// G4VSolid* SuppCatcher_base_2_treAngoli  = new G4SubtractionSolid("SuppCatcher_base_2_treAngoli", SuppCatcher_base_2_dueAngoli, triangularCut_baseSottile, myRotation_trSupp2, G4ThreeVector(-x_baseCatcher_2/2 + x_y_triangularCut_baseSottile -0.5*mm, +y_baseCatcher_2/2 +0.5*mm, 0.));
-// G4VSolid* SuppCatcher_base_2            = new G4SubtractionSolid("SuppCatcher_base_2", SuppCatcher_base_2_treAngoli, triangularCut_baseSottile, myRotation_trSupp3, G4ThreeVector(x_baseCatcher_2/2 - x_y_triangularCut_baseSottile +0.5*mm, +y_baseCatcher_2/2 +0.5*mm, 0.));
-//
-// G4ThreeVector pos_SuppCatcher_base_2 = G4ThreeVector(0., y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2, thickness_baseCatcher_Spessa_1/2 - z_baseCatcher_2/2);
-// G4Transform3D tr_SuppCatcher_base_2  = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_base_2);
-//
-// G4MultiUnion* munion_supportCatcher_Source = new G4MultiUnion("munion_supportCatcher_Source");
-// munion_supportCatcher_Source->AddNode(*SuppCatcher_baseSpessa, tr_SuppCatcher_baseSpessa);
-// munion_supportCatcher_Source->AddNode(*SuppCatcher_baseSottile, tr_SuppCatcher_baseSottile);
-// munion_supportCatcher_Source->AddNode(*SuppCatcher_base_2     , tr_SuppCatcher_base_2);
-// munion_supportCatcher_Source->Voxelize();
-//
-// G4LogicalVolume* logic_munion_supportCatcher_Source  = new G4LogicalVolume(munion_supportCatcher_Source, materialSupport_Catcher_source, "logic_munion_supportCatcher_Source");
-// G4VPhysicalVolume* phys_munion_supportCatcher_Source = new G4PVPlacement(0,                        //no rotation
-// G4ThreeVector(x_pos_bucoCatcher, - (y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2), -thickness_baseCatcher_Spessa_1/2+thickness_baseCatcher_Sottile_1+thickness_baseCatcher_Sottile_1/2-thickness_supp_catcher),     //+thickness_supp_catcher/2   //at (0,0,0) //thickness_baseCatcher_Sottile_1
-// logic_munion_supportCatcher_Source,                //its fLogical volume
-// "phys_munion_supportCatcher_Source",                //its name
-// fLogicWorld,                        //its mother  volume
-// false,                        //no boolean operation
-// 0,
-// false);                        //copy number
-//
-// G4VisAttributes* visAtt_munion_supportCatcher_Source  = new G4VisAttributes(G4Colour(0.8,0.8,0.8));
-// visAtt_munion_supportCatcher_Source->SetVisibility(true);
-// visAtt_munion_supportCatcher_Source->SetForceWireframe(false);
-// visAtt_munion_supportCatcher_Source->SetForceSolid(true);
-// logic_munion_supportCatcher_Source ->SetVisAttributes(visAtt_munion_supportCatcher_Source);
-//
-// if(phys_munion_supportCatcher_Source == NULL) {}
-//
-// //G4double x_pos_Catcher_risp_munion   = x_pos_bucoCatcher;
-// G4double y_pos_Catcher_risp_munion   = y_baseCatcher_Spessa_1/2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2/2;
-//
-// G4NistManager* man = G4NistManager::Instance();
-// G4Material* material_Catcher_Ring  = new G4Material("PEEK", 1.32*g/cm3, 3); //Plastic
-// material_Catcher_Ring->AddElement(man->FindOrBuildElement("C"), 19);
-// material_Catcher_Ring->AddElement(man->FindOrBuildElement("H"), 12);
-// material_Catcher_Ring->AddElement(man->FindOrBuildElement("O"), 3);
-//
-// G4Tubs* Supp_catcher                 = new G4Tubs("Supp_catcher", radius_int_bucoCatcher, radius_bucoCatcher, thickness_supp_catcher/2, 0., 360*deg);
-// G4LogicalVolume* logic_Supp_catcher  = new G4LogicalVolume(Supp_catcher, material_Catcher_Ring, "logic_Supp_catcher");
-// G4VPhysicalVolume* phys_Supp_catcher = new G4PVPlacement(0,                        //no rotation
-// G4ThreeVector(-x_pos_bucoCatcher, y_pos_Catcher_risp_munion, thickness_baseCatcher_Spessa_1/2-thickness_supp_catcher/2),        //at (0,0,0)
-// logic_Supp_catcher,                //its fLogical volume
-// "phys_Supp_catcher",                //its name
-// logic_munion_supportCatcher_Source,                        //its mother  volume
-// false,                        //no boolean operation
-// 0,
-// false);                        //copy number
-//
-// G4VisAttributes* visAtt_Supp_catcher  = new G4VisAttributes(G4Colour(1.,1.,1.));
-// visAtt_Supp_catcher->SetVisibility(true);
-// visAtt_Supp_catcher->SetForceWireframe(false);
-// visAtt_Supp_catcher->SetForceSolid(true);
-// logic_Supp_catcher ->SetVisAttributes(visAtt_Supp_catcher );
-//
-// if(phys_Supp_catcher == NULL) {}
-//
-// G4Material* Mylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
-// G4Material* Al = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
-//
-// G4double thicknessMylarSource    = 0.5*um;
-// G4double thicknessAlSource    = 50.*nm;
-// G4double outerRadius_MylarSource = radius_bucoCatcher;
-//
-// G4Tubs*              AlSource1          = new G4Tubs("AlSource1", 0., outerRadius_MylarSource, thicknessAlSource/2, 0., 360.*deg);
-// G4LogicalVolume*     Logic_AlSource1    = new G4LogicalVolume(AlSource1, Al, "LogicAlSource1"); //solid, material, name
-// G4VPhysicalVolume*   Physics_AlSource1  = new G4PVPlacement(0,                //no rotation
-// G4ThreeVector(0., 0., thicknessAlSource/2),    //position
-// Logic_AlSource1,"LogicAlSource1",        //its fLogical volume
-// fLogicWorld,            //its mother volume
-// false,                //no boolean op.
-// 0,
-// true);                //copy nb.
-//
-// G4Tubs*              MylarSource          = new G4Tubs("MylarSource", 0., outerRadius_MylarSource, thicknessMylarSource/2, 0., 360.*deg);
-// G4LogicalVolume*     Logic_MylarSource    = new G4LogicalVolume(MylarSource, Mylar, "LogicMylarSource"); //solid, material, name
-// G4VPhysicalVolume*   Physics_MylarSource  = new G4PVPlacement(0,                //no rotation
-// G4ThreeVector(0., 0., thicknessMylarSource/2+thicknessAlSource),    //position
-// Logic_MylarSource,"Logic_MylarSource",        //its fLogical volume
-// fLogicWorld,            //its mother volume
-// false,                //no boolean op.
-// 0,
-// true);                //copy nb.
-//
-// G4Tubs*              AlSource2         = new G4Tubs("AlSource2", 0., outerRadius_MylarSource, thicknessAlSource/2, 0., 360.*deg);
-// G4LogicalVolume*     Logic_AlSource2    = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2"); //solid, material, name
-// G4VPhysicalVolume*   Physics_AlSource2  = new G4PVPlacement(0,                //no rotation
-// G4ThreeVector(0., 0., thicknessAlSource/2+thicknessMylarSource+thicknessAlSource),    //position
-// Logic_AlSource2,"LogicAlSource2",        //its fLogical volume
-// fLogicWorld,            //its mother volume
-// false,                //no boolean op.
-// 0,
-// true);                //copy nb.
-//
-// // G4Tubs*              MylarSource          = new G4Tubs("MylarSource", 0., outerRadius_MylarSource, thicknessMylarSource/2, 0., 360.*deg);
-// // G4LogicalVolume*     Logic_MylarSource    = new G4LogicalVolume(MylarSource, Mylar, "LogicMylarSource"); //solid, material, name
-// // G4VPhysicalVolume*   Physics_MylarSource  = new G4PVPlacement(0,                //no rotation
-// // G4ThreeVector(0., 0., thicknessMylarSource/2),    //position
-// // Logic_MylarSource,"Logic_MylarSource",        //its fLogical volume
-// // fLogicWorld,            //its mother volume
-// // false,                //no boolean op.
-// // 0,
-// // true);                //copy nb.
-//
-// G4VisAttributes* MylarSource_att = new G4VisAttributes(G4Colour(0.94, 0.5, 0.5)); //pink
-// MylarSource_att->SetVisibility(true);
-// MylarSource_att->SetForceWireframe(false);
-// MylarSource_att->SetForceSolid(true);
-// Logic_MylarSource->SetVisAttributes(MylarSource_att);
-//
-// G4VisAttributes* AlSource_att = new G4VisAttributes(G4Colour(0.94, 0.2, 0.5)); //pink
-// AlSource_att->SetVisibility(true);
-// AlSource_att->SetForceWireframe(false);
-// AlSource_att->SetForceSolid(true);
-// Logic_AlSource1->SetVisAttributes(AlSource_att);
-// Logic_AlSource2->SetVisAttributes(AlSource_att);
-//
-//
-// if(Physics_MylarSource == NULL) {}
+
+G4VisAttributes* MylarSource_att = new G4VisAttributes(G4Colour(0.94, 0.5, 0.5)); //pink
+MylarSource_att->SetVisibility(true);
+MylarSource_att->SetForceWireframe(false);
+MylarSource_att->SetForceSolid(true);
+Logic_MylarSource->SetVisAttributes(MylarSource_att);
+
+G4VisAttributes* AlSource_att = new G4VisAttributes(G4Colour(0.94, 0.2, 0.5)); //pink
+AlSource_att->SetVisibility(true);
+AlSource_att->SetForceWireframe(false);
+AlSource_att->SetForceSolid(true);
+Logic_AlSource1->SetVisAttributes(AlSource_att);
+Logic_AlSource2->SetVisAttributes(AlSource_att);
+
+
+if(Physics_MylarSource == NULL) {}
 
 //=========================================================================================================================
  //========================================== SILICON DETECTORS _ COMMON PARAMETERS ========================================
@@ -677,7 +776,7 @@ true);                //copy nb.
  }
 
  //Common parameteres to all Si detectors
- G4double pDz    = 1.5*mm;    // Spessore del supporto (su cui soo messe le strip
+ pDz    = 1.5*mm;    // Spessore del supporto (su cui soo messe le strip
  G4double pTheta = 0.*degree;
  G4double pPhi   = 0.*degree;
  G4double pDy1   = 34.12*mm;  // Altezza (y) del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDy2
@@ -689,7 +788,7 @@ true);                //copy nb.
  G4double pDx4   = 31.*mm;    // Lunghezza (x) della base minore del trapezio sulla prima faccia
  G4double pAlp2  = 0.*degree;
 
- G4Trap* supportSiliconDetector= new G4Trap("supportSiliconDetector",
+ supportSiliconDetector= new G4Trap("supportSiliconDetector",
            pDz/2,pTheta,pPhi,pDy1/2,
            pDx1/2,pDx2/2,pAlp1,pDy2/2,
            pDx3/2,pDx4/2,pAlp2);
@@ -722,98 +821,98 @@ if (off != NULL){
   SiliconDetector_att->SetForceSolid(true);
 
 
-  G4double thicknessSiDetector                        = 300.*um;
-  G4double spazio_tra_Bordo_e_strip5                  = 1.29*mm + 0.225*mm; //spazio tra bordo superiore e strip 5 (la più lunga). Per dettagli guardare disegno di Sean.
-  G4double spazio_tra_Strip                           = 0.07*mm; //spazio tra ciascuna strip
-  G4double thetaInclinazione_SiDetector               = 52.64*degree;
-  G4double spazio_tra_Scintillatore_e_BordoSiDetector = 3.745*mm;
-  //G4double lunghezzaLatoObliquoSupporto               = pDy1 / sin(thetaInclinazione_SiDetector); //giusto calcolo semplice di trigonometria (su postit giallo)
-  //G4double x_CentralLength_SupportSiliconDetector     = pDx1 - (2 * (pDy1/2) * (cos(thetaInclinazione_SiDetector)/sin(thetaInclinazione_SiDetector)));
+  // G4double thicknessSiDetector                        = 300.*um;
+  // G4double spazio_tra_Bordo_e_strip5                  = 1.29*mm + 0.225*mm; //spazio tra bordo superiore e strip 5 (la più lunga). Per dettagli guardare disegno di Sean.
+  // G4double spazio_tra_Strip                           = 0.07*mm; //spazio tra ciascuna strip
+  // G4double thetaInclinazione_SiDetector               = 52.64*degree;
+  // G4double spazio_tra_Scintillatore_e_BordoSiDetector = 3.745*mm;
+  // //G4double lunghezzaLatoObliquoSupporto               = pDy1 / sin(thetaInclinazione_SiDetector); //giusto calcolo semplice di trigonometria (su postit giallo)
+  // //G4double x_CentralLength_SupportSiliconDetector     = pDx1 - (2 * (pDy1/2) * (cos(thetaInclinazione_SiDetector)/sin(thetaInclinazione_SiDetector)));
 
-  // Riferito al disegno di Sean e di Mathieu (foto su telegram, piani stampati in data 17/05/2021 su formato A1)
-  G4double xLow_SiDet_Strip_5  = 63.63*mm;
-  G4double y_SiDet_Strip_5     = 4.11*mm;
-  G4double xHigh_SiDet_Strip_5 = xLow_SiDet_Strip_5 + (2 * y_SiDet_Strip_5 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
-  G4double xLow_SiDet_Strip_4  = 56.58*mm;
-  G4double y_SiDet_Strip_4     = 4.55*mm;
-  G4double xHigh_SiDet_Strip_4 = xLow_SiDet_Strip_4 + (2 * y_SiDet_Strip_4 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
-  G4double xLow_SiDet_Strip_3  = 48.52*mm;
-  G4double y_SiDet_Strip_3     = 5.21*mm;
-  G4double xHigh_SiDet_Strip_3 = xLow_SiDet_Strip_3 + (2 * y_SiDet_Strip_3 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
-  G4double xLow_SiDet_Strip_2  = 38.82*mm;
-  G4double y_SiDet_Strip_2     = 6.28*mm;
-  G4double xHigh_SiDet_Strip_2 = xLow_SiDet_Strip_2 + (2 * y_SiDet_Strip_2 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
-  G4double xLow_SiDet_Strip_1  = 25.65*mm;
-  G4double y_SiDet_Strip_1     = 8.56*mm;
-  G4double xHigh_SiDet_Strip_1 = xLow_SiDet_Strip_1 + (2 * y_SiDet_Strip_1 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+  // // Riferito al disegno di Sean e di Mathieu (foto su telegram, piani stampati in data 17/05/2021 su formato A1)
+  // G4double xLow_SiDet_Strip_5  = 63.63*mm;
+  // G4double y_SiDet_Strip_5     = 4.11*mm;
+  // G4double xHigh_SiDet_Strip_5 = xLow_SiDet_Strip_5 + (2 * y_SiDet_Strip_5 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+  // G4double xLow_SiDet_Strip_4  = 56.58*mm;
+  // G4double y_SiDet_Strip_4     = 4.55*mm;
+  // G4double xHigh_SiDet_Strip_4 = xLow_SiDet_Strip_4 + (2 * y_SiDet_Strip_4 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+  // G4double xLow_SiDet_Strip_3  = 48.52*mm;
+  // G4double y_SiDet_Strip_3     = 5.21*mm;
+  // G4double xHigh_SiDet_Strip_3 = xLow_SiDet_Strip_3 + (2 * y_SiDet_Strip_3 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+  // G4double xLow_SiDet_Strip_2  = 38.82*mm;
+  // G4double y_SiDet_Strip_2     = 6.28*mm;
+  // G4double xHigh_SiDet_Strip_2 = xLow_SiDet_Strip_2 + (2 * y_SiDet_Strip_2 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
+  // G4double xLow_SiDet_Strip_1  = 25.65*mm;
+  // G4double y_SiDet_Strip_1     = 8.56*mm;
+  // G4double xHigh_SiDet_Strip_1 = xLow_SiDet_Strip_1 + (2 * y_SiDet_Strip_1 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
 
   //Mother volume
-  G4Trap* supportSiliconDetectorvide= new G4Trap("supportSiliconDetectorvide",
-            (thicknessSiDetector)/2,pTheta,pPhi,pDy1/2,
-            pDx1/2,pDx2/2,pAlp1,pDy2/2,
-            pDx3/2,pDx4/2,pAlp2);
+  // G4Trap* supportSiliconDetectorvide= new G4Trap("supportSiliconDetectorvide",
+  //           (thicknessSiDetector)/2,pTheta,pPhi,pDy1/2,
+  //           pDx1/2,pDx2/2,pAlp1,pDy2/2,
+  //           pDx3/2,pDx4/2,pAlp2);
 
-  // Strip n. 5
-  G4Trap* SiDet_Strip_5 = new G4Trap("SiDet_Strip_5",
-                                     thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_5/2,
-                                     xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree, y_SiDet_Strip_5/2,
-                                     xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree);
+  // // Strip n. 5
+  // G4Trap* SiDet_Strip_5 = new G4Trap("SiDet_Strip_5",
+  //                                    thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_5/2,
+  //                                    xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree, y_SiDet_Strip_5/2,
+  //                                    xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree);
 
-  // Strip n. 4
-  G4Trap* SiDet_Strip_4= new G4Trap("SiDet_Strip_4",
-                                     thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_4/2,
-                                     xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree, y_SiDet_Strip_4/2,
-                                     xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree);
+  // // Strip n. 4
+  // G4Trap* SiDet_Strip_4= new G4Trap("SiDet_Strip_4",
+  //                                    thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_4/2,
+  //                                    xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree, y_SiDet_Strip_4/2,
+  //                                    xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree);
 
-  // Strip n. 3
-  G4Trap* SiDet_Strip_3 = new G4Trap("SiDet_Strip_3",
-                                    thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_3/2,
-                                    xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree, y_SiDet_Strip_3/2,
-                                    xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree);
+  // // Strip n. 3
+  // G4Trap* SiDet_Strip_3 = new G4Trap("SiDet_Strip_3",
+  //                                   thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_3/2,
+  //                                   xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree, y_SiDet_Strip_3/2,
+  //                                   xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree);
 
-  // Strip n. 2
-  G4Trap* SiDet_Strip_2 = new G4Trap("SiDet_Strip_2",
-                                    thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_2/2,
-                                    xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree, y_SiDet_Strip_2/2,
-                                    xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree);
+  // // Strip n. 2
+  // G4Trap* SiDet_Strip_2 = new G4Trap("SiDet_Strip_2",
+  //                                   thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_2/2,
+  //                                   xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree, y_SiDet_Strip_2/2,
+  //                                   xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree);
 
-  // Strip n. 1
-  G4Trap* SiDet_Strip_1 = new G4Trap("SiDet_Strip_1",
-                                    thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_1/2,
-                                    xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree, y_SiDet_Strip_1/2,
-                                    xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree);
+  // // Strip n. 1
+  // G4Trap* SiDet_Strip_1 = new G4Trap("SiDet_Strip_1",
+  //                                   thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_1/2,
+  //                                   xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree, y_SiDet_Strip_1/2,
+  //                                   xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree);
 
-  ////////////////////////////Dead Layer//////////////////////////////////
-  double thicknessSiDetectorDeadLayer = 100*nm;
-  // Strip n. 5
-  G4Trap* SiDet_Strip_5_dl = new G4Trap("SiDet_Strip_5_dl",
-                                    thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_5/2,
-                                    xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree, y_SiDet_Strip_5/2,
-                                    xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree);
+  // ////////////////////////////Dead Layer//////////////////////////////////
+  // double thicknessSiDetectorDeadLayer = 100*nm;
+  // // Strip n. 5
+  // G4Trap* SiDet_Strip_5_dl = new G4Trap("SiDet_Strip_5_dl",
+  //                                   thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_5/2,
+  //                                   xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree, y_SiDet_Strip_5/2,
+  //                                   xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree);
 
-  // Strip n. 4
-  G4Trap* SiDet_Strip_4_dl = new G4Trap("SiDet_Strip_4_dl",
-                                    thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_4/2,
-                                    xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree, y_SiDet_Strip_4/2,
-                                    xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree);
+  // // Strip n. 4
+  // G4Trap* SiDet_Strip_4_dl = new G4Trap("SiDet_Strip_4_dl",
+  //                                   thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_4/2,
+  //                                   xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree, y_SiDet_Strip_4/2,
+  //                                   xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree);
 
-  // Strip n. 3
-  G4Trap* SiDet_Strip_3_dl = new G4Trap("SiDet_Strip_3_dl",
-                                    thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_3/2,
-                                    xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree, y_SiDet_Strip_3/2,
-                                    xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree);
+  // // Strip n. 3
+  // G4Trap* SiDet_Strip_3_dl = new G4Trap("SiDet_Strip_3_dl",
+  //                                   thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_3/2,
+  //                                   xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree, y_SiDet_Strip_3/2,
+  //                                   xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree);
 
-  // Strip n. 2
-  G4Trap* SiDet_Strip_2_dl = new G4Trap("SiDet_Strip_2_dl",
-                                    thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_2/2,
-                                    xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree, y_SiDet_Strip_2/2,
-                                    xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree);
+  // // Strip n. 2
+  // G4Trap* SiDet_Strip_2_dl = new G4Trap("SiDet_Strip_2_dl",
+  //                                   thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_2/2,
+  //                                   xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree, y_SiDet_Strip_2/2,
+  //                                   xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree);
 
-  // Strip n. 1
-  G4Trap* SiDet_Strip_1_dl = new G4Trap("SiDet_Strip_1_dl",
-                                    thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_1/2,
-                                    xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree, y_SiDet_Strip_1/2,
-                                    xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree);
+  // // Strip n. 1
+  // G4Trap* SiDet_Strip_1_dl = new G4Trap("SiDet_Strip_1_dl",
+  //                                   thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_1/2,
+  //                                   xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree, y_SiDet_Strip_1/2,
+  //                                   xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree);
 
 
   //___________ Supporto in rame della placca in PBC sulla quale é montato il Si detector  ____________
@@ -832,7 +931,7 @@ if (off != NULL){
   G4Material*   material_SupportoRame_SiliconDetector = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
   G4VSolid*     biggerBox_material_SupportoRame_SiliconDetector = new G4Box("biggerBox_material_SupportoRame_SiliconDetector" , length_x_SupportoRame_SiDetector/2, height_y_SupportoRame_SiDetector/2, thickness_z_SupportoRame_SiDetector/2);
   G4VSolid*     smallerBox_material_SupportoRame_SiliconDetector = new G4Box("smallerBox_material_SupportoRame_SiliconDetector", x_smallBox_daTagliare_SupportoRame_SiDetector/2, y_smallBox_daTagliare_SupportoRame_SiDetector/2, thickness_z_SupportoRame_SiDetector);
-  G4VSolid*     Box_material_SupportoRame_SiliconDetector = new G4SubtractionSolid("biggerBox_material_SupportoRame_SiliconDetector-smallerBox_material_SupportoRame_SiliconDetector",
+  Box_material_SupportoRame_SiliconDetector = new G4SubtractionSolid("biggerBox_material_SupportoRame_SiliconDetector-smallerBox_material_SupportoRame_SiliconDetector",
 biggerBox_material_SupportoRame_SiliconDetector, smallerBox_material_SupportoRame_SiliconDetector,
 0,
 G4ThreeVector(length_x_SupportoRame_SiDetector/2 - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - x_smallBox_daTagliare_SupportoRame_SiDetector/2,
@@ -847,1468 +946,1571 @@ Box_material_SupportoRame_SiliconDetector_att->SetForceSolid(true);
 // Box_material_SupportoRame_SiliconDetector_attvide->SetForceWireframe(false);
 // Box_material_SupportoRame_SiliconDetector_attvide->SetForceSolid(true);
 
+//Support
+    supportSiliconDetector= new G4Trap("supportSiliconDetector",
+           pDz/2,pTheta,pPhi,pDy1/2,
+           pDx1/2,pDx2/2,pAlp1,pDy2/2,
+           pDx3/2,pDx4/2,pAlp2);
+
+    //Mother volume
+    supportSiliconDetectorvide= new G4Trap("supportSiliconDetectorvide",
+              (thicknessSiDetector)/2,pTheta,pPhi,pDy1/2,
+              pDx1/2,pDx2/2,pAlp1,pDy2/2,
+              pDx3/2,pDx4/2,pAlp2);
+
+
+ // Strip n. 5
+    SiDet_Strip_5 = new G4Trap("SiDet_Strip_5",
+                                      thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_5/2,
+                                      xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree, y_SiDet_Strip_5/2,
+                                      xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree);
+
+    // Strip n. 4
+    SiDet_Strip_4= new G4Trap("SiDet_Strip_4",
+                                      thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_4/2,
+                                      xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree, y_SiDet_Strip_4/2,
+                                      xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree);
+
+    // Strip n. 3
+    SiDet_Strip_3 = new G4Trap("SiDet_Strip_3",
+                                      thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_3/2,
+                                      xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree, y_SiDet_Strip_3/2,
+                                      xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree);
+
+    // Strip n. 2
+    SiDet_Strip_2 = new G4Trap("SiDet_Strip_2",
+                                      thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_2/2,
+                                      xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree, y_SiDet_Strip_2/2,
+                                      xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree);
+
+    // Strip n. 1
+    SiDet_Strip_1 = new G4Trap("SiDet_Strip_1",
+                                      thicknessSiDetector/2, 0.*degree, 0.*degree, y_SiDet_Strip_1/2,
+                                      xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree, y_SiDet_Strip_1/2,
+                                      xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree);
+
+    ////////////////////////////Dead Layer//////////////////////////////////
+    thicknessSiDetectorDeadLayer = 100*nm;
+    // Strip n. 5
+    SiDet_Strip_5_dl = new G4Trap("SiDet_Strip_5_dl",
+                                      thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_5/2,
+                                      xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree, y_SiDet_Strip_5/2,
+                                      xHigh_SiDet_Strip_5/2, xLow_SiDet_Strip_5/2, 0.*degree);
+
+    // Strip n. 4
+    SiDet_Strip_4_dl = new G4Trap("SiDet_Strip_4_dl",
+                                      thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_4/2,
+                                      xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree, y_SiDet_Strip_4/2,
+                                      xHigh_SiDet_Strip_4/2, xLow_SiDet_Strip_4/2, 0.*degree);
+
+    // Strip n. 3
+    SiDet_Strip_3_dl = new G4Trap("SiDet_Strip_3_dl",
+                                      thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_3/2,
+                                      xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree, y_SiDet_Strip_3/2,
+                                      xHigh_SiDet_Strip_3/2, xLow_SiDet_Strip_3/2, 0.*degree);
+
+    // Strip n. 2
+    SiDet_Strip_2_dl = new G4Trap("SiDet_Strip_2_dl",
+                                      thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_2/2,
+                                      xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree, y_SiDet_Strip_2/2,
+                                      xHigh_SiDet_Strip_2/2, xLow_SiDet_Strip_2/2, 0.*degree);
+
+    // Strip n. 1
+    SiDet_Strip_1_dl = new G4Trap("SiDet_Strip_1_dl",
+                                      thicknessSiDetectorDeadLayer/2, 0.*degree, 0.*degree, y_SiDet_Strip_1/2,
+                                      xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree, y_SiDet_Strip_1/2,
+                                      xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree);
+
+
+
+
+
+ dic_strip[1] = std::make_tuple(SiDet_Strip_1, G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.), SiDet_Strip_1_dl);
+    dic_strip[2] = std::make_tuple(SiDet_Strip_2, G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.), SiDet_Strip_2_dl);
+    dic_strip[3] = std::make_tuple(SiDet_Strip_3, G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.), SiDet_Strip_3_dl);
+    dic_strip[4] = std::make_tuple(SiDet_Strip_4, G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.), SiDet_Strip_4_dl);
+    dic_strip[5] = std::make_tuple(SiDet_Strip_5, G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2,0.), SiDet_Strip_5_dl);
+
+std::tuple<std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,  
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
+                  std::pair<G4LogicalVolume*, G4VPhysicalVolume*>> tab = Make_Sidet(1, "Up", SiliconDetector_att, Box_material_SupportoRame_SiliconDetector_att, 
+SupportSiliconDetector_att, Box_material_SupportoRame_SiliconDetector_attvide, materialSiliconDetector, material_SupportoRame_SiliconDetector, materialSupportSiliconDetector, vide);
+
+// auto tab1 = MakeSupport(1, "Up", SupportSiliconDetector_att, materialSupportSiliconDetector);
+// auto tab5 = MakeCooling(1, "Up", get<0>(tab1), Box_material_SupportoRame_SiliconDetector_att, material_SupportoRame_SiliconDetector);
+// auto tab2 = MakeVide(1, "Up", Box_material_SupportoRame_SiliconDetector_attvide, materialSiliconDetector);
+// auto tab3 = MakeStrip(5, 1, "Up", tab2.first, SiliconDetector_att, materialSiliconDetector);
+// auto tab4 = MakeDL(5, 1, "Up", tab3.first, SupportSiliconDetector_att, materialSiliconDetector);
+
 
 //========================================================================================================================
   //=================================================== DETECTOR 1Up  ========================================================
 //========================================================================================================================
-  G4RotationMatrix* rotationMatrix_1Up = new G4RotationMatrix();
-  rotationMatrix_1Up->rotateX(angle_between_xAxis_AND_zAxis);
-  rotationMatrix_1Up->rotateY(180.*deg);
-  rotationMatrix_1Up->rotateZ(180.*deg);
+//   G4RotationMatrix* rotationMatrix_1Up = new G4RotationMatrix();
+//   rotationMatrix_1Up->rotateX(angle_between_xAxis_AND_zAxis);
+//   rotationMatrix_1Up->rotateY(180.*deg);
+//   rotationMatrix_1Up->rotateZ(180.*deg);
 
-  G4LogicalVolume* logicSupportSiliconDetector_1Up = new G4LogicalVolume(supportSiliconDetector,
-materialSupportSiliconDetector,
-"logicSupportSiliconDetector_1Up",
-                                                      0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_1Up = new G4PVPlacement(rotationMatrix_1Up,
-G4ThreeVector(0, fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2 - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_1Up,"physSupportSiliconDetector_1Up",
-                                                   fLogicWorld,
-                                                   false,
-                                                   0);
-logicSupportSiliconDetector_1Up->SetVisAttributes(SupportSiliconDetector_att);
- if(physSupportSiliconDetector_1Up == NULL) {}
-
-
- ///////
- G4LogicalVolume* logicSupportSiliconDetector_1Upvide = new G4LogicalVolume(supportSiliconDetectorvide,
-vide,
-"logicSupportSiliconDetector_1Upvide",
-                                                     0, 0, 0);
- G4VPhysicalVolume* physSupportSiliconDetector_1Upvide = new G4PVPlacement(rotationMatrix_1Up,
-G4ThreeVector(0, fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2 - ((pDy1/2)*(1-cos(angle_between_xAxis_AND_zAxis))) + (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), -(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis) + z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_1Upvide,"logicSupportSiliconDetector_1Upvide",
-                                                  fLogicWorld,
-                                                  false,
-                                                  0);
-logicSupportSiliconDetector_1Upvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
-if(physSupportSiliconDetector_1Upvide == NULL) {}
-/////////////
-
-  // STRIP 5
-  G4LogicalVolume* logicSiDet_1Up_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
-materialSiliconDetector,
-"logicSiDet_1Up_Strip_5",
-                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Up_Strip_5 = new G4PVPlacement(0,
-                                          G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2,0.),
-logicSiDet_1Up_Strip_5,"logicSiDet_1Up_Strip_5",
-logicSupportSiliconDetector_1Upvide,
-                                           false,
-                                           0,
-                                         true);
-logicSiDet_1Up_Strip_5->SetVisAttributes(SiliconDetector_att);
- if(physSiDet_1Up_Strip_5 == NULL) {}
+//   G4LogicalVolume* logicSupportSiliconDetector_1Up = new G4LogicalVolume(supportSiliconDetector,
+// materialSupportSiliconDetector,
+// "logicSupportSiliconDetector_1Up",
+//                                                       0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_1Up = new G4PVPlacement(rotationMatrix_1Up,
+// G4ThreeVector(0, fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2 - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_1Up,"physSupportSiliconDetector_1Up",
+//                                                    fLogicWorld,
+//                                                    false,
+//                                                    0);
+// logicSupportSiliconDetector_1Up->SetVisAttributes(SupportSiliconDetector_att);
+//  if(physSupportSiliconDetector_1Up == NULL) {}
 
 
- // Strip n. 4
- G4LogicalVolume* logicSiDet_1Up_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
-materialSiliconDetector,
-"logicSi_1Up_Det_Strip_4",
-                                                              0, 0, 0);
- G4VPhysicalVolume* physSiDet_1Up_Strip_4 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
-logicSiDet_1Up_Strip_4,"logicSiDet_1Up_Strip_4",
-logicSupportSiliconDetector_1Upvide,
-false,
-                                                             0);
-logicSiDet_1Up_Strip_4->SetVisAttributes(SiliconDetector_att);
- if(physSiDet_1Up_Strip_4 == NULL) {}
+//  ///////
+//  G4LogicalVolume* logicSupportSiliconDetector_1Upvide = new G4LogicalVolume(supportSiliconDetectorvide,
+// vide,
+// "logicSupportSiliconDetector_1Upvide",
+//                                                      0, 0, 0);
+//  G4VPhysicalVolume* physSupportSiliconDetector_1Upvide = new G4PVPlacement(rotationMatrix_1Up,
+// G4ThreeVector(0, fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2 - ((pDy1/2)*(1-cos(angle_between_xAxis_AND_zAxis))) + (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), -(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis) + z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_1Upvide,"logicSupportSiliconDetector_1Upvide",
+//                                                   fLogicWorld,
+//                                                   false,
+//                                                   0);
+// logicSupportSiliconDetector_1Upvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
+// if(physSupportSiliconDetector_1Upvide == NULL) {}
+// /////////////
 
-  // Strip n. 3
-  G4LogicalVolume* logicSiDet_1Up_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
-materialSiliconDetector,
-"logicSi_1Up_Det_Strip_3",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Up_Strip_3 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
-logicSiDet_1Up_Strip_3,"logicSiDet_1Up_Strip_3",
-logicSupportSiliconDetector_1Upvide,
-false,
-0);
-logicSiDet_1Up_Strip_3->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_1Up_Strip_3 == NULL) {}
+//   // STRIP 5
+//   G4LogicalVolume* logicSiDet_1Up_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
+// materialSiliconDetector,
+// "logicSiDet_1Up_Strip_5",
+//                                                0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Up_Strip_5 = new G4PVPlacement(0,
+//                                           G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2,0.),
+// logicSiDet_1Up_Strip_5,"logicSiDet_1Up_Strip_5",
+// logicSupportSiliconDetector_1Upvide,
+//                                            false,
+//                                            0);
+// logicSiDet_1Up_Strip_5->SetVisAttributes(SiliconDetector_att);
+//  if(physSiDet_1Up_Strip_5 == NULL) {}
 
-  // Strip n. 2
-  G4LogicalVolume* logicSiDet_1Up_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
-materialSiliconDetector,
-"logicSi_1Up_Det_Strip_2",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Up_Strip_2 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
-logicSiDet_1Up_Strip_2,"logicSiDet_1Up_Strip_2",
-logicSupportSiliconDetector_1Upvide,
-false,
-0);
-logicSiDet_1Up_Strip_2->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_1Up_Strip_2 == NULL) {}
 
-  // Strip n. 1
-  G4LogicalVolume* logicSiDet_1Up_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
-materialSiliconDetector,
-"logicSi_1Up_Det_Strip_1",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Up_Strip_1 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
-logicSiDet_1Up_Strip_1,"logicSiDet_1Up_Strip_1",
-logicSupportSiliconDetector_1Upvide,
-false,
-0);
+//  // Strip n. 4
+//  G4LogicalVolume* logicSiDet_1Up_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
+// materialSiliconDetector,
+// "logicSi_1Up_Det_Strip_4",
+//                                                               0, 0, 0);
+//  G4VPhysicalVolume* physSiDet_1Up_Strip_4 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
+// logicSiDet_1Up_Strip_4,"logicSiDet_1Up_Strip_4",
+// logicSupportSiliconDetector_1Upvide,
+// false,
+//                                                              0);
+// logicSiDet_1Up_Strip_4->SetVisAttributes(SiliconDetector_att);
+//  if(physSiDet_1Up_Strip_4 == NULL) {}
 
-logicSiDet_1Up_Strip_1->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_1Up_Strip_1 == NULL) {}
+//   // Strip n. 3
+//   G4LogicalVolume* logicSiDet_1Up_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
+// materialSiliconDetector,
+// "logicSi_1Up_Det_Strip_3",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Up_Strip_3 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
+// logicSiDet_1Up_Strip_3,"logicSiDet_1Up_Strip_3",
+// logicSupportSiliconDetector_1Upvide,
+// false,
+// 0);
+// logicSiDet_1Up_Strip_3->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_1Up_Strip_3 == NULL) {}
 
-  /////////////////Dead Layer 1Up
-  //Strip n. 5
-  G4LogicalVolume* logicSiDet_1Up_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
-    materialSiliconDetector,
-    "logicSiDet_1Up_Strip_5_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Up_Strip_5_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_1Up_Strip_5_dl,"logicSiDet_1Up_Strip_5_dl",
-    logicSiDet_1Up_Strip_5,
-    false,
-    0);
-  if(physSiDet_1Up_Strip_5_dl == NULL) {}
+//   // Strip n. 2
+//   G4LogicalVolume* logicSiDet_1Up_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
+// materialSiliconDetector,
+// "logicSi_1Up_Det_Strip_2",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Up_Strip_2 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
+// logicSiDet_1Up_Strip_2,"logicSiDet_1Up_Strip_2",
+// logicSupportSiliconDetector_1Upvide,
+// false,
+// 0);
+// logicSiDet_1Up_Strip_2->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_1Up_Strip_2 == NULL) {}
 
-  //Strip n. 4
-  G4LogicalVolume* logicSiDet_1Up_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
-    materialSiliconDetector,
-    "logicSiDet_1Up_Strip_4_dl",                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Up_Strip_4_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_1Up_Strip_4_dl,"logicSiDet_1Up_Strip_4_dl",
-    logicSiDet_1Up_Strip_4,
-    false,
-    0);
+//   // Strip n. 1
+//   G4LogicalVolume* logicSiDet_1Up_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
+// materialSiliconDetector,
+// "logicSi_1Up_Det_Strip_1",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Up_Strip_1 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
+// logicSiDet_1Up_Strip_1,"logicSiDet_1Up_Strip_1",
+// logicSupportSiliconDetector_1Upvide,
+// false,
+// 0);
 
-    if(physSiDet_1Up_Strip_4_dl == NULL) {}
+// logicSiDet_1Up_Strip_1->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_1Up_Strip_1 == NULL) {}
 
-  //Strip n. 3
-  G4LogicalVolume* logicSiDet_1Up_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
-    materialSiliconDetector,
-    "logicSiDet_1Up_Strip_3_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Up_Strip_3_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_1Up_Strip_3_dl,"logicSiDet_1Up_Strip_3_dl",
-    logicSiDet_1Up_Strip_3,
-    false,
-    0);
+//   /////////////////Dead Layer 1Up
+//   //Strip n. 5
+//   G4LogicalVolume* logicSiDet_1Up_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_1Up_Strip_5_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Up_Strip_5_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_1Up_Strip_5_dl,"logicSiDet_1Up_Strip_5_dl",
+//     logicSiDet_1Up_Strip_5,
+//     false,
+//     0);
+//   if(physSiDet_1Up_Strip_5_dl == NULL) {}
 
-    if(physSiDet_1Up_Strip_3_dl == NULL) {}
+//   //Strip n. 4
+//   G4LogicalVolume* logicSiDet_1Up_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_1Up_Strip_4_dl",                                              0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Up_Strip_4_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_1Up_Strip_4_dl,"logicSiDet_1Up_Strip_4_dl",
+//     logicSiDet_1Up_Strip_4,
+//     false,
+//     0);
 
-  //Strip n. 2
-  G4LogicalVolume* logicSiDet_1Up_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
-    materialSiliconDetector,
-    "logicSiDet_1Up_Strip_2_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Up_Strip_2_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_1Up_Strip_2_dl,"logicSiDet_1Up_Strip_2_dl",
-    logicSiDet_1Up_Strip_2,
-    false,
-    0);
+//     if(physSiDet_1Up_Strip_4_dl == NULL) {}
 
-    if(physSiDet_1Up_Strip_2_dl == NULL) {}
+//   //Strip n. 3
+//   G4LogicalVolume* logicSiDet_1Up_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_1Up_Strip_3_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Up_Strip_3_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_1Up_Strip_3_dl,"logicSiDet_1Up_Strip_3_dl",
+//     logicSiDet_1Up_Strip_3,
+//     false,
+//     0);
 
-//Strip n. 1
-G4LogicalVolume* logicSiDet_1Up_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
-  materialSiliconDetector,
-  "logicSiDet_1Up_Strip_1_dl",                                               0, 0, 0);
-G4VPhysicalVolume* physSiDet_1Up_Strip_1_dl = new G4PVPlacement(0,
-  G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-  logicSiDet_1Up_Strip_1_dl,"logicSiDet_1Up_Strip_1_dl",
-  logicSiDet_1Up_Strip_1,
-  false,
-  0);
+//     if(physSiDet_1Up_Strip_3_dl == NULL) {}
 
-  if(physSiDet_1Up_Strip_1_dl == NULL) {}
+//   //Strip n. 2
+//   G4LogicalVolume* logicSiDet_1Up_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_1Up_Strip_2_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Up_Strip_2_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_1Up_Strip_2_dl,"logicSiDet_1Up_Strip_2_dl",
+//     logicSiDet_1Up_Strip_2,
+//     false,
+//     0);
 
-  // SUPPORTO IN RAME
-  G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_1Up   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_1Up"); //solid, material, name
-  G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_1Up = new G4PVPlacement(0,                //no rotation
-G4ThreeVector(
-(length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)),
-//(length_x_SupportoRame_SiDetector/2 - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - x_smallBox_daTagliare_BordoDaTagliare)/2,
-pDy1/2 - height_y_SupportoRame_SiDetector/2,
--pDz/2 -thickness_z_SupportoRame_SiDetector/2
-),    //position, gi� negativa
-logic_Box_material_SupportoRame_SiliconDetector_1Up, "logic_Box_material_SupportoRame_SiliconDetector_1Up", //its fLogical volume
-logicSupportSiliconDetector_1Up,            //its mother volume
-false,                //no boolean op.
-0);                //copy nb.
-logic_Box_material_SupportoRame_SiliconDetector_1Up->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
-  if(physics_Box_material_SupportoRame_SiliconDetector_1Up == NULL) {}
+//     if(physSiDet_1Up_Strip_2_dl == NULL) {}
+
+// //Strip n. 1
+// G4LogicalVolume* logicSiDet_1Up_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
+//   materialSiliconDetector,
+//   "logicSiDet_1Up_Strip_1_dl",                                               0, 0, 0);
+// G4VPhysicalVolume* physSiDet_1Up_Strip_1_dl = new G4PVPlacement(0,
+//   G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//   logicSiDet_1Up_Strip_1_dl,"logicSiDet_1Up_Strip_1_dl",
+//   logicSiDet_1Up_Strip_1,
+//   false,
+//   0);
+
+//   if(physSiDet_1Up_Strip_1_dl == NULL) {}
+
+//   // SUPPORTO IN RAME
+//   G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_1Up   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_1Up"); //solid, material, name
+//   G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_1Up = new G4PVPlacement(0,                //no rotation
+// G4ThreeVector(
+// (length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)),
+// //(length_x_SupportoRame_SiDetector/2 - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - x_smallBox_daTagliare_BordoDaTagliare)/2,
+// pDy1/2 - height_y_SupportoRame_SiDetector/2,
+// -pDz/2 -thickness_z_SupportoRame_SiDetector/2
+// ),    //position, gi� negativa
+// logic_Box_material_SupportoRame_SiliconDetector_1Up, "logic_Box_material_SupportoRame_SiliconDetector_1Up", //its fLogical volume
+// logicSupportSiliconDetector_1Up,            //its mother volume
+// false,                //no boolean op.
+// 0);                //copy nb.
+// logic_Box_material_SupportoRame_SiliconDetector_1Up->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
+//   if(physics_Box_material_SupportoRame_SiliconDetector_1Up == NULL) {}
 
 
 //========================================================================================================================
   //=================================================== DETECTOR 2Up  ========================================================
 //========================================================================================================================
-  G4RotationMatrix* rotationMatrix_2Up = new G4RotationMatrix();
-  rotationMatrix_2Up->rotateX(0.*deg);
-  rotationMatrix_2Up->rotateY(180.*deg - angle_between_xAxis_AND_zAxis);
-  rotationMatrix_2Up->rotateZ(90.*deg);
-
-  G4LogicalVolume* logicSupportSiliconDetector_2Up = new G4LogicalVolume(supportSiliconDetector,
-materialSupportSiliconDetector,
-"logicSupportSiliconDetector_2Up",
-0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_2Up = new G4PVPlacement(rotationMatrix_2Up,
-G4ThreeVector(fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2 - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), 0., z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_2Up,"physSupportSiliconDetector_2Up",
-fLogicWorld,
-false,
-                                                                   0);
-logicSupportSiliconDetector_2Up->SetVisAttributes(SupportSiliconDetector_att);
-  if(physSupportSiliconDetector_2Up == NULL) {}
-
-  ///////
-  G4LogicalVolume* logicSupportSiliconDetector_2Upvide = new G4LogicalVolume(supportSiliconDetectorvide,
- vide,
- "logicSupportSiliconDetector_2Upvide",
-                                                      0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_2Upvide = new G4PVPlacement(rotationMatrix_2Up,
- G4ThreeVector(fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2 - ((pDy1/2)*(1-cos(angle_between_xAxis_AND_zAxis))) + (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), 0., -(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis) + z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
- logicSupportSiliconDetector_2Upvide,"logicSupportSiliconDetector_2Upvide",
-                                                   fLogicWorld,
-                                                   false,
-                                                   0);
- logicSupportSiliconDetector_2Upvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
- if(physSupportSiliconDetector_2Upvide == NULL) {}
- /////////////
-
-  // STRIP 5
-  G4LogicalVolume* logicSiDet_2Up_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
-materialSiliconDetector,
-"logicSiDet_2Up_Strip_5",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Up_Strip_5 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
-logicSiDet_2Up_Strip_5,"logicSiDet_2Up_Strip_5",
-logicSupportSiliconDetector_2Upvide,
-false,
-                                                           0);
-logicSiDet_2Up_Strip_5->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Up_Strip_5 == NULL) {}
-
-
-  // Strip n. 4
-  G4LogicalVolume* logicSiDet_2Up_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
-materialSiliconDetector,
-"logicSi_2Up_Det_Strip_4",
-                                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Up_Strip_4 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
-logicSiDet_2Up_Strip_4,"logicSiDet_2Up_Strip_4",
-logicSupportSiliconDetector_2Upvide,
-false,
-                                                             0);
-logicSiDet_2Up_Strip_4->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Up_Strip_4 == NULL) {}
-
-  // Strip n. 3
-  G4LogicalVolume* logicSiDet_2Up_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
-materialSiliconDetector,
-"logicSi_2Up_Det_Strip_3",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Up_Strip_3 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
-logicSiDet_2Up_Strip_3,"logicSiDet_2Up_Strip_3",
-logicSupportSiliconDetector_2Upvide,
-false,
-0);
-logicSiDet_2Up_Strip_3->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Up_Strip_3 == NULL) {}
-
-  // Strip n. 2
-  G4LogicalVolume* logicSiDet_2Up_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
-materialSiliconDetector,
-"logicSi_2Up_Det_Strip_2",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Up_Strip_2 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
-logicSiDet_2Up_Strip_2,"logicSiDet_2Up_Strip_2",
-logicSupportSiliconDetector_2Upvide,
-false,
-0);
-logicSiDet_2Up_Strip_2->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Up_Strip_2 == NULL) {}
-
-  // Strip n. 1
-  G4LogicalVolume* logicSiDet_2Up_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
-materialSiliconDetector,
-"logicSi_2Up_Det_Strip_1",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Up_Strip_1 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
-logicSiDet_2Up_Strip_1,"logicSiDet_2Up_Strip_1",
-logicSupportSiliconDetector_2Upvide,
-false,
-0);
-logicSiDet_2Up_Strip_1->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Up_Strip_1 == NULL) {}
-
-  // SUPPORTO IN RAME
-  G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_2Up   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_2Up"); //solid, material, name
-  G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_2Up = new G4PVPlacement(0,                //no rotation
-G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
-logic_Box_material_SupportoRame_SiliconDetector_2Up, "logic_Box_material_SupportoRame_SiliconDetector_2Up", //its fLogical volume
-logicSupportSiliconDetector_2Up,            //its mother volume
-false,                //no boolean op.
-0);                //copy nb.
-logic_Box_material_SupportoRame_SiliconDetector_2Up->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
-  if(physics_Box_material_SupportoRame_SiliconDetector_2Up == NULL) {}
-
-
-  /////////////////Dead Layer 2Up
-  //Strip n. 5
-  G4LogicalVolume* logicSiDet_2Up_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
-    materialSiliconDetector,
-    "logicSiDet_2Up_Strip_5_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Up_Strip_5_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_2Up_Strip_5_dl,"logicSiDet_2Up_Strip_5_dl",
-    logicSiDet_2Up_Strip_5,
-    false,
-    0);
-
-  //Strip n. 4
-  G4LogicalVolume* logicSiDet_2Up_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
-    materialSiliconDetector,
-    "logicSiDet_2Up_Strip_4_dl",                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Up_Strip_4_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_2Up_Strip_4_dl,"logicSiDet_2Up_Strip_4_dl",
-    logicSiDet_2Up_Strip_4,
-    false,
-    0);
-
-  //Strip n. 3
-  G4LogicalVolume* logicSiDet_2Up_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
-    materialSiliconDetector,
-    "logicSiDet_2Up_Strip_3_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Up_Strip_3_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_2Up_Strip_3_dl,"logicSiDet_2Up_Strip_3_dl",
-    logicSiDet_2Up_Strip_3,
-    false,
-    0);
-
-  //Strip n. 2
-  G4LogicalVolume* logicSiDet_2Up_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
-    materialSiliconDetector,
-    "logicSiDet_2Up_Strip_2_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Up_Strip_2_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_2Up_Strip_2_dl,"logicSiDet_2Up_Strip_2_dl",
-    logicSiDet_2Up_Strip_2,
-    false,
-    0);
-
-//Strip n. 1
-G4LogicalVolume* logicSiDet_2Up_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
-  materialSiliconDetector,
-  "logicSiDet_2Up_Strip_1_dl",                                               0, 0, 0);
-G4VPhysicalVolume* physSiDet_2Up_Strip_1_dl = new G4PVPlacement(0,
-  G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-  logicSiDet_2Up_Strip_1_dl,"logicSiDet_2Up_Strip_1_dl",
-  logicSiDet_2Up_Strip_1,
-  false,
-  0);
-
-  if(physSiDet_2Up_Strip_5_dl == NULL) {}
-  if(physSiDet_2Up_Strip_4_dl == NULL) {}
-  if(physSiDet_2Up_Strip_3_dl == NULL) {}
-  if(physSiDet_2Up_Strip_2_dl == NULL) {}
-  if(physSiDet_2Up_Strip_1_dl == NULL) {}
-
-//========================================================================================================================
-  //=================================================== DETECTOR 3Up  ========================================================
-//========================================================================================================================
-  G4RotationMatrix* rotationMatrix_3Up = new G4RotationMatrix();
-rotationMatrix_3Up->rotateX(-angle_between_xAxis_AND_zAxis);
-  rotationMatrix_3Up->rotateY(180.*deg);
-  rotationMatrix_3Up->rotateZ(0.*deg);
-
-  G4LogicalVolume* logicSupportSiliconDetector_3Up = new G4LogicalVolume(supportSiliconDetector,
-materialSupportSiliconDetector,
-"logicSupportSiliconDetector_3Up",
-                                                      0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_3Up = new G4PVPlacement(rotationMatrix_3Up,
-G4ThreeVector(0, -fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_3Up,"physSupportSiliconDetector_3Up",
-                                                   fLogicWorld,
-                                                   false,
-                                                   0);
-logicSupportSiliconDetector_3Up->SetVisAttributes(SupportSiliconDetector_att);
- if(physSupportSiliconDetector_3Up == NULL) {}
-
- ///////
- G4LogicalVolume* logicSupportSiliconDetector_3Upvide = new G4LogicalVolume(supportSiliconDetectorvide,
-vide,
-"logicSupportSiliconDetector_3Upvide",
-                                                     0, 0, 0);
- G4VPhysicalVolume* physSupportSiliconDetector_3Upvide = new G4PVPlacement(rotationMatrix_3Up,
-G4ThreeVector(0, -fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) - (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis) , -(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis) + z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_3Upvide,"logicSupportSiliconDetector_3Upvide",
-                                                  fLogicWorld,
-                                                  false,
-                                                  0);
-logicSupportSiliconDetector_3Upvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
-if(physSupportSiliconDetector_3Upvide == NULL) {}
-/////////////
-
-  // STRIP 5
-  G4LogicalVolume* logicSiDet_3Up_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
-materialSiliconDetector,
-"logicSiDet_3Up_Strip_5",
-                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Up_Strip_5 = new G4PVPlacement(0,
-                                           G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2,0.),
-logicSiDet_3Up_Strip_5,"logicSiDet_3Up_Strip_5",
-logicSupportSiliconDetector_3Upvide,
-                                           false,
-                                           0);
-logicSiDet_3Up_Strip_5->SetVisAttributes(SiliconDetector_att);
- if(physSiDet_3Up_Strip_5 == NULL) {}
-
-
- // Strip n. 4
- G4LogicalVolume* logicSiDet_3Up_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
-materialSiliconDetector,
-"logicSi_3Up_Det_Strip_4",
-                                                              0, 0, 0);
- G4VPhysicalVolume* physSiDet_3Up_Strip_4 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
-logicSiDet_3Up_Strip_4,"logicSiDet_3Up_Strip_4",
-logicSupportSiliconDetector_3Upvide,
-false,
-                                                             0);
-logicSiDet_3Up_Strip_4->SetVisAttributes(SiliconDetector_att);
- if(physSiDet_3Up_Strip_4 == NULL) {}
-
-  // Strip n. 3
-  G4LogicalVolume* logicSiDet_3Up_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
-materialSiliconDetector,
-"logicSi_3Up_Det_Strip_3",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Up_Strip_3 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
-logicSiDet_3Up_Strip_3,"logicSiDet_3Up_Strip_3",
-logicSupportSiliconDetector_3Upvide,
-false,
-0);
-logicSiDet_3Up_Strip_3->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_3Up_Strip_3 == NULL) {}
-
-  // Strip n. 2
-  G4LogicalVolume* logicSiDet_3Up_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
-materialSiliconDetector,
-"logicSi_3Up_Det_Strip_2",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Up_Strip_2 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
-logicSiDet_3Up_Strip_2,"logicSiDet_3Up_Strip_2",
-logicSupportSiliconDetector_3Upvide,
-false,
-0);
-logicSiDet_3Up_Strip_2->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_3Up_Strip_2 == NULL) {}
-
-  // Strip n. 1
-  G4LogicalVolume* logicSiDet_3Up_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
-materialSiliconDetector,
-"logicSi_3Up_Det_Strip_1",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Up_Strip_1 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
-logicSiDet_3Up_Strip_1,"logicSiDet_3Up_Strip_1",
-logicSupportSiliconDetector_3Upvide,
-false,
-0);
-logicSiDet_3Up_Strip_1->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_3Up_Strip_1 == NULL) {}
-
-  // SUPPORTO IN RAME
-  G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_3Up   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_3Up"); //solid, material, name
-  G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_3Up = new G4PVPlacement(0,                //no rotation
-G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
-logic_Box_material_SupportoRame_SiliconDetector_3Up, "logic_Box_material_SupportoRame_SiliconDetector_3Up", //its fLogical volume
-logicSupportSiliconDetector_3Up,            //its mother volume
-false,                //no boolean op.
-0);                //copy nb.
-logic_Box_material_SupportoRame_SiliconDetector_3Up->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
-  if(physics_Box_material_SupportoRame_SiliconDetector_3Up == NULL) {}
-
-  /////////////////Dead Layer 3Up
-  //Strip n. 5
-  G4LogicalVolume* logicSiDet_3Up_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
-    materialSiliconDetector,
-    "logicSiDet_3Up_Strip_5_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Up_Strip_5_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_3Up_Strip_5_dl,"logicSiDet_3Up_Strip_5_dl",
-    logicSiDet_3Up_Strip_5,
-    false,
-    0);
-
-  //Strip n. 4
-  G4LogicalVolume* logicSiDet_3Up_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
-    materialSiliconDetector,
-    "logicSiDet_3Up_Strip_4_dl",                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Up_Strip_4_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_3Up_Strip_4_dl,"logicSiDet_3Up_Strip_4_dl",
-    logicSiDet_3Up_Strip_4,
-    false,
-    0);
-
-  //Strip n. 3
-  G4LogicalVolume* logicSiDet_3Up_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
-    materialSiliconDetector,
-    "logicSiDet_3Up_Strip_3_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Up_Strip_3_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_3Up_Strip_3_dl,"logicSiDet_3Up_Strip_3_dl",
-    logicSiDet_3Up_Strip_3,
-    false,
-    0);
-
-  //Strip n. 2
-  G4LogicalVolume* logicSiDet_3Up_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
-    materialSiliconDetector,
-    "logicSiDet_3Up_Strip_2_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Up_Strip_2_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_3Up_Strip_2_dl,"logicSiDet_3Up_Strip_2_dl",
-    logicSiDet_3Up_Strip_2,
-    false,
-    0);
-
-//Strip n. 1
-G4LogicalVolume* logicSiDet_3Up_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
-  materialSiliconDetector,
-  "logicSiDet_3Up_Strip_1_dl",                                               0, 0, 0);
-G4VPhysicalVolume* physSiDet_3Up_Strip_1_dl = new G4PVPlacement(0,
-  G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-  logicSiDet_3Up_Strip_1_dl,"logicSiDet_3Up_Strip_1_dl",
-  logicSiDet_3Up_Strip_1,
-  false,
-  0);
-
-  if(physSiDet_3Up_Strip_5_dl == NULL) {}
-  if(physSiDet_3Up_Strip_4_dl == NULL) {}
-  if(physSiDet_3Up_Strip_3_dl == NULL) {}
-  if(physSiDet_3Up_Strip_2_dl == NULL) {}
-  if(physSiDet_3Up_Strip_1_dl == NULL) {}
-
-//========================================================================================================================
-  //=================================================== DETECTOR 4Up  ========================================================
-//========================================================================================================================
-  G4RotationMatrix* rotationMatrix_4Up = new G4RotationMatrix();
-  rotationMatrix_4Up->rotateX(0.*deg);
-  rotationMatrix_4Up->rotateY(180.*deg + angle_between_xAxis_AND_zAxis);
-  rotationMatrix_4Up->rotateZ(-90.*deg);
-
-  G4LogicalVolume* logicSupportSiliconDetector_4Up = new G4LogicalVolume(supportSiliconDetector,
-materialSupportSiliconDetector,
-"logicSupportSiliconDetector_4Up",
-0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_4Up = new G4PVPlacement(rotationMatrix_4Up,
-G4ThreeVector(-fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), 0., z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 +150*um + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_4Up,"physSupportSiliconDetector_4Up",
-fLogicWorld,
-false,
-                                                                   0);
-logicSupportSiliconDetector_4Up->SetVisAttributes(SupportSiliconDetector_att);
-  if(physSupportSiliconDetector_4Up == NULL) {}
-
-  ///////
-  G4LogicalVolume* logicSupportSiliconDetector_4Upvide = new G4LogicalVolume(supportSiliconDetectorvide,
- vide,
- "logicSupportSiliconDetector_4Upvide",
-                                                      0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_4Upvide = new G4PVPlacement(rotationMatrix_4Up,
-G4ThreeVector(-fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) - (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), 0., -(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis) + z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 +150*um + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
- logicSupportSiliconDetector_4Upvide,"logicSupportSiliconDetector_4Upvide",
-                                                   fLogicWorld,
-                                                   false,
-                                                   0);
- logicSupportSiliconDetector_4Upvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
- if(physSupportSiliconDetector_4Upvide == NULL) {}
- /////////////
-
-  // STRIP 5
-  G4LogicalVolume* logicSiDet_4Up_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
-materialSiliconDetector,
-"logicSiDet_4Up_Strip_5",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Up_Strip_5 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
-logicSiDet_4Up_Strip_5,"logicSiDet_4Up_Strip_5",
-logicSupportSiliconDetector_4Upvide,
-false,
-                                                           0);
-logicSiDet_4Up_Strip_5->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Up_Strip_5 == NULL) {}
-
-
-  // Strip n. 4
-  G4LogicalVolume* logicSiDet_4Up_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
-materialSiliconDetector,
-"logicSi_4Up_Det_Strip_4",
-                                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Up_Strip_4 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
-logicSiDet_4Up_Strip_4,"logicSiDet_4Up_Strip_4",
-logicSupportSiliconDetector_4Upvide,
-false,
-0);
-logicSiDet_4Up_Strip_4->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Up_Strip_4 == NULL) {}
-
-  // Strip n. 3
-  G4LogicalVolume* logicSiDet_4Up_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
-materialSiliconDetector,
-"logicSi_4Up_Det_Strip_3",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Up_Strip_3 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
-logicSiDet_4Up_Strip_3,"logicSiDet_4Up_Strip_3",
-logicSupportSiliconDetector_4Upvide,
-false,
-0);
-logicSiDet_4Up_Strip_3->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Up_Strip_3 == NULL) {}
-
-  // Strip n. 2
-  G4LogicalVolume* logicSiDet_4Up_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
-materialSiliconDetector,
-"logicSi_4Up_Det_Strip_2",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Up_Strip_2 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2,0.),
-logicSiDet_4Up_Strip_2,"logicSiDet_4Up_Strip_2",
-logicSupportSiliconDetector_4Upvide,
-false,
-0,
-true);
-logicSiDet_4Up_Strip_2->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Up_Strip_2 == NULL) {}
-
-  // Strip n. 1
-  G4LogicalVolume* logicSiDet_4Up_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
-materialSiliconDetector,
-"logicSi_4Up_Det_Strip_1",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Up_Strip_1 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
-logicSiDet_4Up_Strip_1,"logicSiDet_4Up_Strip_1",
-logicSupportSiliconDetector_4Upvide,
-false,
-0,
-true);
-
-logicSiDet_4Up_Strip_1->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Up_Strip_1 == NULL) {}
-
-  // SUPPORTO IN RAME
-  G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_4Up   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_4Up"); //solid, material, name
-  G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_4Up = new G4PVPlacement(0,                //no rotation
-G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
-logic_Box_material_SupportoRame_SiliconDetector_4Up, "logic_Box_material_SupportoRame_SiliconDetector_4Up", //its fLogical volume
-logicSupportSiliconDetector_4Up,            //its mother volume
-false,                //no boolean op.
-0);                //copy nb.
-logic_Box_material_SupportoRame_SiliconDetector_4Up->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
-  if(physics_Box_material_SupportoRame_SiliconDetector_4Up == NULL) {}
-
-  /////////////////Dead Layer 4Up
-  //Strip n. 5
-  G4LogicalVolume* logicSiDet_4Up_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
-    materialSiliconDetector,
-    "logicSiDet_4Up_Strip_5_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Up_Strip_5_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_4Up_Strip_5_dl,"logicSiDet_4Up_Strip_5_dl",
-    logicSiDet_4Up_Strip_5,
-    false,
-    0);
-
-  //Strip n. 4
-  G4LogicalVolume* logicSiDet_4Up_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
-    materialSiliconDetector,
-    "logicSiDet_4Up_Strip_4_dl",                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Up_Strip_4_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_4Up_Strip_4_dl,"logicSiDet_4Up_Strip_4_dl",
-    logicSiDet_4Up_Strip_4,
-    false,
-    0);
-
-  //Strip n. 3
-  G4LogicalVolume* logicSiDet_4Up_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
-    materialSiliconDetector,
-    "logicSiDet_4Up_Strip_3_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Up_Strip_3_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_4Up_Strip_3_dl,"logicSiDet_4Up_Strip_3_dl",
-    logicSiDet_4Up_Strip_3,
-    false,
-    0);
-
-  //Strip n. 2
-  G4LogicalVolume* logicSiDet_4Up_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
-    materialSiliconDetector,
-    "logicSiDet_4Up_Strip_2_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Up_Strip_2_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_4Up_Strip_2_dl,"logicSiDet_4Up_Strip_2_dl",
-    logicSiDet_4Up_Strip_2,
-    false,
-    0);
-
-//Strip n. 1
-G4LogicalVolume* logicSiDet_4Up_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
-  materialSiliconDetector,
-  "logicSiDet_4Up_Strip_1_dl",                                               0, 0, 0);
-G4VPhysicalVolume* physSiDet_4Up_Strip_1_dl = new G4PVPlacement(0,
-  G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-  logicSiDet_4Up_Strip_1_dl,"logicSiDet_4Up_Strip_1_dl",
-  logicSiDet_4Up_Strip_1,
-  false,
-  0);
-
-  if(physSiDet_4Up_Strip_5_dl == NULL) {}
-  if(physSiDet_4Up_Strip_4_dl == NULL) {}
-  if(physSiDet_4Up_Strip_3_dl == NULL) {}
-  if(physSiDet_4Up_Strip_2_dl == NULL) {}
-  if(physSiDet_4Up_Strip_1_dl == NULL) {}
-
-//========================================================================================================================
-  //=================================================== DETECTOR 1Down  ========================================================
-//========================================================================================================================
-  G4RotationMatrix* rotationMatrix_1Down = new G4RotationMatrix();
-rotationMatrix_1Down->rotateX(-angle_between_xAxis_AND_zAxis);
-  rotationMatrix_1Down->rotateY(0.*deg);
-  rotationMatrix_1Down->rotateZ(180.*deg);
-
-  G4LogicalVolume* logicSupportSiliconDetector_1Down = new G4LogicalVolume(supportSiliconDetector,
-materialSupportSiliconDetector,
-"logicSupportSiliconDetector_1Down",
-                                                      0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_1Down = new G4PVPlacement(rotationMatrix_1Down,
-G4ThreeVector(0, fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2  - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), -z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_1Down,"physSupportSiliconDetector_1Down",
-                                                   fLogicWorld,
-                                                   false,
-                                                   0);
-logicSupportSiliconDetector_1Down->SetVisAttributes(SupportSiliconDetector_att);
- if(physSupportSiliconDetector_1Down == NULL) {}
-
- ///////
- G4LogicalVolume* logicSupportSiliconDetector_1Downvide = new G4LogicalVolume(supportSiliconDetectorvide,
-vide,
-"logicSupportSiliconDetector_1Downvide",
-                                                     0, 0, 0);
- G4VPhysicalVolume* physSupportSiliconDetector_1Downvide = new G4PVPlacement(rotationMatrix_1Down,
-G4ThreeVector(0, fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2  - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) + (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), +(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis)-z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_1Downvide,"logicSupportSiliconDetector_1Downvide",
-                                                  fLogicWorld,
-                                                  false,
-                                                  0);
-logicSupportSiliconDetector_1Downvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
-if(physSupportSiliconDetector_1Downvide == NULL) {}
-/////////////
-
-  // STRIP 5
-  G4LogicalVolume* logicSiDet_1Down_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
-materialSiliconDetector,
-"logicSiDet_1Down_Strip_5",
-                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Down_Strip_5 = new G4PVPlacement(0,
-                                           G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
-logicSiDet_1Down_Strip_5,"logicSiDet_1Down_Strip_5",
-logicSupportSiliconDetector_1Downvide,
-                                           false,
-                                           0);
-logicSiDet_1Down_Strip_5->SetVisAttributes(SiliconDetector_att);
- if(physSiDet_1Down_Strip_5 == NULL) {}
-
-
- // Strip n. 4
- G4LogicalVolume* logicSiDet_1Down_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
-materialSiliconDetector,
-"logicSi_1Down_Det_Strip_4",
-                                                              0, 0, 0);
- G4VPhysicalVolume* physSiDet_1Down_Strip_4 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
-logicSiDet_1Down_Strip_4,"logicSiDet_1Down_Strip_4",
-logicSupportSiliconDetector_1Downvide,
-false,
-                                                             0);
-logicSiDet_1Down_Strip_4->SetVisAttributes(SiliconDetector_att);
- if(physSiDet_1Down_Strip_4 == NULL) {}
-
-  // Strip n. 3
-  G4LogicalVolume* logicSiDet_1Down_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
-materialSiliconDetector,
-"logicSi_1Down_Det_Strip_3",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Down_Strip_3 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
-logicSiDet_1Down_Strip_3,"logicSiDet_1Down_Strip_3",
-logicSupportSiliconDetector_1Downvide,
-false,
-0);
-logicSiDet_1Down_Strip_3->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_1Down_Strip_3 == NULL) {}
-
-  // Strip n. 2
-  G4LogicalVolume* logicSiDet_1Down_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
-materialSiliconDetector,
-"logicSi_1Down_Det_Strip_2",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Down_Strip_2 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
-logicSiDet_1Down_Strip_2,"logicSiDet_1Down_Strip_2",
-logicSupportSiliconDetector_1Downvide,
-false,
-0);
-logicSiDet_1Down_Strip_2->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_1Down_Strip_2 == NULL) {}
-
-  // Strip n. 1
-  G4LogicalVolume* logicSiDet_1Down_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
-materialSiliconDetector,
-"logicSi_1Down_Det_Strip_1",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Down_Strip_1 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
-logicSiDet_1Down_Strip_1,"logicSiDet_1Down_Strip_1",
-logicSupportSiliconDetector_1Downvide,
-false,
-0);
-logicSiDet_1Down_Strip_1->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_1Down_Strip_1 == NULL) {}
-
-  // SUPPORTO IN RAME
-  G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_1Down   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_1Down"); //solid, material, name
-  G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_1Down = new G4PVPlacement(0,                //no rotation
-G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
-logic_Box_material_SupportoRame_SiliconDetector_1Down, "logic_Box_material_SupportoRame_SiliconDetector_1Down", //its fLogical volume
-logicSupportSiliconDetector_1Down,            //its mother volume
-false,                //no boolean op.
-0);                //copy nb.
-logic_Box_material_SupportoRame_SiliconDetector_1Down->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
-  if(physics_Box_material_SupportoRame_SiliconDetector_1Down == NULL) {}
-
-  /////////////////Dead Layer 1Down
-  //Strip n. 5
-  G4LogicalVolume* logicSiDet_1Down_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
-    materialSiliconDetector,
-    "logicSiDet_1Down_Strip_5_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Down_Strip_5_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_1Down_Strip_5_dl,"logicSiDet_1Down_Strip_5_dl",
-    logicSiDet_1Down_Strip_5,
-    false,
-    0);
-
-  //Strip n. 4
-  G4LogicalVolume* logicSiDet_1Down_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
-    materialSiliconDetector,
-    "logicSiDet_1Down_Strip_4_dl",                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Down_Strip_4_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_1Down_Strip_4_dl,"logicSiDet_1Down_Strip_4_dl",
-    logicSiDet_1Down_Strip_4,
-    false,
-    0);
-
-  //Strip n. 3
-  G4LogicalVolume* logicSiDet_1Down_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
-    materialSiliconDetector,
-    "logicSiDet_1Down_Strip_3_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Down_Strip_3_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_1Down_Strip_3_dl,"logicSiDet_1Down_Strip_3_dl",
-    logicSiDet_1Down_Strip_3,
-    false,
-    0);
-
-  //Strip n. 2
-  G4LogicalVolume* logicSiDet_1Down_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
-    materialSiliconDetector,
-    "logicSiDet_1Down_Strip_2_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_1Down_Strip_2_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_1Down_Strip_2_dl,"logicSiDet_1Down_Strip_2_dl",
-    logicSiDet_1Down_Strip_2,
-    false,
-    0);
-
-//Strip n. 1
-G4LogicalVolume* logicSiDet_1Down_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
-  materialSiliconDetector,
-  "logicSiDet_1Down_Strip_1_dl",                                               0, 0, 0);
-G4VPhysicalVolume* physSiDet_1Down_Strip_1_dl = new G4PVPlacement(0,
-  G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-  logicSiDet_1Down_Strip_1_dl,"logicSiDet_1Down_Strip_1_dl",
-  logicSiDet_1Down_Strip_1,
-  false,
-  0);
-
-  if(physSiDet_1Down_Strip_5_dl == NULL) {}
-  if(physSiDet_1Down_Strip_4_dl == NULL) {}
-  if(physSiDet_1Down_Strip_3_dl == NULL) {}
-  if(physSiDet_1Down_Strip_2_dl == NULL) {}
-  if(physSiDet_1Down_Strip_1_dl == NULL) {}
-//========================================================================================================================
-  //=================================================== DETECTOR 2Down  ========================================================
-//========================================================================================================================
-  G4RotationMatrix* rotationMatrix_2Down = new G4RotationMatrix();
-  rotationMatrix_2Down->rotateX(180.*deg);
-  rotationMatrix_2Down->rotateY(180.*deg - angle_between_xAxis_AND_zAxis);
-  rotationMatrix_2Down->rotateZ(90.*deg);
-
-  G4LogicalVolume* logicSupportSiliconDetector_2Down = new G4LogicalVolume(supportSiliconDetector,
-materialSupportSiliconDetector,
-"logicSupportSiliconDetector_2Down",
-0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_2Down = new G4PVPlacement(rotationMatrix_2Down,
-G4ThreeVector(fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2  - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), 0., -z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_2Down,"physSupportSiliconDetector_2Down",
-fLogicWorld,
-false,
-                                                                   0);
-logicSupportSiliconDetector_2Down->SetVisAttributes(SupportSiliconDetector_att);
-  if(physSupportSiliconDetector_2Down == NULL) {}
-
-  ///////
-  G4LogicalVolume* logicSupportSiliconDetector_2Downvide = new G4LogicalVolume(supportSiliconDetectorvide,
-  vide,
-  "logicSupportSiliconDetector_2Downvide",
-                                                      0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_2Downvide = new G4PVPlacement(rotationMatrix_2Down,
-  G4ThreeVector(fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2  - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) + (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), 0., + +(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis)-z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-  logicSupportSiliconDetector_2Downvide,"logicSupportSiliconDetector_2Downvide",
-                                                   fLogicWorld,
-                                                   false,
-                                                   0);
-  logicSupportSiliconDetector_2Downvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
-  if(physSupportSiliconDetector_2Downvide == NULL) {}
-  /////////////
-
-  // STRIP 5
-  G4LogicalVolume* logicSiDet_2Down_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
-materialSiliconDetector,
-"logicSiDet_2Down_Strip_5",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Down_Strip_5 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
-logicSiDet_2Down_Strip_5,"logicSiDet_2Down_Strip_5",
-logicSupportSiliconDetector_2Downvide,
-false,
-                                                           0);
-logicSiDet_2Down_Strip_5->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Down_Strip_5 == NULL) {}
-
-
-  // Strip n. 4
-  G4LogicalVolume* logicSiDet_2Down_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
-materialSiliconDetector,
-"logicSi_2Down_Det_Strip_4",
-                                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Down_Strip_4 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
-logicSiDet_2Down_Strip_4,"logicSiDet_2Down_Strip_4",
-logicSupportSiliconDetector_2Downvide,
-false,
-                                                             0);
-logicSiDet_2Down_Strip_4->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Down_Strip_4 == NULL) {}
-
-  // Strip n. 3
-  G4LogicalVolume* logicSiDet_2Down_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
-materialSiliconDetector,
-"logicSi_2Down_Det_Strip_3",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Down_Strip_3 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
-logicSiDet_2Down_Strip_3,"logicSiDet_2Down_Strip_3",
-logicSupportSiliconDetector_2Downvide,
-false,
-0);
-logicSiDet_2Down_Strip_3->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Down_Strip_3 == NULL) {}
-
-  // Strip n. 2
-  G4LogicalVolume* logicSiDet_2Down_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
-materialSiliconDetector,
-"logicSi_2Down_Det_Strip_2",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Down_Strip_2 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
-logicSiDet_2Down_Strip_2,"logicSiDet_2Down_Strip_2",
-logicSupportSiliconDetector_2Downvide,
-false,
-0);
-logicSiDet_2Down_Strip_2->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Down_Strip_2 == NULL) {}
-
-  // Strip n. 1
-  G4LogicalVolume* logicSiDet_2Down_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
-materialSiliconDetector,
-"logicSi_2Down_Det_Strip_1",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Down_Strip_1 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
-logicSiDet_2Down_Strip_1,"logicSiDet_2Down_Strip_1",
-logicSupportSiliconDetector_2Downvide,
-false,
-0);
-logicSiDet_2Down_Strip_1->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_2Down_Strip_1 == NULL) {}
-
-  // SUPPORTO IN RAME
-  G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_2Down   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_2Down"); //solid, material, name
-  G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_2Down = new G4PVPlacement(0,                //no rotation
-G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
-logic_Box_material_SupportoRame_SiliconDetector_2Down, "logic_Box_material_SupportoRame_SiliconDetector_2Down", //its fLogical volume
-logicSupportSiliconDetector_2Down,            //its mother volume
-false,                //no boolean op.
-0);                //copy nb.
-logic_Box_material_SupportoRame_SiliconDetector_2Down->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
-  if(physics_Box_material_SupportoRame_SiliconDetector_2Down == NULL) {}
-
-  /////////////////Dead Layer 2Down
-  //Strip n. 5
-  G4LogicalVolume* logicSiDet_2Down_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
-    materialSiliconDetector,
-    "logicSiDet_2Down_Strip_5_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Down_Strip_5_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_2Down_Strip_5_dl,"logicSiDet_2Down_Strip_5_dl",
-    logicSiDet_2Down_Strip_5,
-    false,
-    0);
-
-  //Strip n. 4
-  G4LogicalVolume* logicSiDet_2Down_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
-    materialSiliconDetector,
-    "logicSiDet_2Down_Strip_4_dl",                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Down_Strip_4_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_2Down_Strip_4_dl,"logicSiDet_2Down_Strip_4_dl",
-    logicSiDet_2Down_Strip_4,
-    false,
-    0);
-
-  //Strip n. 3
-  G4LogicalVolume* logicSiDet_2Down_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
-    materialSiliconDetector,
-    "logicSiDet_2Down_Strip_3_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Down_Strip_3_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_2Down_Strip_3_dl,"logicSiDet_2Down_Strip_3_dl",
-    logicSiDet_2Down_Strip_3,
-    false,
-    0);
-
-  //Strip n. 2
-  G4LogicalVolume* logicSiDet_2Down_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
-    materialSiliconDetector,
-    "logicSiDet_2Down_Strip_2_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_2Down_Strip_2_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_2Down_Strip_2_dl,"logicSiDet_2Down_Strip_2_dl",
-    logicSiDet_2Down_Strip_2,
-    false,
-    0);
-
-//Strip n. 1
-G4LogicalVolume* logicSiDet_2Down_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
-  materialSiliconDetector,
-  "logicSiDet_2Down_Strip_1_dl",                                               0, 0, 0);
-G4VPhysicalVolume* physSiDet_2Down_Strip_1_dl = new G4PVPlacement(0,
-  G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-  logicSiDet_2Down_Strip_1_dl,"logicSiDet_2Down_Strip_1_dl",
-  logicSiDet_2Down_Strip_1,
-  false,
-  0);
-
-  if(physSiDet_2Down_Strip_5_dl == NULL) {}
-  if(physSiDet_2Down_Strip_4_dl == NULL) {}
-  if(physSiDet_2Down_Strip_3_dl == NULL) {}
-  if(physSiDet_2Down_Strip_2_dl == NULL) {}
-  if(physSiDet_2Down_Strip_1_dl == NULL) {}
-
-
-
-//========================================================================================================================
-  //=================================================== DETECTOR 3Down  ========================================================
-//========================================================================================================================
-  G4RotationMatrix* rotationMatrix_3Down = new G4RotationMatrix();
-rotationMatrix_3Down->rotateX(angle_between_xAxis_AND_zAxis);
-  rotationMatrix_3Down->rotateY(0.*deg);
-  rotationMatrix_3Down->rotateZ(0.*deg);
-
-  G4LogicalVolume* logicSupportSiliconDetector_3Down = new G4LogicalVolume(supportSiliconDetector,
-materialSupportSiliconDetector,
-"logicSupportSiliconDetector_3Down",
-                                                      0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_3Down = new G4PVPlacement(rotationMatrix_3Down,
-G4ThreeVector(0, -fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), -z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_3Down,"physSupportSiliconDetector_3Down",
-                                                   fLogicWorld,
-                                                   false,
-                                                   0);
-logicSupportSiliconDetector_3Down->SetVisAttributes(SupportSiliconDetector_att);
- if(physSupportSiliconDetector_3Down == NULL) {}
-
- ///////
- G4LogicalVolume* logicSupportSiliconDetector_3Downvide = new G4LogicalVolume(supportSiliconDetectorvide,
- vide,
- "logicSupportSiliconDetector_3Downvide",
-                                                     0, 0, 0);
- G4VPhysicalVolume* physSupportSiliconDetector_3Downvide = new G4PVPlacement(rotationMatrix_3Down,
- G4ThreeVector(0, -fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) - (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), +(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis)-z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
- logicSupportSiliconDetector_3Downvide,"logicSupportSiliconDetector_3Downvide",
-                                                  fLogicWorld,
-                                                  false,
-                                                  0);
- logicSupportSiliconDetector_3Downvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
- if(physSupportSiliconDetector_3Downvide == NULL) {}
- /////////////
-
-  // STRIP 5
-  G4LogicalVolume* logicSiDet_3Down_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
-materialSiliconDetector,
-"logicSiDet_3Down_Strip_5",
-                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Down_Strip_5 = new G4PVPlacement(0,
-                                           G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
-logicSiDet_3Down_Strip_5,"logicSiDet_3Down_Strip_5",
-logicSupportSiliconDetector_3Downvide,
-                                           false,
-                                           0);
-logicSiDet_3Down_Strip_5->SetVisAttributes(SiliconDetector_att);
- if(physSiDet_3Down_Strip_5 == NULL) {}
-
-
- // Strip n. 4
- G4LogicalVolume* logicSiDet_3Down_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
-materialSiliconDetector,
-"logicSi_3Down_Det_Strip_4",
-                                                              0, 0, 0);
- G4VPhysicalVolume* physSiDet_3Down_Strip_4 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
-logicSiDet_3Down_Strip_4,"logicSiDet_3Down_Strip_4",
-logicSupportSiliconDetector_3Downvide,
-false,
-                                                             0);
-logicSiDet_3Down_Strip_4->SetVisAttributes(SiliconDetector_att);
- if(physSiDet_3Down_Strip_4 == NULL) {}
-
-  // Strip n. 3
-  G4LogicalVolume* logicSiDet_3Down_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
-materialSiliconDetector,
-"logicSi_3Down_Det_Strip_3",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Down_Strip_3 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
-logicSiDet_3Down_Strip_3,"logicSiDet_3Down_Strip_3",
-logicSupportSiliconDetector_3Downvide,
-false,
-0);
-logicSiDet_3Down_Strip_3->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_3Down_Strip_3 == NULL) {}
-
-  // Strip n. 2
-  G4LogicalVolume* logicSiDet_3Down_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
-materialSiliconDetector,
-"logicSi_3Down_Det_Strip_2",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Down_Strip_2 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
-logicSiDet_3Down_Strip_2,"logicSiDet_3Down_Strip_2",
-logicSupportSiliconDetector_3Downvide,
-false,
-0);
-logicSiDet_3Down_Strip_2->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_3Down_Strip_2 == NULL) {}
-
-  // Strip n. 1
-  G4LogicalVolume* logicSiDet_3Down_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
-materialSiliconDetector,
-"logicSi_3Down_Det_Strip_1",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Down_Strip_1 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
-logicSiDet_3Down_Strip_1,"logicSiDet_3Down_Strip_1",
-logicSupportSiliconDetector_3Downvide,
-false,
-0);
-logicSiDet_3Down_Strip_1->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_3Down_Strip_1 == NULL) {}
-
-  // SUPPORTO IN RAME
-  G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_3Down   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_3Down"); //solid, material, name
-  G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_3Down = new G4PVPlacement(0,                //no rotation
-G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
-logic_Box_material_SupportoRame_SiliconDetector_3Down, "logic_Box_material_SupportoRame_SiliconDetector_3Down", //its fLogical volume
-logicSupportSiliconDetector_3Down,            //its mother volume
-false,                //no boolean op.
-0);                //copy nb.
-logic_Box_material_SupportoRame_SiliconDetector_3Down->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
-  if(physics_Box_material_SupportoRame_SiliconDetector_3Down == NULL) {}
-
-  /////////////////Dead Layer 3Down
-  //Strip n. 5
-  G4LogicalVolume* logicSiDet_3Down_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
-    materialSiliconDetector,
-    "logicSiDet_3Down_Strip_5_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Down_Strip_5_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_3Down_Strip_5_dl,"logicSiDet_3Down_Strip_5_dl",
-    logicSiDet_3Down_Strip_5,
-    false,
-    0);
-
-  //Strip n. 4
-  G4LogicalVolume* logicSiDet_3Down_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
-    materialSiliconDetector,
-    "logicSiDet_3Down_Strip_4_dl",                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Down_Strip_4_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_3Down_Strip_4_dl,"logicSiDet_3Down_Strip_4_dl",
-    logicSiDet_3Down_Strip_4,
-    false,
-    0);
-
-  //Strip n. 3
-  G4LogicalVolume* logicSiDet_3Down_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
-    materialSiliconDetector,
-    "logicSiDet_3Down_Strip_3_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Down_Strip_3_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_3Down_Strip_3_dl,"logicSiDet_3Down_Strip_3_dl",
-    logicSiDet_3Down_Strip_3,
-    false,
-    0);
-
-  //Strip n. 2
-  G4LogicalVolume* logicSiDet_3Down_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
-    materialSiliconDetector,
-    "logicSiDet_3Down_Strip_2_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_3Down_Strip_2_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_3Down_Strip_2_dl,"logicSiDet_3Down_Strip_2_dl",
-    logicSiDet_3Down_Strip_2,
-    false,
-    0);
-
-//Strip n. 1
-G4LogicalVolume* logicSiDet_3Down_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
-  materialSiliconDetector,
-  "logicSiDet_3Down_Strip_1_dl",                                               0, 0, 0);
-G4VPhysicalVolume* physSiDet_3Down_Strip_1_dl = new G4PVPlacement(0,
-  G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-  logicSiDet_3Down_Strip_1_dl,"logicSiDet_3Down_Strip_1_dl",
-  logicSiDet_3Down_Strip_1,
-  false,
-  0);
-
-  if(physSiDet_3Down_Strip_5_dl == NULL) {}
-  if(physSiDet_3Down_Strip_4_dl == NULL) {}
-  if(physSiDet_3Down_Strip_3_dl == NULL) {}
-  if(physSiDet_3Down_Strip_2_dl == NULL) {}
-  if(physSiDet_3Down_Strip_1_dl == NULL) {}
-
-
-//========================================================================================================================
-  //=================================================== DETECTOR 4Down  ========================================================
-//========================================================================================================================
-  G4RotationMatrix* rotationMatrix_4Down = new G4RotationMatrix();
-  rotationMatrix_4Down->rotateX(180.*deg);
-  rotationMatrix_4Down->rotateY(180.*deg + angle_between_xAxis_AND_zAxis);
-  rotationMatrix_4Down->rotateZ(-90.*deg);
-
-  G4LogicalVolume* logicSupportSiliconDetector_4Down = new G4LogicalVolume(supportSiliconDetector,
-materialSupportSiliconDetector,
-"logicSupportSiliconDetector_4Down",
-0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_4Down = new G4PVPlacement(rotationMatrix_4Down,
-G4ThreeVector(-fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), 0., -z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-logicSupportSiliconDetector_4Down,"physSupportSiliconDetector_4Down",
-fLogicWorld,
-false,
-                                                                   0);
-logicSupportSiliconDetector_4Down->SetVisAttributes(SupportSiliconDetector_att);
-  if(physSupportSiliconDetector_4Down == NULL) {}
-
-  ///////
-  G4LogicalVolume* logicSupportSiliconDetector_4Downvide = new G4LogicalVolume(supportSiliconDetectorvide,
-  vide,
-  "logicSupportSiliconDetector_4Downvide",
-                                                      0, 0, 0);
-  G4VPhysicalVolume* physSupportSiliconDetector_4Downvide = new G4PVPlacement(rotationMatrix_4Down,
-  G4ThreeVector(-fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) - (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), 0., +(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis)-z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
-  logicSupportSiliconDetector_4Downvide,"logicSupportSiliconDetector_4Downvide",
-                                                   fLogicWorld,
-                                                   false,
-                                                   0);
-  logicSupportSiliconDetector_4Downvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
-  if(physSupportSiliconDetector_4Downvide == NULL) {}
-  /////////////
-
-  // STRIP 5
-  G4LogicalVolume* logicSiDet_4Down_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
-materialSiliconDetector,
-"logicSiDet_4Down_Strip_5",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Down_Strip_5 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
-logicSiDet_4Down_Strip_5,"logicSiDet_4Down_Strip_5",
-logicSupportSiliconDetector_4Downvide,
-false,
-                                                           0);
-logicSiDet_4Down_Strip_5->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Down_Strip_5 == NULL) {}
-
-
-  // Strip n. 4
-  G4LogicalVolume* logicSiDet_4Down_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
-materialSiliconDetector,
-"logicSi_4Down_Det_Strip_4",
-                                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Down_Strip_4 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
-logicSiDet_4Down_Strip_4,"logicSiDet_4Down_Strip_4",
-logicSupportSiliconDetector_4Downvide,
-false,
-                                                             0);
-logicSiDet_4Down_Strip_4->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Down_Strip_4 == NULL) {}
-
-  // Strip n. 3
-  G4LogicalVolume* logicSiDet_4Down_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
-materialSiliconDetector,
-"logicSi_4Down_Det_Strip_3",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Down_Strip_3 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
-logicSiDet_4Down_Strip_3,"logicSiDet_4Down_Strip_3",
-logicSupportSiliconDetector_4Downvide,
-false,
-0);
-logicSiDet_4Down_Strip_3->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Down_Strip_3 == NULL) {}
-
-  // Strip n. 2
-  //file:///usr/share/doc/HTML/en-US/index.html
-  G4LogicalVolume* logicSiDet_4Down_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
-materialSiliconDetector,
-"logicSi_4Down_Det_Strip_2",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Down_Strip_2 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
-logicSiDet_4Down_Strip_2,"logicSiDet_4Down_Strip_2",
-logicSupportSiliconDetector_4Downvide,
-false,
-0);
-logicSiDet_4Down_Strip_2->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Down_Strip_2 == NULL) {}
-
-  // Strip n. 1
-  //file:///usr/share/doc/HTML/en-US/index.html
-  G4LogicalVolume* logicSiDet_4Down_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
-materialSiliconDetector,
-"logicSi_4Down_Det_Strip_1",
-0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Down_Strip_1 = new G4PVPlacement(0,
-G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
-logicSiDet_4Down_Strip_1,"logicSiDet_4Down_Strip_1",
-logicSupportSiliconDetector_4Downvide,
-false,
-0);
-logicSiDet_4Down_Strip_1->SetVisAttributes(SiliconDetector_att);
-  if(physSiDet_4Down_Strip_1 == NULL) {}
-
-
-  // SUPPORTO IN RAME
-  ///usr/share/doc/HTML/en-US/index.html
-  G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_4Down = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_4Down"); //solid, material, name
-  G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_4Down = new G4PVPlacement(0,                //no rotation
-G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
-logic_Box_material_SupportoRame_SiliconDetector_4Down, "logic_Box_material_SupportoRame_SiliconDetector_4Down", //its fLogical volume
-logicSupportSiliconDetector_4Down,            //its mother volume
-false,                //no boolean op.
-0);                //copy nb.
-logic_Box_material_SupportoRame_SiliconDetector_4Down->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
-  if(physics_Box_material_SupportoRame_SiliconDetector_4Down == NULL) {}
-
-  /////////////////Dead Layer 4Down
-  //Strip n. 5
-  G4LogicalVolume* logicSiDet_4Down_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
-    materialSiliconDetector,
-    "logicSiDet_4Down_Strip_5_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Down_Strip_5_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_4Down_Strip_5_dl,"logicSiDet_4Down_Strip_5_dl",
-    logicSiDet_4Down_Strip_5,
-    false,
-    0);
-
-  //Strip n. 4
-  G4LogicalVolume* logicSiDet_4Down_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
-    materialSiliconDetector,
-    "logicSiDet_4Down_Strip_4_dl",                                              0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Down_Strip_4_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_4Down_Strip_4_dl,"logicSiDet_4Down_Strip_4_dl",
-    logicSiDet_4Down_Strip_4,
-    false,
-    0);
-
-  //Strip n. 3
-  G4LogicalVolume* logicSiDet_4Down_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
-    materialSiliconDetector,
-    "logicSiDet_4Down_Strip_3_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Down_Strip_3_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_4Down_Strip_3_dl,"logicSiDet_4Down_Strip_3_dl",
-    logicSiDet_4Down_Strip_3,
-    false,
-    0);
-
-  //Strip n. 2
-  G4LogicalVolume* logicSiDet_4Down_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
-    materialSiliconDetector,
-    "logicSiDet_4Down_Strip_2_dl",                                               0, 0, 0);
-  G4VPhysicalVolume* physSiDet_4Down_Strip_2_dl = new G4PVPlacement(0,
-    G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-    logicSiDet_4Down_Strip_2_dl,"logicSiDet_4Down_Strip_2_dl",
-    logicSiDet_4Down_Strip_2,
-    false,
-    0);
-
-//Strip n. 1
-G4LogicalVolume* logicSiDet_4Down_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
-  materialSiliconDetector,
-  "logicSiDet_4Down_Strip_1_dl",                                               0, 0, 0);
-G4VPhysicalVolume* physSiDet_4Down_Strip_1_dl = new G4PVPlacement(0,
-  G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
-  logicSiDet_4Down_Strip_1_dl,"logicSiDet_4Down_Strip_1_dl",
-  logicSiDet_4Down_Strip_1,
-  false,
-  0);
-
-  if(physSiDet_4Down_Strip_5_dl == NULL) {}
-  if(physSiDet_4Down_Strip_4_dl == NULL) {}
-  if(physSiDet_4Down_Strip_3_dl == NULL) {}
-  if(physSiDet_4Down_Strip_2_dl == NULL) {}
-  if(physSiDet_4Down_Strip_1_dl == NULL) {}
+//   G4RotationMatrix* rotationMatrix_2Up = new G4RotationMatrix();
+//   rotationMatrix_2Up->rotateX(0.*deg);
+//   rotationMatrix_2Up->rotateY(180.*deg - angle_between_xAxis_AND_zAxis);
+//   rotationMatrix_2Up->rotateZ(90.*deg);
+
+//   G4LogicalVolume* logicSupportSiliconDetector_2Up = new G4LogicalVolume(supportSiliconDetector,
+// materialSupportSiliconDetector,
+// "logicSupportSiliconDetector_2Up",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_2Up = new G4PVPlacement(rotationMatrix_2Up,
+// G4ThreeVector(fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2 - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), 0., z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_2Up,"physSupportSiliconDetector_2Up",
+// fLogicWorld,
+// false,
+//                                                                    0);
+// logicSupportSiliconDetector_2Up->SetVisAttributes(SupportSiliconDetector_att);
+//   if(physSupportSiliconDetector_2Up == NULL) {}
+
+//   ///////
+//   G4LogicalVolume* logicSupportSiliconDetector_2Upvide = new G4LogicalVolume(supportSiliconDetectorvide,
+//  vide,
+//  "logicSupportSiliconDetector_2Upvide",
+//                                                       0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_2Upvide = new G4PVPlacement(rotationMatrix_2Up,
+//  G4ThreeVector(fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2 - ((pDy1/2)*(1-cos(angle_between_xAxis_AND_zAxis))) + (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), 0., -(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis) + z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+//  logicSupportSiliconDetector_2Upvide,"logicSupportSiliconDetector_2Upvide",
+//                                                    fLogicWorld,
+//                                                    false,
+//                                                    0);
+//  logicSupportSiliconDetector_2Upvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
+//  if(physSupportSiliconDetector_2Upvide == NULL) {}
+//  /////////////
+
+//   // STRIP 5
+//   G4LogicalVolume* logicSiDet_2Up_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
+// materialSiliconDetector,
+// "logicSiDet_2Up_Strip_5",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_2Up_Strip_5 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
+// logicSiDet_2Up_Strip_5,"logicSiDet_2Up_Strip_5",
+// logicSupportSiliconDetector_2Upvide,
+// false,
+//                                                            0);
+// logicSiDet_2Up_Strip_5->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_2Up_Strip_5 == NULL) {}
+
+
+//   // Strip n. 4
+//   G4LogicalVolume* logicSiDet_2Up_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
+// materialSiliconDetector,
+// "logicSi_2Up_Det_Strip_4",
+//                                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_2Up_Strip_4 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
+// logicSiDet_2Up_Strip_4,"logicSiDet_2Up_Strip_4",
+// logicSupportSiliconDetector_2Upvide,
+// false,
+//                                                              0);
+// logicSiDet_2Up_Strip_4->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_2Up_Strip_4 == NULL) {}
+
+//   // Strip n. 3
+//   G4LogicalVolume* logicSiDet_2Up_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
+// materialSiliconDetector,
+// "logicSi_2Up_Det_Strip_3",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_2Up_Strip_3 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
+// logicSiDet_2Up_Strip_3,"logicSiDet_2Up_Strip_3",
+// logicSupportSiliconDetector_2Upvide,
+// false,
+// 0);
+// logicSiDet_2Up_Strip_3->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_2Up_Strip_3 == NULL) {}
+
+//   // Strip n. 2
+//   G4LogicalVolume* logicSiDet_2Up_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
+// materialSiliconDetector,
+// "logicSi_2Up_Det_Strip_2",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_2Up_Strip_2 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
+// logicSiDet_2Up_Strip_2,"logicSiDet_2Up_Strip_2",
+// logicSupportSiliconDetector_2Upvide,
+// false,
+// 0);
+// logicSiDet_2Up_Strip_2->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_2Up_Strip_2 == NULL) {}
+
+//   // Strip n. 1
+//   G4LogicalVolume* logicSiDet_2Up_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
+// materialSiliconDetector,
+// "logicSi_2Up_Det_Strip_1",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_2Up_Strip_1 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
+// logicSiDet_2Up_Strip_1,"logicSiDet_2Up_Strip_1",
+// logicSupportSiliconDetector_2Upvide,
+// false,
+// 0);
+// logicSiDet_2Up_Strip_1->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_2Up_Strip_1 == NULL) {}
+
+//   // SUPPORTO IN RAME
+//   G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_2Up   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_2Up"); //solid, material, name
+//   G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_2Up = new G4PVPlacement(0,                //no rotation
+// G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
+// logic_Box_material_SupportoRame_SiliconDetector_2Up, "logic_Box_material_SupportoRame_SiliconDetector_2Up", //its fLogical volume
+// logicSupportSiliconDetector_2Up,            //its mother volume
+// false,                //no boolean op.
+// 0);                //copy nb.
+// logic_Box_material_SupportoRame_SiliconDetector_2Up->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
+//   if(physics_Box_material_SupportoRame_SiliconDetector_2Up == NULL) {}
+
+
+//   /////////////////Dead Layer 2Up
+//   //Strip n. 5
+//   G4LogicalVolume* logicSiDet_2Up_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_2Up_Strip_5_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_2Up_Strip_5_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_2Up_Strip_5_dl,"logicSiDet_2Up_Strip_5_dl",
+//     logicSiDet_2Up_Strip_5,
+//     false,
+//     0);
+
+//   //Strip n. 4
+//   G4LogicalVolume* logicSiDet_2Up_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_2Up_Strip_4_dl",                                              0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_2Up_Strip_4_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_2Up_Strip_4_dl,"logicSiDet_2Up_Strip_4_dl",
+//     logicSiDet_2Up_Strip_4,
+//     false,
+//     0);
+
+//   //Strip n. 3
+//   G4LogicalVolume* logicSiDet_2Up_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_2Up_Strip_3_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_2Up_Strip_3_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_2Up_Strip_3_dl,"logicSiDet_2Up_Strip_3_dl",
+//     logicSiDet_2Up_Strip_3,
+//     false,
+//     0);
+
+//   //Strip n. 2
+//   G4LogicalVolume* logicSiDet_2Up_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_2Up_Strip_2_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_2Up_Strip_2_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_2Up_Strip_2_dl,"logicSiDet_2Up_Strip_2_dl",
+//     logicSiDet_2Up_Strip_2,
+//     false,
+//     0);
+
+// //Strip n. 1
+// G4LogicalVolume* logicSiDet_2Up_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
+//   materialSiliconDetector,
+//   "logicSiDet_2Up_Strip_1_dl",                                               0, 0, 0);
+// G4VPhysicalVolume* physSiDet_2Up_Strip_1_dl = new G4PVPlacement(0,
+//   G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//   logicSiDet_2Up_Strip_1_dl,"logicSiDet_2Up_Strip_1_dl",
+//   logicSiDet_2Up_Strip_1,
+//   false,
+//   0);
+
+//   if(physSiDet_2Up_Strip_5_dl == NULL) {}
+//   if(physSiDet_2Up_Strip_4_dl == NULL) {}
+//   if(physSiDet_2Up_Strip_3_dl == NULL) {}
+//   if(physSiDet_2Up_Strip_2_dl == NULL) {}
+//   if(physSiDet_2Up_Strip_1_dl == NULL) {}
+
+// //========================================================================================================================
+//   //=================================================== DETECTOR 3Up  ========================================================
+// //========================================================================================================================
+//   G4RotationMatrix* rotationMatrix_3Up = new G4RotationMatrix();
+// rotationMatrix_3Up->rotateX(-angle_between_xAxis_AND_zAxis);
+//   rotationMatrix_3Up->rotateY(180.*deg);
+//   rotationMatrix_3Up->rotateZ(0.*deg);
+
+//   G4LogicalVolume* logicSupportSiliconDetector_3Up = new G4LogicalVolume(supportSiliconDetector,
+// materialSupportSiliconDetector,
+// "logicSupportSiliconDetector_3Up",
+//                                                       0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_3Up = new G4PVPlacement(rotationMatrix_3Up,
+// G4ThreeVector(0, -fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_3Up,"physSupportSiliconDetector_3Up",
+//                                                    fLogicWorld,
+//                                                    false,
+//                                                    0);
+// logicSupportSiliconDetector_3Up->SetVisAttributes(SupportSiliconDetector_att);
+//  if(physSupportSiliconDetector_3Up == NULL) {}
+
+//  ///////
+//  G4LogicalVolume* logicSupportSiliconDetector_3Upvide = new G4LogicalVolume(supportSiliconDetectorvide,
+// vide,
+// "logicSupportSiliconDetector_3Upvide",
+//                                                      0, 0, 0);
+//  G4VPhysicalVolume* physSupportSiliconDetector_3Upvide = new G4PVPlacement(rotationMatrix_3Up,
+// G4ThreeVector(0, -fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) - (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis) , -(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis) + z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_3Upvide,"logicSupportSiliconDetector_3Upvide",
+//                                                   fLogicWorld,
+//                                                   false,
+//                                                   0);
+// logicSupportSiliconDetector_3Upvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
+// if(physSupportSiliconDetector_3Upvide == NULL) {}
+// /////////////
+
+//   // STRIP 5
+//   G4LogicalVolume* logicSiDet_3Up_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
+// materialSiliconDetector,
+// "logicSiDet_3Up_Strip_5",
+//                                                0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Up_Strip_5 = new G4PVPlacement(0,
+//                                            G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2,0.),
+// logicSiDet_3Up_Strip_5,"logicSiDet_3Up_Strip_5",
+// logicSupportSiliconDetector_3Upvide,
+//                                            false,
+//                                            0);
+// logicSiDet_3Up_Strip_5->SetVisAttributes(SiliconDetector_att);
+//  if(physSiDet_3Up_Strip_5 == NULL) {}
+
+
+//  // Strip n. 4
+//  G4LogicalVolume* logicSiDet_3Up_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
+// materialSiliconDetector,
+// "logicSi_3Up_Det_Strip_4",
+//                                                               0, 0, 0);
+//  G4VPhysicalVolume* physSiDet_3Up_Strip_4 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
+// logicSiDet_3Up_Strip_4,"logicSiDet_3Up_Strip_4",
+// logicSupportSiliconDetector_3Upvide,
+// false,
+//                                                              0);
+// logicSiDet_3Up_Strip_4->SetVisAttributes(SiliconDetector_att);
+//  if(physSiDet_3Up_Strip_4 == NULL) {}
+
+//   // Strip n. 3
+//   G4LogicalVolume* logicSiDet_3Up_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
+// materialSiliconDetector,
+// "logicSi_3Up_Det_Strip_3",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Up_Strip_3 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
+// logicSiDet_3Up_Strip_3,"logicSiDet_3Up_Strip_3",
+// logicSupportSiliconDetector_3Upvide,
+// false,
+// 0);
+// logicSiDet_3Up_Strip_3->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_3Up_Strip_3 == NULL) {}
+
+//   // Strip n. 2
+//   G4LogicalVolume* logicSiDet_3Up_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
+// materialSiliconDetector,
+// "logicSi_3Up_Det_Strip_2",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Up_Strip_2 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
+// logicSiDet_3Up_Strip_2,"logicSiDet_3Up_Strip_2",
+// logicSupportSiliconDetector_3Upvide,
+// false,
+// 0);
+// logicSiDet_3Up_Strip_2->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_3Up_Strip_2 == NULL) {}
+
+//   // Strip n. 1
+//   G4LogicalVolume* logicSiDet_3Up_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
+// materialSiliconDetector,
+// "logicSi_3Up_Det_Strip_1",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Up_Strip_1 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
+// logicSiDet_3Up_Strip_1,"logicSiDet_3Up_Strip_1",
+// logicSupportSiliconDetector_3Upvide,
+// false,
+// 0);
+// logicSiDet_3Up_Strip_1->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_3Up_Strip_1 == NULL) {}
+
+//   // SUPPORTO IN RAME
+//   G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_3Up   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_3Up"); //solid, material, name
+//   G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_3Up = new G4PVPlacement(0,                //no rotation
+// G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
+// logic_Box_material_SupportoRame_SiliconDetector_3Up, "logic_Box_material_SupportoRame_SiliconDetector_3Up", //its fLogical volume
+// logicSupportSiliconDetector_3Up,            //its mother volume
+// false,                //no boolean op.
+// 0);                //copy nb.
+// logic_Box_material_SupportoRame_SiliconDetector_3Up->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
+//   if(physics_Box_material_SupportoRame_SiliconDetector_3Up == NULL) {}
+
+//   /////////////////Dead Layer 3Up
+//   //Strip n. 5
+//   G4LogicalVolume* logicSiDet_3Up_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_3Up_Strip_5_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Up_Strip_5_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_3Up_Strip_5_dl,"logicSiDet_3Up_Strip_5_dl",
+//     logicSiDet_3Up_Strip_5,
+//     false,
+//     0);
+
+//   //Strip n. 4
+//   G4LogicalVolume* logicSiDet_3Up_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_3Up_Strip_4_dl",                                              0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Up_Strip_4_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_3Up_Strip_4_dl,"logicSiDet_3Up_Strip_4_dl",
+//     logicSiDet_3Up_Strip_4,
+//     false,
+//     0);
+
+//   //Strip n. 3
+//   G4LogicalVolume* logicSiDet_3Up_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_3Up_Strip_3_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Up_Strip_3_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_3Up_Strip_3_dl,"logicSiDet_3Up_Strip_3_dl",
+//     logicSiDet_3Up_Strip_3,
+//     false,
+//     0);
+
+//   //Strip n. 2
+//   G4LogicalVolume* logicSiDet_3Up_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_3Up_Strip_2_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Up_Strip_2_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_3Up_Strip_2_dl,"logicSiDet_3Up_Strip_2_dl",
+//     logicSiDet_3Up_Strip_2,
+//     false,
+//     0);
+
+// //Strip n. 1
+// G4LogicalVolume* logicSiDet_3Up_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
+//   materialSiliconDetector,
+//   "logicSiDet_3Up_Strip_1_dl",                                               0, 0, 0);
+// G4VPhysicalVolume* physSiDet_3Up_Strip_1_dl = new G4PVPlacement(0,
+//   G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//   logicSiDet_3Up_Strip_1_dl,"logicSiDet_3Up_Strip_1_dl",
+//   logicSiDet_3Up_Strip_1,
+//   false,
+//   0);
+
+//   if(physSiDet_3Up_Strip_5_dl == NULL) {}
+//   if(physSiDet_3Up_Strip_4_dl == NULL) {}
+//   if(physSiDet_3Up_Strip_3_dl == NULL) {}
+//   if(physSiDet_3Up_Strip_2_dl == NULL) {}
+//   if(physSiDet_3Up_Strip_1_dl == NULL) {}
+
+// //========================================================================================================================
+//   //=================================================== DETECTOR 4Up  ========================================================
+// //========================================================================================================================
+//   G4RotationMatrix* rotationMatrix_4Up = new G4RotationMatrix();
+//   rotationMatrix_4Up->rotateX(0.*deg);
+//   rotationMatrix_4Up->rotateY(180.*deg + angle_between_xAxis_AND_zAxis);
+//   rotationMatrix_4Up->rotateZ(-90.*deg);
+
+//   G4LogicalVolume* logicSupportSiliconDetector_4Up = new G4LogicalVolume(supportSiliconDetector,
+// materialSupportSiliconDetector,
+// "logicSupportSiliconDetector_4Up",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_4Up = new G4PVPlacement(rotationMatrix_4Up,
+// G4ThreeVector(-fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), 0., z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 +150*um + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_4Up,"physSupportSiliconDetector_4Up",
+// fLogicWorld,
+// false,
+//                                                                    0);
+// logicSupportSiliconDetector_4Up->SetVisAttributes(SupportSiliconDetector_att);
+//   if(physSupportSiliconDetector_4Up == NULL) {}
+
+//   ///////
+//   G4LogicalVolume* logicSupportSiliconDetector_4Upvide = new G4LogicalVolume(supportSiliconDetectorvide,
+//  vide,
+//  "logicSupportSiliconDetector_4Upvide",
+//                                                       0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_4Upvide = new G4PVPlacement(rotationMatrix_4Up,
+// G4ThreeVector(-fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) - (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), 0., -(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis) + z_height_Source_biggerBaseSiDet_inVerticale + pDz/2 +150*um + ((pDy1/2)*sin(thetaInclinazione_SiDetector))-offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+//  logicSupportSiliconDetector_4Upvide,"logicSupportSiliconDetector_4Upvide",
+//                                                    fLogicWorld,
+//                                                    false,
+//                                                    0);
+//  logicSupportSiliconDetector_4Upvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
+//  if(physSupportSiliconDetector_4Upvide == NULL) {}
+//  /////////////
+
+//   // STRIP 5
+//   G4LogicalVolume* logicSiDet_4Up_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
+// materialSiliconDetector,
+// "logicSiDet_4Up_Strip_5",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Up_Strip_5 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
+// logicSiDet_4Up_Strip_5,"logicSiDet_4Up_Strip_5",
+// logicSupportSiliconDetector_4Upvide,
+// false,
+// 0);
+// logicSiDet_4Up_Strip_5->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Up_Strip_5 == NULL) {}
+
+
+//   // Strip n. 4
+//   G4LogicalVolume* logicSiDet_4Up_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
+// materialSiliconDetector,
+// "logicSi_4Up_Det_Strip_4",
+//                                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Up_Strip_4 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
+// logicSiDet_4Up_Strip_4,"logicSiDet_4Up_Strip_4",
+// logicSupportSiliconDetector_4Upvide,
+// false,
+// 0);
+// logicSiDet_4Up_Strip_4->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Up_Strip_4 == NULL) {}
+
+//   // Strip n. 3
+//   G4LogicalVolume* logicSiDet_4Up_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
+// materialSiliconDetector,
+// "logicSi_4Up_Det_Strip_3",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Up_Strip_3 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
+// logicSiDet_4Up_Strip_3,"logicSiDet_4Up_Strip_3",
+// logicSupportSiliconDetector_4Upvide,
+// false,
+// 0);
+// logicSiDet_4Up_Strip_3->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Up_Strip_3 == NULL) {}
+
+//   // Strip n. 2
+//   G4LogicalVolume* logicSiDet_4Up_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
+// materialSiliconDetector,
+// "logicSi_4Up_Det_Strip_2",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Up_Strip_2 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2,0.),
+// logicSiDet_4Up_Strip_2,"logicSiDet_4Up_Strip_2",
+// logicSupportSiliconDetector_4Upvide,
+// false,
+// 0);
+// logicSiDet_4Up_Strip_2->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Up_Strip_2 == NULL) {}
+
+//   // Strip n. 1
+//   G4LogicalVolume* logicSiDet_4Up_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
+// materialSiliconDetector,
+// "logicSi_4Up_Det_Strip_1",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Up_Strip_1 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
+// logicSiDet_4Up_Strip_1,"logicSiDet_4Up_Strip_1",
+// logicSupportSiliconDetector_4Upvide,
+// false,
+// 0);
+
+// logicSiDet_4Up_Strip_1->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Up_Strip_1 == NULL) {}
+
+//   // SUPPORTO IN RAME
+//   G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_4Up   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_4Up"); //solid, material, name
+//   G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_4Up = new G4PVPlacement(0,                //no rotation
+// G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
+// logic_Box_material_SupportoRame_SiliconDetector_4Up, "logic_Box_material_SupportoRame_SiliconDetector_4Up", //its fLogical volume
+// logicSupportSiliconDetector_4Up,            //its mother volume
+// false,                //no boolean op.
+// 0);                //copy nb.
+// logic_Box_material_SupportoRame_SiliconDetector_4Up->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
+//   if(physics_Box_material_SupportoRame_SiliconDetector_4Up == NULL) {}
+
+//   /////////////////Dead Layer 4Up
+//   //Strip n. 5
+//   G4LogicalVolume* logicSiDet_4Up_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_4Up_Strip_5_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Up_Strip_5_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_4Up_Strip_5_dl,"logicSiDet_4Up_Strip_5_dl",
+//     logicSiDet_4Up_Strip_5,
+//     false,
+//     0);
+
+//   //Strip n. 4
+//   G4LogicalVolume* logicSiDet_4Up_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_4Up_Strip_4_dl",                                              0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Up_Strip_4_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_4Up_Strip_4_dl,"logicSiDet_4Up_Strip_4_dl",
+//     logicSiDet_4Up_Strip_4,
+//     false,
+//     0);
+
+//   //Strip n. 3
+//   G4LogicalVolume* logicSiDet_4Up_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_4Up_Strip_3_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Up_Strip_3_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_4Up_Strip_3_dl,"logicSiDet_4Up_Strip_3_dl",
+//     logicSiDet_4Up_Strip_3,
+//     false,
+//     0);
+
+//   //Strip n. 2
+//   G4LogicalVolume* logicSiDet_4Up_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_4Up_Strip_2_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Up_Strip_2_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_4Up_Strip_2_dl,"logicSiDet_4Up_Strip_2_dl",
+//     logicSiDet_4Up_Strip_2,
+//     false,
+//     0);
+
+// //Strip n. 1
+// G4LogicalVolume* logicSiDet_4Up_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
+//   materialSiliconDetector,
+//   "logicSiDet_4Up_Strip_1_dl",                                               0, 0, 0);
+// G4VPhysicalVolume* physSiDet_4Up_Strip_1_dl = new G4PVPlacement(0,
+//   G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//   logicSiDet_4Up_Strip_1_dl,"logicSiDet_4Up_Strip_1_dl",
+//   logicSiDet_4Up_Strip_1,
+//   false,
+//   0);
+
+//   if(physSiDet_4Up_Strip_5_dl == NULL) {}
+//   if(physSiDet_4Up_Strip_4_dl == NULL) {}
+//   if(physSiDet_4Up_Strip_3_dl == NULL) {}
+//   if(physSiDet_4Up_Strip_2_dl == NULL) {}
+//   if(physSiDet_4Up_Strip_1_dl == NULL) {}
+
+// //========================================================================================================================
+//   //=================================================== DETECTOR 1Down  ========================================================
+// //========================================================================================================================
+//   G4RotationMatrix* rotationMatrix_1Down = new G4RotationMatrix();
+// rotationMatrix_1Down->rotateX(-angle_between_xAxis_AND_zAxis);
+//   rotationMatrix_1Down->rotateY(0.*deg);
+//   rotationMatrix_1Down->rotateZ(180.*deg);
+
+//   G4LogicalVolume* logicSupportSiliconDetector_1Down = new G4LogicalVolume(supportSiliconDetector,
+// materialSupportSiliconDetector,
+// "logicSupportSiliconDetector_1Down",
+//                                                       0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_1Down = new G4PVPlacement(rotationMatrix_1Down,
+// G4ThreeVector(0, fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2  - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), -z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_1Down,"physSupportSiliconDetector_1Down",
+//                                                    fLogicWorld,
+//                                                    false,
+//                                                    0);
+// logicSupportSiliconDetector_1Down->SetVisAttributes(SupportSiliconDetector_att);
+//  if(physSupportSiliconDetector_1Down == NULL) {}
+
+//  ///////
+//  G4LogicalVolume* logicSupportSiliconDetector_1Downvide = new G4LogicalVolume(supportSiliconDetectorvide,
+// vide,
+// "logicSupportSiliconDetector_1Downvide",
+//                                                      0, 0, 0);
+//  G4VPhysicalVolume* physSupportSiliconDetector_1Downvide = new G4PVPlacement(rotationMatrix_1Down,
+// G4ThreeVector(0, fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2  - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) + (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), +(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis)-z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_1Downvide,"logicSupportSiliconDetector_1Downvide",
+//                                                   fLogicWorld,
+//                                                   false,
+//                                                   0);
+// logicSupportSiliconDetector_1Downvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
+// if(physSupportSiliconDetector_1Downvide == NULL) {}
+// /////////////
+
+//   // STRIP 5
+//   G4LogicalVolume* logicSiDet_1Down_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
+// materialSiliconDetector,
+// "logicSiDet_1Down_Strip_5",
+//                                                0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Down_Strip_5 = new G4PVPlacement(0,
+//                                            G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
+// logicSiDet_1Down_Strip_5,"logicSiDet_1Down_Strip_5",
+// logicSupportSiliconDetector_1Downvide,
+//                                            false,
+//                                            0);
+// logicSiDet_1Down_Strip_5->SetVisAttributes(SiliconDetector_att);
+//  if(physSiDet_1Down_Strip_5 == NULL) {}
+
+
+//  // Strip n. 4
+//  G4LogicalVolume* logicSiDet_1Down_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
+// materialSiliconDetector,
+// "logicSi_1Down_Det_Strip_4",
+//                                                               0, 0, 0);
+//  G4VPhysicalVolume* physSiDet_1Down_Strip_4 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
+// logicSiDet_1Down_Strip_4,"logicSiDet_1Down_Strip_4",
+// logicSupportSiliconDetector_1Downvide,
+// false,
+//                                                              0);
+// logicSiDet_1Down_Strip_4->SetVisAttributes(SiliconDetector_att);
+//  if(physSiDet_1Down_Strip_4 == NULL) {}
+
+//   // Strip n. 3
+//   G4LogicalVolume* logicSiDet_1Down_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
+// materialSiliconDetector,
+// "logicSi_1Down_Det_Strip_3",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Down_Strip_3 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
+// logicSiDet_1Down_Strip_3,"logicSiDet_1Down_Strip_3",
+// logicSupportSiliconDetector_1Downvide,
+// false,
+// 0);
+// logicSiDet_1Down_Strip_3->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_1Down_Strip_3 == NULL) {}
+
+//   // Strip n. 2
+//   G4LogicalVolume* logicSiDet_1Down_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
+// materialSiliconDetector,
+// "logicSi_1Down_Det_Strip_2",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Down_Strip_2 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
+// logicSiDet_1Down_Strip_2,"logicSiDet_1Down_Strip_2",
+// logicSupportSiliconDetector_1Downvide,
+// false,
+// 0);
+// logicSiDet_1Down_Strip_2->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_1Down_Strip_2 == NULL) {}
+
+//   // Strip n. 1
+//   G4LogicalVolume* logicSiDet_1Down_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
+// materialSiliconDetector,
+// "logicSi_1Down_Det_Strip_1",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Down_Strip_1 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
+// logicSiDet_1Down_Strip_1,"logicSiDet_1Down_Strip_1",
+// logicSupportSiliconDetector_1Downvide,
+// false,
+// 0);
+// logicSiDet_1Down_Strip_1->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_1Down_Strip_1 == NULL) {}
+
+//   // SUPPORTO IN RAME
+//   G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_1Down   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_1Down"); //solid, material, name
+//   G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_1Down = new G4PVPlacement(0,                //no rotation
+// G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
+// logic_Box_material_SupportoRame_SiliconDetector_1Down, "logic_Box_material_SupportoRame_SiliconDetector_1Down", //its fLogical volume
+// logicSupportSiliconDetector_1Down,            //its mother volume
+// false,                //no boolean op.
+// 0);                //copy nb.
+// logic_Box_material_SupportoRame_SiliconDetector_1Down->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
+//   if(physics_Box_material_SupportoRame_SiliconDetector_1Down == NULL) {}
+
+//   /////////////////Dead Layer 1Down
+//   //Strip n. 5
+//   G4LogicalVolume* logicSiDet_1Down_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_1Down_Strip_5_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Down_Strip_5_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_1Down_Strip_5_dl,"logicSiDet_1Down_Strip_5_dl",
+//     logicSiDet_1Down_Strip_5,
+//     false,
+//     0);
+
+//   //Strip n. 4
+//   G4LogicalVolume* logicSiDet_1Down_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_1Down_Strip_4_dl",                                              0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Down_Strip_4_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_1Down_Strip_4_dl,"logicSiDet_1Down_Strip_4_dl",
+//     logicSiDet_1Down_Strip_4,
+//     false,
+//     0);
+
+//   //Strip n. 3
+//   G4LogicalVolume* logicSiDet_1Down_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_1Down_Strip_3_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Down_Strip_3_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_1Down_Strip_3_dl,"logicSiDet_1Down_Strip_3_dl",
+//     logicSiDet_1Down_Strip_3,
+//     false,
+//     0);
+
+//   //Strip n. 2
+//   G4LogicalVolume* logicSiDet_1Down_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_1Down_Strip_2_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_1Down_Strip_2_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_1Down_Strip_2_dl,"logicSiDet_1Down_Strip_2_dl",
+//     logicSiDet_1Down_Strip_2,
+//     false,
+//     0);
+
+// //Strip n. 1
+// G4LogicalVolume* logicSiDet_1Down_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
+//   materialSiliconDetector,
+//   "logicSiDet_1Down_Strip_1_dl",                                               0, 0, 0);
+// G4VPhysicalVolume* physSiDet_1Down_Strip_1_dl = new G4PVPlacement(0,
+//   G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//   logicSiDet_1Down_Strip_1_dl,"logicSiDet_1Down_Strip_1_dl",
+//   logicSiDet_1Down_Strip_1,
+//   false,
+//   0);
+
+//   if(physSiDet_1Down_Strip_5_dl == NULL) {}
+//   if(physSiDet_1Down_Strip_4_dl == NULL) {}
+//   if(physSiDet_1Down_Strip_3_dl == NULL) {}
+//   if(physSiDet_1Down_Strip_2_dl == NULL) {}
+//   if(physSiDet_1Down_Strip_1_dl == NULL) {}
+// //========================================================================================================================
+//   //=================================================== DETECTOR 2Down  ========================================================
+// //========================================================================================================================
+// //   G4RotationMatrix* rotationMatrix_2Down = new G4RotationMatrix();
+// //   rotationMatrix_2Down->rotateX(180.*deg);
+// //   rotationMatrix_2Down->rotateY(180.*deg - angle_between_xAxis_AND_zAxis);
+// //   rotationMatrix_2Down->rotateZ(90.*deg);
+
+// //   G4LogicalVolume* logicSupportSiliconDetector_2Down = new G4LogicalVolume(supportSiliconDetector,
+// // materialSupportSiliconDetector,
+// // "logicSupportSiliconDetector_2Down",
+// // 0, 0, 0);
+// //   G4VPhysicalVolume* physSupportSiliconDetector_2Down = new G4PVPlacement(rotationMatrix_2Down,
+// // G4ThreeVector(fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2  - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), 0., -z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// // logicSupportSiliconDetector_2Down,"physSupportSiliconDetector_2Down",
+// // fLogicWorld,
+// // false,
+// //                                                                    0);
+// // logicSupportSiliconDetector_2Down->SetVisAttributes(SupportSiliconDetector_att);
+// //   if(physSupportSiliconDetector_2Down == NULL) {}
+
+// //   ///////
+// //   G4LogicalVolume* logicSupportSiliconDetector_2Downvide = new G4LogicalVolume(supportSiliconDetectorvide,
+// //   vide,
+// //   "logicSupportSiliconDetector_2Downvide",
+// //                                                       0, 0, 0);
+// //   G4VPhysicalVolume* physSupportSiliconDetector_2Downvide = new G4PVPlacement(rotationMatrix_2Down,
+// //   G4ThreeVector(fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1/2  - (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) + (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), 0., + +(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis)-z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// //   logicSupportSiliconDetector_2Downvide,"logicSupportSiliconDetector_2Downvide",
+// //                                                    fLogicWorld,
+// //                                                    false,
+// //                                                    0);
+// //   logicSupportSiliconDetector_2Downvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
+// //   if(physSupportSiliconDetector_2Downvide == NULL) {}
+// //   /////////////
+
+// //   // STRIP 5
+// //   G4LogicalVolume* logicSiDet_2Down_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
+// // materialSiliconDetector,
+// // "logicSiDet_2Down_Strip_5",
+// // 0, 0, 0);
+// //   G4VPhysicalVolume* physSiDet_2Down_Strip_5 = new G4PVPlacement(0,
+// // G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
+// // logicSiDet_2Down_Strip_5,"logicSiDet_2Down_Strip_5",
+// // logicSupportSiliconDetector_2Downvide,
+// // false,
+// //                                                            0);
+// // logicSiDet_2Down_Strip_5->SetVisAttributes(SiliconDetector_att);
+// //   if(physSiDet_2Down_Strip_5 == NULL) {}
+
+
+// //   // Strip n. 4
+// //   G4LogicalVolume* logicSiDet_2Down_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
+// // materialSiliconDetector,
+// // "logicSi_2Down_Det_Strip_4",
+// //                                                               0, 0, 0);
+// //   G4VPhysicalVolume* physSiDet_2Down_Strip_4 = new G4PVPlacement(0,
+// // G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
+// // logicSiDet_2Down_Strip_4,"logicSiDet_2Down_Strip_4",
+// // logicSupportSiliconDetector_2Downvide,
+// // false,
+// //                                                              0);
+// // logicSiDet_2Down_Strip_4->SetVisAttributes(SiliconDetector_att);
+// //   if(physSiDet_2Down_Strip_4 == NULL) {}
+
+// //   // Strip n. 3
+// //   G4LogicalVolume* logicSiDet_2Down_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
+// // materialSiliconDetector,
+// // "logicSi_2Down_Det_Strip_3",
+// // 0, 0, 0);
+// //   G4VPhysicalVolume* physSiDet_2Down_Strip_3 = new G4PVPlacement(0,
+// // G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
+// // logicSiDet_2Down_Strip_3,"logicSiDet_2Down_Strip_3",
+// // logicSupportSiliconDetector_2Downvide,
+// // false,
+// // 0);
+// // logicSiDet_2Down_Strip_3->SetVisAttributes(SiliconDetector_att);
+// //   if(physSiDet_2Down_Strip_3 == NULL) {}
+
+// //   // Strip n. 2
+// //   G4LogicalVolume* logicSiDet_2Down_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
+// // materialSiliconDetector,
+// // "logicSi_2Down_Det_Strip_2",
+// // 0, 0, 0);
+// //   G4VPhysicalVolume* physSiDet_2Down_Strip_2 = new G4PVPlacement(0,
+// // G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
+// // logicSiDet_2Down_Strip_2,"logicSiDet_2Down_Strip_2",
+// // logicSupportSiliconDetector_2Downvide,
+// // false,
+// // 0);
+// // logicSiDet_2Down_Strip_2->SetVisAttributes(SiliconDetector_att);
+// //   if(physSiDet_2Down_Strip_2 == NULL) {}
+
+// //   // Strip n. 1
+// //   G4LogicalVolume* logicSiDet_2Down_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
+// // materialSiliconDetector,
+// // "logicSi_2Down_Det_Strip_1",
+// // 0, 0, 0);
+// //   G4VPhysicalVolume* physSiDet_2Down_Strip_1 = new G4PVPlacement(0,
+// // G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
+// // logicSiDet_2Down_Strip_1,"logicSiDet_2Down_Strip_1",
+// // logicSupportSiliconDetector_2Downvide,
+// // false,
+// // 0);
+// // logicSiDet_2Down_Strip_1->SetVisAttributes(SiliconDetector_att);
+// //   if(physSiDet_2Down_Strip_1 == NULL) {}
+
+// //   // SUPPORTO IN RAME
+// //   G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_2Down   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_2Down"); //solid, material, name
+// //   G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_2Down = new G4PVPlacement(0,                //no rotation
+// // G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
+// // logic_Box_material_SupportoRame_SiliconDetector_2Down, "logic_Box_material_SupportoRame_SiliconDetector_2Down", //its fLogical volume
+// // logicSupportSiliconDetector_2Down,            //its mother volume
+// // false,                //no boolean op.
+// // 0);                //copy nb.
+// // logic_Box_material_SupportoRame_SiliconDetector_2Down->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
+// //   if(physics_Box_material_SupportoRame_SiliconDetector_2Down == NULL) {}
+
+// //   /////////////////Dead Layer 2Down
+// //   //Strip n. 5
+// //   G4LogicalVolume* logicSiDet_2Down_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
+// //     materialSiliconDetector,
+// //     "logicSiDet_2Down_Strip_5_dl",                                               0, 0, 0);
+// //   G4VPhysicalVolume* physSiDet_2Down_Strip_5_dl = new G4PVPlacement(0,
+// //     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+// //     logicSiDet_2Down_Strip_5_dl,"logicSiDet_2Down_Strip_5_dl",
+// //     logicSiDet_2Down_Strip_5,
+// //     false,
+// //     0);
+
+// //   //Strip n. 4
+// //   G4LogicalVolume* logicSiDet_2Down_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
+// //     materialSiliconDetector,
+// //     "logicSiDet_2Down_Strip_4_dl",                                              0, 0, 0);
+// //   G4VPhysicalVolume* physSiDet_2Down_Strip_4_dl = new G4PVPlacement(0,
+// //     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+// //     logicSiDet_2Down_Strip_4_dl,"logicSiDet_2Down_Strip_4_dl",
+// //     logicSiDet_2Down_Strip_4,
+// //     false,
+// //     0);
+
+// //   //Strip n. 3
+// //   G4LogicalVolume* logicSiDet_2Down_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
+// //     materialSiliconDetector,
+// //     "logicSiDet_2Down_Strip_3_dl",                                               0, 0, 0);
+// //   G4VPhysicalVolume* physSiDet_2Down_Strip_3_dl = new G4PVPlacement(0,
+// //     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+// //     logicSiDet_2Down_Strip_3_dl,"logicSiDet_2Down_Strip_3_dl",
+// //     logicSiDet_2Down_Strip_3,
+// //     false,
+// //     0);
+
+// //   //Strip n. 2
+// //   G4LogicalVolume* logicSiDet_2Down_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
+// //     materialSiliconDetector,
+// //     "logicSiDet_2Down_Strip_2_dl",                                               0, 0, 0);
+// //   G4VPhysicalVolume* physSiDet_2Down_Strip_2_dl = new G4PVPlacement(0,
+// //     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+// //     logicSiDet_2Down_Strip_2_dl,"logicSiDet_2Down_Strip_2_dl",
+// //     logicSiDet_2Down_Strip_2,
+// //     false,
+// //     0);
+
+// // //Strip n. 1
+// // G4LogicalVolume* logicSiDet_2Down_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
+// //   materialSiliconDetector,
+// //   "logicSiDet_2Down_Strip_1_dl",                                               0, 0, 0);
+// // G4VPhysicalVolume* physSiDet_2Down_Strip_1_dl = new G4PVPlacement(0,
+// //   G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+// //   logicSiDet_2Down_Strip_1_dl,"logicSiDet_2Down_Strip_1_dl",
+// //   logicSiDet_2Down_Strip_1,
+// //   false,
+// //   0);
+
+// //   if(physSiDet_2Down_Strip_5_dl == NULL) {}
+// //   if(physSiDet_2Down_Strip_4_dl == NULL) {}
+// //   if(physSiDet_2Down_Strip_3_dl == NULL) {}
+// //   if(physSiDet_2Down_Strip_2_dl == NULL) {}
+// //   if(physSiDet_2Down_Strip_1_dl == NULL) {}
+
+
+
+// //========================================================================================================================
+//   //=================================================== DETECTOR 3Down  ========================================================
+// //========================================================================================================================
+//   G4RotationMatrix* rotationMatrix_3Down = new G4RotationMatrix();
+// rotationMatrix_3Down->rotateX(angle_between_xAxis_AND_zAxis);
+//   rotationMatrix_3Down->rotateY(0.*deg);
+//   rotationMatrix_3Down->rotateZ(0.*deg);
+
+//   G4LogicalVolume* logicSupportSiliconDetector_3Down = new G4LogicalVolume(supportSiliconDetector,
+// materialSupportSiliconDetector,
+// "logicSupportSiliconDetector_3Down",
+//                                                       0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_3Down = new G4PVPlacement(rotationMatrix_3Down,
+// G4ThreeVector(0, -fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), -z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_3Down,"physSupportSiliconDetector_3Down",
+//                                                    fLogicWorld,
+//                                                    false,
+//                                                    0);
+// logicSupportSiliconDetector_3Down->SetVisAttributes(SupportSiliconDetector_att);
+//  if(physSupportSiliconDetector_3Down == NULL) {}
+
+//  ///////
+//  G4LogicalVolume* logicSupportSiliconDetector_3Downvide = new G4LogicalVolume(supportSiliconDetectorvide,
+//  vide,
+//  "logicSupportSiliconDetector_3Downvide",
+//                                                      0, 0, 0);
+//  G4VPhysicalVolume* physSupportSiliconDetector_3Downvide = new G4PVPlacement(rotationMatrix_3Down,
+//  G4ThreeVector(0, -fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) - (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), +(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis)-z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+//  logicSupportSiliconDetector_3Downvide,"logicSupportSiliconDetector_3Downvide",
+//                                                   fLogicWorld,
+//                                                   false,
+//                                                   0);
+//  logicSupportSiliconDetector_3Downvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
+//  if(physSupportSiliconDetector_3Downvide == NULL) {}
+//  /////////////
+
+//   // STRIP 5
+//   G4LogicalVolume* logicSiDet_3Down_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
+// materialSiliconDetector,
+// "logicSiDet_3Down_Strip_5",
+//                                                0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Down_Strip_5 = new G4PVPlacement(0,
+//                                            G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
+// logicSiDet_3Down_Strip_5,"logicSiDet_3Down_Strip_5",
+// logicSupportSiliconDetector_3Downvide,
+//                                            false,
+//                                            0);
+// logicSiDet_3Down_Strip_5->SetVisAttributes(SiliconDetector_att);
+//  if(physSiDet_3Down_Strip_5 == NULL) {}
+
+
+//  // Strip n. 4
+//  G4LogicalVolume* logicSiDet_3Down_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
+// materialSiliconDetector,
+// "logicSi_3Down_Det_Strip_4",
+//                                                               0, 0, 0);
+//  G4VPhysicalVolume* physSiDet_3Down_Strip_4 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
+// logicSiDet_3Down_Strip_4,"logicSiDet_3Down_Strip_4",
+// logicSupportSiliconDetector_3Downvide,
+// false,
+//                                                              0);
+// logicSiDet_3Down_Strip_4->SetVisAttributes(SiliconDetector_att);
+//  if(physSiDet_3Down_Strip_4 == NULL) {}
+
+//   // Strip n. 3
+//   G4LogicalVolume* logicSiDet_3Down_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
+// materialSiliconDetector,
+// "logicSi_3Down_Det_Strip_3",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Down_Strip_3 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
+// logicSiDet_3Down_Strip_3,"logicSiDet_3Down_Strip_3",
+// logicSupportSiliconDetector_3Downvide,
+// false,
+// 0);
+// logicSiDet_3Down_Strip_3->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_3Down_Strip_3 == NULL) {}
+
+//   // Strip n. 2
+//   G4LogicalVolume* logicSiDet_3Down_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
+// materialSiliconDetector,
+// "logicSi_3Down_Det_Strip_2",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Down_Strip_2 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
+// logicSiDet_3Down_Strip_2,"logicSiDet_3Down_Strip_2",
+// logicSupportSiliconDetector_3Downvide,
+// false,
+// 0);
+// logicSiDet_3Down_Strip_2->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_3Down_Strip_2 == NULL) {}
+
+//   // Strip n. 1
+//   G4LogicalVolume* logicSiDet_3Down_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
+// materialSiliconDetector,
+// "logicSi_3Down_Det_Strip_1",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Down_Strip_1 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
+// logicSiDet_3Down_Strip_1,"logicSiDet_3Down_Strip_1",
+// logicSupportSiliconDetector_3Downvide,
+// false,
+// 0);
+// logicSiDet_3Down_Strip_1->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_3Down_Strip_1 == NULL) {}
+
+//   // SUPPORTO IN RAME
+//   G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_3Down   = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_3Down"); //solid, material, name
+//   G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_3Down = new G4PVPlacement(0,                //no rotation
+// G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
+// logic_Box_material_SupportoRame_SiliconDetector_3Down, "logic_Box_material_SupportoRame_SiliconDetector_3Down", //its fLogical volume
+// logicSupportSiliconDetector_3Down,            //its mother volume
+// false,                //no boolean op.
+// 0);                //copy nb.
+// logic_Box_material_SupportoRame_SiliconDetector_3Down->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
+//   if(physics_Box_material_SupportoRame_SiliconDetector_3Down == NULL) {}
+
+//   /////////////////Dead Layer 3Down
+//   //Strip n. 5
+//   G4LogicalVolume* logicSiDet_3Down_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_3Down_Strip_5_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Down_Strip_5_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_3Down_Strip_5_dl,"logicSiDet_3Down_Strip_5_dl",
+//     logicSiDet_3Down_Strip_5,
+//     false,
+//     0);
+
+//   //Strip n. 4
+//   G4LogicalVolume* logicSiDet_3Down_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_3Down_Strip_4_dl",                                              0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Down_Strip_4_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_3Down_Strip_4_dl,"logicSiDet_3Down_Strip_4_dl",
+//     logicSiDet_3Down_Strip_4,
+//     false,
+//     0);
+
+//   //Strip n. 3
+//   G4LogicalVolume* logicSiDet_3Down_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_3Down_Strip_3_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Down_Strip_3_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_3Down_Strip_3_dl,"logicSiDet_3Down_Strip_3_dl",
+//     logicSiDet_3Down_Strip_3,
+//     false,
+//     0);
+
+//   //Strip n. 2
+//   G4LogicalVolume* logicSiDet_3Down_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_3Down_Strip_2_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_3Down_Strip_2_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_3Down_Strip_2_dl,"logicSiDet_3Down_Strip_2_dl",
+//     logicSiDet_3Down_Strip_2,
+//     false,
+//     0);
+
+// //Strip n. 1
+// G4LogicalVolume* logicSiDet_3Down_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
+//   materialSiliconDetector,
+//   "logicSiDet_3Down_Strip_1_dl",                                               0, 0, 0);
+// G4VPhysicalVolume* physSiDet_3Down_Strip_1_dl = new G4PVPlacement(0,
+//   G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//   logicSiDet_3Down_Strip_1_dl,"logicSiDet_3Down_Strip_1_dl",
+//   logicSiDet_3Down_Strip_1,
+//   false,
+//   0);
+
+//   if(physSiDet_3Down_Strip_5_dl == NULL) {}
+//   if(physSiDet_3Down_Strip_4_dl == NULL) {}
+//   if(physSiDet_3Down_Strip_3_dl == NULL) {}
+//   if(physSiDet_3Down_Strip_2_dl == NULL) {}
+//   if(physSiDet_3Down_Strip_1_dl == NULL) {}
+
+
+// //========================================================================================================================
+//   //=================================================== DETECTOR 4Down  ========================================================
+// //========================================================================================================================
+//   G4RotationMatrix* rotationMatrix_4Down = new G4RotationMatrix();
+//   rotationMatrix_4Down->rotateX(180.*deg);
+//   rotationMatrix_4Down->rotateY(180.*deg + angle_between_xAxis_AND_zAxis);
+//   rotationMatrix_4Down->rotateZ(-90.*deg);
+
+//   G4LogicalVolume* logicSupportSiliconDetector_4Down = new G4LogicalVolume(supportSiliconDetector,
+// materialSupportSiliconDetector,
+// "logicSupportSiliconDetector_4Down",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_4Down = new G4PVPlacement(rotationMatrix_4Down,
+// G4ThreeVector(-fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))), 0., -z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+// logicSupportSiliconDetector_4Down,"physSupportSiliconDetector_4Down",
+// fLogicWorld,
+// false,
+//                                                                    0);
+// logicSupportSiliconDetector_4Down->SetVisAttributes(SupportSiliconDetector_att);
+//   if(physSupportSiliconDetector_4Down == NULL) {}
+
+//   ///////
+//   G4LogicalVolume* logicSupportSiliconDetector_4Downvide = new G4LogicalVolume(supportSiliconDetectorvide,
+//   vide,
+//   "logicSupportSiliconDetector_4Downvide",
+//                                                       0, 0, 0);
+//   G4VPhysicalVolume* physSupportSiliconDetector_4Downvide = new G4PVPlacement(rotationMatrix_4Down,
+//   G4ThreeVector(-fRadius_PlasticScintillator - spazio_tra_Scintillatore_e_BordoSiDetector - pDy1/2  + (pDy1/2*(1-cos(angle_between_xAxis_AND_zAxis))) - (pDz+thicknessSiDetector)/2*-sin(angle_between_xAxis_AND_zAxis), 0., +(pDz+thicknessSiDetector)/2*cos(angle_between_xAxis_AND_zAxis)-z_height_Source_biggerBaseSiDet_inVerticale - pDz/2 - ((pDy1/2)*sin(thetaInclinazione_SiDetector))+offset), // ultima espressione implementata nella coord z per correggere per effetto di rotazione risp al baricentro (sempre la solita vecchia storia)
+//   logicSupportSiliconDetector_4Downvide,"logicSupportSiliconDetector_4Downvide",
+//                                                    fLogicWorld,
+//                                                    false,
+//                                                    0);
+//   logicSupportSiliconDetector_4Downvide->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_attvide);
+//   if(physSupportSiliconDetector_4Downvide == NULL) {}
+//   /////////////
+
+//   // STRIP 5
+//   G4LogicalVolume* logicSiDet_4Down_Strip_5 = new G4LogicalVolume(SiDet_Strip_5,
+// materialSiliconDetector,
+// "logicSiDet_4Down_Strip_5",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Down_Strip_5 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5/2, 0.),
+// logicSiDet_4Down_Strip_5,"logicSiDet_4Down_Strip_5",
+// logicSupportSiliconDetector_4Downvide,
+// false,
+//                                                            0);
+// logicSiDet_4Down_Strip_5->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Down_Strip_5 == NULL) {}
+
+
+//   // Strip n. 4
+//   G4LogicalVolume* logicSiDet_4Down_Strip_4 = new G4LogicalVolume(SiDet_Strip_4,
+// materialSiliconDetector,
+// "logicSi_4Down_Det_Strip_4",
+//                                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Down_Strip_4 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4/2, 0.),
+// logicSiDet_4Down_Strip_4,"logicSiDet_4Down_Strip_4",
+// logicSupportSiliconDetector_4Downvide,
+// false,
+//                                                              0);
+// logicSiDet_4Down_Strip_4->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Down_Strip_4 == NULL) {}
+
+//   // Strip n. 3
+//   G4LogicalVolume* logicSiDet_4Down_Strip_3 = new G4LogicalVolume(SiDet_Strip_3,
+// materialSiliconDetector,
+// "logicSi_4Down_Det_Strip_3",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Down_Strip_3 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.),
+// logicSiDet_4Down_Strip_3,"logicSiDet_4Down_Strip_3",
+// logicSupportSiliconDetector_4Downvide,
+// false,
+// 0);
+// logicSiDet_4Down_Strip_3->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Down_Strip_3 == NULL) {}
+
+//   // Strip n. 2
+//   //file:///usr/share/doc/HTML/en-US/index.html
+//   G4LogicalVolume* logicSiDet_4Down_Strip_2 = new G4LogicalVolume(SiDet_Strip_2,
+// materialSiliconDetector,
+// "logicSi_4Down_Det_Strip_2",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Down_Strip_2 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.),
+// logicSiDet_4Down_Strip_2,"logicSiDet_4Down_Strip_2",
+// logicSupportSiliconDetector_4Downvide,
+// false,
+// 0);
+// logicSiDet_4Down_Strip_2->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Down_Strip_2 == NULL) {}
+
+//   // Strip n. 1
+//   //file:///usr/share/doc/HTML/en-US/index.html
+//   G4LogicalVolume* logicSiDet_4Down_Strip_1 = new G4LogicalVolume(SiDet_Strip_1,
+// materialSiliconDetector,
+// "logicSi_4Down_Det_Strip_1",
+// 0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Down_Strip_1 = new G4PVPlacement(0,
+// G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.),
+// logicSiDet_4Down_Strip_1,"logicSiDet_4Down_Strip_1",
+// logicSupportSiliconDetector_4Downvide,
+// false,
+// 0);
+// logicSiDet_4Down_Strip_1->SetVisAttributes(SiliconDetector_att);
+//   if(physSiDet_4Down_Strip_1 == NULL) {}
+
+
+//   // SUPPORTO IN RAME
+//   ///usr/share/doc/HTML/en-US/index.html
+//   G4LogicalVolume* logic_Box_material_SupportoRame_SiliconDetector_4Down = new G4LogicalVolume(Box_material_SupportoRame_SiliconDetector, material_SupportoRame_SiliconDetector, "logic_Box_material_SupportoRame_SiliconDetector_4Down"); //solid, material, name
+//   G4VPhysicalVolume* physics_Box_material_SupportoRame_SiliconDetector_4Down = new G4PVPlacement(0,                //no rotation
+// G4ThreeVector((length_x_SupportoRame_SiDetector/2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector/tan(thetaInclinazione_SiDetector) -1.*mm)), pDy1/2 - height_y_SupportoRame_SiDetector/2, -pDz/2 -thickness_z_SupportoRame_SiDetector/2),    //position, gi� negativa
+// logic_Box_material_SupportoRame_SiliconDetector_4Down, "logic_Box_material_SupportoRame_SiliconDetector_4Down", //its fLogical volume
+// logicSupportSiliconDetector_4Down,            //its mother volume
+// false,                //no boolean op.
+// 0);                //copy nb.
+// logic_Box_material_SupportoRame_SiliconDetector_4Down->SetVisAttributes(Box_material_SupportoRame_SiliconDetector_att);
+//   if(physics_Box_material_SupportoRame_SiliconDetector_4Down == NULL) {}
+
+//   /////////////////Dead Layer 4Down
+//   //Strip n. 5
+//   G4LogicalVolume* logicSiDet_4Down_Strip_5_dl = new G4LogicalVolume(SiDet_Strip_5_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_4Down_Strip_5_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Down_Strip_5_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_4Down_Strip_5_dl,"logicSiDet_4Down_Strip_5_dl",
+//     logicSiDet_4Down_Strip_5,
+//     false,
+//     0);
+
+//   //Strip n. 4
+//   G4LogicalVolume* logicSiDet_4Down_Strip_4_dl = new G4LogicalVolume(SiDet_Strip_4_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_4Down_Strip_4_dl",                                              0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Down_Strip_4_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_4Down_Strip_4_dl,"logicSiDet_4Down_Strip_4_dl",
+//     logicSiDet_4Down_Strip_4,
+//     false,
+//     0);
+
+//   //Strip n. 3
+//   G4LogicalVolume* logicSiDet_4Down_Strip_3_dl = new G4LogicalVolume(SiDet_Strip_3_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_4Down_Strip_3_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Down_Strip_3_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_4Down_Strip_3_dl,"logicSiDet_4Down_Strip_3_dl",
+//     logicSiDet_4Down_Strip_3,
+//     false,
+//     0);
+
+//   //Strip n. 2
+//   G4LogicalVolume* logicSiDet_4Down_Strip_2_dl = new G4LogicalVolume(SiDet_Strip_2_dl,
+//     materialSiliconDetector,
+//     "logicSiDet_4Down_Strip_2_dl",                                               0, 0, 0);
+//   G4VPhysicalVolume* physSiDet_4Down_Strip_2_dl = new G4PVPlacement(0,
+//     G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//     logicSiDet_4Down_Strip_2_dl,"logicSiDet_4Down_Strip_2_dl",
+//     logicSiDet_4Down_Strip_2,
+//     false,
+//     0);
+
+// //Strip n. 1
+// G4LogicalVolume* logicSiDet_4Down_Strip_1_dl = new G4LogicalVolume(SiDet_Strip_1_dl,
+//   materialSiliconDetector,
+//   "logicSiDet_4Down_Strip_1_dl",                                               0, 0, 0);
+// G4VPhysicalVolume* physSiDet_4Down_Strip_1_dl = new G4PVPlacement(0,
+//   G4ThreeVector(0., 0., thicknessSiDetector/2 - thicknessSiDetectorDeadLayer/2),
+//   logicSiDet_4Down_Strip_1_dl,"logicSiDet_4Down_Strip_1_dl",
+//   logicSiDet_4Down_Strip_1,
+//   false,
+//   0);
+
+//   if(physSiDet_4Down_Strip_5_dl == NULL) {}
+//   if(physSiDet_4Down_Strip_4_dl == NULL) {}
+//   if(physSiDet_4Down_Strip_3_dl == NULL) {}
+//   if(physSiDet_4Down_Strip_2_dl == NULL) {}
+//   if(physSiDet_4Down_Strip_1_dl == NULL) {}
 
 //===================================================================================================================================================================
 //===================================================================================================================================================================
@@ -2384,114 +2586,106 @@ logic_placcaRame_Cilindrica->SetVisAttributes(Box_material_SupportoRame_PlasticS
 
 fLogic_PlasticScintillator->SetSensitiveDetector( manager_ptr->GetWisardSensor_PlasticScintillator() );
 
-logicSiDet_1Up_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_1() );
-logicSiDet_1Up_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_2() );
-logicSiDet_1Up_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_3() );
-logicSiDet_1Up_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_4() );
-logicSiDet_1Up_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_5() );
-logicSupportSiliconDetector_1Up->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Support() );
+// logicSiDet_1Up_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_1") );
+// logicSiDet_1Up_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_2") );
+// logicSiDet_1Up_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_3") );
+// logicSiDet_1Up_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_4") );
+// logicSiDet_1Up_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_5") );
 
-logicSiDet_2Up_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_1() );
-logicSiDet_2Up_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_2() );
-logicSiDet_2Up_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_3() );
-logicSiDet_2Up_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_4() );
-logicSiDet_2Up_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_5() );
-logicSupportSiliconDetector_2Up->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Support() );
+// logicSiDet_2Up_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_1") );
+// logicSiDet_2Up_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_2") );
+// logicSiDet_2Up_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_3") );
+// logicSiDet_2Up_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_4") );
+// logicSiDet_2Up_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_5") );
 
-logicSiDet_3Up_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_1() );
-logicSiDet_3Up_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_2() );
-logicSiDet_3Up_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_3() );
-logicSiDet_3Up_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_4() );
-logicSiDet_3Up_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_5() );
-logicSupportSiliconDetector_3Up->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Support() );
+// logicSiDet_3Up_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_1") );
+// logicSiDet_3Up_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_2") );
+// logicSiDet_3Up_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_3") );
+// logicSiDet_3Up_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_4") );
+// logicSiDet_3Up_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_5") );
 
-logicSiDet_4Up_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_1() );
-logicSiDet_4Up_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_2() );
-logicSiDet_4Up_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_3() );
-logicSiDet_4Up_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_4() );
-logicSiDet_4Up_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_5() );
-logicSupportSiliconDetector_4Up->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Support() );
+// logicSiDet_4Up_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_1") );
+// logicSiDet_4Up_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_2") );
+// logicSiDet_4Up_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_3") );
+// logicSiDet_4Up_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_4") );
+// logicSiDet_4Up_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_5") );
 
-logicSiDet_1Down_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_1() );
-logicSiDet_1Down_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_2() );
-logicSiDet_1Down_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_3() );
-logicSiDet_1Down_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_4() );
-logicSiDet_1Down_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_5() );
-logicSupportSiliconDetector_1Down->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Support() );
+// logicSiDet_1Down_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_1") );
+// logicSiDet_1Down_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_2") );
+// logicSiDet_1Down_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_3") );
+// logicSiDet_1Down_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_4") );
+// logicSiDet_1Down_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_5") );
 
-logicSiDet_2Down_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_1() );
-logicSiDet_2Down_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_2() );
-logicSiDet_2Down_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_3() );
-logicSiDet_2Down_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_4() );
-logicSiDet_2Down_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_5() );
-logicSupportSiliconDetector_2Down->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Support() );
+// logicSiDet_2Down_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_1") );
+// logicSiDet_2Down_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_2") );
+// logicSiDet_2Down_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_3") );
+// logicSiDet_2Down_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_4") );
+// logicSiDet_2Down_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_5") );
 
-logicSiDet_3Down_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_1() );
-logicSiDet_3Down_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_2() );
-logicSiDet_3Down_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_3() );
-logicSiDet_3Down_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_4() );
-logicSiDet_3Down_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_5() );
-logicSupportSiliconDetector_3Down->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Support() );
+// logicSiDet_3Down_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_1") );
+// logicSiDet_3Down_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_2") );
+// logicSiDet_3Down_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_3") );
+// logicSiDet_3Down_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_4") );
+// logicSiDet_3Down_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_5") );
 
-logicSiDet_4Down_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_1() );
-logicSiDet_4Down_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_2() );
-logicSiDet_4Down_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_3() );
-logicSiDet_4Down_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_4() );
-logicSiDet_4Down_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_5() );
-logicSupportSiliconDetector_4Down->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Support() );
+// logicSiDet_4Down_Strip_1->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_1") );
+// logicSiDet_4Down_Strip_2->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_2") );
+// logicSiDet_4Down_Strip_3->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_3") );
+// logicSiDet_4Down_Strip_4->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_4") );
+// logicSiDet_4Down_Strip_5->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_5") );
 
-//dl
-logicSiDet_1Up_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_1_dl() );
-logicSiDet_1Up_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_2_dl() );
-logicSiDet_1Up_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_3_dl() );
-logicSiDet_1Up_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_4_dl() );
-logicSiDet_1Up_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Up_Strip_5_dl() );
+// logicSiDet_1Up_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_1_dl") );
+// logicSiDet_1Up_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_2_dl") );
+// logicSiDet_1Up_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_3_dl") );
+// logicSiDet_1Up_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_4_dl") );
+// logicSiDet_1Up_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Up_Strip_5_dl") );
 
-logicSiDet_2Up_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_1_dl() );
-logicSiDet_2Up_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_2_dl() );
-logicSiDet_2Up_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_3_dl() );
-logicSiDet_2Up_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_4_dl() );
-logicSiDet_2Up_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Up_Strip_5_dl() );
+// logicSiDet_2Up_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_1_dl") );
+// logicSiDet_2Up_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_2_dl") );
+// logicSiDet_2Up_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_3_dl") );
+// logicSiDet_2Up_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_4_dl") );
+// logicSiDet_2Up_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Up_Strip_5_dl") );
 
-logicSiDet_3Up_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_1_dl() );
-logicSiDet_3Up_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_2_dl() );
-logicSiDet_3Up_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_3_dl() );
-logicSiDet_3Up_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_4_dl() );
-logicSiDet_3Up_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Up_Strip_5_dl() );
+// logicSiDet_3Up_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_1_dl") );
+// logicSiDet_3Up_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_2_dl") );
+// logicSiDet_3Up_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_3_dl") );
+// logicSiDet_3Up_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_4_dl") );
+// logicSiDet_3Up_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Up_Strip_5_dl") );
 
-logicSiDet_4Up_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_1_dl() );
-logicSiDet_4Up_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_2_dl() );
-logicSiDet_4Up_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_3_dl() );
-logicSiDet_4Up_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_4_dl() );
-logicSiDet_4Up_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Up_Strip_5_dl() );
+// logicSiDet_4Up_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_1_dl") );
+// logicSiDet_4Up_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_2_dl") );
+// logicSiDet_4Up_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_3_dl") );
+// logicSiDet_4Up_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_4_dl") );
+// logicSiDet_4Up_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Up_Strip_5_dl") );
 
-logicSiDet_1Down_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_1_dl() );
-logicSiDet_1Down_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_2_dl() );
-logicSiDet_1Down_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_3_dl() );
-logicSiDet_1Down_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_4_dl() );
-logicSiDet_1Down_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_1Down_Strip_5_dl() );
+// logicSiDet_1Down_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_1_dl") );
+// logicSiDet_1Down_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_2_dl") );
+// logicSiDet_1Down_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_3_dl") );
+// logicSiDet_1Down_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_4_dl") );
+// logicSiDet_1Down_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("1Down_Strip_5_dl") );
 
-logicSiDet_2Down_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_1_dl() );
-logicSiDet_2Down_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_2_dl() );
-logicSiDet_2Down_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_3_dl() );
-logicSiDet_2Down_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_4_dl() );
-logicSiDet_2Down_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_2Down_Strip_5_dl() );
+// logicSiDet_2Down_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_1_dl") );
+// logicSiDet_2Down_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_2_dl") );
+// logicSiDet_2Down_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_3_dl") );
+// logicSiDet_2Down_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_4_dl") );
+// logicSiDet_2Down_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("2Down_Strip_5_dl") );
 
-logicSiDet_3Down_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_1_dl() );
-logicSiDet_3Down_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_2_dl() );
-logicSiDet_3Down_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_3_dl() );
-logicSiDet_3Down_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_4_dl() );
-logicSiDet_3Down_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_3Down_Strip_5_dl() );
+// logicSiDet_3Down_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_1_dl") );
+// logicSiDet_3Down_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_2_dl") );
+// logicSiDet_3Down_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_3_dl") );
+// logicSiDet_3Down_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_4_dl") );
+// logicSiDet_3Down_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("3Down_Strip_5_dl") );
 
-logicSiDet_4Down_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_1_dl() );
-logicSiDet_4Down_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_2_dl() );
-logicSiDet_4Down_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_3_dl() );
-logicSiDet_4Down_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_4_dl() );
-logicSiDet_4Down_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_4Down_Strip_5_dl() );
+// logicSiDet_4Down_Strip_1_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_1_dl") );
+// logicSiDet_4Down_Strip_2_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_2_dl") );
+// logicSiDet_4Down_Strip_3_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_3_dl") );
+// logicSiDet_4Down_Strip_4_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_4_dl") );
+// logicSiDet_4Down_Strip_5_dl->SetSensitiveDetector( manager_ptr->GetWisardSensor_Detector("4Down_Strip_5_dl") );
+
 
 Logic_MylarSource->SetSensitiveDetector( manager_ptr->GetWisardSensor_CatcherMylar() );
-// Logic_AlSource1->SetSensitiveDetector( manager_ptr->GetWisardSensor_CatcherAl1() );
-// Logic_AlSource2->SetSensitiveDetector( manager_ptr->GetWisardSensor_CatcherAl2() );
+Logic_AlSource1->SetSensitiveDetector( manager_ptr->GetWisardSensor_CatcherAl1() );
+Logic_AlSource2->SetSensitiveDetector( manager_ptr->GetWisardSensor_CatcherAl2() );
 
 return fPhysiWorld;
 }

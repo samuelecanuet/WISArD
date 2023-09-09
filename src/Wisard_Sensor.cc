@@ -72,13 +72,13 @@ G4bool Wisard_Sensor::ProcessHits ( G4Step * step, G4TouchableHistory * )
   }
   if (step->GetTrack()->GetDefinition()->GetParticleName() == "gamma" ||  step->GetTrack()->GetDefinition()->GetParticleName() == "e-")
   {
-    // step->GetTrack()->SetTrackStatus(fStopAndKill);
+    step->GetTrack()->SetTrackStatus(fStopAndKill);
     energy_positron += step->GetTotalEnergyDeposit();
     energy += step->GetTotalEnergyDeposit();
   }
 
-  if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicMylarSource" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" && step->GetTrack()->GetPosition().z() < -0.*mm)
-	//if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicAlSource1" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World")
+  //if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicMylarSource" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" && step->GetTrack()->GetPosition().z() < -0.*mm)
+	if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicAlSource1" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World")
   {
 if ( step->GetTrack()->GetDefinition()->GetParticleName() == "e+")
 {

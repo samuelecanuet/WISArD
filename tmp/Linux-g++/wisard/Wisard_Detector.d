@@ -661,9 +661,6 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4ExtrudedSolid.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4MultiUnion.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4Vector3D.hh \
- include/Wisard_Sensor.hh include/Wisard_MagnetField.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4MagneticField.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4Field.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VisAttributes.hh \
  /usr/local/geant4.11.0.0/include/Geant4/graphics_reps_defs.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4Colour.hh \
@@ -688,6 +685,7 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4EqMagElectricField.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ChargeState.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4EquationOfMotion.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Field.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4EquationOfMotion.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4ElectroMagneticField.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ChordFinder.hh \
@@ -706,4 +704,11 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4NystromRK4.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4Mag_UsualEqRhs.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4Trap.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4Trap.icc
+ /usr/local/geant4.11.0.0/include/Geant4/G4Trap.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VSolid.hh \
+ include/Wisard_Sensor.hh include/Wisard_MagnetField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4MagneticField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SDManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SDStructure.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VSensitiveDetector.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4HCtable.hh

@@ -178,10 +178,7 @@ void Wisard_Generator::GeneratePrimaries ( G4Event * event)
 
       //G4cout<<name<<"  "<<x<<"   "<<y<<"   "<<z<<G4endl;
 
-      G4ParticleTable* particleTables = G4ParticleTable::GetParticleTable();
-      G4ParticleDefinition* argon32 = particleTables->GetIon(18, 32);
-
-       gun.SetParticleDefinition        ( argon32 );
+       gun.SetParticleDefinition        ( particle );
        gun.SetParticlePosition          ( G4ThreeVector (x,y,47*nm-3*um)  );
        gun.SetParticleMomentumDirection ( dir );
        gun.SetParticleEnergy            ( ekin );

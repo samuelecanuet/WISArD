@@ -626,6 +626,8 @@
  /usr/local/root/6.24.06/include/TFitResultPtr.h \
  /usr/include/c++/8/cfloat \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
+ /usr/local/geant4.11.0.0/include/Geant4/G4IonTable.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Ions.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ParticleGun.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VPrimaryGenerator.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ParticleTable.hh \

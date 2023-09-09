@@ -134,9 +134,7 @@ int main ( int argc,char** argv )
   }
 
   //------------------------------------------------------------
-
-    // save the data
-  //run.SaveHisto ();
+  
   analysisManager->CloseFile();
   //get run tiime
   t2=clock();
