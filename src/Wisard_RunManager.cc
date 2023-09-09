@@ -24,12 +24,14 @@ Wisard_RunManager::Wisard_RunManager()
 
   counts = 0;
 
+  //Construct strips coinc/anticoinc histograms
   for (int i = 0; i < nb_det; i++) 
   {
     histos_coinc[i] = new TH1D((Detector_Name[i]+"_coinc").c_str(), (Detector_Name[i]+"_coinc").c_str(), 100000, 0.0, 10000.0);
     histos_nocoinc[i] = new TH1D((Detector_Name[i]+"_nocoinc").c_str(), (Detector_Name[i]+"_nocoinc").c_str(), 100000, 0.0, 10000.0);
   }
 
+  //Construct all sensors
   wisard_sensor_PlasticScintillator = new Wisard_Sensor;
   for (int i = 0; i < nb_det; i++){dic_detector[Detector_Name[i]] = std::make_pair(new Wisard_Sensor, new Wisard_Sensor);}
   wisard_sensor_CatcherMylar = new Wisard_Sensor;
@@ -102,6 +104,9 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
 
   // call the base class function (whatever it is supposed to do)
   G4RunManager::AnalyzeEvent ( event );
+
+
+  //Get all detector energy
   double e_PlasticScintillator = wisard_sensor_PlasticScintillator->GetEventEnergy_positron()/keV;
 
   double value_det[nb_det] = {};
@@ -118,7 +123,7 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
 
 
 
-
+  //Conditions for tree
   for (int i = 0; i < nb_det ; i++)
   {
     if (value_det[i] != 0)
@@ -137,9 +142,11 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
 
   e_Catcher = e_CatcherMylar + e_CatcherAl2 + e_CatcherAl1;
 
-
+  
   int divi = 1000;
 
+
+  //Tree initialisation
   if (counts == 0)
   {
   
@@ -190,6 +197,9 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
   }
   counts++;
 
+
+
+  ///Writing
   if (counts%divi==0)
   {
     MyTree->AutoSave("FlushBaskets");
@@ -245,6 +255,8 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
         }
 
 
+
+  //code for resolution on detectors
   e_PlasticScintillator += CLHEP::RandGauss::shoot(0.,0.0);
   e_PlasticScintillator = max(e_PlasticScintillator, 0.);
 
@@ -341,7 +353,7 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
   // e_4Down_Strip_5 = max(e_4Down_Strip_5, 0.);
 
 
-
+  //Reset energy for the next event
   wisard_sensor_PlasticScintillator->ResetEventEnergy_positron();
 
   for (int i = 0; i < nb_det; i++)

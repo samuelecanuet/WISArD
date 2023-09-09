@@ -11,8 +11,7 @@
 
 // Constructor
           ////--------------------------------------------------
-          ////  JG 2013/07/08   Added pointer to RunManager
-          ////                  in constructor
+          ////  Added pointer to RunManager in constructor
 Wisard_Generator::Wisard_Generator( Wisard_RunManager * mgr, double implantation_, double std_implantation_)
 {
   cout << "Constructor Wisard_Generator" << endl;
@@ -22,7 +21,7 @@ Wisard_Generator::Wisard_Generator( Wisard_RunManager * mgr, double implantation
   std_implantation = std_implantation_;
 
           ////--------------------------------------------------
-          ////  JG 2013/07/08   Memorize particle definitions
+          ////  Memorize particle definitions
   G4ParticleTable * particle_table = G4ParticleTable::GetParticleTable();
   part_gamma    = particle_table->FindParticle("gamma");
   part_electron = particle_table->FindParticle("e-");
@@ -51,51 +50,7 @@ void Wisard_Generator::GeneratePrimaries ( G4Event * event)
   G4ThreeVector           dir;
 
   // define a "particle gun": a very simple way to create simple
-  // primary vertexes
   G4ParticleGun gun;
-
-          ////--------------------------------------------------
-          ////  JG 2013/07/08   Modified read of data file
-          ////
-//  cout << " " << endl;
-//  cout << "first:" << "iev_len =" << iev_len << " " << "isubev_len =" << isubev_len << endl;
-//   if( iev_len == 0 )
-//   {
-//   manager_ptr->GetInput() >> ievent >> iev_len;
-//   //cout << "hallo " << "ievent =" << ievent << " " << "iev_len =" << iev_len << endl;
-//   }
-// //  cout << "iev1 = " << ievent << " " << iev_len << endl;
-// //  if ( ! manager_ptr->GetInput().fail() ) cout << "iev = " << ievent << " " << iev_len << endl;;
-//
-//   if ( manager_ptr->GetInput().fail() )
-//   {
-//     // rewind
-//     manager_ptr->GetInput().clear();
-//     manager_ptr->GetInput().seekg (0, ios::beg );
-//     //cout << " " << endl;
-//     cout << " file rewinded " << endl;
-//     //cout << " file rewinded  EOF = " << manager_ptr->GetInput().eof() << endl;
-//     //cout << " file rewinded  BAD = " << manager_ptr->GetInput().bad() << endl;
-//     //cout << " file rewinded  FAIL = " << manager_ptr->GetInput().fail() << endl;
-//
-//     //cout << " ievlen = " << iev_len << " " << "isubev_len =" << isubev_len << endl;
-//     if( iev_len - isubev_len <= 0 ) manager_ptr->GetInput() >> ievent >> iev_len;
-//     //cout << "ievent = " << ievent << " " << "iev_len =" << iev_len << endl;;
-//     manager_ptr->GetInput() >> ievent >> isubevent >> isubev_len;
-//     //cout << "ievent = " << ievent << " " << "isubevent =" << isubevent << " " << "isubev_len =" << isubev_len << endl;
-//     iev_len = iev_len - isubev_len;
-//   }
-//   else
-//   {
-//     manager_ptr->GetInput() >> ievent >> isubevent >> isubev_len;
-//     iev_len = iev_len - isubev_len;
-//     //cout << "iev = " << ievent << " " << isubevent << " " << isubev_len << endl;;
-//   }
-//   // manager_ptr->GetInput() >> ievent >> isubevent >> isubev_len;
-//   // iev_len = iev_len - isubev_len;
-//   //cout << "treating particle " << endl;
-
-
 
   if (! manager_ptr->GetInput().fail())
   {
@@ -120,15 +75,11 @@ void Wisard_Generator::GeneratePrimaries ( G4Event * event)
      }
 
 
-
-
     for (int i = 0; i <=3; ++i)
     {
-      //cout << "sub event number = " << isubev_len << " " << i <<endl;
       string    name;
       double  ekin, exc, mom[4], time;
       manager_ptr->GetInput() >> ievent >> time >> name >> exc >> ekin >>  mom[0] >>  mom[1] >>  mom[2] >>  mom[3] ;
-      //cout << "hi " << ievent << " " << time << " " << name << " " << exc << " " << ekin << endl;
 
       ekin = ekin / 1000.;
 
@@ -174,24 +125,22 @@ void Wisard_Generator::GeneratePrimaries ( G4Event * event)
 
       if ( iopt == 1 )
       {
-      // cout << "iopt = " << iopt << " " << i << endl;
-
-      //G4cout<<name<<"  "<<x<<"   "<<y<<"   "<<z<<G4endl;
-
        gun.SetParticleDefinition        ( particle );
        gun.SetParticlePosition          ( G4ThreeVector (x,y,47*nm-3*um)  );
        gun.SetParticleMomentumDirection ( dir );
        gun.SetParticleEnergy            ( ekin );
        gun.GeneratePrimaryVertex        ( event );
 
+
+      //////FOR TEST/////////
       //  gun.SetParticleDefinition        ( part_geantino );
       //  gun.SetParticlePosition          ( G4ThreeVector (x,y,47*nm-3*um)  );
       //gun.SetParticlePosition          ( G4ThreeVector (0,4.5*cm,-10*cm)  );
       //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
       //  gun.SetParticleEnergy            ( ekin );
       //  gun.GeneratePrimaryVertex        ( event );
+
       }
-//      cout << "sub event number = " << isubev_len << " " << i <<endl;
     }
 
   }

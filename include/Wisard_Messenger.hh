@@ -44,7 +44,6 @@ class Wisard_Messenger : public G4UImessenger
 
     G4UIdirectory           * input_dir;        // Commands directory for input file
     G4UIcmdWithAString        * input_cmd_open;       // Command to open an input file
-    // G4UIcmdWithADouble      * input_cmd_implantation;
 
     G4UIdirectory           * result_dir;       // Commands directory for results
     G4UIcmdWithAString        * result_cmd_save_histo;    // Command to save the histogram

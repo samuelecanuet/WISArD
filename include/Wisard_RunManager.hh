@@ -99,14 +99,14 @@ class Wisard_RunManager: public G4RunManager
         //----------------------------------------------------------
     // Commands definitions
           ////--------------------------------------------------
-          ////  JG 2013/07/08   U.I. commands creation function
+          //// U.I. commands creation function
     void  DefineSimulationCommands ( );     // inline
 
 
     //----------------------------------------------------------
     // Functions for input file
           ////--------------------------------------------------
-          ////  JG 2013/07/08   added input file functions
+          //// added input file functions
           ////                  declaration
     int             OpenInput    ( const string & fname );
     void            CloseInput   ( );         // inline

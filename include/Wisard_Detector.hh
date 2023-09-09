@@ -50,10 +50,6 @@ class Wisard_Detector: public G4VUserDetectorConstruction
     // pointer to the run manager
     Wisard_RunManager * manager_ptr;
 
-    // WITCH
-    //double radius_wisard;
-    // bore paramters
-    //double radius_bore, length_bore, radius_wall;
     // detectors
     double pos_detp1, pos_detp2, pos_dete;
     double radius1_detp, radius2_detp, radius1_dete, radius2_dete;
@@ -89,7 +85,7 @@ class Wisard_Detector: public G4VUserDetectorConstruction
     G4bool event;
     void               SetMagField();
 
-    
+    //Functions to create Silicon Detectors
     std::tuple<std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
                   std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
                   std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,  
