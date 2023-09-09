@@ -30,8 +30,8 @@
 // go back to the manager data (ie energy histogram)
 Wisard_Detector::Wisard_Detector ( Wisard_RunManager * mgr)
 {
-  cout << "Constructor Wisard_Detectors" << endl;
-  manager_ptr = mgr;
+    cout << "Constructor Wisard_Detectors" << endl;
+    manager_ptr = mgr;
 
     pDz    = 1.5*mm;    // Spessore del supporto (su cui soo messe le strip
     G4double pTheta = 0.*degree;
@@ -110,7 +110,7 @@ Wisard_Detector::Wisard_Detector ( Wisard_RunManager * mgr)
     materialSupportSiliconDetector->AddElement(elO , 2);
 
    
-  dic_position["1Up"] = G4ThreeVector(0, r, z);
+    dic_position["1Up"] = G4ThreeVector(0, r, z);
     dic_position["2Up"] = G4ThreeVector(r, 0, z);
     dic_position["3Up"] = G4ThreeVector(0, -r, z);
     dic_position["4Up"] = G4ThreeVector(-r, 0, z);
@@ -120,7 +120,7 @@ Wisard_Detector::Wisard_Detector ( Wisard_RunManager * mgr)
     dic_position["4Down"] = G4ThreeVector(-r, 0, -z);
 
 
-  dic_positionvide["1Up"] = G4ThreeVector(0, r+r_vide, z+z_vide);
+    dic_positionvide["1Up"] = G4ThreeVector(0, r+r_vide, z+z_vide);
     dic_positionvide["2Up"] = G4ThreeVector(r+r_vide, 0, z+z_vide);
     dic_positionvide["3Up"] = G4ThreeVector(0, -r-r_vide, z+z_vide);
     dic_positionvide["4Up"] = G4ThreeVector(-r-r_vide, 0, z+z_vide);
@@ -190,35 +190,6 @@ G4GeometryManager::GetInstance()->OpenGeometry();
 G4PhysicalVolumeStore::GetInstance()->Clean();
 G4LogicalVolumeStore::GetInstance()->Clean();
 G4SolidStore::GetInstance()->Clean();
-
-G4double Angle = NULL;
-G4double off = NULL;
-std::ifstream config;
-  config.open("src/WISArD.cfg");
-  if ( !config.is_open() )
-    G4cout << "Error opening file " << "WISArD.cfg" << G4endl;
-  else{
-    while( config.is_open() ){
-      G4String variable;
-      G4String unit;
-      G4double value;
-
-      config >> variable;
-      if(!config.good()) break;
-      //####################### COMMON variables ###########################
-      if(variable == "Angle"){
-  	config >> value >> unit;
-  	Angle = value*G4UnitDefinition::GetValueOf(unit);
-      }
-      else if(variable == "Off"){
-  	config >> value >> unit;
-  	off = value*G4UnitDefinition::GetValueOf(unit);
-      }
-    }
-  }
-  config.close();
-
-  cout<<"ANGLE = "<<Angle<<"\t"<<"OFFSET = "<<off<<endl;
 
 //--------------------------------------------------------------------------------------
 //------------------------------------ World -------------------------------------------
@@ -560,7 +531,12 @@ false);                        //copy number
 
 //      if(Physics_MylarSource == NULL) {}
 
+
+
+/////////////////////////////////////////////////////////////
 ///////////////////////NEW SUPPORT CATCHER//////////////////
+/////////////////////////////////////////////////////////////
+
 G4double x_baseCatcher_Spessa_1          = 14.*mm;
 G4double y_baseCatcher_Spessa_1          = 16.*mm;
 G4double thickness_baseCatcher_Spessa_1  = 12.*mm;
@@ -766,14 +742,8 @@ if(Physics_MylarSource == NULL) {}
  materialSupportSiliconDetector->AddElement(elSi, natoms=1);
  materialSupportSiliconDetector->AddElement(elO , natoms=2);
 
-
-
  G4double z_height_Source_biggerBaseSiDet_inVerticale = 24.92*mm;
  G4double angle_between_xAxis_AND_zAxis               = 40.*degree; //in generale, poi bisogna vedere il segno e cose varie a seconda della posizione del detector rispetto alla terna
-
- if (Angle != NULL){
-   angle_between_xAxis_AND_zAxis = Angle;
- }
 
  //Common parameteres to all Si detectors
  pDz    = 1.5*mm;    // Spessore del supporto (su cui soo messe le strip
@@ -794,13 +764,6 @@ if(Physics_MylarSource == NULL) {}
            pDx3/2,pDx4/2,pAlp2);
 
 
-// G4Trap* supportSiliconDetectorCu= new G4Trap("supportSiliconDetectorCu",
-//           pDz/2,pTheta,pPhi,pDy1/2,
-//           pDx1/2,pDx2/2,pAlp1,pDy2/2,
-//           pDx3/2,pDx4/2,pAlp2);
-
-
-
  G4VisAttributes* SupportSiliconDetector_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));//red (r,g,b) ->grey
  SupportSiliconDetector_att->SetForceWireframe(false);
  SupportSiliconDetector_att->SetForceSolid(true);
@@ -808,12 +771,6 @@ if(Physics_MylarSource == NULL) {}
 //========================================================================================================================
  //============================================= PISTE DETECTOR SILICIO  ==================================================
 //========================================================================================================================
-double offset = 0.0*cm;
-if (off != NULL){
-  offset = off;
-}
-
-
 
   G4Material*   materialSiliconDetector  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Si");
   G4VisAttributes* SiliconDetector_att   = new G4VisAttributes(G4Colour(1., 0., 0.));//red (r,g,b) ->red
@@ -928,9 +885,6 @@ Box_material_SupportoRame_SiliconDetector_att->SetForceSolid(true);
                                       xHigh_SiDet_Strip_1/2, xLow_SiDet_Strip_1/2, 0.*degree);
 
 
-
-
-
 dic_strip[1] = std::make_tuple(SiDet_Strip_1, G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1/2, 0.), SiDet_Strip_1_dl);
 dic_strip[2] = std::make_tuple(SiDet_Strip_2, G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2/2, 0.), SiDet_Strip_2_dl);
 dic_strip[3] = std::make_tuple(SiDet_Strip_3, G4ThreeVector(0, -pDy1/2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3/2, 0.), SiDet_Strip_3_dl);
@@ -953,6 +907,7 @@ std::tuple<std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
                   std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
                   std::pair<G4LogicalVolume*, G4VPhysicalVolume*>> tab[8];
 
+//Loop for construct SIlicon Detetors
 int index = 0;
 for (int i = 1; i < 5; i++)
 {

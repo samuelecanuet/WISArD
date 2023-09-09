@@ -3,7 +3,7 @@
 
 //----------------------------------------------------------------------
 
-// constructor of the sensitive detector associated to the germanium
+// constructor of the sensitive detector associated to the Silicon Detector
 Wisard_Sensor::Wisard_Sensor( )
          : G4VSensitiveDetector ( "WisardSensor" )
 {
@@ -25,9 +25,6 @@ Wisard_Sensor::~Wisard_Sensor()
 
 // Function called at the beginning of the event processing
 // (to initialise the list of "hits" associated to the detector)
-// note:
-//   here, we do not store the hits, so the function just
-//   set germanium energy to 0
 void Wisard_Sensor::Initialize  ( G4HCofThisEvent * hit_collection )
 {
   // just to avoid compilation warning
@@ -50,8 +47,8 @@ G4bool Wisard_Sensor::ProcessHits ( G4Step * step, G4TouchableHistory * )
   {
     G4StepPoint* preStepPoint = step->GetPreStepPoint();
     G4StepPoint* postStepPoint = step->GetPostStepPoint();
-    // energy_positron += preStepPoint->GetKineticEnergy() - postStepPoint->GetKineticEnergy();
-    energy_positron += step->GetTotalEnergyDeposit();
+    energy_positron += preStepPoint->GetKineticEnergy() - postStepPoint->GetKineticEnergy();
+    // energy_positron += step->GetTotalEnergyDeposit();
   }
 
   if (step->GetTrack()->GetDefinition()->GetParticleName() == "proton")
@@ -65,8 +62,8 @@ G4bool Wisard_Sensor::ProcessHits ( G4Step * step, G4TouchableHistory * )
 
     G4StepPoint* preStepPoint = step->GetPreStepPoint();
     G4StepPoint* postStepPoint = step->GetPostStepPoint();
-    // energy += preStepPoint->GetKineticEnergy() - postStepPoint->GetKineticEnergy();
-    energy += step->GetTotalEnergyDeposit();
+    energy += preStepPoint->GetKineticEnergy() - postStepPoint->GetKineticEnergy();
+    // energy += step->GetTotalEnergyDeposit();
 
 
   }

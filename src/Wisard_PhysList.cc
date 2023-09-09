@@ -95,7 +95,7 @@ void Wisard_PhysList::ConstructProcess()
   //G4VPhysicsConstructor * emPhysicsList = new G4EmLivermorePhysics();
   //G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics(1);
   //G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics_option3(1);
-  G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysicsGS();
+  G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysicsGS(0);
 
   emPhysicsList->ConstructProcess();
 }
