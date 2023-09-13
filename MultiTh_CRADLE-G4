@@ -20,14 +20,14 @@ b_change=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    nuclei=*)
+    nucleus=*)
       Nuclei="${1#*=}"
       ;;
     N=*)
       RunEnd="${1#*=}"
       ;;
-    N=*)
-      RunEnd="${1#*=}"
+    n=*)
+      nProcess="${1#*=}"
       ;;
     CV=*)
       CV="${1#*=}"
@@ -99,6 +99,12 @@ if [ "$Nuclei" == "S" ]; then
     A=24
     Z=14
 fi
+if [ "$Nuclei" == "O" ]; then
+    impl=76
+    std_impl=34
+    A=14
+    Z=8
+fi
 
 echo -e "$RED"
 rm -vf "LOG/During_$Nuclei.txt"
@@ -118,18 +124,19 @@ TimeCheck=60 # in seconds
 Saver=$RunStart
 i=0
 
-rootCRADLEfile="../../../../../../mnt/hgfs/shared/"
+rootCRADLEfile="../../../../../../mnt/hgfs/shared/data/"
+rootGeant4file="../../../../../../mnt/hgfs/shared/"
 
 while [ $Saver -le $RunEnd ]; do
     th=${TH[i]}
     run=${THRun[i]}
     if kill -0 $th >/dev/null 2>&1; then
-	      file_path="../../../../../../mnt/hgfs/shared/${Nuclei}_${constants}_${run}.root"
+	      file_path="${rootGeant4file}${Nuclei}_${constants}_${run}.root"
         if [ $(($(date +%s)-$(stat -c %Y "$file_path"))) -ge 600 ]; then
             # Le processus est bloqué depuis plus de 10 min, on le tue
             echo "Process $th stopped more than 10 min.  Killing process..."
             kill $th
-            rm "${rootCRADLEfile}data/${Nuclei}_${constants}_${run}.txt"
+            rm "${rootCRADLEfile}${Nuclei}_${constants}_${run}.txt"
 
         fi
     else
@@ -148,14 +155,14 @@ while [ $Saver -le $RunEnd ]; do
         cp macro_base.mac tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
         sed -e "s/%input/${Nuclei}_${constants}_${Saver}.txt/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
         rm tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        cmdAnalysis="${Analysis} tempory/macro_${Saver}_${Nuclei}_${constants}.mac ${rootCRADLEfile}${Nuclei}_${constants}_${Saver} ${impl} ${std_impl}"
+        cmdAnalysis="${Analysis} tempory/macro_${Saver}_${Nuclei}_${constants}.mac ${rootGeant4file}${Nuclei}_${constants}_${Saver} ${impl} ${std_impl}"
         echo -e "$GREEN $cmdAnalysis $COLOR"
 
-	      cd ../CRADLE-master/build
+	cd ../CRADLE-master/build
         cp ../config/config_base.txt config_${constants}_bis.txt
         sed -e "$replace" config_${constants}_bis.txt > ../config/config_${constants}.txt
         rm config_${constants}_bis.txt
-        ./CRADLE++ nucleus --name ${A}${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l 1000000 -o ../../../../../../../mnt/hgfs/shared/data/${Nuclei}_${constants}_${Saver}.txt
+        ./CRADLE++ nucleus --name ${A}${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l 1000000 -o ../${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.txt
         cd -
         $cmdAnalysis &
 
