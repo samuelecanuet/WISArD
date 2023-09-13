@@ -126,7 +126,7 @@ void Wisard_Generator::GeneratePrimaries ( G4Event * event)
       if ( iopt == 1 )
       {
        gun.SetParticleDefinition        ( particle );
-       gun.SetParticlePosition          ( G4ThreeVector (x,y,47*nm-3*um)  );
+       gun.SetParticlePosition          ( G4ThreeVector (x, y, z)  );
        gun.SetParticleMomentumDirection ( dir );
        gun.SetParticleEnergy            ( ekin );
        gun.GeneratePrimaryVertex        ( event );

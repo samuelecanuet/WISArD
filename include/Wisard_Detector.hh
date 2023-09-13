@@ -169,7 +169,6 @@ inline std::tuple<std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
   
   for (int i = 1; i < 6; i++)
   {
-    cout<<i<<endl;
     Strips[i-1] = MakeStrip(i, num, dir, Vide.first, strip_att, strip_mat);
     Strips[i+4] = MakeDL(i, num, dir, Strips[i-1].first, vide_att, strip_mat);
 

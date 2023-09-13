@@ -934,7 +934,7 @@ SupportSiliconDetector_att, Box_material_SupportoRame_SiliconDetector_attvide, m
   G4Tubs*          fSolid_PlasticScintillator = new G4Tubs("PlasticScintillator",0.,fRadius_PlasticScintillator,0.5*fLength_PlasticScintillator,0.,360*deg);//name, r : 0->1cm, L : 5cm, phi : 0->2pi
   G4LogicalVolume* fLogic_PlasticScintillator = new G4LogicalVolume(fSolid_PlasticScintillator,fMaterial_PlasticScintillator,"PlasticScintillator"); //solid, material, name
   G4PVPlacement*   fPhys_PlasticScintillator  = new G4PVPlacement(0,        //rotationMatrix
-G4ThreeVector(0., 0., z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator/2-offset),    //position
+G4ThreeVector(0., 0., z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator/2),    //position
 fLogic_PlasticScintillator,"PlasticScintillator",    //its fLogical volume
 fLogicWorld,              //its mother volume
 false,                      //no boolean op.
