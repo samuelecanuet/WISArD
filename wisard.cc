@@ -16,14 +16,13 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
-#include "G4AnalysisManager.hh"
 //----------------------------------------------------------------------
 // program main function
 
 int main ( int argc,char** argv )
 {
 
-  int seedValue = 123456789;
+  // int seedValue = 123456789;
   // G4Random::setTheSeed(seedValue);
 
   G4String output = "test";
@@ -65,15 +64,10 @@ int main ( int argc,char** argv )
   run.SetUserInitialization ( ptr_phys );
 
   // create the generator for events
-          ////--------------------------------------------------
-          ////  JG 2013/07/08   Added pointer to RunManager
-          ////                  in constructor
   Wisard_Generator * ptr_gene = new Wisard_Generator ( &run , implantation, std_implantation);
   run.SetUserAction ( ptr_gene );
 
 
-          ////--------------------------------------------------
-          ////  JG 2013/07/08   U.I. commands creation
   // create the associated commands
   run.DefineSimulationCommands();
 

@@ -121,6 +121,8 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
   double e_CatcherAl1 = wisard_sensor_CatcherAl1->GetEventEnergy()/keV;
   double e_CatcherAl2 = wisard_sensor_CatcherAl2->GetEventEnergy()/keV;
 
+  double tab[2];
+
 
 
   //Conditions for tree
@@ -218,30 +220,23 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
       y = event->GetPrimaryVertex()->GetY0();
       z = event->GetPrimaryVertex()->GetZ0();
 
+    
 
-
-      if (event->GetPrimaryVertex(0)->GetPrimary()->GetG4code()->GetParticleName() == "e+")
+    for (int part = 0; part < event->GetNumberOfPrimaryVertex(); part++ )
+    {
+      if (event->GetPrimaryVertex(part)->GetPrimary()->GetG4code()->GetParticleName() == "proton")
       {
-        e_positron = event->GetPrimaryVertex(0)->GetPrimary()->GetKineticEnergy()/keV;
-        e_px = event->GetPrimaryVertex(0)->GetPrimary()->GetMomentumDirection().x();
-        e_py = event->GetPrimaryVertex(0)->GetPrimary()->GetMomentumDirection().y();
-        e_pz = event->GetPrimaryVertex(0)->GetPrimary()->GetMomentumDirection().z();
-        e_proton = event->GetPrimaryVertex(1)->GetPrimary()->GetKineticEnergy()/keV;
-        p_px = event->GetPrimaryVertex(1)->GetPrimary()->GetMomentumDirection().x();
-        p_py = event->GetPrimaryVertex(1)->GetPrimary()->GetMomentumDirection().y();
-        p_pz = event->GetPrimaryVertex(1)->GetPrimary()->GetMomentumDirection().z();
+        e_proton = event->GetPrimaryVertex(part)->GetPrimary()->GetKineticEnergy()/keV;
+        p_px = event->GetPrimaryVertex(part)->GetPrimary()->GetMomentumDirection().x();
+        p_py = event->GetPrimaryVertex(part)->GetPrimary()->GetMomentumDirection().y();
+        p_pz = event->GetPrimaryVertex(part)->GetPrimary()->GetMomentumDirection().z();
       }
-      else
+      if (event->GetPrimaryVertex(part)->GetPrimary()->GetG4code()->GetParticleName() == "e+")
+      
       {
-        e_positron = event->GetPrimaryVertex(1)->GetPrimary()->GetKineticEnergy()/keV;
-        e_px = event->GetPrimaryVertex(1)->GetPrimary()->GetMomentumDirection().x();
-        e_py = event->GetPrimaryVertex(1)->GetPrimary()->GetMomentumDirection().y();
-        e_pz = event->GetPrimaryVertex(1)->GetPrimary()->GetMomentumDirection().z();
-        e_proton = event->GetPrimaryVertex(0)->GetPrimary()->GetKineticEnergy()/keV;
-        p_px = event->GetPrimaryVertex(0)->GetPrimary()->GetMomentumDirection().x();
-        p_py = event->GetPrimaryVertex(0)->GetPrimary()->GetMomentumDirection().y();
-        p_pz = event->GetPrimaryVertex(0)->GetPrimary()->GetMomentumDirection().z();
+        e_positron = event->GetPrimaryVertex(part)->GetPrimary()->GetKineticEnergy()/keV;
       }
+    }
 
       }
 

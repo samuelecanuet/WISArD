@@ -1,0 +1,24 @@
+#---------------------------------------------------------------
+#
+# execution:
+#       /control/execute run.mac
+#
+#---------------------------------------------------------------
+# verbose levels
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+#
+#
+#---------------------------------------------------------------
+#   generate events
+#---------------------------------------------------------------
+#
+#
+#
+/input/openFile ../../../../../../mnt/hgfs/shared/data/Ar_CS0_CSP0_CV1_CVP1_1.txt
+#/run/printProgress 1
+/run/beamOn 1000000
+/input/closeFile
+#
+#

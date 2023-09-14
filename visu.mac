@@ -110,10 +110,10 @@
 #---------------------------------------------------------------
 #
 #
-/input/openFile ../../../../../../mnt/hgfs/shared/CRADLE_files/GIF/Ar_gif_Gcs0.25.txt
+/input/openFile ../../../../../../mnt/hgfs/shared/data/Ar_a1_b0_12.txt
 #/input/openFile Ar32_e5_all.txt
 /run/printProgress 1000
-/run/beamOn 50
+/run/beamOn 2000
 /input/closeFile
 #
 #

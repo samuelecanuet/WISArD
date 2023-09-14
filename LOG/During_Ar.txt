@@ -1,0 +1,5 @@
+Duree Run 3 : 0j:01h:21m:39s
+Duree Run 6 : 0j:01h:34m:54s
+Duree Run 7 : 0j:02h:38m:14s
+Duree Run 1 : 0j:02h:45m:28s
+Duree Run 2 : 0j:02h:52m:44s
