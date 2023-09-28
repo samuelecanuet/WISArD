@@ -4,7 +4,6 @@
 #include "../Wisard_Global.hh"
 #include "G4RunManager.hh"
 #include "Wisard_Sensor.hh"
-#include "Wisard_Messenger.hh"
 #include "G4AnalysisManager.hh"
 
 #include "TFile.h"
@@ -17,181 +16,268 @@
 //----------------------------------------------------------------------
 // This class defines the simulation core (from the base class G4RunManager)
 // including information to get the required information
-class Wisard_RunManager: public G4RunManager
+class Wisard_RunManager : public G4RunManager
 {
-
 
   //------------------------------------------------------------
   // internal variables definition
-  protected:
+protected:
+  Wisard_Sensor *wisard_sensor_PlasticScintillator;
+  Wisard_Sensor *wisard_sensor_CatcherMylar;
+  Wisard_Sensor *wisard_sensor_CatcherAl1;
+  Wisard_Sensor *wisard_sensor_CatcherAl2;
 
-    Wisard_Sensor * wisard_sensor_PlasticScintillator;
-    Wisard_Sensor * wisard_sensor_CatcherMylar;
-    Wisard_Sensor * wisard_sensor_CatcherAl1;
-    Wisard_Sensor * wisard_sensor_CatcherAl2;
+  G4double x, y, z;
+  G4double Catcher_EnergyDeposit;
+  G4double PlasticScintillator_EnergyDeposit;
+  std::string Silicon_Name;
+  G4double Silicon_EnergyDeposit;
+  G4double Silicon_DL_EnergyDeposit;
 
-    // event counter
-    int counts, wisard_counts;
-    string sim_num;
-    string n_DetProton = "none";
-    double e_DetProton=0;
-    double e_Support=0;
-    double e_DeadLayer=0;
-    double e_Catcher = 0;
-    double x, y, z, e_proton, e_positron, r_proton, r_positron, p_px, p_py, p_pz, e_px, e_py, e_pz;
-    double x_Det = -20;
-    double y_Det = -20;
-    double z_Det = -20;
+  G4int Event_Number;
+  int count = 0;
 
-    vector<double> x_vec;
-    vector<double> y_vec;
-    vector<double> z_vec;
+  G4double Initial_Proton_Momentum_x;
+  G4double Initial_Proton_Momentum_y;
+  G4double Initial_Proton_Momentum_z;
+  G4double Initial_Proton_Energy;
+  G4double Catcher_Proton_EnergyDeposit;
+  G4double PlasticScintillator_Proton_EnergyDeposit;
+  G4double Silicon_Proton_EnergyDeposit;
+  G4double Silicon_DL_Proton_EnergyDeposit;
+  G4double Silicon_Proton_HitAngle;
+  std::string Silicon_Name_Proton;
+  G4double Silicon_Proton_HitPosition_x;
+  G4double Silicon_Proton_HitPosition_y;
+  G4double Silicon_Proton_HitPosition_z;
 
-   ifstream input;
-   string   input_name;
-   double   input_implantation;
+  G4double Initial_Alpha_Momentum_x;
+  G4double Initial_Alpha_Momentum_y;
+  G4double Initial_Alpha_Momentum_z;
+  G4double Initial_Alpha_Energy;
+  G4double Catcher_Alpha_EnergyDeposit;
+  G4double PlasticScintillator_Alpha_EnergyDeposit;
+  G4double Silicon_Alpha_EnergyDeposit;
+  G4double Silicon_DL_Alpha_EnergyDeposit;
+  G4double Silicon_Alpha_HitAngle;
+  std::string Silicon_Name_Alpha;
+  G4double Silicon_Alpha_HitPosition_x;
+  G4double Silicon_Alpha_HitPosition_y;
+  G4double Silicon_Alpha_HitPosition_z;
 
-   ifstream inputSRIM;
-   string   input_nameSRIM;
+  G4double Initial_Positron_Momentum_x;
+  G4double Initial_Positron_Momentum_y;
+  G4double Initial_Positron_Momentum_z;
+  G4double Initial_Positron_Energy;
+  G4double Catcher_Positron_EnergyDeposit;
+  G4double PlasticScintillator_Positron_EnergyDeposit;
+  G4double PlasticScintillator_Positron_HitAngle;
+  G4double PlasticScintillator_Positron_HitPosition_x;
+  G4double PlasticScintillator_Positron_HitPosition_y;
+  G4double PlasticScintillator_Positron_HitPosition_z;
 
-   Wisard_Messenger * messenger;
+  G4double Initial_Electron_Momentum_x;
+  G4double Initial_Electron_Momentum_y;
+  G4double Initial_Electron_Momentum_z;
+  G4double Initial_Electron_Energy;
+  G4double Catcher_Electron_EnergyDeposit;
+  G4double PlasticScintillator_Electron_EnergyDeposit;
+  G4double PlasticScintillator_Electron_HitAngle;
+  G4double PlasticScintillator_Electron_HitPosition_x;
+  G4double PlasticScintillator_Electron_HitPosition_y;
+  G4double PlasticScintillator_Electron_HitPosition_z;
 
+  G4double Initial_Gamma_Momentum_x;
+  G4double Initial_Gamma_Momentum_y;
+  G4double Initial_Gamma_Momentum_z;
+  G4double Initial_Gamma_Energy;
+  G4double Catcher_Gamma_EnergyDeposit;
+  G4double Silicon_Gamma_EnergyDeposit;
+  G4double Silicon_DL_Gamma_EnergyDeposit;
+  G4double Silicon_Gamma_HitAngle;
+  std::string Silicon_Name_Gamma;
+  G4double Silicon_Gamma_HitPosition_x;
+  G4double Silicon_Gamma_HitPosition_y;
+  G4double Silicon_Gamma_HitPosition_z;
+  G4double PlasticScintillator_Gamma_EnergyDeposit;
+  G4double PlasticScintillator_Gamma_HitAngle;
+  G4double PlasticScintillator_Gamma_HitPosition_x;
+  G4double PlasticScintillator_Gamma_HitPosition_y;
+  G4double PlasticScintillator_Gamma_HitPosition_z;
+
+  G4double PlasticScintillator_Positron_Ekin;
+  double e_PlasticScintillator;
+
+  ifstream input;
+  string input_name;
+
+  ifstream inputSRIM;
+  string input_nameSRIM;
+
+  G4double threshoold;
+  G4String filename;
 
   //------------------------------------------------------------
   // class functions definition
-  public:
+public:
+  // constructor and destructor
+  Wisard_RunManager();
+  ~Wisard_RunManager();
 
+  static const int nb_det = 40;
 
-    // constructor and destructor
-    Wisard_RunManager();
-    ~Wisard_RunManager();
+  TFile *f;
 
-    static const int nb_det = 40;
+  TTree *Tree_Common;
+  TTree *Tree_Proton;
+  TTree *Tree_Gamma;
+  TTree *Tree_Alpha;
+  TTree *Tree_Electron;
+  TTree *Tree_Positron;
 
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    G4String filename = analysisManager->GetFileName();
+  TH1D *histos_coinc[nb_det];
+  TH1D *histos_nocoinc[nb_det];
+  TH1D *histo_e;
 
-    TFile* f = new TFile(filename, "recreate");
+  std::string Detector_Name[nb_det] = {
+      "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
+      "2Up_Strip_1", "2Up_Strip_2", "2Up_Strip_3", "2Up_Strip_4", "2Up_Strip_5",
+      "3Up_Strip_1", "3Up_Strip_2", "3Up_Strip_3", "3Up_Strip_4", "3Up_Strip_5",
+      "4Up_Strip_1", "4Up_Strip_2", "4Up_Strip_3", "4Up_Strip_4", "4Up_Strip_5",
+      "1Down_Strip_1", "1Down_Strip_2", "1Down_Strip_3", "1Down_Strip_4", "1Down_Strip_5",
+      "2Down_Strip_1", "2Down_Strip_2", "2Down_Strip_3", "2Down_Strip_4", "2Down_Strip_5",
+      "3Down_Strip_1", "3Down_Strip_2", "3Down_Strip_3", "3Down_Strip_4", "3Down_Strip_5",
+      "4Down_Strip_1", "4Down_Strip_2", "4Down_Strip_3", "4Down_Strip_4", "4Down_Strip_5"};
 
-    TTree* MyTree;
-    TH1D* histos_coinc[nb_det];
-    TH1D* histos_nocoinc[nb_det];
+  std::unordered_map<std::string, std::pair<Wisard_Sensor *, Wisard_Sensor *>> dic_detector;
 
-    std::string Detector_Name[nb_det] = {
-    "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
-    "2Up_Strip_1", "2Up_Strip_2", "2Up_Strip_3", "2Up_Strip_4", "2Up_Strip_5",
-    "3Up_Strip_1", "3Up_Strip_2", "3Up_Strip_3", "3Up_Strip_4", "3Up_Strip_5",
-    "4Up_Strip_1", "4Up_Strip_2", "4Up_Strip_3", "4Up_Strip_4", "4Up_Strip_5",
-    "1Down_Strip_1", "1Down_Strip_2", "1Down_Strip_3", "1Down_Strip_4", "1Down_Strip_5",
-    "2Down_Strip_1", "2Down_Strip_2", "2Down_Strip_3", "2Down_Strip_4", "2Down_Strip_5",
-    "3Down_Strip_1", "3Down_Strip_2", "3Down_Strip_3", "3Down_Strip_4", "3Down_Strip_5",
-    "4Down_Strip_1", "4Down_Strip_2", "4Down_Strip_3", "4Down_Strip_4", "4Down_Strip_5"
-    };
+  Wisard_Sensor *GetWisardSensor_PlasticScintillator();
+  Wisard_Sensor *GetWisardSensor_Detector(string name);
+  Wisard_Sensor *GetWisardSensor_CatcherMylar();
+  Wisard_Sensor *GetWisardSensor_CatcherAl1();
+  Wisard_Sensor *GetWisardSensor_CatcherAl2();
 
-    std::unordered_map<std::string,  std::pair<Wisard_Sensor *, Wisard_Sensor *>> dic_detector;
+  //----------------------------------------------------------
+  // Commands definitions
+  ////--------------------------------------------------
+  //// U.I. commands creation function
+  // void  DefineSimulationCommands ( );     // inline
 
-  
-    Wisard_Sensor * GetWisardSensor_PlasticScintillator();
-    Wisard_Sensor * GetWisardSensor_Detector(string name);
-    Wisard_Sensor * GetWisardSensor_CatcherMylar();
-    Wisard_Sensor * GetWisardSensor_CatcherAl1();
-    Wisard_Sensor * GetWisardSensor_CatcherAl2();
+  //----------------------------------------------------------
+  // Functions for input file
+  ////--------------------------------------------------
+  //// added input file functions
+  ////                  declaration
+  int OpenInput(const string &fname);
+  void CloseInput();                  // inline
+  ifstream &GetInput();               // inline
+  const string &GetInputName() const; // inline
 
-        //----------------------------------------------------------
-    // Commands definitions
-          ////--------------------------------------------------
-          //// U.I. commands creation function
-    void  DefineSimulationCommands ( );     // inline
+  int OpenInputSRIM(const string &fname);
+  void CloseInputSRIM();    // inline
+  ifstream &GetInputSRIM(); // inline
 
+  void SetThreshoold(G4double th);
+  G4double GetThreshoold();
 
-    //----------------------------------------------------------
-    // Functions for input file
-          ////--------------------------------------------------
-          //// added input file functions
-          ////                  declaration
-    int             OpenInput    ( const string & fname );
-    void            CloseInput   ( );         // inline
-    ifstream &      GetInput     ( );         // inline
-    const string &  GetInputName ( ) const;   // inline
+  void SetOutputFilename(G4String fn);
+  G4String GetOutputFilename();
 
-    int             OpenInputSRIM    ( const string & fname );
-    void            CloseInputSRIM   ( );         // inline
-    ifstream &      GetInputSRIM     ( );         // inline
+  //----------------------------------------------------------
+  // Functions for events processing and output histogram
 
-
-
-    //----------------------------------------------------------
-    // Functions for events processing and output histogram
-
-    // redefine the function from base class G4RunManager
-    void AnalyzeEvent ( G4Event * event );
+  // redefine the function from base class G4RunManager
+  void AnalyzeEvent(G4Event *event);
 };
-
 
 //----------------------------------------------------------------------
 // inline functions for the class
 
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_Detector(string name)
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_Detector(string name)
 {
 
-  if (name.substr(name.length()-2) == "dl")
+  if (name.substr(name.length() - 2) == "dl")
+  {
+    if (dic_detector.find(name.substr(0, name.length() - 3)) != dic_detector.end())
     {
-      if (dic_detector.find(name.substr(0, name.length()-3)) != dic_detector.end())
-      {
-        return(dic_detector[name.substr(0,name.length()-3)].second);
-      }
-      else
-      {
-        G4Exception("GetWisard_Sensor_GetDetector", ("Detector Name not found : "+name).c_str(), JustWarning, "");
-        return nullptr;
-      }
+      return (dic_detector[name.substr(0, name.length() - 3)].second);
     }
+    else
+    {
+      G4Exception("GetWisard_Sensor_GetDetector", ("Detector Name not found : " + name).c_str(), JustWarning, "");
+      return nullptr;
+    }
+  }
 
   else
+  {
+    if (dic_detector.find(name) != dic_detector.end())
     {
-      if (dic_detector.find(name) != dic_detector.end())
-      {
-        return(dic_detector[name].first);
-      }
-      else
-      {
-        G4Exception("GetWisard_Sensor_GetDetector", ("Detector Name not found : "+name).c_str(), JustWarning, "");
-        return nullptr;
-      }
+      return (dic_detector[name].first);
     }
-  
-
+    else
+    {
+      G4Exception("GetWisard_Sensor_GetDetector", ("Detector Name not found : " + name).c_str(), JustWarning, "");
+      return nullptr;
+    }
+  }
 }
 
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_PlasticScintillator(){return(wisard_sensor_PlasticScintillator);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_CatcherMylar(){return(wisard_sensor_CatcherMylar);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_CatcherAl1(){return(wisard_sensor_CatcherAl1);}
-inline Wisard_Sensor * Wisard_RunManager::GetWisardSensor_CatcherAl2(){return(wisard_sensor_CatcherAl2);}
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_PlasticScintillator() { return (wisard_sensor_PlasticScintillator); }
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherMylar() { return (wisard_sensor_CatcherMylar); }
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl1() { return (wisard_sensor_CatcherAl1); }
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl2() { return (wisard_sensor_CatcherAl2); }
 
 // Close the input file
-inline void Wisard_RunManager::CloseInput ( )
-  { input.close(); input_name = ""; }
+inline void Wisard_RunManager::CloseInput()
+{
+  input.close();
+  input_name = "";
+}
 
 // Get the input file stream information
-inline ifstream & Wisard_RunManager::GetInput ( )
-  { return ( input ); }
+inline ifstream &Wisard_RunManager::GetInput()
+{
+  return (input);
+}
 
 // Get the input file name
-inline const string & Wisard_RunManager::GetInputName ( ) const
-  { return ( input_name ); }
-
-// create the commands for user interface
-inline void Wisard_RunManager::DefineSimulationCommands ( )
-  { messenger = new Wisard_Messenger ( this ); }
-
+inline const string &Wisard_RunManager::GetInputName() const
+{
+  return (input_name);
+}
 
 // Close the input file
-inline void Wisard_RunManager::CloseInputSRIM ( )
-  { inputSRIM.close(); input_nameSRIM = ""; }
+inline void Wisard_RunManager::CloseInputSRIM()
+{
+  inputSRIM.close();
+  input_nameSRIM = "";
+}
 
 // Get the input file stream information
-inline ifstream & Wisard_RunManager::GetInputSRIM ( )
-  { return ( inputSRIM ); }
+inline ifstream &Wisard_RunManager::GetInputSRIM()
+{
+  return (inputSRIM);
+}
 
+inline G4double Wisard_RunManager::GetThreshoold()
+{
+  return (threshoold);
+}
+
+inline void Wisard_RunManager::SetThreshoold(G4double th)
+{
+  threshoold = th;
+}
+
+inline void Wisard_RunManager::SetOutputFilename(G4String fn)
+{
+  filename = fn;
+}
+
+inline G4String Wisard_RunManager::GetOutputFilename()
+{
+  return filename;
+}
 
 #endif

@@ -7,6 +7,7 @@
 #include "Wisard_Detector.hh"
 #include "Wisard_PhysList.hh"
 #include "Wisard_Generator.hh"
+#include "Wisard_Messenger.hh"
 
 // include files for interactive sessions and for display
 #include "G4UImanager.hh"
@@ -19,91 +20,71 @@
 //----------------------------------------------------------------------
 // program main function
 
-int main ( int argc,char** argv )
+int main(int argc, char **argv)
 {
+  G4Random::setTheSeed(123456789);
 
-  // int seedValue = 123456789;
-  // G4Random::setTheSeed(seedValue);
-
-  G4String output = "test";
-
-  if (argc >= 3)
-  {
-    output = argv[2];
-  }
-
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  analysisManager->SetFileName(output+".root");
-
-  //get run time
-  clock_t t1,t2;
-  t1=clock();
+  // get run time
+  clock_t t1, t2;
+  t1 = clock();
 
   //------------------------------------------------------------
   //  Simulation customisation
-
   // define the core simulation object
   Wisard_RunManager run;
 
   // create the detector definition
-	Wisard_Detector * ptr_det = new Wisard_Detector ( &run ) ;
-  run.SetUserInitialization ( ptr_det );
+  Wisard_Detector *ptr_det = new Wisard_Detector(&run);
+  run.SetUserInitialization(ptr_det);
 
   // create the physics list
-  Wisard_PhysList * ptr_phys = new Wisard_PhysList;
-  run.SetUserInitialization ( ptr_phys );
+  Wisard_PhysList *ptr_phys = new Wisard_PhysList;
+  run.SetUserInitialization(ptr_phys);
+
+  Wisard_Tracking *ptr_track = new Wisard_Tracking();
+  run.SetUserAction(ptr_track);
 
   // create the generator for events
-  Wisard_Generator * ptr_gene = new Wisard_Generator ( &run );
-  run.SetUserAction ( ptr_gene );
+  Wisard_Generator *ptr_gene = new Wisard_Generator(&run);
+  run.SetUserAction(ptr_gene);
 
+  new Wisard_Messenger(&run, ptr_det, ptr_gene);
 
-  // create the associated commands
-  run.DefineSimulationCommands();
-
+  run.Initialize();
 
   //------------------------------------------------------------
   //  Session start
 
-  // initialise the simulation
-  run.Initialize();
-
   // the process must be added after initialization (so that particles
   // are defined)
-  ptr_phys->AddStepMax ( 1*mm, 0x2 );
+
+  ptr_phys->AddStepMax(1 * mm, 0x2);
 
   // set the details of Geant4 messages
   G4EventManager::GetEventManager()->SetVerboseLevel(0);
   G4EventManager::GetEventManager()->GetTrackingManager()->SetVerboseLevel(0);
 
-
   // visualisation manager (required for displays)
-  G4cout << G4endl << "Visu manager creation" << G4endl;
-  G4VisManager* visu_manager = new G4VisExecutive;
+  G4VisManager *visu_manager = new G4VisExecutive;
   visu_manager->SetVerboseLevel(0);
   visu_manager->Initialize();
 
-
-
   // get the command interpreter pointer
-  G4cout << "Get user interface (command interpreter)" << G4endl;
-  G4UImanager * UI = G4UImanager::GetUIpointer();
+  G4UImanager *UI = G4UImanager::GetUIpointer();
 
-
-	// execution of a macro given as command-line argument
-	if (argc > 1)
-	{
-  	G4String command = "/control/execute ";
-  	G4String fileName = argv[1];
-  	G4cout << G4endl << "Reading macro file: " << fileName << G4endl;
-  	UI->ApplyCommand(command+fileName);
-  }
-
-  else
-	// start of an interactive session
+  // execution of a macro given as command-line argument
+  if (argc > 1)
   {
-  	G4cout << "Starting a tcsh interactive session" << G4endl;
-    G4UIExecutive * session = new G4UIExecutive(argc, argv);
+    G4String command = "/control/execute ";
+    G4String fileName = argv[1];
+    G4cout << G4endl << "Reading macro file: " << fileName << G4endl;
+    UI->ApplyCommand(command + fileName);
+  }
+  else
+  // start of an interactive session
+  {
+    G4cout << "Starting a tcsh interactive session" << G4endl;
+    G4UIExecutive *session = new G4UIExecutive(argc, argv);
 
     // start default viewer from macro
     UI->ApplyCommand("/control/execute visu.mac");
@@ -113,20 +94,20 @@ int main ( int argc,char** argv )
            << "--" << G4endl;
 
     // start the interactive session
-		session->SessionStart();
+    session->SessionStart();
 
-//  	G4cout << "End of interactive session" << G4endl << G4endl;
-		delete session;
+    //  	G4cout << "End of interactive session" << G4endl << G4endl;
+    delete session;
   }
 
   //------------------------------------------------------------
-  
-  analysisManager->CloseFile();
-  //get run tiime
-  t2=clock();
-  float diff ((float)t2-(float)t1);
+
+  // analysisManager->CloseFile();
+  // get run tiime
+  t2 = clock();
+  float diff((float)t2 - (float)t1);
   cout << " " << endl;
-  cout << "<I>: Run time: " << diff/1.e6 << " s" << endl;
+  cout << "<I>: Run time: " << diff / 1.e6 << " s" << endl;
   cout << " " << endl;
 
   delete visu_manager;

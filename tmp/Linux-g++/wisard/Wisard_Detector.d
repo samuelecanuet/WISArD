@@ -474,19 +474,18 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4SensitiveVolumeList.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4CollectionNameVector.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VSDFilter.hh \
- include/Wisard_Messenger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UImessenger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIdirectory.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcommand.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIparameter.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAString.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAnInteger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADoubleAndUnit.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADouble.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3Vector.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3VectorAndUnit.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithoutParameter.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithABool.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpBoundaryProcess.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalPhoton.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalSurface.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SurfaceProperty.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomTools.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomDirection.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TwoVector.hh \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.h \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VDiscreteProcess.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4AnalysisManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4GenericAnalysisManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -640,9 +639,6 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4SubtractionSolid.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ExtrudedSolid.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4GeomTypes.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4TwoVector.hh \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.h \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4TessellatedSolid.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4Voxelizer.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4SurfBits.hh \
@@ -708,6 +704,9 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4VSolid.hh \
  include/Wisard_Sensor.hh include/Wisard_MagnetField.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4MagneticField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4GenericMessenger.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4AnyType.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4AnyMethod.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4SDManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4SDStructure.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VSensitiveDetector.hh \

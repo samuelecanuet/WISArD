@@ -10,8 +10,8 @@
 #   Input Files
 #---------------------------------------------------------------
 /input/Open_B wisard_field.txt
-/input/Open_SRIM SRIM_data/%inputSRIM
-/input/Open_CRADLE %inputCRADLE
+/input/Open_SRIM SRIM_data/32Ar.txt
+/input/Open_CRADLE ../../../../../../mnt/hgfs/shared/data/32Ar_a1_b0_3.txt
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -33,5 +33,5 @@
 #   Generate Events
 #---------------------------------------------------------------
 /run/printProgress 10000
-/output %output
-/run/beamOn %events
+/output ../../../../../../mnt/hgfs/shared/32Ar_a1_b0_3.root
+/run/beamOn 1000

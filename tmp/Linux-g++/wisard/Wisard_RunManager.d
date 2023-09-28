@@ -472,19 +472,18 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4SensitiveVolumeList.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4CollectionNameVector.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VSDFilter.hh \
- include/Wisard_Messenger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UImessenger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIdirectory.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcommand.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIparameter.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAString.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAnInteger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADoubleAndUnit.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADouble.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3Vector.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3VectorAndUnit.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithoutParameter.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithABool.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpBoundaryProcess.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalPhoton.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalSurface.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SurfaceProperty.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomTools.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomDirection.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TwoVector.hh \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.h \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VDiscreteProcess.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4AnalysisManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4GenericAnalysisManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -627,5 +626,75 @@
  /usr/local/root/6.24.06/include/TBranch.h \
  /usr/local/geant4.11.0.0/include/Geant4/G4VTrajectoryPoint.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VTrajectory.hh \
- include/Wisard_Sensor.hh /usr/include/c++/8/numeric \
- /usr/include/c++/8/bits/stl_numeric.h
+ include/Wisard_Sensor.hh /usr/local/root/6.24.06/include/TDirectory.h \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RootAnalysisManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/ntuple \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/tree \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/itree \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../typedefs \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/iobject \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/idir \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/seek \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/branch_element \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/branch \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/leaf \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/base_leaf \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/named \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/buffer \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/wbuf \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../long_out \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../snpf \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../charp_out \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../stype \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../typedefs \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/ibo \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../realloc \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../mnmx \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../forit \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../vmanip \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/cids \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../cid \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../scast \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../safe_cast \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../cid \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../rcmp \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../cids \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../vdata \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/basket \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/key \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/date \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/ifile \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../press_func \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../sout \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/imutex \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/branch_object \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/icol \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../vfind \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../touplow \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../ntuple_booking \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/mpi_create_basket \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/../impi \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/columns.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/histo/hmpi \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RootAnalysisManager.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RootNtupleManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TNtupleManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4BaseNtupleManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TNtupleDescription.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TNtupleManager.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RootFileDef.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RootNtupleManager.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RootNtupleFileManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VNtupleFileManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RootFileManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VTFileManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TFileManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TFileInformation.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TFileManager.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/wcsv_ntuple \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/vfind \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/vmanip \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/scast \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/ntuple_booking \
+ /usr/local/geant4.11.0.0/include/Geant4/tools/sout \
+ /usr/include/c++/8/numeric /usr/include/c++/8/bits/stl_numeric.h

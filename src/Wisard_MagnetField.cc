@@ -1,67 +1,59 @@
 #include "Wisard_MagnetField.hh"
 
-WisardMagnetField::WisardMagnetField( const char* filename)
+WisardMagnetField::WisardMagnetField(const string filename, G4double value)
 {
-
-  G4cout << "\n-----------------------------------------------------------"
-	       << "\n      Magnetic field"
-	       << "\n-----------------------------------------------------------";
-
-  G4cout << "\n ---> " "Reading the field grid from " << filename << " ... " << endl;
-  ifstream file( filename ); // Open the file for reading.
+  ifstream file(filename); // Open the file for reading.
 
   // Storage space for the table
   // table dimensions
-  nz  = 1001;
-  max = 50.*cm, min = -50.*cm;      // JG: added units / dz removed (not used)
+  nz = 1001;
+  max = 50. * cm, min = -50. * cm;
 
   // Ignore first blank line
   char buffer[256];
-  file.getline(buffer,256);
+  file.getline(buffer, 256);
 
   // Read in the data
-  double z,bx,by,bz;
-  for ( int iz = 0; iz < nz; iz++ )
+  double z, bx, by, bz;
+  for (int iz = 0; iz < nz; iz++)
   {
-    file >> z >> bz >> by >> bx ;
-    zField[iz] = bz*tesla / 6*4;        // JG: added units
-    yField[iz] = by*tesla;
-    xField[iz] = bx*tesla;
-    zval  [iz] = z * meter;
+    file >> z >> bz >> by >> bx;
+    zField[iz] = bz / 6 * value;
+    yField[iz] = by * tesla;
+    xField[iz] = bx * tesla;
+    zval[iz] = z * meter;
   }
   file.close();
-
 
   // for (int iz=0; iz<nz; iz++) {
   //     G4cout << xField[iz] << " "  << yField[iz] << " "  << zField[iz] << endl;
   //}
-
 }
 
-void WisardMagnetField::GetFieldValue ( const double point[4],
-				                               double *Bfield ) const
+void WisardMagnetField::GetFieldValue(const double point[4],
+                                      double *Bfield) const
 {
-//  double x = point[0];
-//  double y = point[1];
+  //  double x = point[0];
+  //  double y = point[1];
   double z = point[2];
 
   // Check that the point is within the defined region
-  if ( z<min )
+  if (z < min)
   {
     Bfield[0] = 0.0;
     Bfield[1] = 0.0;
     Bfield[2] = 0.0;
   }
-  else if ( z >= min && z <= max )
+  else if (z >= min && z <= max)
   {
     // find two grid point around point searched for
-    for ( int ix = 1; ix < nz; ix++)
+    for (int ix = 1; ix < nz; ix++)
     {
-      if ( zval[ix] > z )
+      if (zval[ix] > z)
       {
         Bfield[0] = 0.0;
         Bfield[1] = 0.0;
-        Bfield[2] = (zField[ix]-zField[ix-1]) / (zval[ix] - zval[ix-1]) * (z - zval[ix-1]) + zField[ix-1];
+        Bfield[2] = (zField[ix] - zField[ix - 1]) / (zval[ix] - zval[ix - 1]) * (z - zval[ix - 1]) + zField[ix - 1];
         break;
       }
     }
@@ -73,9 +65,9 @@ void WisardMagnetField::GetFieldValue ( const double point[4],
     Bfield[2] = 0.0;
   }
 
-/* for testing...
-    Bfield[0] = 0.0;
-    Bfield[1] = 0.0;
-    Bfield[2] = 0.5*tesla;
-*/
+  /* for testing...
+      Bfield[0] = 0.0;
+      Bfield[1] = 0.0;
+      Bfield[2] = 0.5*tesla;
+  */
 }
