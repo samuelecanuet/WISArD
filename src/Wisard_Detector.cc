@@ -2,7 +2,6 @@
 #include "Wisard_Sensor.hh"
 #include "Wisard_MagnetField.hh"
 
-// declaration of the classes used in the functions
 #include "G4VisAttributes.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
@@ -25,34 +24,22 @@
 
 
 //----------------------------------------------------------------------
-// constructor of the detector definition
-// the pointer to the run manager is specified so that we can
-// go back to the manager data (ie energy histogram)
+
 Wisard_Detector::Wisard_Detector ( Wisard_RunManager * mgr)
 {
     cout << "Constructor Wisard_Detectors" << endl;
     manager_ptr = mgr;
 
     pDz    = 1.5*mm;    // Spessore del supporto (su cui soo messe le strip
-    G4double pTheta = 0.*degree;
-    G4double pPhi   = 0.*degree;
     pDy1   = 34.12*mm;  // Altezza (y) del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDy2
-    G4double pDx1   = 83.3*mm;   // Lunghezza (x) della base maggiore del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDx3
-    G4double pDx2   = 31.*mm;    // Lunghezza (x) della base minore del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDx4
-    G4double pAlp1  = 0*degree;  // Angolo tra i centri delle due facce
-    G4double pDy2   = 34.12*mm;  // Altezza (y) del trapezio sulla prima faccia
-    G4double pDx3   = 83.3*mm;   // Lunghezza (x) della base maggiore del trapezio sulla prima faccia
-    G4double pDx4   = 31.*mm;    // Lunghezza (x) della base minore del trapezio sulla prima faccia
-    G4double pAlp2  = 0.*degree;
+
 
      thicknessSiDetector                        = 300.*um;
     spazio_tra_Bordo_e_strip5                  = 1.29*mm + 0.225*mm; //spazio tra bordo superiore e strip 5 (la più lunga). Per dettagli guardare disegno di Sean.
     spazio_tra_Strip                           = 0.07*mm; //spazio tra ciascuna strip
      thetaInclinazione_SiDetector               = 52.64*degree;
     G4double spazio_tra_Scintillatore_e_BordoSiDetector = 3.745*mm;
-    //G4double lunghezzaLatoObliquoSupporto               = pDy1 / sin(thetaInclinazione_SiDetector); //giusto calcolo semplice di trigonometria (su postit giallo)
-    //G4double x_CentralLength_SupportSiliconDetector     = pDx1 - (2 * (pDy1/2) * (cos(thetaInclinazione_SiDetector)/sin(thetaInclinazione_SiDetector)));
-
+ 
     // Riferito al disegno di Sean e di Mathieu (foto su telegram, piani stampati in data 17/05/2021 su formato A1)
      xLow_SiDet_Strip_5  = 63.63*mm;
      y_SiDet_Strip_5     = 4.11*mm;
@@ -87,27 +74,11 @@ Wisard_Detector::Wisard_Detector ( Wisard_RunManager * mgr)
   x_smallBox_daTagliare_SupportoRame_SiDetector               = 10.*mm; //6
   y_smallBox_daTagliare_SupportoRame_SiDetector               = 10.*mm; //5
   distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector = 3.2*mm;
-
-  //G4double y_AngoloInferioreSx_BordoDaTagliare   = (pDy1/2) - y_smallBox_daTagliare_SupportoRame_SiDetector;
-  //G4double angCoeff_retta_LatoObliquoDx_Trapezio = (-2*pDy1)/(pDx1 - pDx2);
-  //G4double intercetta_retta_LatoObliquoTrapezio  = (-pDy1/2) - (angCoeff_retta_LatoObliquoDx_Trapezio * (pDx1/2));
-  //G4double x_AngoloInferioreSx_BordoDaTagliare   = (y_AngoloInferioreSx_BordoDaTagliare - intercetta_retta_LatoObliquoTrapezio)/angCoeff_retta_LatoObliquoDx_Trapezio;
-
   
     /// colors ///
     G4VisAttributes* SiliconDetector_att   = new G4VisAttributes(G4Colour(1., 0., 0.));//red (r,g,b) ->red
     SiliconDetector_att->SetForceWireframe(false);
     SiliconDetector_att->SetForceSolid(true);
-
-
-    /// Materials ///
-    G4Material*   materialSiliconDetector  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Si");
-    G4Element * elSi = new G4Element("Silicon",  "Si", 14., 28.0855*g/mole);
- 
-    G4Element * elO  = new G4Element("Oxigen" ,  "O", 8. , 15.9994 *g/mole);
-    G4Material* materialSupportSiliconDetector  = new G4Material("Vetronite", 2.*g/cm3, 2);//vetro epossidico, ossia PCB
-    materialSupportSiliconDetector->AddElement(elSi, 1);
-    materialSupportSiliconDetector->AddElement(elO , 2);
 
    
     dic_position["1Up"] = G4ThreeVector(0, r, z);
@@ -159,21 +130,11 @@ G4VPhysicalVolume * Wisard_Detector::Construct  ( )
   if ( !fieldIsInitialized )
   {
     G4FieldManager   *pFieldMgr;
-    // G4MagIntegratorStepper *pStepper;
-
-    //Field grid in A9.TABLE. File must be in accessible from run directory.
     G4MagneticField* WisardMagField = new WisardMagnetField("wisard_field.txt");
-    ////G4MagneticField* WisardMagField= new WisardMagnetField("/exo73c/Blank/WITCH/simulations/geant4/wisard_field.txt");
-
     pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-
-    //G4Mag_UsualEqRhs* fEquation = new G4Mag_UsualEqRhs(WisardMagField);
-    //G4NystromRK4* fStepper = new G4NystromRK4(fEquation);
-
     G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
     pChordFinder->SetDeltaChord(1*um);
     pFieldMgr->SetChordFinder( pChordFinder );
-
     pFieldMgr->SetDetectorField(WisardMagField);
 
     // JG: setting precision
@@ -197,11 +158,11 @@ G4SolidStore::GetInstance()->Clean();
 G4double innerRadius = 0*cm;
 G4double outerRadius = 6.5*cm; // réduit au raypon du Bore pour opti6.5
 G4double length      = 30.*cm; // réduit pour opti
-G4double theta       = 90.0*deg;
+G4double theta1       = 90.0*deg;
 G4double phi         = 360.0*deg;
 
 G4Material* vide  = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
-fSolidWorld = new G4Tubs("World", innerRadius, outerRadius, length/2, theta, phi);
+fSolidWorld = new G4Tubs("World", innerRadius, outerRadius, length/2, theta1, phi);
 
 fLogicWorld = new G4LogicalVolume(fSolidWorld, //its solid
                                   vide,        //its material
@@ -727,11 +688,13 @@ Logic_AlSource2->SetVisAttributes(AlSource_att);
 
 
 if(Physics_MylarSource == NULL) {}
+if(Physics_AlSource2 == NULL) {}
+if(Physics_AlSource1 == NULL) {}
 
 //=========================================================================================================================
  //========================================== SILICON DETECTORS _ COMMON PARAMETERS ========================================
 //=========================================================================================================================
- G4double a, z, density;
+ G4double a, density;
  G4String name, symbol;
  G4int    nelements, natoms;
 
@@ -743,13 +706,10 @@ if(Physics_MylarSource == NULL) {}
  materialSupportSiliconDetector->AddElement(elO , natoms=2);
 
  G4double z_height_Source_biggerBaseSiDet_inVerticale = 24.92*mm;
- G4double angle_between_xAxis_AND_zAxis               = 40.*degree; //in generale, poi bisogna vedere il segno e cose varie a seconda della posizione del detector rispetto alla terna
 
  //Common parameteres to all Si detectors
- pDz    = 1.5*mm;    // Spessore del supporto (su cui soo messe le strip
  G4double pTheta = 0.*degree;
  G4double pPhi   = 0.*degree;
- G4double pDy1   = 34.12*mm;  // Altezza (y) del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDy2
  G4double pDx1   = 83.3*mm;   // Lunghezza (x) della base maggiore del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDx3
  G4double pDx2   = 31.*mm;    // Lunghezza (x) della base minore del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDx4
  G4double pAlp1  = 0*degree;  // Angolo tra i centri delle due facce
@@ -779,18 +739,6 @@ if(Physics_MylarSource == NULL) {}
 
 
   //___________ Supporto in rame della placca in PBC sulla quale é montato il Si detector  ____________
-  G4double length_x_SupportoRame_SiDetector                            = 56.*mm;
-  G4double height_y_SupportoRame_SiDetector                            = 33.548*mm;
-  G4double thickness_z_SupportoRame_SiDetector                         = 1.5*mm;
-  G4double x_smallBox_daTagliare_SupportoRame_SiDetector               = 10.*mm; //6
-  G4double y_smallBox_daTagliare_SupportoRame_SiDetector               = 10.*mm; //5
-  G4double distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector = 3.2*mm;
-
-  //G4double y_AngoloInferioreSx_BordoDaTagliare   = (pDy1/2) - y_smallBox_daTagliare_SupportoRame_SiDetector;
-  //G4double angCoeff_retta_LatoObliquoDx_Trapezio = (-2*pDy1)/(pDx1 - pDx2);
-  //G4double intercetta_retta_LatoObliquoTrapezio  = (-pDy1/2) - (angCoeff_retta_LatoObliquoDx_Trapezio * (pDx1/2));
-  //G4double x_AngoloInferioreSx_BordoDaTagliare   = (y_AngoloInferioreSx_BordoDaTagliare - intercetta_retta_LatoObliquoTrapezio)/angCoeff_retta_LatoObliquoDx_Trapezio;
-
   G4Material*   material_SupportoRame_SiliconDetector = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
   G4VSolid*     biggerBox_material_SupportoRame_SiliconDetector = new G4Box("biggerBox_material_SupportoRame_SiliconDetector" , length_x_SupportoRame_SiDetector/2, height_y_SupportoRame_SiDetector/2, thickness_z_SupportoRame_SiDetector/2);
   G4VSolid*     smallerBox_material_SupportoRame_SiliconDetector = new G4Box("smallerBox_material_SupportoRame_SiliconDetector", x_smallBox_daTagliare_SupportoRame_SiDetector/2, y_smallBox_daTagliare_SupportoRame_SiDetector/2, thickness_z_SupportoRame_SiDetector);
@@ -805,9 +753,6 @@ height_y_SupportoRame_SiDetector/2 - y_smallBox_daTagliare_SupportoRame_SiDetect
   G4VisAttributes* Box_material_SupportoRame_SiliconDetector_attvide = new G4VisAttributes(G4Colour(0.5, 0.2, 0.8));//(r,g,b) => magenta
 Box_material_SupportoRame_SiliconDetector_att->SetForceWireframe(false);
 Box_material_SupportoRame_SiliconDetector_att->SetForceSolid(true);
-
-// Box_material_SupportoRame_SiliconDetector_attvide->SetForceWireframe(false);
-// Box_material_SupportoRame_SiliconDetector_attvide->SetForceSolid(true);
 
 //Support
     supportSiliconDetector= new G4Trap("supportSiliconDetector",
@@ -992,6 +937,8 @@ false,                //no boolean op.
 logic_placcaRame_Cilindrica->SetVisAttributes(Box_material_SupportoRame_PlasticScint_att);
   if(physics_placcaRame_Cilindrica == NULL) {}
 
+
+//////// SET SENSITIVE DETECTOR OTHER THAN SiDet /////////
 fLogic_PlasticScintillator->SetSensitiveDetector( manager_ptr->GetWisardSensor_PlasticScintillator() );
 Logic_MylarSource->SetSensitiveDetector( manager_ptr->GetWisardSensor_CatcherMylar() );
 Logic_AlSource1->SetSensitiveDetector( manager_ptr->GetWisardSensor_CatcherAl1() );

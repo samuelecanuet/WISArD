@@ -128,33 +128,23 @@ fi
 
 
 
-if [ "$Nuclei" == "Ar" ]; then
-    impl=32
-    std_impl=14
+if [ "$Nuclei" == "32Ar" ]; then
     A=32
     Z=18
 fi
-if [ "$Nuclei" == "Mg" ]; then
-    impl=53
-    std_impl=31
+if [ "$Nuclei" == "20Mg" ]; then
     A=20
     Z=12
 fi
-if [ "$Nuclei" == "Si" ]; then
-    impl=39
-    std_impl=19
+if [ "$Nuclei" == "28S" ]; then
     A=28
     Z=16
 fi
-if [ "$Nuclei" == "S" ]; then
-    impl=35
-    std_impl=16
+if [ "$Nuclei" == "24Si" ]; then
     A=24
     Z=14
 fi
-if [ "$Nuclei" == "O" ]; then
-    impl=76
-    std_impl=34
+if [ "$Nuclei" == "14O" ]; then
     A=14
     Z=8
 fi
@@ -208,9 +198,9 @@ while [ $Saver -le $RunEnd ]; do
 
 
         cp macro_base.mac tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        sed -e "s/%input/${Nuclei}_${constants}_${Saver}.txt/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
+        sed -e "s/%inputCRADLE/${Nuclei}_${constants}_${Saver}.txt/g; s/%inputSRIM/${Nuclei}.txt/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
         rm tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        cmdAnalysis="${Analysis} tempory/macro_${Saver}_${Nuclei}_${constants}.mac ${rootGeant4file}${Nuclei}_${constants}_${Saver} ${impl} ${std_impl}"
+        cmdAnalysis="${Analysis} tempory/macro_${Saver}_${Nuclei}_${constants}.mac ${rootGeant4file}${Nuclei}_${constants}_${Saver}"
         echo -e "$GREEN $cmdAnalysis $COLOR"
 
 	cd ../CRADLE-master/build

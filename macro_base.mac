@@ -16,7 +16,8 @@
 #
 #
 #
-/input/openFile ../../../../../../mnt/hgfs/shared/data/%input
+/input/Open_SRIM SRIM_data/%inputSRIM
+/input/Open_CRADLE ../../../../../../mnt/hgfs/shared/data/%inputCRADLE
 #/run/printProgress 1
 /run/beamOn 1000000
 /input/closeFile

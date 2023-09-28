@@ -10,8 +10,8 @@ Wisard_Sensor::Wisard_Sensor( )
   cout << "Constructor Wisard_Sensor" << endl;
   energy = 0.L;
   energy_positron = 0.L;
-  position = G4ThreeVector(0.,0.,0.);
-  count = 0;
+  position = G4ThreeVector(DBL_MAX,DBL_MAX,DBL_MAX);
+  position_positron = G4ThreeVector(DBL_MAX,DBL_MAX,DBL_MAX);
 
 }
 
@@ -34,8 +34,8 @@ void Wisard_Sensor::Initialize  ( G4HCofThisEvent * hit_collection )
 
   energy = 0.L;
   energy_positron = 0.L;
-  position = G4ThreeVector(0.,0.,0.);
-  count = 0;
+  position = G4ThreeVector(DBL_MAX,DBL_MAX,DBL_MAX);
+  position_positron = G4ThreeVector(DBL_MAX,DBL_MAX,DBL_MAX);
 }
 
 
@@ -45,13 +45,16 @@ G4bool Wisard_Sensor::ProcessHits ( G4Step * step, G4TouchableHistory * )
 
   if (step->GetTrack()->GetDefinition()->GetParticleName() == "e+")
   {
-    G4StepPoint* preStepPoint = step->GetPreStepPoint();
-    G4StepPoint* postStepPoint = step->GetPostStepPoint();
-    energy_positron += preStepPoint->GetKineticEnergy() - postStepPoint->GetKineticEnergy();
+    if (energy == 0)
+    {
+      position_positron = step->GetPreStepPoint()->GetPosition();
+    }
+
+    energy_positron += step->GetPreStepPoint()->GetKineticEnergy() - step->GetPostStepPoint()->GetKineticEnergy();
     // energy_positron += step->GetTotalEnergyDeposit();
   }
 
-  if (step->GetTrack()->GetDefinition()->GetParticleName() == "proton")
+  if (step->GetTrack()->GetDefinition()->GetParticleName() == "proton" || step->GetTrack()->GetDefinition()->GetParticleName() == "alpha")
   {
 
     if (energy == 0)
@@ -59,14 +62,14 @@ G4bool Wisard_Sensor::ProcessHits ( G4Step * step, G4TouchableHistory * )
       position = step->GetPreStepPoint()->GetPosition();
     }
 
-
-    G4StepPoint* preStepPoint = step->GetPreStepPoint();
-    G4StepPoint* postStepPoint = step->GetPostStepPoint();
-    energy += preStepPoint->GetKineticEnergy() - postStepPoint->GetKineticEnergy();
+    energy += step->GetPreStepPoint()->GetKineticEnergy() - step->GetPostStepPoint()->GetKineticEnergy();
     // energy += step->GetTotalEnergyDeposit();
-
-
   }
+
+
+  // ####################################################################
+  // !!! KILLING eletron, gamma and down-positron for performance /// !!!  
+  // ####################################################################
   if (step->GetTrack()->GetDefinition()->GetParticleName() == "gamma" ||  step->GetTrack()->GetDefinition()->GetParticleName() == "e-")
   {
     step->GetTrack()->SetTrackStatus(fStopAndKill);
@@ -75,11 +78,11 @@ G4bool Wisard_Sensor::ProcessHits ( G4Step * step, G4TouchableHistory * )
   //if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicMylarSource" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" && step->GetTrack()->GetPosition().z() < -0.*mm)
 	if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicAlSource1" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World")
   {
-if ( step->GetTrack()->GetDefinition()->GetParticleName() == "e+")
-{
-step->GetTrack()->SetTrackStatus(fStopAndKill);
-}
-}
+    if ( step->GetTrack()->GetDefinition()->GetParticleName() == "e+")
+    {
+      step->GetTrack()->SetTrackStatus(fStopAndKill);
+    }
+  }
 
 
   return (true);

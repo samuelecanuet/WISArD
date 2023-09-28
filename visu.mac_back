@@ -16,9 +16,11 @@
 #   generate events
 #---------------------------------------------------------------
 #
-/input/openFile ../../../../../../mnt/hgfs/shared/CRADLE_files/GIF/Ar_gif_Gcs0.15.txt
-#/input/openFile Ar32_e5_all.txt
+/input/Open_SRIM SRIM_data/32Ar.txt
+/input/Open_CRADLE ../../../../../../mnt/hgfs/shared/data/Ar_a1_b0_12.txt
+
 /run/printProgress 1000
-/run/beamOn 1001
+/run/beamOn 20000
+/input/Close_CRADLE
 #
 #

@@ -97,6 +97,40 @@ int Wisard_RunManager::OpenInput ( const string & fname )
   return (error);
 }
 
+// The function returns 0 if no error occured
+int Wisard_RunManager::OpenInputSRIM ( const string & fname )
+{
+  int error = 0;    // return value
+
+  if (fname != "")
+  {
+    // close previous output... just in case
+    CloseInputSRIM();
+
+    // try to open the new file
+    inputSRIM.open ( fname.c_str() );
+
+    if (inputSRIM.fail())
+    {
+      error = 2;
+      cerr << "<W> OpenInput : error opening file " << fname << endl;
+    }
+    else
+    {
+      input_nameSRIM = fname;
+      cout << "<I> Open input file: " << fname << endl;
+    }
+
+  }
+  else
+  {
+    error = 1;
+    cerr << "<W> OpenInput : empty file name" << endl;
+  }
+
+  return (error);
+}
+
 //----------------------------------------------------------------------
 // This function "overloads" (replaces) the G4RunManager function
 void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
@@ -108,21 +142,22 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
 
   //Get all detector energy
   double e_PlasticScintillator = wisard_sensor_PlasticScintillator->GetEventEnergy_positron()/keV;
+  G4ThreeVector p_PlasticScintillator = wisard_sensor_PlasticScintillator->GetPositionEnter_positron();
 
   double value_det[nb_det] = {};
   double value_dl[nb_det] = {};
+  G4ThreeVector value_p[nb_det] = {};
   for (int i = 0; i < nb_det; i++)
   {
     value_det[i] = dic_detector[Detector_Name[i]].first->GetEventEnergy()/keV;
     value_dl[i]  =  dic_detector[Detector_Name[i]].second->GetEventEnergy()/keV;
+
+    value_p[i] = dic_detector[Detector_Name[i]].first->GetPositionEnter();
   }
 
   double e_CatcherMylar = wisard_sensor_CatcherMylar->GetEventEnergy()/keV;
   double e_CatcherAl1 = wisard_sensor_CatcherAl1->GetEventEnergy()/keV;
   double e_CatcherAl2 = wisard_sensor_CatcherAl2->GetEventEnergy()/keV;
-
-  double tab[2];
-
 
 
   //Conditions for tree
@@ -133,14 +168,18 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
       e_DetProton = value_det[i];
       n_DetProton = Detector_Name[i];
       e_DeadLayer = value_dl[i];
-      // x_Det = value_p[i].x();
-      // y_Det = value_p[i].y();
-      // z_Det = value_p[i].z();
-      // e_Support = value_support[(int)(i/5)];
+      x_Det = value_p[i].x();
+      y_Det = value_p[i].y();
+      z_Det = value_p[i].z();
     }
   }
 
   if (e_DetProton == 0.){n_DetProton = "none"; }
+
+  
+  double x_Plas = p_PlasticScintillator.x();
+  double y_Plas = p_PlasticScintillator.y();
+  double z_Plas = p_PlasticScintillator.z();
 
   e_Catcher = e_CatcherMylar + e_CatcherAl2 + e_CatcherAl1;
 
@@ -154,12 +193,12 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
   
     //Tree
     MyTree = new TTree("MyTree", "Tree_information");
-    // TBranch* initial_x = MyTree->Branch("x", &x, "x/D");
-    // TBranch* initial_y = MyTree->Branch("y", &y, "y/D");
-    // TBranch* initial_z = MyTree->Branch("z", &z, "z/D");
-    // TBranch* traj_x = MyTree->Branch("x_vec", "vector<double>", &x_vec);
-    // TBranch* traj_y = MyTree->Branch("y_vec", "vector<double>", &y_vec);
-    // TBranch* traj_z = MyTree->Branch("z_vec", "vector<double>", &z_vec);
+    //initial position
+    TBranch* initial_x = MyTree->Branch("x", &x, "x/D");
+    TBranch* initial_y = MyTree->Branch("y", &y, "y/D");
+    TBranch* initial_z = MyTree->Branch("z", &z, "z/D");
+
+    //initial momentum
     TBranch* initial_ppx = MyTree->Branch("p_px", &p_px, "p_px/D");
     TBranch* initial_ppy = MyTree->Branch("p_py", &p_py, "p_py/D");
     TBranch* initial_ppz = MyTree->Branch("p_pz", &p_pz, "p_pz/D");
@@ -167,34 +206,50 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
     TBranch* initial_epy = MyTree->Branch("e_py", &e_py, "e_py/D");
     TBranch* initial_epz = MyTree->Branch("e_pz", &e_pz, "e_pz/D");
 
+    //inital energy
     TBranch* energy_proton = MyTree->Branch("e_proton", &e_proton, "e_proton/D");
     TBranch* energy_positron = MyTree->Branch("e_positron", &e_positron, "e_positron/D");
+
+    //Detected energy
     TBranch* energy_Catcher = MyTree->Branch("e_Catcher", &e_Catcher, "e_Catcher/D");
     TBranch* energy_DetPositron = MyTree->Branch("e_PlasticScintillator", &e_PlasticScintillator, "e_PlasticScintillator/D");
     TBranch* name_DetProton = MyTree->Branch("n_DetProton", &n_DetProton);
     TBranch* energy_DetProton = MyTree->Branch("e_DetProton", &e_DetProton, "e_DetProton/D");
     TBranch* energy_DeadLayer = MyTree->Branch("e_DeadLayer", &e_DeadLayer, "e_DeadLayer/D");
-    // TBranch* Position_x_Det = MyTree->Branch("x_Det", &x_Det, "x_Det/D");
-    // TBranch* Position_y_Det = MyTree->Branch("y_Det", &y_Det, "y_Det/D");
-    // TBranch* Position_z_Det = MyTree->Branch("z_Det", &z_Det, "z_Det/D");
+
+    //hit position on Si_Det
+    TBranch* Position_x_Det = MyTree->Branch("x_Det", &x_Det, "x_Det/D");
+    TBranch* Position_y_Det = MyTree->Branch("y_Det", &y_Det, "y_Det/D");
+    TBranch* Position_z_Det = MyTree->Branch("z_Det", &z_Det, "z_Det/D");
+
+    //hit position on Plastic
+    TBranch* Position_x_Plas = MyTree->Branch("x_Plas", &x_Plas, "x_Plas/D");
+    TBranch* Position_y_Plas = MyTree->Branch("y_Plas", &y_Plas, "y_Plas/D");
+    TBranch* Position_z_Plas = MyTree->Branch("z_Plas", &z_Plas, "z_Plas/D");
 
 
-    // if(initial_x == NULL) {}
-    // if(initial_y == NULL) {}
-    // if(initial_z == NULL) {}
-    // if(initial_ppx == NULL) {}
-    // if(initial_ppy == NULL) {}
-    // if(initial_ppz == NULL) {}
-    // if(initial_epx == NULL) {}
-    // if(initial_epy == NULL) {}
-    // if(initial_epz == NULL) {}
+    if(initial_x == NULL) {}
+    if(initial_y == NULL) {}
+    if(initial_z == NULL) {}
+    if(initial_ppx == NULL) {}
+    if(initial_ppy == NULL) {}
+    if(initial_ppz == NULL) {}
+    if(initial_epx == NULL) {}
+    if(initial_epy == NULL) {}
+    if(initial_epz == NULL) {}
     if(energy_proton == NULL) {}
     if(energy_positron == NULL) {}
-    // if(energy_Catcher == NULL) {}
+    if(energy_Catcher == NULL) {}
     if(energy_DetPositron == NULL) {}
     if(name_DetProton == NULL) {}
     if(energy_DetProton == NULL) {}
     if(energy_DeadLayer == NULL) {}
+    if(Position_x_Det == NULL) {}
+    if(Position_y_Det == NULL) {}
+    if(Position_z_Det == NULL) {}
+    if(Position_x_Plas == NULL) {}
+    if(Position_y_Plas == NULL) {}
+    if(Position_z_Plas == NULL) {}
 
   }
   counts++;
@@ -224,7 +279,7 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
 
     for (int part = 0; part < event->GetNumberOfPrimaryVertex(); part++ )
     {
-      if (event->GetPrimaryVertex(part)->GetPrimary()->GetG4code()->GetParticleName() == "proton")
+      if (event->GetPrimaryVertex(part)->GetPrimary()->GetG4code()->GetParticleName() == "proton" || event->GetPrimaryVertex(part)->GetPrimary()->GetG4code()->GetParticleName() == "alpha")
       {
         e_proton = event->GetPrimaryVertex(part)->GetPrimary()->GetKineticEnergy()/keV;
         p_px = event->GetPrimaryVertex(part)->GetPrimary()->GetMomentumDirection().x();
@@ -235,6 +290,9 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
       
       {
         e_positron = event->GetPrimaryVertex(part)->GetPrimary()->GetKineticEnergy()/keV;
+        e_px = event->GetPrimaryVertex(part)->GetPrimary()->GetMomentumDirection().x();
+        e_py = event->GetPrimaryVertex(part)->GetPrimary()->GetMomentumDirection().y();
+        e_pz = event->GetPrimaryVertex(part)->GetPrimary()->GetMomentumDirection().z();
       }
     }
 
@@ -350,11 +408,13 @@ void Wisard_RunManager::AnalyzeEvent ( G4Event * event )
 
   //Reset energy for the next event
   wisard_sensor_PlasticScintillator->ResetEventEnergy_positron();
+  wisard_sensor_PlasticScintillator->ResetPositionEnter_positron();
 
   for (int i = 0; i < nb_det; i++)
   {
     dic_detector[Detector_Name[i]].first->ResetEventEnergy();
     dic_detector[Detector_Name[i]].second->ResetEventEnergy();
+    dic_detector[Detector_Name[i]].first->ResetPositionEnter();
   }
 
   wisard_sensor_CatcherMylar->ResetEventEnergy();

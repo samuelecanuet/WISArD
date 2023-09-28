@@ -24,13 +24,15 @@ class Wisard_RunManager;   // just indicates that this class exists
 
 
 // This class defines new commands to be used in Geant4 interactive session
-// for the germanium simulation:
+// 
 //
-//    /input/openFile <file>
-//    /input/closeFile
+//    /input/openCRADLEFile <file>
+//    /input/closeCRADLEFile
 //
-//    /result/saveHisto <file>
-//    /result/clearHisto
+//
+//    /input/openSRIMFile <file>
+//    /input/closeSRIMFile
+
 
 class Wisard_Messenger : public G4UImessenger
 {
@@ -43,11 +45,12 @@ class Wisard_Messenger : public G4UImessenger
     // user interface new commands and directories
 
     G4UIdirectory           * input_dir;        // Commands directory for input file
-    G4UIcmdWithAString        * input_cmd_open;       // Command to open an input file
 
-    G4UIdirectory           * result_dir;       // Commands directory for results
-    G4UIcmdWithAString        * result_cmd_save_histo;    // Command to save the histogram
+    G4UIcmdWithAString        * input_cmd_open;       // Command to open an input file
     G4UIcmdWithoutParameter        * input_cmd_close;       // Command to open an input file
+
+    G4UIcmdWithAString        * input_cmd_open_SRIM;       // Command to open an input file
+    G4UIcmdWithoutParameter        * input_cmd_close_SRIM;       // Command to open an input file
 
   //------------------------------------------------------------
   // class functions definition
@@ -63,7 +66,6 @@ class Wisard_Messenger : public G4UImessenger
   // functions defining the commands
   //    set in different function for easier code reading
     void DefineInputCommands     ( );
-    void DefineResultCommands    ( );
 
   //------------------------------------------------------------
   // this function is pure virtual in the base class: it must be defined

@@ -6,19 +6,24 @@
 #include "Randomize.hh"
 #include <CLHEP/Random/RandGaussQ.h>
 
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <random>
+
   int ievent, iev_len=0, isubevent, isubev_len=0;
 //----------------------------------------------------------------------
 
 // Constructor
           ////--------------------------------------------------
           ////  Added pointer to RunManager in constructor
-Wisard_Generator::Wisard_Generator( Wisard_RunManager * mgr, double implantation_, double std_implantation_)
+Wisard_Generator::Wisard_Generator( Wisard_RunManager * mgr)
 {
   cout << "Constructor Wisard_Generator" << endl;
 
   manager_ptr = mgr;
-  implantation = implantation_;
-  std_implantation = std_implantation_;
 
           ////--------------------------------------------------
           ////  Memorize particle definitions
@@ -29,8 +34,8 @@ Wisard_Generator::Wisard_Generator( Wisard_RunManager * mgr, double implantation
   part_proton   = particle_table->FindParticle("proton");
   part_enubar   = particle_table->FindParticle("anti_nu_e");
   part_alpha    = particle_table->FindParticle("alpha");
-  part_geantino    = particle_table->FindParticle("geantino");
-
+  part_geantino    = particle_table->FindParticle("geantino");  
+  
 }
 
 // Destructor
@@ -44,79 +49,57 @@ Wisard_Generator::~Wisard_Generator()
 // It is called by run manager the event loop
 void Wisard_Generator::GeneratePrimaries ( G4Event * event)
 {
-  // find the pointer of the "gamma" particle in the registered particles
-  G4ParticleTable       * particle_table = G4ParticleTable::GetParticleTable();
-  G4ParticleDefinition  * particle = particle_table->FindParticle("gamma");
+  
+  G4ParticleDefinition  * particle;
   G4ThreeVector           dir;
 
   // define a "particle gun": a very simple way to create simple
   G4ParticleGun gun;
 
-//  cout << " " << endl;
-//  cout << "first:" << "iev_len =" << iev_len << " " << "isubev_len =" << isubev_len << endl;
+  if ( event->GetEventID() == 0)
+  {
+    res = Wisard_Generator::GetSRIM_hist();
+  }
+
   if( iev_len == 0 )
   {
-  manager_ptr->GetInput() >> ievent >> iev_len;
-  //cout << "hallo " << "ievent =" << ievent << " " << "iev_len =" << iev_len << endl;
+    manager_ptr->GetInput() >> ievent >> iev_len;
   }
-//  cout << "iev1 = " << ievent << " " << iev_len << endl;
-//  if ( ! manager_ptr->GetInput().fail() ) cout << "iev = " << ievent << " " << iev_len << endl;;
 
   if ( manager_ptr->GetInput().fail() )
   {
-    // rewind
-    manager_ptr->GetInput().clear();
-    manager_ptr->GetInput().seekg (0, ios::beg );
-    //cout << " " << endl;
-    cout << " file rewinded " << endl;
-    //cout << " file rewinded  EOF = " << manager_ptr->GetInput().eof() << endl;
-    //cout << " file rewinded  BAD = " << manager_ptr->GetInput().bad() << endl;
-    //cout << " file rewinded  FAIL = " << manager_ptr->GetInput().fail() << endl;
-
-    //cout << " ievlen = " << iev_len << " " << "isubev_len =" << isubev_len << endl;
-    if( iev_len - isubev_len <= 0 ) manager_ptr->GetInput() >> ievent >> iev_len;
-    //cout << "ievent = " << ievent << " " << "iev_len =" << iev_len << endl;;
-    manager_ptr->GetInput() >> ievent >> isubevent >> isubev_len;
-    //cout << "ievent = " << ievent << " " << "isubevent =" << isubevent << " " << "isubev_len =" << isubev_len << endl;
-    iev_len = iev_len - isubev_len;
+    G4Exception("Wisard_Generator::GeneratePrimaries", ("CRADLE file fail on "+to_string(ievent)+" event").c_str(), JustWarning, "");
   }
+
   else
   {
+  
     manager_ptr->GetInput() >> ievent >> isubevent >> isubev_len;
+
+    
     iev_len = iev_len - isubev_len;
-    //cout << "iev = " << ievent << " " << isubevent << " " << isubev_len << endl;;
-  }
-  // manager_ptr->GetInput() >> ievent >> isubevent >> isubev_len;
-  // iev_len = iev_len - isubev_len;
-  //cout << "treating particle " << endl;
-
-
-  if (! manager_ptr->GetInput().fail())
-  {
 
     double x = 10*mm;
     double y = 10*mm;
     double z = -1;
 
-     while (x >= 2*mm || x <= -2*mm)
-     {
-       x = G4RandGauss::shoot(0, 300*um);
-     }
+    while (x >= 2*mm || x <= -2*mm)
+    {
+      x = G4RandGauss::shoot(0, 300*um) + Wisard_Generator::GetSRIM_data(get<0>(res).first, get<0>(res).second)/10*nm;
+    }
 
-     while (y >= 2*mm || y <= -2*mm)
-     {
-       y = G4RandGauss::shoot(0, 300*um);
-     }
+    while (y >= 2*mm || y <= -2*mm)
+    {
+      y = G4RandGauss::shoot(0, 300*um) + Wisard_Generator::GetSRIM_data(get<1>(res).first, get<1>(res).second)/10*nm;
+    }
 
-     while (z  < 0)
-     {
-       z = G4RandGauss::shoot(implantation*nm, std_implantation*nm);
-     }
-
+    while (z  < 0)
+    {
+      z = Wisard_Generator::GetSRIM_data(get<2>(res).first, get<2>(res).second)/10*nm;
+    }
 
     for (int i = 0; i < isubev_len; ++i)
     {
-      // cout << i << endl;
       string    name;
       double  ekin, exc, mom[4], time;
       manager_ptr->GetInput() >> ievent >> time >> name >> exc >> ekin >>  mom[0] >>  mom[1] >>  mom[2] >>  mom[3] ;
@@ -156,13 +139,6 @@ void Wisard_Generator::GeneratePrimaries ( G4Event * event)
       dir[1] = mom[2] / momentum;
       dir[2] = mom[3] / momentum;
 
-      //// For checks
-//       cerr << "********" << endl;
-//       cerr << name << " iopt = " << iopt << endl;
-//       cerr << "   E= " << ekin/MeV << " MeV"
-//                        << " mom =" << dir << endl;
-
-
       if ( iopt == 1 )
       {
        gun.SetParticleDefinition        ( particle );
@@ -181,34 +157,5 @@ void Wisard_Generator::GeneratePrimaries ( G4Event * event)
 
       }
     }
-
   }
-  else
-
-  {
-
-    // treat simple events defined here
-
-    gun.SetParticleDefinition        ( part_geantino);
-    gun.SetParticlePosition          ( G4ThreeVector (2*cm,0., -10*cm));
-    gun.SetParticleEnergy            ( 3.356*MeV );
-
-//  generate directional distribution
-    G4double u,v,w,r;
-    G4ThreeVector vector;
-//    do{
-     r=G4UniformRand();
-     w=-2.*r+1;
-//    } while( w < 0.866025 );
-    r=G4UniformRand();
-    u=(std::sqrt(1.-w*w)*std::cos(2.*3.14159265*r));
-    v=(std::sqrt(1.-w*w)*std::sin(2.*3.14159265*r));
-    gun.SetParticleMomentumDirection(G4ThreeVector(u,v,w));
-
-
-//  cout << "<I>: dir 1-3 = " << u << v << w << endl;
-
-//  add the vertex to the event
-    gun.GeneratePrimaryVertex        ( event );
-}
 }

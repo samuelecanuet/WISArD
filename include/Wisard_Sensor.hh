@@ -15,12 +15,12 @@ class Wisard_Sensor: public G4VSensitiveDetector
   //------------------------------------------------------------
   // internal variables definition
   protected:
-
-    // energy collected in the germanium
+  
     // it is reset after storing the data
     double    energy;
     double    energy_positron;
     G4ThreeVector position;
+    G4ThreeVector position_positron;
     int count;
 
   //------------------------------------------------------------
@@ -40,6 +40,9 @@ class Wisard_Sensor: public G4VSensitiveDetector
     G4ThreeVector GetPositionEnter ();
     void ResetPositionEnter ();
 
+    G4ThreeVector GetPositionEnter_positron ();
+    void ResetPositionEnter_positron ();
+
     // hits processing
 		void    Initialize  ( G4HCofThisEvent * );
 		G4bool  ProcessHits ( G4Step *, G4TouchableHistory * );
@@ -49,17 +52,20 @@ class Wisard_Sensor: public G4VSensitiveDetector
 //----------------------------------------------------------------------
 // inline functions for the class
 
-// Returns the current event energy (in the germanium)
+// Returns
 // This function is called for event analysis by run manager
 inline double Wisard_Sensor::GetEventEnergy ( ) {return ( energy ); }
 inline double Wisard_Sensor::GetEventEnergy_positron ( ) { return ( energy_positron ); }
 inline G4ThreeVector Wisard_Sensor::GetPositionEnter ( ) { return ( position ); }
+inline G4ThreeVector Wisard_Sensor::GetPositionEnter_positron ( ) { return ( position_positron ); }
 
-// Reset the current event energy (in the germanium)
+// Reset
 // This function is called at end of event analysis by run manager
-inline void Wisard_Sensor::ResetEventEnergy ( ) { energy = 0.L; }
-inline void Wisard_Sensor::ResetEventEnergy_positron ( ) { energy_positron = 0.L; }
-inline void Wisard_Sensor::ResetPositionEnter ( ) { position = G4ThreeVector(-1.,-1.,-1.) ; }
+inline void Wisard_Sensor::ResetEventEnergy ( ) { energy = 0.; }
+inline void Wisard_Sensor::ResetEventEnergy_positron ( ) { energy_positron = 0.; }
+inline void Wisard_Sensor::ResetPositionEnter ( ) { position = G4ThreeVector(DBL_MAX,DBL_MAX,DBL_MAX) ; }
+inline void Wisard_Sensor::ResetPositionEnter_positron ( ) { position_positron = G4ThreeVector(DBL_MAX,DBL_MAX,DBL_MAX) ; }
+
 
 
 

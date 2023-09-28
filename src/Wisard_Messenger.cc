@@ -1,8 +1,6 @@
 
 #include "Wisard_Messenger.hh"
 #include "Wisard_RunManager.hh"
-#include "Wisard_Detector.hh"
-#include "Wisard_Generator.hh"
 
 //----------------------------------------------------------------------
 // constructor of the messenger: define the commands
@@ -15,7 +13,6 @@ Wisard_Messenger::Wisard_Messenger ( Wisard_RunManager * mgr )
 
   // define the commands
   DefineInputCommands ( );
-  DefineResultCommands ( );
 
 }
 
@@ -24,13 +21,12 @@ Wisard_Messenger::~Wisard_Messenger ( )
 {
   cout << "Destructor Wisard_Messenger" << endl;
 
+  delete input_dir;
   delete input_cmd_close;
   delete input_cmd_open;
-  delete input_dir;
 
-  // delete result_cmd_clear_histo;
-  delete result_cmd_save_histo;
-  delete result_dir;
+  delete input_cmd_close_SRIM;
+  delete input_cmd_open_SRIM;
 }
 
 
@@ -46,29 +42,30 @@ void Wisard_Messenger::DefineInputCommands ( )
   input_dir->SetGuidance("Input file commands directory");
 
   // commands
-  input_cmd_open = new G4UIcmdWithAString("/input/openFile",this);
+
+  //Open CRADLE++ file event
+  input_cmd_open = new G4UIcmdWithAString("/input/Open_CRADLE",this);
   input_cmd_open->SetGuidance("Open the input events file.");
   input_cmd_open->SetParameterName("filename",false);
   input_cmd_open->AvailableForStates ( G4State_PreInit, G4State_Idle );
 
-  input_cmd_close = new G4UIcmdWithoutParameter("/input/closeFile",this);
+  //Close CRADLE++ file event
+  input_cmd_close = new G4UIcmdWithoutParameter("/input/Close_CRADLE",this);
   input_cmd_close->SetGuidance("Close the input file.");
   input_cmd_close->AvailableForStates ( G4State_PreInit, G4State_Idle );
 
-  // input_cmd_implantation = new G4UIcmdWithADouble("/implantation",this);
-  // input_cmd_implantation->SetGuidance("Taking of implantation point");
-  // input_cmd_implantation->AvailableForStates ( G4State_PreInit, G4State_Idle );
+
+  //Open SRIM file event
+  input_cmd_open_SRIM = new G4UIcmdWithAString("/input/Open_SRIM",this);
+  input_cmd_open_SRIM->SetGuidance("Open the input implantation file.");
+  input_cmd_open_SRIM->SetParameterName("filename",false);
+  input_cmd_open_SRIM->AvailableForStates ( G4State_PreInit, G4State_Idle );
+
+  //Close SRIM file event
+  input_cmd_close_SRIM = new G4UIcmdWithoutParameter("/input/Close_SRIM",this);
+  input_cmd_close_SRIM->SetGuidance("Close the implantation file.");
+  input_cmd_close_SRIM->AvailableForStates ( G4State_PreInit, G4State_Idle );
 }
-
-
-// - for simulation results
-void Wisard_Messenger::DefineResultCommands ( )
-{
-  // commands directory
-  result_dir = new G4UIdirectory("/result/");
-  result_dir->SetGuidance("Simulation results commands directory");
-}
-
 
 //----------------------------------------------------------------------
 // function processing the commands
@@ -78,8 +75,8 @@ void Wisard_Messenger::SetNewValue ( G4UIcommand * cmd, G4String args )
   // input file commands
   if (cmd == input_cmd_close) { manager_ptr->CloseInput ( ); }
   if (cmd == input_cmd_open)  { manager_ptr->OpenInput ( args ); }
-  // if (cmd == input_cmd_implantation) {manager_ptr->GetImplantation(); }
 
-  // result commands
-  //if (cmd == result_cmd_save_histo)  { manager_ptr->SaveHisto ( ); }
+  if (cmd == input_cmd_close_SRIM) { manager_ptr->CloseInputSRIM ( ); }
+  if (cmd == input_cmd_open_SRIM)  { manager_ptr->OpenInputSRIM ( args ); }
+
 }

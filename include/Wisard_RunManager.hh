@@ -12,7 +12,7 @@
 #include "TH1D.h"
 
 #include <unordered_map>
-#include <utility> // Pour std::pair
+#include <utility>
 
 //----------------------------------------------------------------------
 // This class defines the simulation core (from the base class G4RunManager)
@@ -33,13 +33,11 @@ class Wisard_RunManager: public G4RunManager
     // event counter
     int counts, wisard_counts;
     string sim_num;
-    // std::vector<std::string> n_DetProton;
     string n_DetProton = "none";
     double e_DetProton=0;
     double e_Support=0;
     double e_DeadLayer=0;
     double e_Catcher = 0;
-    // std::vector<double> e_DetProton;
     double x, y, z, e_proton, e_positron, r_proton, r_positron, p_px, p_py, p_pz, e_px, e_py, e_pz;
     double x_Det = -20;
     double y_Det = -20;
@@ -52,6 +50,9 @@ class Wisard_RunManager: public G4RunManager
    ifstream input;
    string   input_name;
    double   input_implantation;
+
+   ifstream inputSRIM;
+   string   input_nameSRIM;
 
    Wisard_Messenger * messenger;
 
@@ -112,7 +113,11 @@ class Wisard_RunManager: public G4RunManager
     void            CloseInput   ( );         // inline
     ifstream &      GetInput     ( );         // inline
     const string &  GetInputName ( ) const;   // inline
-    const double &  GetInputImplantation ( ) const; //inline
+
+    int             OpenInputSRIM    ( const string & fname );
+    void            CloseInputSRIM   ( );         // inline
+    ifstream &      GetInputSRIM     ( );         // inline
+
 
 
     //----------------------------------------------------------
@@ -179,7 +184,14 @@ inline const string & Wisard_RunManager::GetInputName ( ) const
 inline void Wisard_RunManager::DefineSimulationCommands ( )
   { messenger = new Wisard_Messenger ( this ); }
 
-inline const double & Wisard_RunManager::GetInputImplantation ( ) const
-  { return ( input_implantation); }
+
+// Close the input file
+inline void Wisard_RunManager::CloseInputSRIM ( )
+  { inputSRIM.close(); input_nameSRIM = ""; }
+
+// Get the input file stream information
+inline ifstream & Wisard_RunManager::GetInputSRIM ( )
+  { return ( inputSRIM ); }
+
 
 #endif

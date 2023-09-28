@@ -26,20 +26,10 @@ int main ( int argc,char** argv )
   // G4Random::setTheSeed(seedValue);
 
   G4String output = "test";
-  G4double implantation = 47;
-  G4double std_implantation = 14;
-  char* endptr1;
-  char* endptr2;
 
   if (argc >= 3)
   {
     output = argv[2];
-  }
-
-  if (argc == 5)
-  {
-    implantation = std::strtod(argv[3], &endptr1);
-    std_implantation = std::strtod(argv[4], &endptr2);
   }
 
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
@@ -64,7 +54,7 @@ int main ( int argc,char** argv )
   run.SetUserInitialization ( ptr_phys );
 
   // create the generator for events
-  Wisard_Generator * ptr_gene = new Wisard_Generator ( &run , implantation, std_implantation);
+  Wisard_Generator * ptr_gene = new Wisard_Generator ( &run );
   run.SetUserAction ( ptr_gene );
 
 
@@ -90,7 +80,9 @@ int main ( int argc,char** argv )
   // visualisation manager (required for displays)
   G4cout << G4endl << "Visu manager creation" << G4endl;
   G4VisManager* visu_manager = new G4VisExecutive;
+  visu_manager->SetVerboseLevel(0);
   visu_manager->Initialize();
+
 
 
   // get the command interpreter pointer

@@ -720,6 +720,10 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4Step.hh \
  include/Wisard_Generator.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
+ /usr/include/c++/8/random /usr/include/c++/8/bits/random.h \
+ /usr/include/c++/8/x86_64-redhat-linux/bits/opt_random.h \
+ /usr/include/c++/8/bits/random.tcc /usr/include/c++/8/numeric \
+ /usr/include/c++/8/bits/stl_numeric.h \
  /usr/local/geant4.11.0.0/include/Geant4/G4UImanager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/icomsdefs.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VStateDependent.hh \
