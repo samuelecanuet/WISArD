@@ -10,19 +10,18 @@
 using namespace std;
 
 class WisardMagnetField
-//#ifndef STANDALONE
- : public G4MagneticField
-//#endif
+    // #ifndef STANDALONE
+    : public G4MagneticField
+// #endif
 {
-  
-  int    nz;  
+
+  int nz;
   double max, min;
   double xField[1001], yField[1001], zField[1001], zval[1001];
 
 public:
-  WisardMagnetField    ( const char* filename );
+  WisardMagnetField(const string filename, G4double value);
 
-  void  GetFieldValue ( const  double Point[3],
-		                    double *Bfield ) const;
+  void GetFieldValue(const double Point[3],
+                     double *Bfield) const;
 };
-
