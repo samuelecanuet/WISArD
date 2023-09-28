@@ -29,45 +29,45 @@
 class StepMax : public G4VDiscreteProcess
 {
 
-  private:
-    G4double max_step;    ///< Maximum step length
-     
-  public:
-    // constructor / destructor
-    StepMax ( const G4double step = 1000.*km,
-              const G4String & name = "UserMaxStep" );
-    StepMax ( const StepMax & original );
-   ~StepMax ( );
+private:
+  G4double max_step; ///< Maximum step length
 
-    
-    G4bool    IsApplicable  ( const G4ParticleDefinition & part );
+public:
+  // constructor / destructor
+  StepMax(const G4double step = 1 * mm,
+          const G4String &name = "UserMaxStep");
+  StepMax(const StepMax &original);
+  ~StepMax();
 
-    void      SetMaxStep    ( G4double );
-    G4double  GetMaxStep    ( ) const;      // inline
+  G4bool IsApplicable(const G4ParticleDefinition &part);
 
-    G4double  PostStepGetPhysicalInteractionLength( const G4Track & track, G4double,
-			                                              G4ForceCondition * condition );
+  void SetMaxStep(G4double);
+  G4double GetMaxStep() const; // inline
 
-    G4VParticleChange * PostStepDoIt ( const G4Track & track, const G4Step & );
+  G4double PostStepGetPhysicalInteractionLength(const G4Track &track, G4double,
+                                                G4ForceCondition *condition);
 
-    // inline functions
-    G4double  GetMeanFreePath ( const G4Track &, G4double, G4ForceCondition * );
+  G4VParticleChange *PostStepDoIt(const G4Track &track, const G4Step &);
 
+  // inline functions
+  G4double GetMeanFreePath(const G4Track &, G4double, G4ForceCondition *);
 };
 
 //----------------------------------------------------------------------
 //  Inline functions
 
-
 /*! Returns the value of the maximum step length.*/
-inline G4double StepMax::GetMaxStep ( ) const
-  { return (max_step); }
+inline G4double StepMax::GetMaxStep() const
+{
+  return (max_step);
+}
 
 /*! Returns the mean free path for the process (no meaning in this process).*/
-inline G4double StepMax::GetMeanFreePath ( const G4Track &, G4double, G4ForceCondition * )
-  { return DBL_MAX; }
+inline G4double StepMax::GetMeanFreePath(const G4Track &, G4double, G4ForceCondition *)
+{
+  return DBL_MAX;
+}
 
 //======================================================================
 
 #endif
-

@@ -1,5 +1,5 @@
-#ifndef WITCH_GLOBAL_HH
-#define WITCH_GLOBAL_HH
+// #ifndef WITCH_GLOBAL_HH
+// #define WITCH_GLOBAL_HH
 
 
 // standard C include files
@@ -78,7 +78,7 @@ using CLHEP::hertz;
 using CLHEP::kilohertz;
 using CLHEP::megahertz;
 using CLHEP::ns;
-using CLHEP::s;
+// using CLHEP::s;
 using CLHEP::ms;
 using CLHEP::eplus;
 using CLHEP::e_SI;
@@ -174,4 +174,4 @@ using CLHEP::STP_Pressure;
 using CLHEP::kGasThreshold;
 using CLHEP::universe_mean_density;
 
-#endif
+// #endif

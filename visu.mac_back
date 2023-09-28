@@ -1,24 +1,34 @@
 #---------------------------------------------------------------
-#
-# execution:
-#       /control/execute visu.mac
-#
+#   Verbosity
 #---------------------------------------------------------------
 /run/initialize
-# verbose levels
 /run/verbose      0
 /event/verbose    0
 /tracking/verbose 0
-#
-
 
 #---------------------------------------------------------------
-#   generate events
+#   Simulation Parameters
 #---------------------------------------------------------------
-#
-/input/openFile ../../../../../../mnt/hgfs/shared/CRADLE_files/GIF/Ar_gif_Gcs0.15.txt
-#/input/openFile Ar32_e5_all.txt
-/run/printProgress 10000
-/run/beamOn 3000000
-#
-#
+/Geometry/SiDeadLayer_Thickness 2 cm
+/Geometry/Magnetic_Field 4 T
+/Threshoold_PlasticScintillator 100 keV
+#/Delta_Position_Threshoold_PlasticScintillator
+
+#---------------------------------------------------------------
+#   Systematic Variables
+#---------------------------------------------------------------
+/Beam_Size 2 mm 300 um
+/Beam_Position 0 cm 0 cm
+#/Catcher_Thickness
+/Catcher_Position_z 0 cm
+
+#---------------------------------------------------------------
+#   Generate Events
+#---------------------------------------------------------------
+/input/Open_B wisard_field.txt
+/input/Open_SRIM SRIM_data/32Ar.txt
+/input/Open_CRADLE ../../../../../../mnt/hgfs/shared/data/8B_a1_b0_1.txt
+/output test.root
+#/run/printProgress 100
+
+/run/beamOn 100

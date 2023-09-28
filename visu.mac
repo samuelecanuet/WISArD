@@ -4,8 +4,25 @@
 #       /control/execute visu.mac
 #
 #---------------------------------------------------------------
-/run/initialize
 # verbose levels
+
+/run/initialize
+
+/input/Open_B wisard_field.txt
+/input/Open_CRADLE ../../../../../../mnt/hgfs/shared/data/32Ar_a1_b0_1.txt
+/input/Open_SRIM SRIM_data/32Ar.txt
+#/Threshoold_PlasticScintillator 100 keV
+/Beam_Size 2 mm 300 um
+/Beam_Position 0 cm 0 cm
+/Geometry/SiDeadLayer_Thickness 100 nm
+/Magnetic_Field 4 T
+/Catcher_Position_z 0 cm
+/Catcher_Thickness 1 cm
+
+/output test.root
+
+/run/printProgress 100
+
 /run/verbose      0
 /event/verbose    0
 /tracking/verbose 1
@@ -110,10 +127,6 @@
 #---------------------------------------------------------------
 #
 #
-/input/openFile ../../../../../../mnt/hgfs/shared/CRADLE_files/GIF/Ar_gif_Gcs0.25.txt
-#/input/openFile Ar32_e5_all.txt
-/run/printProgress 1000
-/run/beamOn 1
-/input/closeFile
+/run/beamOn 2
 #
 #

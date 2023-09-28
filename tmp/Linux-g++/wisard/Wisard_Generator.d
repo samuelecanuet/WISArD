@@ -474,19 +474,18 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4SensitiveVolumeList.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4CollectionNameVector.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VSDFilter.hh \
- include/Wisard_Messenger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UImessenger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIdirectory.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcommand.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIparameter.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAString.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAnInteger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADoubleAndUnit.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADouble.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3Vector.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3VectorAndUnit.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithoutParameter.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithABool.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpBoundaryProcess.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalPhoton.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalSurface.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SurfaceProperty.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomTools.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomDirection.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TwoVector.hh \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.h \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VDiscreteProcess.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4AnalysisManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4GenericAnalysisManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -626,6 +625,14 @@
  /usr/local/root/6.24.06/include/TFitResultPtr.h \
  /usr/include/c++/8/cfloat \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
+ include/Wisard_Tracking.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UserTrackingAction.hh \
+ /usr/include/c++/8/random /usr/include/c++/8/bits/random.h \
+ /usr/include/c++/8/x86_64-redhat-linux/bits/opt_random.h \
+ /usr/include/c++/8/bits/random.tcc /usr/include/c++/8/numeric \
+ /usr/include/c++/8/bits/stl_numeric.h \
+ /usr/local/geant4.11.0.0/include/Geant4/G4IonTable.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Ions.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ParticleGun.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VPrimaryGenerator.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ParticleTable.hh \

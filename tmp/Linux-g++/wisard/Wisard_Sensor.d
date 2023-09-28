@@ -325,7 +325,14 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4TouchableHistory.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4CollectionNameVector.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VSDFilter.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4VProcess.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpBoundaryProcess.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalPhoton.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalSurface.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SurfaceProperty.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomTools.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomDirection.hh \
  /usr/local/geant4.11.0.0/include/Geant4/Randomize.hh \
  /usr/local/clhep/2.4.5.1/include/CLHEP/Random/Randomize.h \
  /usr/local/clhep/2.4.5.1/include/CLHEP/Random/defs.h \
@@ -388,6 +395,11 @@
  /usr/local/clhep/2.4.5.1/include/CLHEP/Random/RandSkewNormal.icc \
  /usr/local/clhep/2.4.5.1/include/CLHEP/Random/RandStudentT.h \
  /usr/local/clhep/2.4.5.1/include/CLHEP/Random/RandStudentT.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TwoVector.hh \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.h \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VDiscreteProcess.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VProcess.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4PhysicsTable.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4PhysicsTable.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4VParticleChange.hh \
@@ -398,4 +410,71 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4GPILSelection.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ParticleChange.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ParticleChange.icc \
- /usr/local/geant4.11.0.0/include/Geant4/G4ProcessType.hh
+ /usr/local/geant4.11.0.0/include/Geant4/G4ProcessType.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VProcess.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4EventManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4StackManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UserStackingAction.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ClassificationOfNewTrack.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4StackedTrack.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TrackStack.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SmartTrackStack.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TrajectoryContainer.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/evtdefs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VTrajectory.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4PrimaryTransformer.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ParticleTable.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ParticleTableIterator.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ParticleTable.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4PrimaryParticle.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TrackingManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SteppingManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Navigator.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4GRSVolume.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4GRSVolume.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4GRSSolid.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4GRSSolid.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TouchableHistoryHandle.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NormalNavigation.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VSolid.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VSolid.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4AuxiliaryNavServices.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4AuxiliaryNavServices.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NormalNavigation.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VoxelNavigation.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NavigationLogger.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4BlockingList.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4BlockingList.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SmartVoxelProxy.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SmartVoxelProxy.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SmartVoxelNode.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SmartVoxelNode.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SmartVoxelHeader.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SmartVoxelHeader.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VoxelNavigation.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ParameterisedNavigation.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VPVParameterisation.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VVolumeMaterialScanner.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ParameterisedNavigation.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ReplicaNavigation.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ReplicaNavigation.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RegularNavigation.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VExternalNavigation.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Navigator.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ProcessManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ProcessVector.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ProcessVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ProcessManager.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NoProcess.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UserSteppingAction.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VSteppingVerbose.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/trkgdefs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TrackingMessenger.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UImessenger.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIdirectory.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcommand.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIparameter.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UItokenNum.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ApplicationState.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UserTrackingAction.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TrackingManager.hh

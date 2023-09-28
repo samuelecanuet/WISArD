@@ -472,19 +472,18 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4SensitiveVolumeList.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4CollectionNameVector.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VSDFilter.hh \
- include/Wisard_Messenger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UImessenger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIdirectory.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcommand.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIparameter.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAString.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAnInteger.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADoubleAndUnit.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADouble.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3Vector.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3VectorAndUnit.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithoutParameter.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithABool.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpBoundaryProcess.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalPhoton.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4OpticalSurface.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Physics2DVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SurfaceProperty.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomTools.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4RandomDirection.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TwoVector.hh \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.h \
+ /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VDiscreteProcess.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4AnalysisManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4GenericAnalysisManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -641,9 +640,6 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4SubtractionSolid.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ExtrudedSolid.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4GeomTypes.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4TwoVector.hh \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.h \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/TwoVector.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4TessellatedSolid.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4Voxelizer.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4SurfBits.hh \
@@ -662,6 +658,51 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4ExtrudedSolid.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4MultiUnion.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4Vector3D.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VisAttributes.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/graphics_reps_defs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Colour.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Color.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VisAttributes.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Box.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Tubs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Tubs.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4LogicalVolume.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4PVPlacement.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Material.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NistManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NistElementBuilder.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NistMaterialBuilder.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ICRU90StoppingData.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Pow.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Torus.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Torus.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TransportationManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4SafetyHelper.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4TransportationManager.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4EqMagElectricField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ChargeState.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4EquationOfMotion.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Field.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4EquationOfMotion.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ElectroMagneticField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ChordFinder.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VIntegrationDriver.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4FieldTrack.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4FieldTrack.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4MagIntegratorStepper.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4MagIntegratorStepper.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4ChordFinder.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4FieldManager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4FieldManager.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NystromRK4.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Mag_EqRhs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4CachedMagneticField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4MagneticField.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4NystromRK4.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Mag_UsualEqRhs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Trap.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4Trap.icc \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VSolid.hh \
  include/Wisard_PhysList.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VUserPhysicsList.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4ProductionCutsTable.hh \
@@ -675,6 +716,25 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4Step.hh \
  include/Wisard_Generator.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
+ include/Wisard_Tracking.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UserTrackingAction.hh \
+ /usr/include/c++/8/random /usr/include/c++/8/bits/random.h \
+ /usr/include/c++/8/x86_64-redhat-linux/bits/opt_random.h \
+ /usr/include/c++/8/bits/random.tcc /usr/include/c++/8/numeric \
+ /usr/include/c++/8/bits/stl_numeric.h include/Wisard_Messenger.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UImessenger.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIdirectory.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcommand.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIparameter.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAString.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithAnInteger.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADoubleAndUnit.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithADouble.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3Vector.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWith3VectorAndUnit.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithoutParameter.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcmdWithABool.hh \
+ include/Wisard_Detector.hh include/Wisard_Generator.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4UImanager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/icomsdefs.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VStateDependent.hh \
@@ -697,10 +757,6 @@
  /usr/local/geant4.11.0.0/include/Geant4/G4ModelingParameters.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VisExtent.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VisAttributes.hh \
- /usr/local/geant4.11.0.0/include/Geant4/graphics_reps_defs.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4Colour.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4Color.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4VisAttributes.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4ModelingParameters.icc \
  /usr/local/geant4.11.0.0/include/Geant4/G4NullModel.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VModel.hh \
