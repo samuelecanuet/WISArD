@@ -34,7 +34,7 @@ private:
 
 public:
   // constructor / destructor
-  StepMax(const G4double step = 1 * mm,
+  StepMax(const G4double step = 1 * km,
           const G4String &name = "UserMaxStep");
   StepMax(const StepMax &original);
   ~StepMax();

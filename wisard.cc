@@ -58,7 +58,7 @@ int main(int argc, char **argv)
   // the process must be added after initialization (so that particles
   // are defined)
 
-  ptr_phys->AddStepMax(1 * mm, 0x2);
+  ptr_phys->AddStepMax(1 * cm, 0x2);
 
   // set the details of Geant4 messages
   G4EventManager::GetEventManager()->SetVerboseLevel(0);

@@ -57,7 +57,7 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     if (step->IsFirstStepInVolume())
     {
       PrimaryInfo_init.ParticleName = track->GetDefinition()->GetParticleName();
-      PrimaryInfo_init.HitAngle = std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
+      PrimaryInfo_init.HitAngle = std::asin(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
       PrimaryInfo_init.HitPosition = step->GetPreStepPoint()->GetPosition();
       PrimaryInfo_init.DepositEnergy = 0;
       PrimaryDictionnary[index] = PrimaryInfo_init;
@@ -68,10 +68,24 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     index = track->GetParentID();
   }
 
-  PrimaryDictionnary[index].DepositEnergy += step->GetTotalEnergyDeposit() / keV;
+  //PrimaryDictionnary[index].DepositEnergy += step->GetTotalEnergyDeposit() / keV;
+
+  ////new for pl
+  if (track->GetVolume()->GetName() == "PlasticScintillator")
+    {
+      if (track->GetParentID() == 0)
+      {
+        PrimaryDictionnary[index].DepositEnergy += step->GetTotalEnergyDeposit() / keV;
+      }
+    }
+  else
+  {
+    PrimaryDictionnary[index].DepositEnergy += step->GetTotalEnergyDeposit() / keV;
+  }
+
 
   // ####################################################################
-  // !!! KILLING down-positron for performance !!!
+  // !!! KILLING down-positron/electron for performance !!!
   // ####################################################################
 
   // if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicMylarSource" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" && step->GetTrack()->GetPosition().z() < -0.*mm)

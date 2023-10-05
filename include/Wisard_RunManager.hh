@@ -9,6 +9,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1D.h"
+#include <TDirectory.h>
 
 #include <unordered_map>
 #include <utility>
@@ -116,6 +117,8 @@ protected:
 
   G4double threshoold;
   G4String filename;
+  G4double resolution_sipms;
+  G4double resolution_sidet;
 
   //------------------------------------------------------------
   // class functions definition
@@ -137,7 +140,7 @@ public:
 
   TH1D *histos_coinc[nb_det];
   TH1D *histos_nocoinc[nb_det];
-  TH1D *histo_e;
+
 
   std::string Detector_Name[nb_det] = {
       "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
@@ -162,7 +165,6 @@ public:
   ////--------------------------------------------------
   //// U.I. commands creation function
   // void  DefineSimulationCommands ( );     // inline
-
   //----------------------------------------------------------
   // Functions for input file
   ////--------------------------------------------------
@@ -182,6 +184,9 @@ public:
 
   void SetOutputFilename(G4String fn);
   G4String GetOutputFilename();
+
+  void SetResolutionSIPMS(G4double value);
+  void SetResolutionSIDET(G4double value);
 
   //----------------------------------------------------------
   // Functions for events processing and output histogram
@@ -247,37 +252,28 @@ inline const string &Wisard_RunManager::GetInputName() const
   return (input_name);
 }
 
-// Close the input file
+//SRIM
 inline void Wisard_RunManager::CloseInputSRIM()
 {
   inputSRIM.close();
   input_nameSRIM = "";
 }
-
-// Get the input file stream information
 inline ifstream &Wisard_RunManager::GetInputSRIM()
 {
   return (inputSRIM);
 }
 
-inline G4double Wisard_RunManager::GetThreshoold()
-{
-  return (threshoold);
-}
+// THRESHOOLD
+inline void Wisard_RunManager::SetThreshoold(G4double th){threshoold = th;}
+inline G4double Wisard_RunManager::GetThreshoold(){return (threshoold);}
 
-inline void Wisard_RunManager::SetThreshoold(G4double th)
-{
-  threshoold = th;
-}
+// OUPUT FILE
+inline void Wisard_RunManager::SetOutputFilename(G4String fn){filename = fn;}
+inline G4String Wisard_RunManager::GetOutputFilename(){return filename;}
 
-inline void Wisard_RunManager::SetOutputFilename(G4String fn)
-{
-  filename = fn;
-}
+// SiPMs RESOLUTION
+inline void Wisard_RunManager::SetResolutionSIPMS(G4double res){resolution_sipms = res;}
 
-inline G4String Wisard_RunManager::GetOutputFilename()
-{
-  return filename;
-}
-
+// SiDET RESOLUTION
+inline void Wisard_RunManager::SetResolutionSIDET(G4double res){resolution_sidet = res;}
 #endif

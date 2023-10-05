@@ -77,18 +77,21 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
     double y = 10 * mm;
     double z = -1;
 
-    // revoir condition !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    tuple = GetSRIM_data(res.first, res.second);
+
     while (x >= x_beam + radius || x <= x_beam - radius)
     {
       x = G4RandGauss::shoot(x_beam, radius_std);
     }
+    x += get<0>(tuple)*angstrom;
 
     while (y >= y_beam + radius || y <= y_beam - radius)
     {
       y = G4RandGauss::shoot(y_beam, radius_std);
     }
-
-    z = position_catcher_z + Wisard_Generator::GetSRIM_data(get<2>(res).first, get<2>(res).second) / 10 * nm;
+    y += get<1>(tuple)*angstrom;
+w
+    z = position_catcher_z + get<2>(tuple)*angstrom;
 
     for (int i = 0; i < isubev_len; ++i)
     {

@@ -6,14 +6,17 @@
 
 #include "TBranch.h"
 #include "TH1D.h"
+#include "TObjString.h"
 
 #include "G4VTrajectoryPoint.hh"
 #include "G4VTrajectory.hh"
 
 #include "Wisard_Sensor.hh"
-#include <TDirectory.h>
+
 
 #include "G4RootAnalysisManager.hh"
+
+#include "G4UImanager.hh"
 
 #include <numeric>
 
@@ -42,7 +45,6 @@ Wisard_RunManager::Wisard_RunManager()
     histos_coinc[i] = new TH1D((Detector_Name[i] + "_coinc").c_str(), (Detector_Name[i] + "_coinc").c_str(), 100000, 0.0, 10000.0);
     histos_nocoinc[i] = new TH1D((Detector_Name[i] + "_nocoinc").c_str(), (Detector_Name[i] + "_nocoinc").c_str(), 100000, 0.0, 10000.0);
   }
-  histo_e = new TH1D("e+", "e+", 600, 0.0, 6000.0);
   ///////////////////////////////////////////////////////////////////
 }
 
@@ -72,8 +74,23 @@ Wisard_RunManager::~Wisard_RunManager()
 void Wisard_RunManager::AnalyzeEvent(G4Event *event)
 {
   if (event->GetEventID() == 0)
-  {
+  {    
     f = new TFile(GetOutputFilename(), "recreate");
+    ////////////// Construct eLog /////////////////////////////////////
+    TDirectory* dir = f->mkdir("eLog");
+    dir->cd();
+    G4UImanager* uiManager = G4UImanager::GetUIpointer();
+    for (int i=0; i<uiManager->GetNumberOfHistory(); i++)
+    { 
+      string command = uiManager->GetPreviousCommand(i).substr(1);
+      if (command.find("run") != 0 && command.find("event") != 0 && command.find("tracking") != 0 && command.find("input") != 0 && command.find("output") != 0) {
+        char const *num_char = command.c_str();
+        dir->WriteObject(&command, num_char);
+    }
+    f->cd();
+    }
+
+
     ////////////// Construct all TREES ////////////////////////////////
     Tree_Common = new TTree("Tree_Common", "Common Information");
     Tree_Common->Branch("Event_Number", &Event_Number, "Event_Number/I");
@@ -169,9 +186,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   // call the base class function (whatever it is supposed to do)
   G4RunManager::AnalyzeEvent(event);
 
-  double value_det[nb_det] = {};
-  e_PlasticScintillator = 0;
-
   G4PrimaryVertex *PrimaryVertex = event->GetPrimaryVertex();
   if (PrimaryVertex != 0)
   {
@@ -207,6 +221,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     {
       Tree_Common->Fill();
     }
+  
 
     for (int part = 1; part <= event->GetNumberOfPrimaryVertex(); part++)
     {
@@ -292,7 +307,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
 
         PrimaryInfo PlasticScintillator = wisard_sensor_PlasticScintillator->GetDictionnary()[part];
         PlasticScintillator_Positron_EnergyDeposit = PlasticScintillator.DepositEnergy;
-        PlasticScintillator_Positron_Ekin = wisard_sensor_PlasticScintillator->GetEventEnergy_positron() / keV;
         PlasticScintillator_Positron_HitAngle = PlasticScintillator.HitAngle;
         PlasticScintillator_Positron_HitPosition_x = PlasticScintillator.HitPosition.x();
         PlasticScintillator_Positron_HitPosition_y = PlasticScintillator.HitPosition.y();
@@ -320,7 +334,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       }
       if (Primary->GetG4code()->GetParticleName() == "gamma")
       {
-        G4bool detected = false;
+        detected = false;
         Initial_Gamma_Energy = Primary->GetKineticEnergy() / keV;
         Initial_Gamma_Momentum_x = Momentum.x();
         Initial_Gamma_Momentum_y = Momentum.y();
@@ -358,24 +372,45 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     }
   }
 
-  e_PlasticScintillator = wisard_sensor_PlasticScintillator->GetEventEnergy_positron() / keV;
-  histo_e->Fill(e_PlasticScintillator);
-  for (int i = 0; i < nb_det; i++)
-  {
-    if (dic_detector[Detector_Name[i]].first->GetDictionnary()[2].DepositEnergy != 0.)
+  //HISTOGRAMS ///#condition à revoir pour plus précis et générale
+  int index_delayed = -1;
+  int index_beta = -1;
+  for (int part = 1; part <= event->GetNumberOfPrimaryVertex(); part++)
     {
-      if (wisard_sensor_PlasticScintillator->GetDictionnary()[1].DepositEnergy > GetThreshoold())
+      G4String part_name = event->GetPrimaryVertex(part - 1)->GetPrimary()->GetG4code()->GetParticleName();
+      if (part_name == "e+" || part_name == "e-")
       {
-        histos_coinc[i]->Fill(dic_detector[Detector_Name[i]].first->GetDictionnary()[2].DepositEnergy);
+        index_beta = part;
       }
-      else
+      if (part_name == "alpha" || part_name == "proton")
       {
-        histos_nocoinc[i]->Fill(dic_detector[Detector_Name[i]].first->GetDictionnary()[2].DepositEnergy);
+        if (index_beta != -1)
+        {
+          index_delayed = part;
+          break;
+        }
+      }
+    }
+
+  if (index_beta != -1 && index_delayed != -1)
+  {
+    for (int i = 0; i < nb_det; i++)
+    {
+      if (dic_detector[Detector_Name[i]].first->GetDictionnary()[index_delayed].DepositEnergy != 0.)
+      {
+        if (wisard_sensor_PlasticScintillator->GetDictionnary()[index_beta].DepositEnergy > GetThreshoold())
+        {
+          histos_coinc[i]->Fill(dic_detector[Detector_Name[i]].first->GetDictionnary()[index_delayed].DepositEnergy);
+        }
+        else
+        {
+          histos_nocoinc[i]->Fill(dic_detector[Detector_Name[i]].first->GetDictionnary()[index_delayed].DepositEnergy);
+        }
       }
     }
   }
 
-  int divi = 10000;
+  int divi = 100;
 
   ///// Writing all trees ///////////////////////////////////////////
   if (count % divi == 0)
@@ -408,7 +443,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       histos_coinc[i]->Write("", TObject::kOverwrite);
       histos_nocoinc[i]->Write("", TObject::kOverwrite);
     }
-    histo_e->Write("", TObject::kOverwrite);
   }
 
   ///// Reset all dictionnaries of detectors ///////////////////////
@@ -507,99 +541,10 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   ////////////////////////////////////////////////////////
 
   //////// Resolution on detectors ///////////////////////
-  e_PlasticScintillator += CLHEP::RandGauss::shoot(0., 0.0);
-  e_PlasticScintillator = max(e_PlasticScintillator, 0.);
+  //e_PlasticScintillator = max(e_PlasticScintillator+CLHEP::RandGauss::shoot(resolution_simps, 0.0));
 
   double mean = 0.;
   double std = 0.;
-
-  // e_1Up_Strip_1 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Up_Strip_1 = max(e_1Up_Strip_1, 0.);
-  // e_1Up_Strip_2 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Up_Strip_2 = max(e_1Up_Strip_2, 0.);
-  // e_1Up_Strip_3 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Up_Strip_3 = max(e_1Up_Strip_3, 0.);
-  // e_1Up_Strip_4 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Up_Strip_4 = max(e_1Up_Strip_4, 0.);
-  // e_1Up_Strip_5 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Up_Strip_5 = max(e_1Up_Strip_5, 0.);
-
-  // e_2Up_Strip_1 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Up_Strip_1 = max(e_2Up_Strip_1, 0.);
-  // e_2Up_Strip_2 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Up_Strip_2 = max(e_2Up_Strip_2, 0.);
-  // e_2Up_Strip_3 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Up_Strip_3 = max(e_2Up_Strip_3, 0.);
-  // e_2Up_Strip_4 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Up_Strip_4 = max(e_2Up_Strip_4, 0.);
-  // e_2Up_Strip_5 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Up_Strip_5 = max(e_2Up_Strip_5, 0.);
-
-  // e_3Up_Strip_1 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Up_Strip_1 = max(e_3Up_Strip_1, 0.);
-  // e_3Up_Strip_2 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Up_Strip_2 = max(e_3Up_Strip_2, 0.);
-  // e_3Up_Strip_3 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Up_Strip_3 = max(e_3Up_Strip_3, 0.);
-  // e_3Up_Strip_4 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Up_Strip_4 = max(e_3Up_Strip_4, 0.);
-  // e_3Up_Strip_5 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Up_Strip_5 = max(e_3Up_Strip_5, 0.);
-
-  // e_4Up_Strip_1 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Up_Strip_1 = max(e_4Up_Strip_1, 0.);
-  // e_4Up_Strip_2 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Up_Strip_2 = max(e_4Up_Strip_2, 0.);
-  // e_4Up_Strip_3 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Up_Strip_3 = max(e_4Up_Strip_3, 0.);
-  // e_4Up_Strip_4 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Up_Strip_4 = max(e_4Up_Strip_4, 0.);
-  // e_4Up_Strip_5 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Up_Strip_5 = max(e_4Up_Strip_5, 0.);
-
-  // e_1Down_Strip_1 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Down_Strip_1 = max(e_1Down_Strip_1, 0.);
-  // e_1Down_Strip_2 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Down_Strip_2 = max(e_1Down_Strip_2, 0.);
-  // e_1Down_Strip_3 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Down_Strip_3 = max(e_1Down_Strip_3, 0.);
-  // e_1Down_Strip_4 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Down_Strip_4 = max(e_1Down_Strip_4, 0.);
-  // e_1Down_Strip_5 += CLHEP::RandGauss::shoot(mean, std);
-  // e_1Down_Strip_5 = max(e_1Down_Strip_5, 0.);
-
-  // e_2Down_Strip_1 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Down_Strip_1 = max(e_2Down_Strip_1, 0.);
-  // e_2Down_Strip_2 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Down_Strip_2 = max(e_2Down_Strip_2, 0.);
-  // e_2Down_Strip_3 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Down_Strip_3 = max(e_2Down_Strip_3, 0.);
-  // e_2Down_Strip_4 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Down_Strip_4 = max(e_2Down_Strip_4, 0.);
-  // e_2Down_Strip_5 += CLHEP::RandGauss::shoot(mean, std);
-  // e_2Down_Strip_5 = max(e_2Down_Strip_5, 0.);
-
-  // e_3Down_Strip_1 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Down_Strip_1 = max(e_3Down_Strip_1, 0.);
-  // e_3Down_Strip_2 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Down_Strip_2 = max(e_3Down_Strip_2, 0.);
-  // e_3Down_Strip_3 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Down_Strip_3 = max(e_3Down_Strip_3, 0.);
-  // e_3Down_Strip_4 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Down_Strip_4 = max(e_3Down_Strip_4, 0.);
-  // e_3Down_Strip_5 += CLHEP::RandGauss::shoot(mean, std);
-  // e_3Down_Strip_5 = max(e_3Down_Strip_5, 0.);
-
-  // e_4Down_Strip_1 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Down_Strip_1 = max(e_4Down_Strip_1, 0.);
-  // e_4Down_Strip_2 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Down_Strip_2 = max(e_4Down_Strip_2, 0.);
-  // e_4Down_Strip_3 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Down_Strip_3 = max(e_4Down_Strip_3, 0.);
-  // e_4Down_Strip_4 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Down_Strip_4 = max(e_4Down_Strip_4, 0.);
-  // e_4Down_Strip_5 += CLHEP::RandGauss::shoot(mean, std);
-  // e_4Down_Strip_5 = max(e_4Down_Strip_5, 0.);
 }
 
 int Wisard_RunManager::OpenInput(const string &fname)

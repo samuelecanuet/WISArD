@@ -58,6 +58,9 @@ class Wisard_Messenger : public G4UImessenger
   G4UIcmdWithAString *input_cmd_catcher_z;
   G4UIcmdWithAString *input_cmd_filename;
   G4UIcmdWithAString *input_cmd_catcher_thickness;
+  G4UIcmdWithAString *input_cmd_sidet_resolution;
+  G4UIcmdWithAString *input_cmd_sipms_resolution;
+  G4UIcmdWithAString *input_cmd_elog;
 
   //------------------------------------------------------------
   // class functions definition
