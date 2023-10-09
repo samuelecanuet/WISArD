@@ -623,10 +623,12 @@
  /usr/local/root/6.24.06/include/TFitResultPtr.h \
  /usr/include/c++/8/cfloat \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
+ /usr/local/root/6.24.06/include/TDirectory.h \
  /usr/local/root/6.24.06/include/TBranch.h \
+ /usr/local/root/6.24.06/include/TObjString.h \
  /usr/local/geant4.11.0.0/include/Geant4/G4VTrajectoryPoint.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4VTrajectory.hh \
- include/Wisard_Sensor.hh /usr/local/root/6.24.06/include/TDirectory.h \
+ include/Wisard_Sensor.hh \
  /usr/local/geant4.11.0.0/include/Geant4/G4RootAnalysisManager.hh \
  /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/ntuple \
  /usr/local/geant4.11.0.0/include/Geant4/tools/wroot/tree \
@@ -697,4 +699,8 @@
  /usr/local/geant4.11.0.0/include/Geant4/tools/scast \
  /usr/local/geant4.11.0.0/include/Geant4/tools/ntuple_booking \
  /usr/local/geant4.11.0.0/include/Geant4/tools/sout \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UImanager.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/icomsdefs.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4VStateDependent.hh \
+ /usr/local/geant4.11.0.0/include/Geant4/G4UIcommandStatus.hh \
  /usr/include/c++/8/numeric /usr/include/c++/8/bits/stl_numeric.h

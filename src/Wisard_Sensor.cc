@@ -9,11 +9,6 @@
 Wisard_Sensor::Wisard_Sensor()
     : G4VSensitiveDetector("WisardSensor")
 {
-  energy = 0.L;
-  energy_positron = 0.L;
-  position = G4ThreeVector(DBL_MAX, DBL_MAX, DBL_MAX);
-  position_positron = G4ThreeVector(DBL_MAX, DBL_MAX, DBL_MAX);
-  counter = 0;
 }
 
 // destructor
@@ -25,20 +20,9 @@ Wisard_Sensor::~Wisard_Sensor()
 
 // Function called at the beginning of the event processing
 // (to initialise the list of "hits" associated to the detector)
-void Wisard_Sensor::Initialize(G4HCofThisEvent *hit_collection)
+void Wisard_Sensor::Initialize(G4HCofThisEvent *)
 {
-  // just to avoid compilation warning
-  if (hit_collection == NULL)
-  {
-  }
-
   cerr << "Wisard_Sensor Initialisation" << endl;
-
-  energy = 0.L;
-  energy_positron = 0.L;
-  position = G4ThreeVector(DBL_MAX, DBL_MAX, DBL_MAX);
-  position_positron = G4ThreeVector(DBL_MAX, DBL_MAX, DBL_MAX);
-  counter = 0;
 
   PrimaryInfo_init.DepositEnergy = 0;
   PrimaryInfo_init.HitPosition = G4ThreeVector(0, 0, 0);
@@ -58,7 +42,7 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     {
       PrimaryInfo_init.ParticleName = track->GetDefinition()->GetParticleName();
       PrimaryInfo_init.HitAngle = std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
-      PrimaryInfo_init.HitPosition = step->GetPreStepPoint()->GetPosition();
+      PrimaryInfo_init.HitPosition = step->GetPreStepPoint()->GetPosition() / mm;
       PrimaryInfo_init.DepositEnergy = 0;
       PrimaryDictionnary[index] = PrimaryInfo_init;
     }
@@ -70,8 +54,9 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
 
   PrimaryDictionnary[index].DepositEnergy += step->GetTotalEnergyDeposit() / keV;
 
+
   // ####################################################################
-  // !!! KILLING down-positron for performance !!!
+  // !!! KILLING down-positron/electron for performance !!!
   // ####################################################################
 
   // if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicMylarSource" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" && step->GetTrack()->GetPosition().z() < -0.*mm)

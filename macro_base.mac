@@ -18,7 +18,9 @@
 #---------------------------------------------------------------
 /Magnetic_Field 4 T
 /Threshoold_PlasticScintillator 100 keV
-#/Delta_Position_Threshoold_PlasticScintillator
+#/Delta_Position_PlasticScintillator
+#/Resolution_SiPMs   0 keV #not yet implemented
+#/Resolution_SiDet   0 keV #not yet implemented
 
 #---------------------------------------------------------------
 #   Systematic Variables

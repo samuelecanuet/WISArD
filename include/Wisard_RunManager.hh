@@ -9,9 +9,11 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1D.h"
+#include <TDirectory.h>
 
 #include <unordered_map>
 #include <utility>
+#include <vector>
 
 //----------------------------------------------------------------------
 // This class defines the simulation core (from the base class G4RunManager)
@@ -27,86 +29,12 @@ protected:
   Wisard_Sensor *wisard_sensor_CatcherAl1;
   Wisard_Sensor *wisard_sensor_CatcherAl2;
 
-  G4double x, y, z;
-  G4double Catcher_EnergyDeposit;
-  G4double PlasticScintillator_EnergyDeposit;
-  std::string Silicon_Name;
-  G4double Silicon_EnergyDeposit;
-  G4double Silicon_DL_EnergyDeposit;
-
+  G4double x, y, z, px, py, pz, Initial_Kinetic_Energy, Catcher_Deposit_Energy, PlasticScintillator_Deposit_Energy, PlasticScintillator_Hit_Position_x, PlasticScintillator_Hit_Position_y, PlasticScintillator_Hit_Position_z, PlasticScintillator_Hit_Angle;
+  std::vector<double> Silicon_Detector_Deposit_Energy, Silicon_Detector_Hit_Position_x, Silicon_Detector_Hit_Position_y, Silicon_Detector_Hit_Position_z, Silicon_Detector_Hit_Angle, Silicon_Detector_DL_Deposit_Energy;
+  std::string Name;
+  std::vector<std::string> Silicon_Detector_Name;
   G4int Event_Number;
   int count = 0;
-
-  G4double Initial_Proton_Momentum_x;
-  G4double Initial_Proton_Momentum_y;
-  G4double Initial_Proton_Momentum_z;
-  G4double Initial_Proton_Energy;
-  G4double Catcher_Proton_EnergyDeposit;
-  G4double PlasticScintillator_Proton_EnergyDeposit;
-  G4double Silicon_Proton_EnergyDeposit;
-  G4double Silicon_DL_Proton_EnergyDeposit;
-  G4double Silicon_Proton_HitAngle;
-  std::string Silicon_Name_Proton;
-  G4double Silicon_Proton_HitPosition_x;
-  G4double Silicon_Proton_HitPosition_y;
-  G4double Silicon_Proton_HitPosition_z;
-
-  G4double Initial_Alpha_Momentum_x;
-  G4double Initial_Alpha_Momentum_y;
-  G4double Initial_Alpha_Momentum_z;
-  G4double Initial_Alpha_Energy;
-  G4double Catcher_Alpha_EnergyDeposit;
-  G4double PlasticScintillator_Alpha_EnergyDeposit;
-  G4double Silicon_Alpha_EnergyDeposit;
-  G4double Silicon_DL_Alpha_EnergyDeposit;
-  G4double Silicon_Alpha_HitAngle;
-  std::string Silicon_Name_Alpha;
-  G4double Silicon_Alpha_HitPosition_x;
-  G4double Silicon_Alpha_HitPosition_y;
-  G4double Silicon_Alpha_HitPosition_z;
-
-  G4double Initial_Positron_Momentum_x;
-  G4double Initial_Positron_Momentum_y;
-  G4double Initial_Positron_Momentum_z;
-  G4double Initial_Positron_Energy;
-  G4double Catcher_Positron_EnergyDeposit;
-  G4double PlasticScintillator_Positron_EnergyDeposit;
-  G4double PlasticScintillator_Positron_HitAngle;
-  G4double PlasticScintillator_Positron_HitPosition_x;
-  G4double PlasticScintillator_Positron_HitPosition_y;
-  G4double PlasticScintillator_Positron_HitPosition_z;
-
-  G4double Initial_Electron_Momentum_x;
-  G4double Initial_Electron_Momentum_y;
-  G4double Initial_Electron_Momentum_z;
-  G4double Initial_Electron_Energy;
-  G4double Catcher_Electron_EnergyDeposit;
-  G4double PlasticScintillator_Electron_EnergyDeposit;
-  G4double PlasticScintillator_Electron_HitAngle;
-  G4double PlasticScintillator_Electron_HitPosition_x;
-  G4double PlasticScintillator_Electron_HitPosition_y;
-  G4double PlasticScintillator_Electron_HitPosition_z;
-
-  G4double Initial_Gamma_Momentum_x;
-  G4double Initial_Gamma_Momentum_y;
-  G4double Initial_Gamma_Momentum_z;
-  G4double Initial_Gamma_Energy;
-  G4double Catcher_Gamma_EnergyDeposit;
-  G4double Silicon_Gamma_EnergyDeposit;
-  G4double Silicon_DL_Gamma_EnergyDeposit;
-  G4double Silicon_Gamma_HitAngle;
-  std::string Silicon_Name_Gamma;
-  G4double Silicon_Gamma_HitPosition_x;
-  G4double Silicon_Gamma_HitPosition_y;
-  G4double Silicon_Gamma_HitPosition_z;
-  G4double PlasticScintillator_Gamma_EnergyDeposit;
-  G4double PlasticScintillator_Gamma_HitAngle;
-  G4double PlasticScintillator_Gamma_HitPosition_x;
-  G4double PlasticScintillator_Gamma_HitPosition_y;
-  G4double PlasticScintillator_Gamma_HitPosition_z;
-
-  G4double PlasticScintillator_Positron_Ekin;
-  double e_PlasticScintillator;
 
   ifstream input;
   string input_name;
@@ -116,6 +44,8 @@ protected:
 
   G4double threshoold;
   G4String filename;
+  G4double resolution_sipms;
+  G4double resolution_sidet;
 
   //------------------------------------------------------------
   // class functions definition
@@ -128,16 +58,10 @@ public:
 
   TFile *f;
 
-  TTree *Tree_Common;
-  TTree *Tree_Proton;
-  TTree *Tree_Gamma;
-  TTree *Tree_Alpha;
-  TTree *Tree_Electron;
-  TTree *Tree_Positron;
+  TTree *Tree;
 
   TH1D *histos_coinc[nb_det];
   TH1D *histos_nocoinc[nb_det];
-  TH1D *histo_e;
 
   std::string Detector_Name[nb_det] = {
       "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
@@ -162,7 +86,6 @@ public:
   ////--------------------------------------------------
   //// U.I. commands creation function
   // void  DefineSimulationCommands ( );     // inline
-
   //----------------------------------------------------------
   // Functions for input file
   ////--------------------------------------------------
@@ -182,6 +105,9 @@ public:
 
   void SetOutputFilename(G4String fn);
   G4String GetOutputFilename();
+
+  void SetResolutionSIPMS(G4double value);
+  void SetResolutionSIDET(G4double value);
 
   //----------------------------------------------------------
   // Functions for events processing and output histogram
@@ -247,37 +173,28 @@ inline const string &Wisard_RunManager::GetInputName() const
   return (input_name);
 }
 
-// Close the input file
+// SRIM
 inline void Wisard_RunManager::CloseInputSRIM()
 {
   inputSRIM.close();
   input_nameSRIM = "";
 }
-
-// Get the input file stream information
 inline ifstream &Wisard_RunManager::GetInputSRIM()
 {
   return (inputSRIM);
 }
 
-inline G4double Wisard_RunManager::GetThreshoold()
-{
-  return (threshoold);
-}
+// THRESHOOLD
+inline void Wisard_RunManager::SetThreshoold(G4double th) { threshoold = th; }
+inline G4double Wisard_RunManager::GetThreshoold() { return (threshoold); }
 
-inline void Wisard_RunManager::SetThreshoold(G4double th)
-{
-  threshoold = th;
-}
+// OUPUT FILE
+inline void Wisard_RunManager::SetOutputFilename(G4String fn) { filename = fn; }
+inline G4String Wisard_RunManager::GetOutputFilename() { return filename; }
 
-inline void Wisard_RunManager::SetOutputFilename(G4String fn)
-{
-  filename = fn;
-}
+// SiPMs RESOLUTION
+inline void Wisard_RunManager::SetResolutionSIPMS(G4double res) { resolution_sipms = res; }
 
-inline G4String Wisard_RunManager::GetOutputFilename()
-{
-  return filename;
-}
-
+// SiDET RESOLUTION
+inline void Wisard_RunManager::SetResolutionSIDET(G4double res) { resolution_sidet = res; }
 #endif

@@ -125,16 +125,12 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   if (!fieldIsInitialized)
   {
     G4FieldManager *pFieldMgr;
-    G4MagneticField *WisardMagField = new WisardMagnetField("wisard_field.txt", 0.);
+    G4MagneticField *WisardMagField = new WisardMagnetField("wisard_field.txt", 0.004);
     pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
     G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
     pChordFinder->SetDeltaChord(1 * um);
     pFieldMgr->SetChordFinder(pChordFinder);
     pFieldMgr->SetDetectorField(WisardMagField);
-
-    // JG: setting precision
-    pFieldMgr->GetChordFinder()->SetDeltaChord(0.1 * um);
-
     fieldIsInitialized = true;
   }
 
@@ -150,7 +146,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //--------------------------------------------------------------------------------------
   G4double innerRadius = 0 * cm;
   G4double outerRadius = 6.5 * cm; // réduit au raypon du Bore pour opti6.5
-  G4double length = 21. * cm;      // réduit pour opti
+  G4double length = 21. * cm;      // réduit pour opti21cm
   G4double theta1 = 90.0 * deg;
   G4double phi = 360.0 * deg;
 
@@ -829,8 +825,6 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   dic_strip[4] = std::make_tuple(SiDet_Strip_4, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 / 2, 0.), SiDet_Strip_4_dl);
   dic_strip[5] = std::make_tuple(SiDet_Strip_5, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 / 2, 0.), SiDet_Strip_5_dl);
 
-  // std::vector<std::string> directions = {"Up", "Down"};
-
   // Loop for construct Silicon Detetors
   int index = 0;
   for (int i = 1; i < 5; i++)
@@ -861,7 +855,6 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                                fLogicWorld,                                                                                                                                                            // its mother volume
                                                                false,                                                                                                                                                                  // no boolean op.
                                                                0);                                                                                                                                                                     // copy nb.
-
   G4VisAttributes *PlasticScintillator_att = new G4VisAttributes(G4Colour(0., 0., 0.)); // red
   PlasticScintillator_att->SetForceWireframe(false);
   PlasticScintillator_att->SetForceSolid(true);
@@ -957,6 +950,7 @@ void Wisard_Detector::SetSiDeadLayer_Thickness(G4double value)
       value / 2, 0. * degree, 0. * degree, y_SiDet_Strip_1 / 2,
       xHigh_SiDet_Strip_1 / 2, xLow_SiDet_Strip_1 / 2, 0. * degree, y_SiDet_Strip_1 / 2,
       xHigh_SiDet_Strip_1 / 2, xLow_SiDet_Strip_1 / 2, 0. * degree);
+
   int index = 0;
   for (int i = 1; i < 5; i++)
   {
@@ -975,21 +969,13 @@ void Wisard_Detector::SetSiDeadLayer_Thickness(G4double value)
 
 void Wisard_Detector::SetBFieldValue(G4double value)
 {
-  static G4bool fieldIsInitialized = false;
-
-  if (!fieldIsInitialized)
-  {
-    G4FieldManager *pFieldMgr;
-    G4MagneticField *WisardMagField = new WisardMagnetField(GetInputNameB(), value);
-    pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-    G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
-    pChordFinder->SetDeltaChord(1 * um);
-    pFieldMgr->SetChordFinder(pChordFinder);
-    pFieldMgr->SetDetectorField(WisardMagField);
-    pFieldMgr->GetChordFinder()->SetDeltaChord(0.1 * um);
-
-    fieldIsInitialized = true;
-  }
+  G4FieldManager *pFieldMgr;
+  G4MagneticField *WisardMagField = new WisardMagnetField(GetInputNameB(), value);
+  pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+  G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
+  pChordFinder->SetDeltaChord(1 * um);
+  pFieldMgr->SetChordFinder(pChordFinder);
+  pFieldMgr->SetDetectorField(WisardMagField);
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
 

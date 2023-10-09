@@ -1,5 +1,4 @@
 #include "Wisard_Messenger.hh"
-#include "Wisard_RunManager.hh"
 
 //----------------------------------------------------------------------
 // constructor of the messenger: define the commands
@@ -106,6 +105,18 @@ void Wisard_Messenger::DefineInputCommands()
   input_cmd_catcher_thickness->SetGuidance("Set Catcher thickness");
   input_cmd_catcher_thickness->SetParameterName("catcher_thickness", false);
   input_cmd_catcher_thickness->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  // Set SiPMs Resolution
+  input_cmd_sipms_resolution = new G4UIcmdWithAString("/Resolution_SiPMs", this);
+  input_cmd_sipms_resolution->SetGuidance("Set Resolution SiPMs");
+  input_cmd_sipms_resolution->SetParameterName("res_sipms", false);
+  input_cmd_sipms_resolution->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  // Set SiDET Resolution
+  input_cmd_sidet_resolution = new G4UIcmdWithAString("/Resolution_SiDet", this);
+  input_cmd_sidet_resolution->SetGuidance("Set Resolution SiDet");
+  input_cmd_sidet_resolution->SetParameterName("res_sidet", false);
+  input_cmd_sidet_resolution->AvailableForStates(G4State_PreInit, G4State_Idle);
 }
 
 //----------------------------------------------------------------------
@@ -187,5 +198,21 @@ void Wisard_Messenger::SetNewValue(G4UIcommand *cmd, G4String args)
     std::istringstream iss(args);
     iss >> value >> unit;
     det_ptr->SetCatcher_Thickness(value * G4UnitDefinition::GetValueOf(unit));
+  }
+  if (cmd == input_cmd_sipms_resolution)
+  {
+    G4double value;
+    G4String unit;
+    std::istringstream iss(args);
+    iss >> value >> unit;
+    manager_ptr->SetResolutionSIPMS(value * G4UnitDefinition::GetValueOf(unit));
+  }
+  if (cmd == input_cmd_sidet_resolution)
+  {
+    G4double value;
+    G4String unit;
+    std::istringstream iss(args);
+    iss >> value >> unit;
+    manager_ptr->SetResolutionSIDET(value * G4UnitDefinition::GetValueOf(unit));
   }
 }

@@ -1,0 +1,40 @@
+#---------------------------------------------------------------
+#   Verbosity
+#---------------------------------------------------------------
+/run/initialize
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+#---------------------------------------------------------------
+#   Input Files
+#---------------------------------------------------------------
+/input/Open_B wisard_field.txt
+/input/Open_SRIM SRIM_data/32Ar.txt
+/input/Open_CRADLE ../../../../../../mnt/hgfs/shared/data/32Ar_a1_b0_1.txt
+
+#---------------------------------------------------------------
+#   Simulation Parameters
+#---------------------------------------------------------------
+/Magnetic_Field 0 T
+/Threshoold_PlasticScintillator 100 keV
+#/Delta_Position_PlasticScintillator
+#/Resolution_SiPMs   0 keV #not yet implemented
+#/Resolution_SiDet   0 keV #not yet implemented
+
+#---------------------------------------------------------------
+#   Systematic Variables
+#---------------------------------------------------------------
+/SiDeadLayer_Thickness 100 nm
+/Beam_Size 2 mm 300 um
+/Beam_Position 0 cm 0 cm
+/Catcher_Position_z 0 mm
+/CatcherMylar_Thickness 0.5 um
+
+#---------------------------------------------------------------
+#   Generate Events
+#---------------------------------------------------------------
+/run/printProgress 100
+/output test.root
+/run/beamOn 1000
+
