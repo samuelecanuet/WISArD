@@ -16,7 +16,7 @@
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
-/Magnetic_Field 4 T
+/Magnetic_Field 0 T
 /Threshoold_PlasticScintillator 100 keV
 #/Delta_Position_PlasticScintillator
 #/Resolution_SiPMs   0 keV #not yet implemented
@@ -34,6 +34,7 @@
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 10000
+/run/printProgress 100
 /output test.root
 /run/beamOn 1000
+

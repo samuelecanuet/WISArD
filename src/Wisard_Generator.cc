@@ -90,8 +90,8 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
       y = G4RandGauss::shoot(y_beam, radius_std);
     }
     y += get<1>(tuple)*angstrom;
-w
-    z = position_catcher_z + get<2>(tuple)*angstrom;
+
+    z = position_catcher_z + get<2>(tuple)*angstrom + 0.5*um;
 
     for (int i = 0; i < isubev_len; ++i)
     {
@@ -109,18 +109,18 @@ w
       {
         particle = part_positron;
       }
-      else if (name.compare(0, 5, "gamma") == 0)
-      {
-        particle = part_gamma;
-      }
-      else if (name.compare(0, 1, "p") == 0)
-      {
-        particle = part_proton;
-      }
-      else if (name.compare(0, 5, "alpha") == 0 || name.compare(0, 3, "4He") == 0)
-      {
-        particle = part_alpha;
-      }
+      // else if (name.compare(0, 5, "gamma") == 0)
+      // {
+      //   particle = part_gamma;
+      // }
+      // else if (name.compare(0, 1, "p") == 0)
+      // {
+      //   particle = part_proton;
+      // }
+      // else if (name.compare(0, 5, "alpha") == 0 || name.compare(0, 3, "4He") == 0)
+      // {
+      //   particle = part_alpha;
+      // }
       else
       {
         iopt = 0;
@@ -136,8 +136,8 @@ w
       {
         gun.SetParticleDefinition(particle);
         gun.SetParticlePosition(G4ThreeVector(x, y, z));
-        gun.SetParticleMomentumDirection(dir);
-        gun.SetParticleEnergy(ekin);
+        gun.SetParticleMomentumDirection(G4ThreeVector(0,0,1));
+        gun.SetParticleEnergy(1*MeV);
         gun.GeneratePrimaryVertex(event);
 
         //////FOR TEST/////////

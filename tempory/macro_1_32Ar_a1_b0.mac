@@ -34,6 +34,6 @@
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 1
-/output ../../../../../../mnt/hgfs/shared/32Ar_a1_b0_1_a.root
+/run/printProgress 10000
+/output ../../../../../../mnt/hgfs/shared/32Ar_a1_b0_1.root
 /run/beamOn 1000000

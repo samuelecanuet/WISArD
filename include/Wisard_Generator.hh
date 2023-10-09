@@ -16,6 +16,8 @@
 #include <unordered_map>
 #include <tuple>
 
+#include "Randomize.hh"
+
 
 //----------------------------------------------------------------------
 struct Histogram
@@ -137,11 +139,8 @@ inline std::pair<std::vector<Histogram>, G4double> Wisard_Generator::GetSRIM_his
 
 inline std::tuple<G4double, G4double, G4double> Wisard_Generator::GetSRIM_data(std::vector<Histogram> histogram, double totalWeight)
 {
-    std::mt19937 gen(G4Random::getTheSeed());
-
     // Générer un nombre aléatoire pondéré entre 0 et la somme totale des poids
-    std::uniform_real_distribution<> distrib(0.0, totalWeight);
-    G4double randomValue = distrib(gen);
+    G4double randomValue = G4RandFlat::shoot(0.0, totalWeight);
 
     // Parcourir les bins de l'histogramme et sélectionner le bin en fonction du nombre aléatoire
     G4double cumulativeWeight = 0.0;

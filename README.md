@@ -16,6 +16,7 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 
 ### v2.1
 
-- More accurate implementation of points in the catcher with a 3D Histogram of coordinates from a RANGE_3D SRIM file.
+- More accurate implantation point in the catcher with a 3D Histogram of coordinates from a RANGE_3D SRIM file.
 - Considered all the random selections with the Geant4 seed.
-- Implemented writing logs to save the simulation parameters.
+- Writing logs to save the simulation parameters.
+- Single Tree with new c++/python analysis

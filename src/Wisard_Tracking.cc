@@ -17,7 +17,7 @@ Wisard_Tracking::~Wisard_Tracking()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void Wisard_Tracking::PreUserTrackingAction(const G4Track)
+void Wisard_Tracking::PreUserTrackingAction(const G4Track *)
 {
 }
 

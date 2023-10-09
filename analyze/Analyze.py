@@ -114,7 +114,7 @@ class ROOT_HISTO_Analyzer:
                                 dic_beta[key_dic].append([line.split()[3], line.split()[4]])
                                 break
         
-class ROOT_TREE_ANALYZER:
+class ROOT_TREE_COMPUTE:
     def __init__(self, filename):
         self.filename = filename
         
@@ -126,15 +126,19 @@ class ROOT_TREE_ANALYZER:
 
         if not self.rootfile or self.rootfile.IsZombie():
             raise FileNotFoundError(f"ROOT file {self.filename} can not be open")
+        
+    def GetHist(self, name):
+        return self.rootfile.Get(name)
     
+    def ViewHist(self):
+        for key in self.rootfile.GetListOfKeys():
+            print("Name : "+self.rootfile.Get(key.GetName()).GetName()+"\t Title : "+self.rootfile.Get(key.GetName()).GetTitle())
 
-    def DisplayTH2D(self, histo_name, ax, color='plasma', label=None, title=None, xlabel=None, ylabel=None, xlim=None, ylim=None, xtick=None, ytick=None, ylog=None, xlog=None, zlog=None, rebinx=None, rebiny=None):
-        Hist = self.rootfile.Get(histo_name)
+    def DisplayTH2D(self, Hist, ax, color='plasma', label=None, title=None, xlabel=None, ylabel=None, xlim=None, ylim=None, xtick=None, ytick=None, ylog=None, xlog=None, zlog=None, rebinx=None, rebiny=None):
         if rebinx   != None: Hist.RebinX(rebinx)
         if rebiny   != None: Hist.RebinY(rebiny)
 
-        
-
+    
         nbins_x = Hist.GetNbinsX()
         nbins_y = Hist.GetNbinsY()
 
@@ -152,7 +156,7 @@ class ROOT_TREE_ANALYZER:
         if title  == None: title = Hist.GetTitle()
         if xlabel == None: xlabel = Hist.GetXaxis().GetTitle()
         if ylabel == None: ylabel = Hist.GetYaxis().GetTitle()
-        if xlim   == None: xlim = ( bin_centers_x.min()-bin_centers_x.min(), bin_centers_x.max()+bin_centers_x.min() )
+        if xlim   == None: xlim = ( bin_centers_x.min(), bin_centers_x.max() )
         if ylim   == None: ylim = (bin_centers_y.min(), bin_centers_y.max())
         if xtick  != None: ax.set_xticks(np.linspace(xlim[0], xlim[1], xtick))
         if ytick  != None: ax.set_yticks(np.linspace(ylim[0], ylim[1], ytick))
@@ -172,8 +176,8 @@ class ROOT_TREE_ANALYZER:
         return ax
 
 
-    def DisplayTH1D(self, histo_name, ax, color=None, label=None, title=None, xlabel=None, ylabel=None, xlim=None, ylim=None, xtick=None, ytick=None, ylog=None, xlog=None, rebin=None):
-        Hist = self.rootfile.Get(histo_name)
+    def DisplayTH1D(self, Hist, ax, color=None, label=None, title=None, xlabel=None, ylabel=None, xlim=None, ylim=None, xtick=None, ytick=None, ylog=None, xlog=None, rebin=None):
+
         if rebin   != None: Hist.Rebin(rebin)
 
         nbins_x = Hist.GetNbinsX()
@@ -190,7 +194,7 @@ class ROOT_TREE_ANALYZER:
         if title    == None: title = Hist.GetTitle()
         if xlabel   == None: xlabel = Hist.GetXaxis().GetTitle()
         if ylabel   == None: ylabel = Hist.GetYaxis().GetTitle()
-        if xlim     == None: xlim = ( bin_centers_x.min()-bin_centers_x.min(), bin_centers_x.max()+bin_centers_x.min() )
+        if xlim     == None: xlim = ( bin_centers_x.min(), bin_centers_x.max() )
         if ylim     == None: ylim = ( 0, hist_data.max()*1.1 )
         if xtick    != None: ax.set_xticks(np.linspace(xlim[0], xlim[1], xtick))
         if ytick    != None: ax.set_yticks(np.linspace(ylim[0], ylim[1], ytick))
@@ -220,15 +224,27 @@ if __name__ == "__main__":
 
     fig, axs = plt.subplots()
 
-    filename = "../../../../../../../mnt/hgfs/shared/Result/32Ar_a1_b0_7_Pl.root"
-    analyzer = ROOT_TREE_ANALYZER(filename)
-    histo = analyzer.DisplayTH1D("h1d_edep", axs, rebin=10, label="Pl")
+    filename = "../../../../../../../mnt/hgfs/shared/32Ar_a1_b0_1.root"
+    file1 = ROOT_TREE_COMPUTE(filename)
+    file1.DisplayTH1D(file1.GetHist("h1d_PL_Edep"), axs, rebin=10)
+    # file1.DisplayTH1D(file1.GetHist("h1d_E0_positron"), axs, xlim=(0, 7000), rebin=10, color='red')
 
-    filename = "../../../../../../../mnt/hgfs/shared/Result/32Ar_a1_b0_7_Si.root"
-    analyzer = ROOT_TREE_ANALYZER(filename)
-    histo1 = analyzer.DisplayTH1D("h1d_edep", axs, rebin=10, ylog=True, color='red', label="Si", xtick=6)
+    print("TREE")
+    analyser=ROOT_HISTO_Analyzer("test.root")
+    print(analyser.GetEshiftDictionnary())
 
-    plt.legend()
+    print("HISTO")
+    analyser=ROOT_HISTO_Analyzer(filename)
+    print(analyser.GetEshiftDictionnary())
+
+
+    # h1 = analyzer.GetHist("h1d_edep")
+    # h2 = ROOT_DISPLAY(h1)
+    # histo = h2.DisplayTH1D(h1, axs, rebin=10, label="Pl")
+
+    # filename = "../../../../../../../mnt/hgfs/shared/Result/32Ar_a1_b0_7_Si.root"
+    # analyzer = ROOT_TREE_COMPUTE(filename)
+    # histo1 = analyzer.DisplayTH1D("h1d_edep", axs, rebin=10, ylog=True, color='red', label="Si", xtick=6)
     plt.show()
     # for key, value in analyzer.Dictionnary().items():
     #     print(key[:-1] + " Strip "+key[-1] +": Eshift = {:.2f} +/- {:.2f} keV".format(value[0], value[1]))
