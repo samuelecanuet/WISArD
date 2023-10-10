@@ -327,13 +327,13 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeDL
   G4LogicalVolume *logicSiDet = new G4LogicalVolume(
       get<2>(dic_strip[strip]),
       strip_mat,
-      ("logicSiDet_" + num + dir + "_Strip_" + strip + "_dl").Data());
+      ("logicSi_" + num + dir + "_Strip_" + strip + "_dl").Data());
 
   G4VPhysicalVolume *physSiDet = new G4PVPlacement(
       0,
       G4ThreeVector(0., 0., thicknessSiDetector / 2 - thicknessSiDetectorDeadLayer / 2),
       logicSiDet,
-      ("physSiDet_" + num + dir + "_Strip_" + strip + "_dl").Data(),
+      ("physSi_" + num + dir + "_Strip_" + strip + "_dl").Data(),
       mother,
       false,
       0);

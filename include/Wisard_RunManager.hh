@@ -46,6 +46,7 @@ protected:
   G4String filename;
   G4double resolution_sipms;
   G4double resolution_sidet;
+  G4double resolution_sidet_std;
 
   //------------------------------------------------------------
   // class functions definition
@@ -106,8 +107,8 @@ public:
   void SetOutputFilename(G4String fn);
   G4String GetOutputFilename();
 
-  void SetResolutionSIPMS(G4double value);
-  void SetResolutionSIDET(G4double value);
+  void SetResolutionSIPMS(G4double value, G4double std);
+  void SetResolutionSIDET(G4double value, G4double std);
 
   //----------------------------------------------------------
   // Functions for events processing and output histogram
@@ -193,8 +194,8 @@ inline void Wisard_RunManager::SetOutputFilename(G4String fn) { filename = fn; }
 inline G4String Wisard_RunManager::GetOutputFilename() { return filename; }
 
 // SiPMs RESOLUTION
-inline void Wisard_RunManager::SetResolutionSIPMS(G4double res) { resolution_sipms = res; }
+inline void Wisard_RunManager::SetResolutionSIPMS(G4double res, G4double res_std) { resolution_sipms = res; }
 
 // SiDET RESOLUTION
-inline void Wisard_RunManager::SetResolutionSIDET(G4double res) { resolution_sidet = res; }
+inline void Wisard_RunManager::SetResolutionSIDET(G4double res, G4double res_std) { resolution_sidet = res; resolution_sidet_std = res_std;}
 #endif

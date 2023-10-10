@@ -20,3 +20,7 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 - Considered all the random selections with the Geant4 seed.
 - Writing logs to save the simulation parameters.
 - Single Tree with new c++/python analysis
+
+### v2.2
+
+- Silicon Detector Resolution in the macro file

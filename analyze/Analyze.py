@@ -131,8 +131,18 @@ class ROOT_TREE_COMPUTE:
         return self.rootfile.Get(name)
     
     def ViewHist(self):
+        print("ok")
         for key in self.rootfile.GetListOfKeys():
-            print("Name : "+self.rootfile.Get(key.GetName()).GetName()+"\t Title : "+self.rootfile.Get(key.GetName()).GetTitle())
+            print("Name : "+self.rootfile.Get(key.GetName()).GetName()+"\t\t\t Title : "+self.rootfile.Get(key.GetName()).GetTitle())
+            print(self.rootfile.Get(key.GetName()).ClassName())
+
+    def Display(self, Hist, axs):
+        type = Hist.ClassName()
+        
+        if type == "TH1D":
+            self.DisplayTH1D(Hist, axs)
+        if type == "TH2D":
+            self.DisplayTH2D(Hist, axs)
 
     def DisplayTH2D(self, Hist, ax, color='plasma', label=None, title=None, xlabel=None, ylabel=None, xlim=None, ylim=None, xtick=None, ytick=None, ylog=None, xlog=None, zlog=None, rebinx=None, rebiny=None):
         if rebinx   != None: Hist.RebinX(rebinx)
@@ -211,7 +221,7 @@ class ROOT_TREE_COMPUTE:
         ax.set_ylim(ylim)
 
         return ax
-
+    
 
 
 if __name__ == "__main__":
@@ -226,25 +236,17 @@ if __name__ == "__main__":
 
     filename = "../../../../../../../mnt/hgfs/shared/32Ar_a1_b0_1.root"
     file1 = ROOT_TREE_COMPUTE(filename)
-    file1.DisplayTH1D(file1.GetHist("h1d_PL_Edep"), axs, rebin=10)
-    # file1.DisplayTH1D(file1.GetHist("h1d_E0_positron"), axs, xlim=(0, 7000), rebin=10, color='red')
+    file1.DisplayTH1D(file1.GetHist("h1d_PL_Edep_positron"), axs, xlim=(0, 4000), ylog=True, rebin=10, label="Energy deposit in Plastic Scintillator")
+    file1.DisplayTH1D(file1.GetHist("h1d_E0_positron"), axs, xlim=(0, 4000), ylog=True, rebin=10, color='red', title = r"Edep>E0 reasons", label = "Inital kinetic energy", xlabel="Energy (keV)")
 
-    print("TREE")
-    analyser=ROOT_HISTO_Analyzer("test.root")
-    print(analyser.GetEshiftDictionnary())
+    # print("TREE")
+    # analyser=ROOT_HISTO_Analyzer("test.root")
+    # print(analyser.GetEshiftDictionnary())
 
-    print("HISTO")
-    analyser=ROOT_HISTO_Analyzer(filename)
-    print(analyser.GetEshiftDictionnary())
+    # analyser=ROOT_HISTO_Analyzer(filename)
+    # print(analyser.GetEshiftDictionnary())
 
-
-    # h1 = analyzer.GetHist("h1d_edep")
-    # h2 = ROOT_DISPLAY(h1)
-    # histo = h2.DisplayTH1D(h1, axs, rebin=10, label="Pl")
-
-    # filename = "../../../../../../../mnt/hgfs/shared/Result/32Ar_a1_b0_7_Si.root"
-    # analyzer = ROOT_TREE_COMPUTE(filename)
-    # histo1 = analyzer.DisplayTH1D("h1d_edep", axs, rebin=10, ylog=True, color='red', label="Si", xtick=6)
+    plt.legend()
     plt.show()
     # for key, value in analyzer.Dictionnary().items():
     #     print(key[:-1] + " Strip "+key[-1] +": Eshift = {:.2f} +/- {:.2f} keV".format(value[0], value[1]))
