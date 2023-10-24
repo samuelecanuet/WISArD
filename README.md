@@ -24,3 +24,4 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 ### v2.2
 
 - Silicon Detector Resolution in the macro file
+- Complet WISArD magnetic field (axial and radial) along the tower

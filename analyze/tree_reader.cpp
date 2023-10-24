@@ -231,8 +231,7 @@ int main(int argc, char **argv)
             H1D_px_positron.Fill(*px);
             H1D_py_positron.Fill(*py);
             H1D_pz_positron.Fill(*pz);
-            if (*E0 < 3100 && *E0 > 3000){
-            H1D_E0_positron.Fill(*E0);}
+            H1D_E0_positron.Fill(*E0);
 
             if (*Catcher_Edep != 0.)
             {
@@ -240,8 +239,8 @@ int main(int argc, char **argv)
             }
             if (*Pl_Edep != 0.)
             {
-                if (*E0 < 3100 && *E0 > 3000)
-                {H1D_PL_Edep_positron.Fill(*Pl_Edep);}
+
+                H1D_PL_Edep_positron.Fill(*Pl_Edep);
                 H2D_PL_E0_Edep_positron.Fill(*E0 - *Catcher_Edep, *Pl_Edep);
                 H1D_PL_x_positron.Fill(*Pl_Hit_x);
                 H1D_PL_y_positron.Fill(*Pl_Hit_y);

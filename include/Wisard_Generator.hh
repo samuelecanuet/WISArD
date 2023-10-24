@@ -45,6 +45,7 @@ class Wisard_Generator : public G4VUserPrimaryGeneratorAction
     // internal variables definition
 protected:
     Wisard_RunManager *manager_ptr;
+    double energy;
     int ievent, iev_len = 0, isubevent, isubev_len = 0;
 
     G4ParticleDefinition *part_electron;

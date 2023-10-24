@@ -23,7 +23,7 @@ Wisard_Generator::Wisard_Generator(Wisard_RunManager *mgr)
   cout << "Constructor Wisard_Generator" << endl;
 
   manager_ptr = mgr;
-
+  
   ////--------------------------------------------------
   ////  Memorize particle definitions
   G4ParticleTable *particle_table = G4ParticleTable::GetParticleTable();
@@ -75,7 +75,7 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
 
     double x = 10 * mm;
     double y = 10 * mm;
-    double z = -1;
+    double z;
 
     tuple = GetSRIM_data(res.first, res.second);
 

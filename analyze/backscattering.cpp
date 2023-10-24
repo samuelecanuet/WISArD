@@ -16,37 +16,25 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    // Ouvrir le fichier ROOT
-    TFile *file = new TFile(argv[1], "READ");
-    if (!file->IsOpen())
-    {
-        std::cerr << "Erreur : Impossible d'ouvrir le fichier ROOT du tree." << std::endl;
-        return 1;
-    }
-
-    string filename_raw = "32Ar_a1_b0_";
-    string material[2] = {"Pl",
-                          "Si"};
+    string filename_raw = "../../../../../../../mnt/hgfs/shared-2/save/32Ar_a1_b0_";
+    string f = "32Ar_a1_b0_";
+    //string material[2] = {"Pl", "Si"};
+    string material[4] = {"1T", "2T", "3T", "4T"};
 
     std::unordered_map<std::string, vector<float>> DATA;
     vector<float> xx;
+    TApplication *app = new TApplication("app", &argc, argv);
+    TCanvas *c1 = new TCanvas("c1", "Graph Example", 800, 600);
+
+    double energy[2] = {1,2};
 
     for (const string &mat : material)
     {
-        for (int i = 1; i <= 10; i++)
+        for (int i = 1; i <= 2; i++)
         {
-            xx.clear();
+            TFile *outfile = new TFile((f+ i + "_" + mat + ".root"), "RECREATE");
             TFile *file = new TFile((filename_raw + i + "_" + mat + ".root"), "READ");
-            double threshoold_SiPMs;
-            if (mat == "Si")
-            {
-                threshoold_SiPMs = 10.;
-            }
-            else
-            {
-                threshoold_SiPMs = 100.;
-            }
-            cout << threshoold_SiPMs << endl;
+            cout<<filename_raw + i + "_" + mat + ".root"<<endl;
 
             int counter;
 
@@ -57,19 +45,21 @@ int main(int argc, char **argv)
             // ##### SOURCE #####//
             //////////////////////
             TH1D H1D_E0_positron = TH1D("h1d_E0_positron", "Initial Positron Kinetic Energy; E0 (keV); Counts/keV", 10000, 0, 10000);
+            TH1D H1D_pz_positron = TH1D("h1d_pz_positron", "Initial z Momentum ; pz; Counts/keV", 2000, -1, 1);
 
             // #### DETECTORS ####//
             // Plastic Scintillator
-            TH1D H1D_PL_Edep_positron = TH1D("h1d_PL_Edep_positron", "Plastic Scintillator Positron Energy Deposit ; Edep (keV); Counts/keV", 10000, 0, 10000);
+            TH1D H1D_PL_Edep_positron = TH1D("h1d_PL_Edep_positron", "Plastic Scintillator Positron Energy Deposit ; Edep (keV); Counts/keV", 15000, 0, 15000);
             TH1D H1D_PL_x_positron = TH1D("h1d_PL_x_positron", "Plastic Scintillator Positron Hit x ; x (mm); Counts/0.1mm", 300, -15, 15);
             TH1D H1D_PL_y_positron = TH1D("h1d_PL_y_positron", "Plastic Scintillator Positron Hit y ; y (mm); Counts/0.1mm", 300, -15, 15);
             TH1D H1D_PL_z_positron = TH1D("h1d_PL_z_positron", "Plastic Scintillator Positron Hit z ; z (mm); Counts/0.1mm", 300, 0, 100);
             TH1D H1D_PL_Angle_positron = TH1D("h1d_PL_Angle_positron", "Plastic Scintillator Positron Hit Angle ; Angle (deg) ; Counts/deg", 180, 0, 180);
 
             TH2D H2D_PL_xy_positron = TH2D("h2d_PL_xy_positron", "Plastic Scintillator xy Hit; x (mm); y (mm)", 300, -15, 15, 300, -15, 15);
-            TH2D H2D_PL_E0Angle_positron = TH2D("h2d_PL_E0Angle_positron", "Initial Positron Kinetic Energy vs Plastic Scintillator Hit Angle; E0 (keV); Angle (deg)", 10000, 0, 10000, 180, 0, 180);
-            TH2D H2D_PL_E0EdepAngle_positron = TH2D("h2d_PL_E0EdepAngle_positron", "Energy Not Deposit vs Plastic Scintillator Hit Angle; Energy (keV); Angle (deg)", 10000, 0, 10000, 180, 0, 180);
-            TH2D H2D_PL_E0_Edep_positron = TH2D("h2d_PL_E0_Edep_positron", "Initial Positron Kinetic Energy vs Deposit energy in Plastic Scintillator (catcher corrected); E0 (keV); Edep (keV)", 10000, 0, 10000, 10000, 0, 10000);
+            TH2D H2D_PL_pzAngle_positron = TH2D("h2d_PL_pzAngle_positron", "Initial z Momentum vs Plastic Scintillator Hit Angle; pz; Angle (deg)", 2000, -1, 1, 180, 0, 180);
+            TH2D H2D_PL_E0Angle_positron = TH2D("h2d_PL_E0Angle_positron", "Initial Positron Kinetic Energy vs Plastic Scintillator Hit Angle; E0 (keV); Angle (deg)", 15000, 0, 15000, 180, 0, 180);
+            TH2D H2D_PL_E0EdepAngle_positron = TH2D("h2d_PL_E0EdepAngle_positron", "Energy Not Deposit vs Plastic Scintillator Hit Angle; Energy (keV); Angle (deg)", 15000, 0, 15000, 180, 0, 180);
+            TH2D H2D_PL_E0_Edep_positron = TH2D("h2d_PL_E0_Edep_positron", "Initial Positron Kinetic Energy vs Deposit energy in Plastic Scintillator (catcher corrected); E0 (keV); Edep (keV)", 15000, 0, 15000, 10000, 0, 10000);
 
             ///////////// TREE READER ///////////////
             TTreeReader Reader("Tree", file);
@@ -96,6 +86,9 @@ int main(int argc, char **argv)
             TTreeReaderValue<vector<string>> Si_Hit_Name(Reader, "Silicon_Detector_Name");
             TTreeReaderValue<vector<double>> Si_DL_Edep(Reader, "Silicon_Detector_DL_Deposit_Energy");
             int j = 0;
+
+            
+
             while (Reader.Next())
             {
                 // PROGRESS BAR
@@ -107,34 +100,31 @@ int main(int argc, char **argv)
                 if (*Particle_Name == "e+")
                 {
                     H1D_E0_positron.Fill(*E0);
-
+                    H1D_pz_positron.Fill(*pz);
                     if (*Pl_Edep != 0.)
                     {
                         H1D_PL_Edep_positron.Fill(*Pl_Edep);
                         H1D_PL_Angle_positron.Fill(*Pl_Hit_Angle);
-
                         H2D_PL_xy_positron.Fill(*Pl_Hit_x, *Pl_Hit_y);
                         H2D_PL_E0Angle_positron.Fill(*E0, *Pl_Hit_Angle);
+                        H2D_PL_pzAngle_positron.Fill(*pz, *Pl_Hit_Angle);
                     }
                 }
             }
 
+            outfile->cd();
+            H1D_E0_positron.Write();
             H1D_PL_Edep_positron.Write();
             H1D_PL_Angle_positron.Write();
             H2D_PL_xy_positron.Write();
             H2D_PL_E0Angle_positron.Write();
 
             file->Close();
-
-            H1D_PL_Edep_positron.GetXaxis()->SetRangeUser(0, threshoold_SiPMs);
-            cout << H1D_PL_Edep_positron.Integral() << endl;
-
-            DATA[mat].push_back(H1D_PL_Edep_positron.Integral());
-            xx.push_back(i);
+            outfile->Close();
+            
         }
-            TGraphErrors graph1(10, xx.data(), DATA[mat].data(), xx.data(), xx.data());
-
     }
+
 
     
     return 0;

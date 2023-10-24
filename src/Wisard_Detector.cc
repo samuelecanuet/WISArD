@@ -125,7 +125,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   if (!fieldIsInitialized)
   {
     G4FieldManager *pFieldMgr;
-    G4MagneticField *WisardMagField = new WisardMagnetField("wisard_field.txt", 0.004);
+    G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004);
     pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
     G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
     pChordFinder->SetDeltaChord(1 * um);
@@ -146,7 +146,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //--------------------------------------------------------------------------------------
   G4double innerRadius = 0 * cm;
   G4double outerRadius = 6.5 * cm; // réduit au raypon du Bore pour opti6.5
-  G4double length = 21. * cm;      // réduit pour opti21cm
+  G4double length = 120. * cm;      // réduit pour opti21cm
   G4double theta1 = 90.0 * deg;
   G4double phi = 360.0 * deg;
 
@@ -844,17 +844,17 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //===================================================================================================================================================================
   // NB: per ogni dubbio sulle misure, consultare i disegni tecnici inviati da M. Roche (mail al mio indirizzo cenbg il 18/05/2021).
   G4double distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector = 25.575 * mm;
-
-  G4Material *fMaterial_PlasticScintillator = G4NistManager::Instance()->FindOrBuildMaterial("G4_POLYSTYRENE");
+  G4double delta = 0*cm;
+  G4Material *fMaterial_PlasticScintillator = G4NistManager::Instance()->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
 
   G4Tubs *fSolid_PlasticScintillator = new G4Tubs("PlasticScintillator", 0., fRadius_PlasticScintillator, 0.5 * fLength_PlasticScintillator, 0., 360 * deg);                                                                           // name, r : 0->1cm, L : 5cm, phi : 0->2pi
   G4LogicalVolume *fLogic_PlasticScintillator = new G4LogicalVolume(fSolid_PlasticScintillator, fMaterial_PlasticScintillator, "PlasticScintillator");                                                                                 // solid, material, name
   G4PVPlacement *fPhys_PlasticScintillator = new G4PVPlacement(0,                                                                                                                                                                      // rotationMatrix
-                                                               G4ThreeVector(0., 0., z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator / 2), // position
+                                                               G4ThreeVector(0., 0., z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator / 2 + delta), // position
                                                                fLogic_PlasticScintillator, "PlasticScintillator",                                                                                                                      // its fLogical volume
                                                                fLogicWorld,                                                                                                                                                            // its mother volume
                                                                false,                                                                                                                                                                  // no boolean op.
-                                                               0);                                                                                                                                                                     // copy nb.
+                                                               0);                                                                                                                                                                   // copy nb.
   G4VisAttributes *PlasticScintillator_att = new G4VisAttributes(G4Colour(0., 0., 0.)); // red
   PlasticScintillator_att->SetForceWireframe(false);
   PlasticScintillator_att->SetForceSolid(true);
@@ -879,7 +879,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   G4LogicalVolume *logic_Box_material_SupportoRame_PlasticScint = new G4LogicalVolume(Box_material_SupportoRame_PlasticScint, material_SupportoRame_PlasticScint, "logic_Box_material_SupportoRame_PlasticScint"); // solid, material, name
   G4VPhysicalVolume *physics_Box_material_SupportoRame_PlasticScint = new G4PVPlacement(0,                                                                                                                         // no rotation
-                                                                                        G4ThreeVector(0., 0., z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + +thickness_z_SupportoRame_SiDetector / 2),
+                                                                                        G4ThreeVector(0., 0., delta +z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + thickness_z_SupportoRame_SiDetector / 2),
                                                                                         logic_Box_material_SupportoRame_PlasticScint, "logic_Box_material_SupportoRame_PlasticScint", // its fLogical volume
                                                                                         fLogicWorld,                                                                                  // its mother volume
                                                                                         false,                                                                                        // no boolean op.
@@ -899,7 +899,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4VSolid *placcaRame_Cilindrica = new G4Tubs("placcaRame_Cilindrica", fRadius_PlasticScintillator, fRadius_PlasticScintillator + thickness_z_SupportoRame_PlasticScint, lenghtPlaccaCilidrica / 2, 0., 360 * deg);
   G4LogicalVolume *logic_placcaRame_Cilindrica = new G4LogicalVolume(placcaRame_Cilindrica, material_SupportoRame_PlasticScint, "placcaRame_Cilindrica"); // solid, material, name
   G4VPhysicalVolume *physics_placcaRame_Cilindrica = new G4PVPlacement(0,                                                                                 // no rotation
-                                                                       G4ThreeVector(0., 0., z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + thickness_z_SupportoRame_SiDetector + lenghtPlaccaCilidrica / 2),
+                                                                       G4ThreeVector(0., 0., delta +z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + thickness_z_SupportoRame_SiDetector + lenghtPlaccaCilidrica / 2),
                                                                        logic_placcaRame_Cilindrica, "logic_placcaRame_Cilindrica", // its fLogical volume
                                                                        fLogicWorld,                                                // its mother volume
                                                                        false,                                                      // no boolean op.

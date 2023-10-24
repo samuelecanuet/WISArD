@@ -75,7 +75,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   if (event->GetEventID() == 0)
   {
     f = new TFile(GetOutputFilename(), "recreate");
-    ////////////// Construct eLog /////////////////////////////////////
+    ////////////// Construct Log /////////////////////////////////////
     TDirectory *dir = f->mkdir("Log");
     dir->cd();
     G4UImanager *uiManager = G4UImanager::GetUIpointer();
@@ -89,6 +89,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       }
       f->cd();
     }
+    //////////////////////////////////////////////////////////////////
 
     ////////////// Construct the TREE ////////////////////////////////
     Tree = new TTree("Tree", "Informations");

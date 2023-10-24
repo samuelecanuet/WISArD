@@ -95,7 +95,6 @@ void Wisard_PhysList::ConstructProcess()
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics(1);
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics_option3(1);
   G4VPhysicsConstructor *emPhysicsList = new G4EmStandardPhysicsGS(0);
-
   emPhysicsList->ConstructProcess();
 }
 
@@ -110,9 +109,8 @@ void Wisard_PhysList::SetCuts()
 
   SetCutValue(0.001 * mm, "gamma");
   SetCutValue(0.001 * mm, "proton");
-  SetCutValue(0.001 * mm, "alpha");
-  SetCutValue(0.001 * mm, "electron");
-  SetCutValue(0.001 * mm, "positron");
+  SetCutValue(0.001 * mm, "e-");
+  SetCutValue(0.001 * mm, "e+");
   defaultCutValue = 10. * nm;
 }
 
