@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1D.h>
@@ -48,7 +47,17 @@ int main(int argc, char **argv)
         "3Down_Strip_1", "3Down_Strip_2", "3Down_Strip_3", "3Down_Strip_4", "3Down_Strip_5",
         "4Down_Strip_1", "4Down_Strip_2", "4Down_Strip_3", "4Down_Strip_4", "4Down_Strip_5"};
 
-    double threshoold_SiPMs = 100.;
+    double threshoold_SiPMs;
+    if (strstr(argv[1], "Pl") != nullptr)
+    {
+        threshoold_SiPMs = 10.;
+    }
+    else
+    {
+        threshoold_SiPMs = 100.;
+    }
+    cout << threshoold_SiPMs << endl;
+
     int counter;
 
     /////////////////////////////////////////
@@ -113,28 +122,15 @@ int main(int argc, char **argv)
     TH1D H1D_Catcher_Edep = TH1D("h1d_Catcher_Edep", "Catcher Energy Deposit ; Edep (keV); Counts/keV", 10000, 0, 10000);
 
     // ### Beta-P DETECTION ###//
-    // TH1D *H1D_coinc[nb_det];
-    // TH1D *H1D_nocoinc[nb_det];
+    std::unordered_map<std::string, TH1D *> H1D_coinc;
+    std::unordered_map<std::string, TH1D *> H1D_nocoinc;
 
-    
-
-    // for (int i = 0; i < nb_det; i++)
-    // {
-    //     H1D_coinc[i] = new TH1D(("h1d_" + Detector_Name[i] + "_coinc").c_str(), (Detector_Name[i] + "Energy Deposit in Coincidence").c_str(), 100000, 0.0, 10000.0);
-    //     H1D_nocoinc[i] = new TH1D(("h1d_" + Detector_Name[i] + "_nocoinc").c_str(), (Detector_Name[i] + "Energy Deposit in Anti-Coincidence").c_str(), 100000, 0.0, 10000.0);
-    // }
-
-    std::unordered_map<std::string, TH1D*> H1D_coinc;
-    std::unordered_map<std::string, TH1D*> H1D_nocoinc;
-
-    for (const string& name : Detector_Name)
+    for (const string &name : Detector_Name)
     {
-        H1D_coinc[(name+"coinc").c_str()] = new TH1D(("h1d_" + name + "_coinc").c_str(), (name + "Energy Deposit in Coincidence").c_str(), 100000, 0.0, 10000.0);
-        H1D_nocoinc[(name+"no_coinc").c_str()] = new TH1D(("h1d_" + name + "_nocoinc").c_str(), (name + "Energy Deposit in Anti-Coincidence").c_str(), 100000, 0.0, 10000.0);
+        H1D_coinc[(name + "coinc").c_str()] = new TH1D(("h1d_" + name + "_coinc").c_str(), (name + "Energy Deposit in Coincidence").c_str(), 100000, 0.0, 10000.0);
+        H1D_nocoinc[(name + "no_coinc").c_str()] = new TH1D(("h1d_" + name + "_nocoinc").c_str(), (name + "Energy Deposit in Anti-Coincidence").c_str(), 100000, 0.0, 10000.0);
     }
 
-    
-    // ###
 
     ///////////// TREE READER ///////////////
     TTreeReader Reader("Tree", file);
@@ -160,10 +156,16 @@ int main(int argc, char **argv)
     TTreeReaderValue<vector<double>> Si_Hit_Angle(Reader, "Silicon_Detector_Hit_Angle");
     TTreeReaderValue<vector<string>> Si_Hit_Name(Reader, "Silicon_Detector_Name");
     TTreeReaderValue<vector<double>> Si_DL_Edep(Reader, "Silicon_Detector_DL_Deposit_Energy");
-    int COUNT=0;
     int count = 0;
+    int j = 0;
     while (Reader.Next())
     {
+        //PROGRESS BAR
+        int progress = (j++ * 100) / Reader.GetEntries();
+        cout << "[" << std::string(progress / 4, '=') << ">" << progress << "%]\r";
+        cout.flush();
+
+
         // COMMON
         if (*EventNumber == count)
         {
@@ -226,10 +228,6 @@ int main(int argc, char **argv)
         // POSITRON
         if (*Particle_Name == "e+")
         {
-            if (*Pl_Edep > *E0 && *EventNumber < 100)
-        {
-            cout<<*EventNumber<<"       "<< *Pl_Edep-*E0<<endl;
-        }
             H1D_px_positron.Fill(*px);
             H1D_py_positron.Fill(*py);
             H1D_pz_positron.Fill(*pz);
@@ -241,9 +239,9 @@ int main(int argc, char **argv)
             }
             if (*Pl_Edep != 0.)
             {
+
                 H1D_PL_Edep_positron.Fill(*Pl_Edep);
-                H2D_PL_E0_Edep_positron.Fill(*E0-*Catcher_Edep, *Pl_Edep);
-                H1D_PL_Edep_positron.Fill(*Pl_Edep);
+                H2D_PL_E0_Edep_positron.Fill(*E0 - *Catcher_Edep, *Pl_Edep);
                 H1D_PL_x_positron.Fill(*Pl_Hit_x);
                 H1D_PL_y_positron.Fill(*Pl_Hit_y);
                 H1D_PL_z_positron.Fill(*Pl_Hit_z);
@@ -274,26 +272,23 @@ int main(int argc, char **argv)
             }
         }
 
-
         for (size_t hit = 0; hit < (*Si_Edep).size(); hit++)
-        { 
+        {
             if ((*Si_Edep)[hit] != 0.)
             {
                 if (Trigger >= threshoold_SiPMs)
                 {
-                    H1D_coinc[((*Si_Hit_Name)[hit]+"coinc").c_str()]->Fill((*Si_Edep)[hit]);
+                    H1D_coinc[((*Si_Hit_Name)[hit] + "coinc").c_str()]->Fill((*Si_Edep)[hit]);
                 }
                 else
                 {
-                    H1D_nocoinc[((*Si_Hit_Name)[hit]+"no_coinc").c_str()]->Fill((*Si_Edep)[hit]);
+                    H1D_nocoinc[((*Si_Hit_Name)[hit] + "no_coinc").c_str()]->Fill((*Si_Edep)[hit]);
                 }
             }
-                
         }
-        
-        
     }
-    cout<<COUNT<<endl;
+
+
 
     H1D_x.Write();
     H1D_y.Write();
@@ -336,10 +331,10 @@ int main(int argc, char **argv)
     H1D_Catcher_Edep_positron.Write();
     H1D_Catcher_Edep.Write();
 
-    for (const string& name : Detector_Name)
+    for (const string &name : Detector_Name)
     {
-        H1D_coinc[(name+"coinc").c_str()]->Write();
-        H1D_nocoinc[(name+"no_coinc").c_str()]->Write();
+        H1D_coinc[(name + "coinc").c_str()]->Write();
+        H1D_nocoinc[(name + "no_coinc").c_str()]->Write();
     }
 
     file->Close();

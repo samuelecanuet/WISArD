@@ -41,7 +41,16 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     if (step->IsFirstStepInVolume())
     {
       PrimaryInfo_init.ParticleName = track->GetDefinition()->GetParticleName();
-      PrimaryInfo_init.HitAngle = std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
+     
+      if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "PlasticScintillator")
+      {
+        PrimaryInfo_init.HitAngle = std::acos(G4ThreeVector(0,0,1) * track->GetMomentumDirection()) / deg;
+      }
+      else
+      {
+        PrimaryInfo_init.HitAngle = std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
+      }
+
       PrimaryInfo_init.HitPosition = step->GetPreStepPoint()->GetPosition() / mm;
       PrimaryInfo_init.DepositEnergy = 0;
       PrimaryDictionnary[index] = PrimaryInfo_init;

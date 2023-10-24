@@ -201,18 +201,18 @@ void Wisard_Messenger::SetNewValue(G4UIcommand *cmd, G4String args)
   }
   if (cmd == input_cmd_sipms_resolution)
   {
-    G4double value;
-    G4String unit;
+    G4double value, value1;
+    G4String unit, unit1;
     std::istringstream iss(args);
-    iss >> value >> unit;
-    manager_ptr->SetResolutionSIPMS(value * G4UnitDefinition::GetValueOf(unit));
+    iss >> value >> unit >> value1 >> unit1;
+    manager_ptr->SetResolutionSIPMS(value * G4UnitDefinition::GetValueOf(unit), value1 * G4UnitDefinition::GetValueOf(unit1));
   }
   if (cmd == input_cmd_sidet_resolution)
   {
-    G4double value;
-    G4String unit;
+    G4double value, value1;
+    G4String unit, unit1;
     std::istringstream iss(args);
-    iss >> value >> unit;
-    manager_ptr->SetResolutionSIDET(value * G4UnitDefinition::GetValueOf(unit));
+    iss >> value >> unit >> value1 >> unit1;
+    manager_ptr->SetResolutionSIDET(value * G4UnitDefinition::GetValueOf(unit), value1 * G4UnitDefinition::GetValueOf(unit1));
   }
 }

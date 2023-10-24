@@ -75,7 +75,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   if (event->GetEventID() == 0)
   {
     f = new TFile(GetOutputFilename(), "recreate");
-    ////////////// Construct eLog /////////////////////////////////////
+    ////////////// Construct Log /////////////////////////////////////
     TDirectory *dir = f->mkdir("Log");
     dir->cd();
     G4UImanager *uiManager = G4UImanager::GetUIpointer();
@@ -89,6 +89,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       }
       f->cd();
     }
+    //////////////////////////////////////////////////////////////////
 
     ////////////// Construct the TREE ////////////////////////////////
     Tree = new TTree("Tree", "Informations");
@@ -154,7 +155,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
         if (dic_detector[Detector_Name[i]].first->GetDictionnary()[part].DepositEnergy != 0)
         {
           Silicon_Detector_Name.push_back(Detector_Name[i]);
-          Silicon_Detector_Deposit_Energy.push_back(dic_det.DepositEnergy);
+          Silicon_Detector_Deposit_Energy.push_back(max(dic_det.DepositEnergy+G4RandGauss::shoot(0.0, resolution_sidet/keV), 0.0));
           Silicon_Detector_Hit_Position_x.push_back(dic_det.HitPosition.x());
           Silicon_Detector_Hit_Position_y.push_back(dic_det.HitPosition.y());
           Silicon_Detector_Hit_Position_z.push_back(dic_det.HitPosition.z());
@@ -166,8 +167,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     }
     
     
-  
-
     ///// Reset all variables of detectors pour the next primary particle /////////////////
     x = 0;
     y = 0;
@@ -255,12 +254,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   wisard_sensor_CatcherAl1->ResetDictionnary();
   wisard_sensor_CatcherAl2->ResetDictionnary();
   ///////////////////////////////////////////////////////////////////
-
-  //////// Resolution on detectors ///////////////////////
-  // e_PlasticScintillator = max(e_PlasticScintillator+CLHEP::RandGauss::shoot(resolution_simps, 0.0));
-
-  double mean = 0.;
-  double std = 0.;
 }
 
 int Wisard_RunManager::OpenInput(const string &fname)

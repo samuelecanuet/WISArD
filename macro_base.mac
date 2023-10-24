@@ -9,7 +9,7 @@
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
-/input/Open_B wisard_field.txt
+/input/Open_B MAGNETIC_FIELD_data/wisard_field_complete.txt
 /input/Open_SRIM SRIM_data/%inputSRIM
 /input/Open_CRADLE %inputCRADLE
 
@@ -20,7 +20,7 @@
 /Threshoold_PlasticScintillator 100 keV
 #/Delta_Position_PlasticScintillator
 #/Resolution_SiPMs   0 keV #not yet implemented
-#/Resolution_SiDet   0 keV #not yet implemented
+/Resolution_SiDet   0 keV 0 keV
 
 #---------------------------------------------------------------
 #   Systematic Variables

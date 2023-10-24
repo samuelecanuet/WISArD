@@ -23,7 +23,7 @@ Wisard_Generator::Wisard_Generator(Wisard_RunManager *mgr)
   cout << "Constructor Wisard_Generator" << endl;
 
   manager_ptr = mgr;
-
+  
   ////--------------------------------------------------
   ////  Memorize particle definitions
   G4ParticleTable *particle_table = G4ParticleTable::GetParticleTable();
@@ -75,7 +75,7 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
 
     double x = 10 * mm;
     double y = 10 * mm;
-    double z = -1;
+    double z;
 
     tuple = GetSRIM_data(res.first, res.second);
 
@@ -91,7 +91,7 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
     }
     y += get<1>(tuple)*angstrom;
 
-    z = position_catcher_z + get<2>(tuple)*angstrom + 0.5*um;
+    z = position_catcher_z + get<2>(tuple)*angstrom;
 
     for (int i = 0; i < isubev_len; ++i)
     {
@@ -109,18 +109,18 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
       {
         particle = part_positron;
       }
-      // else if (name.compare(0, 5, "gamma") == 0)
-      // {
-      //   particle = part_gamma;
-      // }
-      // else if (name.compare(0, 1, "p") == 0)
-      // {
-      //   particle = part_proton;
-      // }
-      // else if (name.compare(0, 5, "alpha") == 0 || name.compare(0, 3, "4He") == 0)
-      // {
-      //   particle = part_alpha;
-      // }
+      else if (name.compare(0, 5, "gamma") == 0)
+      {
+        particle = part_gamma;
+      }
+      else if (name.compare(0, 1, "p") == 0)
+      {
+        particle = part_proton;
+      }
+      else if (name.compare(0, 5, "alpha") == 0 || name.compare(0, 3, "4He") == 0)
+      {
+        particle = part_alpha;
+      }
       else
       {
         iopt = 0;
@@ -136,8 +136,8 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
       {
         gun.SetParticleDefinition(particle);
         gun.SetParticlePosition(G4ThreeVector(x, y, z));
-        gun.SetParticleMomentumDirection(G4ThreeVector(0,0,1));
-        gun.SetParticleEnergy(1*MeV);
+        gun.SetParticleMomentumDirection(dir);
+        gun.SetParticleEnergy(ekin);
         gun.GeneratePrimaryVertex(event);
 
         //////FOR TEST/////////

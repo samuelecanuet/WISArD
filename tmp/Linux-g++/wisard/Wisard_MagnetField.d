@@ -1,8 +1,8 @@
 ./tmp/Linux-g++/wisard/Wisard_MagnetField.o tmp/Linux-g++/wisard/Wisard_MagnetField.d: src/Wisard_MagnetField.cc \
  /usr/include/stdc-predef.h include/Wisard_MagnetField.hh \
- /usr/local/geant4.11.0.0/include/Geant4/globals.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4ios.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4Types.hh \
+ /softs/geant4.11.1.2/include/Geant4/globals.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ios.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Types.hh \
  /usr/include/c++/8/complex \
  /usr/include/c++/8/x86_64-redhat-linux/bits/c++config.h \
  /usr/include/bits/wordsize.h \
@@ -135,18 +135,17 @@
  /usr/include/c++/8/bits/basic_ios.tcc /usr/include/c++/8/ostream \
  /usr/include/c++/8/bits/ostream.tcc /usr/include/c++/8/bits/istream.tcc \
  /usr/include/c++/8/bits/sstream.tcc \
- /usr/local/geant4.11.0.0/include/Geant4/tls.hh \
- /usr/include/c++/8/iostream /usr/include/c++/8/algorithm \
- /usr/include/c++/8/utility /usr/include/c++/8/bits/stl_relops.h \
- /usr/include/c++/8/bits/stl_algo.h \
+ /softs/geant4.11.1.2/include/Geant4/tls.hh /usr/include/c++/8/iostream \
+ /usr/include/c++/8/algorithm /usr/include/c++/8/utility \
+ /usr/include/c++/8/bits/stl_relops.h /usr/include/c++/8/bits/stl_algo.h \
  /usr/include/c++/8/bits/algorithmfwd.h \
  /usr/include/c++/8/bits/stl_heap.h /usr/include/c++/8/bits/stl_tempbuf.h \
  /usr/include/c++/8/bits/stl_construct.h \
  /usr/include/c++/8/bits/uniform_int_dist.h \
- /usr/local/geant4.11.0.0/include/Geant4/G4String.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4String.hh \
  /usr/include/c++/8/cstring /usr/include/string.h /usr/include/strings.h \
- /usr/local/geant4.11.0.0/include/Geant4/G4String.icc \
- /usr/local/geant4.11.0.0/include/Geant4/templates.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4String.icc \
+ /softs/geant4.11.1.2/include/Geant4/templates.hh \
  /usr/include/c++/8/climits \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/limits.h \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/syslimits.h \
@@ -154,10 +153,9 @@
  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
  /usr/include/bits/posix2_lim.h /usr/include/bits/xopen_lim.h \
  /usr/include/bits/uio_lim.h \
- /usr/local/geant4.11.0.0/include/Geant4/G4Exception.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4VExceptionHandler.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4ExceptionSeverity.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4EnvironmentUtils.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Exception.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ExceptionSeverity.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EnvironmentUtils.hh \
  /usr/include/c++/8/iomanip /usr/include/c++/8/locale \
  /usr/include/c++/8/bits/locale_facets_nonio.h /usr/include/c++/8/ctime \
  /usr/include/c++/8/x86_64-redhat-linux/bits/time_members.h \
@@ -176,25 +174,24 @@
  /usr/include/c++/8/mutex /usr/include/c++/8/chrono \
  /usr/include/c++/8/ratio /usr/include/c++/8/bits/parse_numbers.h \
  /usr/include/c++/8/bits/std_mutex.h include/../Wisard_Global.hh \
- /usr/include/c++/8/stdlib.h \
- /usr/local/geant4.11.0.0/include/Geant4/G4ios.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4Colour.hh \
- /usr/local/geant4.11.0.0/include/Geant4/globals.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4ThreeVector.hh \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/ThreeVector.h \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/defs.h \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Vector/ThreeVector.icc \
- /usr/local/geant4.11.0.0/include/Geant4/G4ThreeVector.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4UnitsTable.hh \
+ /usr/include/c++/8/stdlib.h /softs/geant4.11.1.2/include/Geant4/G4ios.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Colour.hh \
+ /softs/geant4.11.1.2/include/Geant4/globals.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ThreeVector.hh \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/ThreeVector.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/defs.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/ThreeVector.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ThreeVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UnitsTable.hh \
  /usr/include/c++/8/vector /usr/include/c++/8/bits/stl_uninitialized.h \
  /usr/include/c++/8/bits/stl_vector.h \
  /usr/include/c++/8/bits/stl_bvector.h /usr/include/c++/8/bits/vector.tcc \
- /usr/local/geant4.11.0.0/include/Geant4/G4UnitsTable.icc \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Units/SystemOfUnits.h \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Units/defs.h \
- /usr/local/clhep/2.4.5.1/include/CLHEP/Units/PhysicalConstants.h \
- /usr/local/geant4.11.0.0/include/Geant4/G4MagneticField.hh \
- /usr/local/geant4.11.0.0/include/Geant4/G4Field.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UnitsTable.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Units/SystemOfUnits.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Units/defs.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Units/PhysicalConstants.h \
+ /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
  /usr/include/c++/8/fstream \
  /usr/include/c++/8/x86_64-redhat-linux/bits/basic_file.h \
  /usr/include/c++/8/x86_64-redhat-linux/bits/c++io.h \
