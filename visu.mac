@@ -14,7 +14,7 @@
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
-/input/Open_B MAGNETIC_FIELD_data/wisard_field_complete.txt
+/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /input/Open_SRIM SRIM_data/32Ar.txt
 /input/Open_CRADLE ../../../../../../mnt/hgfs/shared-2/data/32Ar_a1_b0_1.txt
 
@@ -24,8 +24,6 @@
 /Magnetic_Field 4 T
 /Threshoold_PlasticScintillator 100 keV
 #/Delta_Position_Threshoold_PlasticScintillator
-#/Resolution_SiPMs   0 keV #not yet implemented
-#/Resolution_SiDet   0 keV #not yet implemented
 
 #---------------------------------------------------------------
 #   Systematic Variables
@@ -34,7 +32,8 @@
 /Beam_Size 2 mm 300 um
 /Beam_Position 0 cm 0 cm
 /Catcher_Position_z 0 mm
-/CatcherMylar_Thickness 0.5 um
+/Catcher_Position catcher2 0 deg     position:[source / catcher2 / catcher1] #delata angle(degree)
+/Catcher_MylarDeltaThickness 0 um
 
 #---------------------------------------------------------------
 #   Generate Events
@@ -60,17 +59,17 @@
 /vis/drawVolume
 #
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi -90. 0.
+/vis/viewer/set/viewpointThetaPhi -135. -45.
 #
 # Specify zoom value:
-/vis/viewer/zoom 5.0
+/vis/viewer/zoom 5
 #
 # Specify style (surface or wireframe):
 /vis/viewer/set/style wireframe
 #/vis/ogl/set/transparency True
 #
 # Draw coordinate axes:
-/vis/scene/add/axes 0 0 0 28 cm
+/vis/scene/add/axes 0 0 0 10 cm
 #
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:

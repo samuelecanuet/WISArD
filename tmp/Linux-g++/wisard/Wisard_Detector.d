@@ -709,6 +709,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4GenericMessenger.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnyType.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnyMethod.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Trd.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Trd.icc \
  /softs/geant4.11.1.2/include/Geant4/G4SDManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4SDStructure.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSensitiveDetector.hh \

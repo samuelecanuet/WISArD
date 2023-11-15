@@ -25,16 +25,20 @@ class Wisard_RunManager : public G4RunManager
   // internal variables definition
 protected:
   Wisard_Sensor *wisard_sensor_PlasticScintillator;
-  Wisard_Sensor *wisard_sensor_CatcherMylar;
-  Wisard_Sensor *wisard_sensor_CatcherAl1;
-  Wisard_Sensor *wisard_sensor_CatcherAl2;
+  Wisard_Sensor *wisard_sensor_CatcherMylar_central;
+  Wisard_Sensor *wisard_sensor_CatcherAl1_central;
+  Wisard_Sensor *wisard_sensor_CatcherAl2_central;
+  Wisard_Sensor *wisard_sensor_CatcherMylar_side;
+  Wisard_Sensor *wisard_sensor_CatcherAl1_side;
+  Wisard_Sensor *wisard_sensor_CatcherAl2_side;
 
-  G4double x, y, z, px, py, pz, Initial_Kinetic_Energy, Catcher_Deposit_Energy, PlasticScintillator_Deposit_Energy, PlasticScintillator_Hit_Position_x, PlasticScintillator_Hit_Position_y, PlasticScintillator_Hit_Position_z, PlasticScintillator_Hit_Angle;
+  G4double x, y, z, px, py, pz, Initial_Kinetic_Energy, Catcher_Central_Deposit_Energy, Catcher_Side_Deposit_Energy, PlasticScintillator_Deposit_Energy, PlasticScintillator_Hit_Position_x, PlasticScintillator_Hit_Position_y, PlasticScintillator_Hit_Position_z, PlasticScintillator_Hit_Angle;
   std::vector<double> Silicon_Detector_Deposit_Energy, Silicon_Detector_Hit_Position_x, Silicon_Detector_Hit_Position_y, Silicon_Detector_Hit_Position_z, Silicon_Detector_Hit_Angle, Silicon_Detector_DL_Deposit_Energy;
-  std::string Name;
+  G4int Particle_PDG;
   std::vector<std::string> Silicon_Detector_Name;
+  std::vector<int> Silicon_Detector_Code;
   G4int Event_Number;
-  int count = 0;
+  G4int count = 0;
 
   ifstream input;
   string input_name;
@@ -44,9 +48,6 @@ protected:
 
   G4double threshoold;
   G4String filename;
-  G4double resolution_sipms;
-  G4double resolution_sidet;
-  G4double resolution_sidet_std;
 
   //------------------------------------------------------------
   // class functions definition
@@ -74,13 +75,26 @@ public:
       "3Down_Strip_1", "3Down_Strip_2", "3Down_Strip_3", "3Down_Strip_4", "3Down_Strip_5",
       "4Down_Strip_1", "4Down_Strip_2", "4Down_Strip_3", "4Down_Strip_4", "4Down_Strip_5"};
 
-  std::unordered_map<std::string, std::pair<Wisard_Sensor *, Wisard_Sensor *>> dic_detector;
+  int Detector_Code[nb_det] = {
+      11, 12, 13, 14, 15,
+      21, 22, 23, 24, 25, 
+      31, 32, 33, 34, 35,
+      41, 42, 43, 44, 45,
+      -11, -12, -13, -14, -15,
+      -21, -22, -23, -24, -25,
+      -31, -32, -33, -34, -35,
+      -41, -42, -43, -44, -45};
+      
+  std::unordered_map<int, std::pair<Wisard_Sensor *, Wisard_Sensor *>> dic_detector;
 
   Wisard_Sensor *GetWisardSensor_PlasticScintillator();
   Wisard_Sensor *GetWisardSensor_Detector(string name);
-  Wisard_Sensor *GetWisardSensor_CatcherMylar();
-  Wisard_Sensor *GetWisardSensor_CatcherAl1();
-  Wisard_Sensor *GetWisardSensor_CatcherAl2();
+  Wisard_Sensor *GetWisardSensor_CatcherMylar_central();
+  Wisard_Sensor *GetWisardSensor_CatcherAl1_central();
+  Wisard_Sensor *GetWisardSensor_CatcherAl2_central();
+  Wisard_Sensor *GetWisardSensor_CatcherMylar_side();
+  Wisard_Sensor *GetWisardSensor_CatcherAl1_side();
+  Wisard_Sensor *GetWisardSensor_CatcherAl2_side();
 
   //----------------------------------------------------------
   // Commands definitions
@@ -107,9 +121,6 @@ public:
   void SetOutputFilename(G4String fn);
   G4String GetOutputFilename();
 
-  void SetResolutionSIPMS(G4double value, G4double std);
-  void SetResolutionSIDET(G4double value, G4double std);
-
   //----------------------------------------------------------
   // Functions for events processing and output histogram
 
@@ -125,9 +136,9 @@ inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_Detector(string name)
 
   if (name.substr(name.length() - 2) == "dl")
   {
-    if (dic_detector.find(name.substr(0, name.length() - 3)) != dic_detector.end())
+    if (dic_detector.find( stoi( name.substr(0, name.length() - 3)) ) != dic_detector.end())
     {
-      return (dic_detector[name.substr(0, name.length() - 3)].second);
+      return (dic_detector[ stoi( name.substr(0, name.length() - 3))].second);
     }
     else
     {
@@ -138,9 +149,9 @@ inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_Detector(string name)
 
   else
   {
-    if (dic_detector.find(name) != dic_detector.end())
+    if (dic_detector.find( stoi( name)) != dic_detector.end())
     {
-      return (dic_detector[name].first);
+      return (dic_detector[ stoi( name)].first);
     }
     else
     {
@@ -151,9 +162,12 @@ inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_Detector(string name)
 }
 
 inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_PlasticScintillator() { return (wisard_sensor_PlasticScintillator); }
-inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherMylar() { return (wisard_sensor_CatcherMylar); }
-inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl1() { return (wisard_sensor_CatcherAl1); }
-inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl2() { return (wisard_sensor_CatcherAl2); }
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherMylar_central() { return (wisard_sensor_CatcherMylar_central); }
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl1_central() { return (wisard_sensor_CatcherAl1_central); }
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl2_central() { return (wisard_sensor_CatcherAl2_central); }
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherMylar_side() { return (wisard_sensor_CatcherMylar_side); }
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl1_side() { return (wisard_sensor_CatcherAl1_side); }
+inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl2_side() { return (wisard_sensor_CatcherAl2_side); }
 
 // Close the input file
 inline void Wisard_RunManager::CloseInput()
@@ -192,10 +206,4 @@ inline G4double Wisard_RunManager::GetThreshoold() { return (threshoold); }
 // OUPUT FILE
 inline void Wisard_RunManager::SetOutputFilename(G4String fn) { filename = fn; }
 inline G4String Wisard_RunManager::GetOutputFilename() { return filename; }
-
-// SiPMs RESOLUTION
-inline void Wisard_RunManager::SetResolutionSIPMS(G4double res, G4double res_std) { resolution_sipms = res; }
-
-// SiDET RESOLUTION
-inline void Wisard_RunManager::SetResolutionSIDET(G4double res, G4double res_std) { resolution_sidet = res; resolution_sidet_std = res_std;}
 #endif

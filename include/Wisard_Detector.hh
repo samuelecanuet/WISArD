@@ -81,9 +81,13 @@ public:
   ifstream inputB;
   string input_nameB;
 
+  void SetCatcherPosition_theta(G4String position, G4double angle);
+
   void SetCatcherPosition_z(G4double catcher_z);
   void SetCatcher_Thickness(G4double catcher_thickness);
   G4Tubs *MylarSource;
+  G4Tubs *MylarSource_central;
+  G4Tubs *MylarSource_side;
 
   G4Tubs *fSolidWorld;
   G4LogicalVolume *fLogicWorld;
@@ -148,11 +152,36 @@ public:
   G4Material *vide = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
   std::vector<std::string> directions = {"Up", "Down"};
   G4double thicknessMylarSource;
+
+  G4double thicknessMylarSource_central;
+  G4double thicknessMylarSource_side;
+
   G4double thicknessAlSource;
   G4VPhysicalVolume *Physics_AlSource1;
+  G4VPhysicalVolume *Physics_AlSource1_central;
+  G4VPhysicalVolume *Physics_AlSource1_side;
+
   G4VPhysicalVolume *Physics_MylarSource;
+  G4VPhysicalVolume *Physics_MylarSource_central;
+  G4VPhysicalVolume *Physics_MylarSource_side;
+
   G4VPhysicalVolume *Physics_AlSource2;
+  G4VPhysicalVolume *Physics_AlSource2_central;
+  G4VPhysicalVolume *Physics_AlSource2_side;
+
+  G4VPhysicalVolume *phys_centralPEEK_ring;
+  G4VPhysicalVolume *phys_sidePEEK_ring;
+
+  G4ThreeVector Support_Position;
+  G4ThreeVector Central_Hole_Position;
+  G4ThreeVector Side_Hole_Position;
+  G4ThreeVector Catcher_side_Position;
+  G4ThreeVector Catcher_central_Position;
+  G4double PEEK_thikness;
+  G4double SuppCatcher_thikness = 2*mm;
+
   G4VPhysicalVolume *phys_Supp_catcher;
+  G4VPhysicalVolume *phys_mother_catcher;
   G4double y_baseCatcher_Spessa_1;
   G4double y_baseCatcher_Sottile_1;
   G4double y_baseCatcher_2;
@@ -222,8 +251,17 @@ Wisard_Detector::Make_Sidet(int num, string dir, G4VisAttributes *strip_att, G4V
     Strips[i - 1] = MakeStrip(i, num, dir, Vide.first, strip_att, strip_mat);
     Strips[i + 4] = MakeDL(i, num, dir, Strips[i - 1].first, vide_att, strip_mat);
 
-    Strips[i - 1].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector((num + dir + "_Strip_" + i).Data()));
-    Strips[i + 4].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector((num + dir + "_Strip_" + i + "_dl").Data()));
+    string sign;
+    if (dir == "Down") 
+    {
+      sign = "-";
+    }
+    if (dir == "Up") 
+    {
+      sign = "";
+    }
+    Strips[i - 1].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector((sign + num+i).Data()));
+    Strips[i + 4].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector((sign + num+i + "_dl").Data()));
   }
 
   return std::make_tuple(Support, Vide, Strips[0], Strips[1], Strips[2], Strips[3], Strips[4], Strips[5], Strips[6], Strips[7], Strips[8], Strips[9]);
