@@ -13,8 +13,11 @@
 
 using namespace std;
 
+
+
 int main(int argc, char **argv)
 {
+    
 
     cout << argv[1] << endl;
 
@@ -37,20 +40,30 @@ int main(int argc, char **argv)
     ///////////// VARIABLES /////////////////
     /////////////////////////////////////////
     int nb_det = 40;
-    std::string Detector_Name[nb_det] = {
-        "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
-        "2Up_Strip_1", "2Up_Strip_2", "2Up_Strip_3", "2Up_Strip_4", "2Up_Strip_5",
-        "3Up_Strip_1", "3Up_Strip_2", "3Up_Strip_3", "3Up_Strip_4", "3Up_Strip_5",
-        "4Up_Strip_1", "4Up_Strip_2", "4Up_Strip_3", "4Up_Strip_4", "4Up_Strip_5",
-        "1Down_Strip_1", "1Down_Strip_2", "1Down_Strip_3", "1Down_Strip_4", "1Down_Strip_5",
-        "2Down_Strip_1", "2Down_Strip_2", "2Down_Strip_3", "2Down_Strip_4", "2Down_Strip_5",
-        "3Down_Strip_1", "3Down_Strip_2", "3Down_Strip_3", "3Down_Strip_4", "3Down_Strip_5",
-        "4Down_Strip_1", "4Down_Strip_2", "4Down_Strip_3", "4Down_Strip_4", "4Down_Strip_5"};
+    vector<string> Detector_Name = {
+      "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
+      "2Up_Strip_1", "2Up_Strip_2", "2Up_Strip_3", "2Up_Strip_4", "2Up_Strip_5",
+      "3Up_Strip_1", "3Up_Strip_2", "3Up_Strip_3", "3Up_Strip_4", "3Up_Strip_5",
+      "4Up_Strip_1", "4Up_Strip_2", "4Up_Strip_3", "4Up_Strip_4", "4Up_Strip_5",
+      "1Down_Strip_1", "1Down_Strip_2", "1Down_Strip_3", "1Down_Strip_4", "1Down_Strip_5",
+      "2Down_Strip_1", "2Down_Strip_2", "2Down_Strip_3", "2Down_Strip_4", "2Down_Strip_5",
+      "3Down_Strip_1", "3Down_Strip_2", "3Down_Strip_3", "3Down_Strip_4", "3Down_Strip_5",
+      "4Down_Strip_1", "4Down_Strip_2", "4Down_Strip_3", "4Down_Strip_4", "4Down_Strip_5"};
+
+  vector<int> Detector_Code = {
+      11, 12, 13, 14, 15,
+      21, 22, 23, 24, 25, 
+      31, 32, 33, 34, 35,
+      41, 42, 43, 44, 45,
+      -11, -12, -13, -14, -15,
+      -21, -22, -23, -24, -25,
+      -31, -32, -33, -34, -35,
+      -41, -42, -43, -44, -45};
 
     double threshoold_SiPMs;
     if (strstr(argv[1], "Pl") != nullptr)
     {
-        threshoold_SiPMs = 10.;
+        threshoold_SiPMs = 100.;
     }
     else
     {
@@ -135,7 +148,7 @@ int main(int argc, char **argv)
     ///////////// TREE READER ///////////////
     TTreeReader Reader("Tree", file);
     TTreeReaderValue<int> EventNumber(Reader, "Event_Number");
-    TTreeReaderValue<string> Particle_Name(Reader, "Particle_Name");
+    TTreeReaderValue<int> Particle_PDG(Reader, "Particle_PDG");
     TTreeReaderValue<double> x(Reader, "x");
     TTreeReaderValue<double> y(Reader, "y");
     TTreeReaderValue<double> z(Reader, "z");
@@ -143,7 +156,7 @@ int main(int argc, char **argv)
     TTreeReaderValue<double> py(Reader, "py");
     TTreeReaderValue<double> pz(Reader, "pz");
     TTreeReaderValue<double> E0(Reader, "Initial_Kinetic_Energy");
-    TTreeReaderValue<double> Catcher_Edep(Reader, "Catcher_Deposit_Energy");
+    TTreeReaderValue<double> Catcher_Edep(Reader, "Catcher_Central_Deposit_Energy");
     TTreeReaderValue<double> Pl_Edep(Reader, "PlasticScintillator_Deposit_Energy");
     TTreeReaderValue<double> Pl_Hit_x(Reader, "PlasticScintillator_Hit_Position_x");
     TTreeReaderValue<double> Pl_Hit_y(Reader, "PlasticScintillator_Hit_Position_y");
@@ -154,10 +167,11 @@ int main(int argc, char **argv)
     TTreeReaderValue<vector<double>> Si_Hit_y(Reader, "Silicon_Detector_Hit_Position_y");
     TTreeReaderValue<vector<double>> Si_Hit_z(Reader, "Silicon_Detector_Hit_Position_z");
     TTreeReaderValue<vector<double>> Si_Hit_Angle(Reader, "Silicon_Detector_Hit_Angle");
-    TTreeReaderValue<vector<string>> Si_Hit_Name(Reader, "Silicon_Detector_Name");
+    TTreeReaderValue<vector<int>> Si_Hit_Code(Reader, "Silicon_Detector_Code");
     TTreeReaderValue<vector<double>> Si_DL_Edep(Reader, "Silicon_Detector_DL_Deposit_Energy");
     int count = 0;
     int j = 0;
+    double Trigger=0;
     while (Reader.Next())
     {
         //PROGRESS BAR
@@ -190,7 +204,7 @@ int main(int argc, char **argv)
         }
 
         // PROTON
-        if (*Particle_Name == "proton")
+        if (*Particle_PDG == 2212)
         {
             double proton_edep = *Pl_Edep;
             H1D_px_proton.Fill(*px);
@@ -226,7 +240,7 @@ int main(int argc, char **argv)
         }
 
         // POSITRON
-        if (*Particle_Name == "e+")
+        if (*Particle_PDG == -11)
         {
             H1D_px_positron.Fill(*px);
             H1D_py_positron.Fill(*py);
@@ -254,35 +268,40 @@ int main(int argc, char **argv)
         }
 
         // DETECTION
-        double Trigger;
-        if (*EventNumber == counter)
-        {
-            if (*Particle_Name == "e+")
+        //double Trigger=0;
+        // if (*EventNumber == counter)
+        // {
+            if (*Particle_PDG == -11)
             {
                 Trigger = *Pl_Edep;
             }
-        }
-        else
-        {
-            Trigger = 0.;
-            counter++;
-            if (*Particle_Name == "e+")
-            {
-                Trigger = *Pl_Edep;
-            }
-        }
+            
+        // /}
+        // else
+        // {
+        //     Trigger = 0.;
+        //     counter++;
+        //     if (*Particle_Name == "e+")
+        //     {
+        //         Trigger = *Pl_Edep;
+        //     }
+        // }
 
         for (size_t hit = 0; hit < (*Si_Edep).size(); hit++)
         {
             if ((*Si_Edep)[hit] != 0.)
             {
+                auto it = std::find(Detector_Code.begin(), Detector_Code.end(), (*Si_Hit_Code)[hit]);
+                int index = std::distance(Detector_Code.begin(), it);
+                string Name = Detector_Name[index];
+                cout<<Name<<endl;
                 if (Trigger >= threshoold_SiPMs)
                 {
-                    H1D_coinc[((*Si_Hit_Name)[hit] + "coinc").c_str()]->Fill((*Si_Edep)[hit]);
+                    H1D_coinc[(Name + "coinc").c_str()]->Fill((*Si_Edep)[hit]);
                 }
                 else
                 {
-                    H1D_nocoinc[((*Si_Hit_Name)[hit] + "no_coinc").c_str()]->Fill((*Si_Edep)[hit]);
+                    H1D_nocoinc[(Name + "no_coinc").c_str()]->Fill((*Si_Edep)[hit]);
                 }
             }
         }

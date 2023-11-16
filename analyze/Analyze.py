@@ -109,7 +109,7 @@ class ROOT_DISPLAY:
         E_coinc, RMS_coinc, N_coinc = self.Infos(hist_coinc, maxi)
         E_nocoinc, RMS_nocoinc, N_nocoinc = self.Infos(hist_nocoinc, maxi)
         E_single, RMS_single, N_single = self.Infos(single, maxi)
-        shift = abs((E_coinc-E_nocoinc)*(1-N_nocoinc/N_single))
+        shift = abs((E_coinc-E_nocoinc)*(1-N_coinc/N_single))
         sigma_shift = np.sqrt((1-N_coinc/N_single)**2*((RMS_coinc/sqrt(N_coinc))**2+(RMS_nocoinc/sqrt(N_nocoinc))**2) + ((abs(E_coinc-E_nocoinc))*(N_nocoinc/N_single**2))**2*(N_coinc+N_coinc**2/N_nocoinc))
         return shift, sigma_shift
     
@@ -207,7 +207,7 @@ class ROOT_DISPLAY:
         if ylabel   == None: ylabel = Hist.GetYaxis().GetTitle()
         if normalized==True: ylabel = "Normalized" + ylabel
         if xlim     == None: xlim = ( bin_centers_x.min(), bin_centers_x.max() )
-        if ylim     == None and hist_data.max()*1.1 > axs.get_ylim()[1] : ylim = ( 0, hist_data.max()*1.1 )
+        if ylim     == None and hist_data.max()*1.1 > ax.get_ylim()[1] : ylim = ( 0, hist_data.max()*1.1 )
         if xtick    != None: ax.set_xticks(np.linspace(xlim[0], xlim[1], xtick))
         if ytick    != None: ax.set_yticks(np.linspace(ylim[0], ylim[1], ytick))
         if xlog     != None: ax.set_xscale('log')
@@ -225,6 +225,10 @@ class ROOT_DISPLAY:
         return ax
     
 if __name__ == "__main__":
+
+    file = TFile(f"../../../../../../../mnt/hgfs/shared-2/likev2.1/32Ar_a1_b0.root")
+    analyse = ROOT_DISPLAY(file)
+    print(analyse.GetEshiftDictionnary())
     
     # resultat = subprocess.run("g++ -o tree_reader tree_reader.cpp `root-config --cflags --libs`", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 

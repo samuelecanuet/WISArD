@@ -170,6 +170,6 @@ inline void Wisard_Generator::SetBeamPosition(G4double x, G4double y)
 
 inline void Wisard_Generator::SetCatcherPosition_z(G4double catcher_z)
 {
-    position_catcher_z = catcher_z;
+    position_catcher_z = catcher_z-0.5*mm;   ///0.5mm for the start of the aluminuin layer in the support
 }
 #endif

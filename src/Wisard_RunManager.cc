@@ -31,11 +31,14 @@ Wisard_RunManager::Wisard_RunManager()
   wisard_sensor_PlasticScintillator = new Wisard_Sensor;
   for (int i = 0; i < nb_det; i++)
   {
-    dic_detector[Detector_Name[i]] = std::make_pair(new Wisard_Sensor, new Wisard_Sensor);
+    dic_detector[Detector_Code[i]] = std::make_pair(new Wisard_Sensor, new Wisard_Sensor);
   }
-  wisard_sensor_CatcherMylar = new Wisard_Sensor;
-  wisard_sensor_CatcherAl1 = new Wisard_Sensor;
-  wisard_sensor_CatcherAl2 = new Wisard_Sensor;
+  wisard_sensor_CatcherMylar_central = new Wisard_Sensor;
+  wisard_sensor_CatcherAl1_central = new Wisard_Sensor;
+  wisard_sensor_CatcherAl2_central = new Wisard_Sensor;
+  wisard_sensor_CatcherMylar_side = new Wisard_Sensor;
+  wisard_sensor_CatcherAl1_side = new Wisard_Sensor;
+  wisard_sensor_CatcherAl2_side = new Wisard_Sensor;
   ///////////////////////////////////////////////////////////////////
 
   ////////////// Construct strips coinc/anticoinc HISTOGRAMS ////////
@@ -59,12 +62,15 @@ Wisard_RunManager::~Wisard_RunManager()
   delete wisard_sensor_PlasticScintillator;
   for (int i = 0; i < nb_det; i++)
   {
-    delete dic_detector[Detector_Name[i]].first;
-    delete dic_detector[Detector_Name[i]].second;
+    delete dic_detector[Detector_Code[i]].first;
+    delete dic_detector[Detector_Code[i]].second;
   }
-  delete wisard_sensor_CatcherMylar;
-  delete wisard_sensor_CatcherAl1;
-  delete wisard_sensor_CatcherAl2;
+  delete wisard_sensor_CatcherMylar_central;
+  delete wisard_sensor_CatcherAl1_central;
+  delete wisard_sensor_CatcherAl2_central;
+  delete wisard_sensor_CatcherMylar_side;
+  delete wisard_sensor_CatcherAl1_side;
+  delete wisard_sensor_CatcherAl2_side;
 
   CloseInput();
 }
@@ -94,7 +100,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     ////////////// Construct the TREE ////////////////////////////////
     Tree = new TTree("Tree", "Informations");
     Tree->Branch("Event_Number", &Event_Number, "Event_Number/I");
-    Tree->Branch("Particle_Name", &Name);
+    Tree->Branch("Particle_PDG", &Particle_PDG, "Particle_PDG/I");
     Tree->Branch("x", &x, "x/D");
     Tree->Branch("y", &y, "y/D");
     Tree->Branch("z", &z, "z/D");
@@ -102,7 +108,8 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Tree->Branch("py", &py, "py/D");
     Tree->Branch("pz", &pz, "pz/D");
     Tree->Branch("Initial_Kinetic_Energy", &Initial_Kinetic_Energy, "Initial_Kinetic_Energy/D");
-    Tree->Branch("Catcher_Deposit_Energy", &Catcher_Deposit_Energy, "Catcher_Deposit_Energy/D");
+    Tree->Branch("Catcher_Central_Deposit_Energy", &Catcher_Central_Deposit_Energy, "Catcher_Central_Deposit_Energy/D");
+    Tree->Branch("Catcher_Side_Deposit_Energy", &Catcher_Side_Deposit_Energy, "Catcher_Side_Deposit_Energy/D");
     Tree->Branch("PlasticScintillator_Deposit_Energy", &PlasticScintillator_Deposit_Energy, "PlasticScintillator_Deposit_Energy/D");
     Tree->Branch("PlasticScintillator_Hit_Position_x", &PlasticScintillator_Hit_Position_x, "PlasticScintillator_Hit_Position_x/D");
     Tree->Branch("PlasticScintillator_Hit_Position_y", &PlasticScintillator_Hit_Position_y, "PlasticScintillator_Hit_Position_y/D");
@@ -113,7 +120,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Tree->Branch("Silicon_Detector_Hit_Position_y", &Silicon_Detector_Hit_Position_y);
     Tree->Branch("Silicon_Detector_Hit_Position_z", &Silicon_Detector_Hit_Position_z);
     Tree->Branch("Silicon_Detector_Hit_Angle", &Silicon_Detector_Hit_Angle);
-    Tree->Branch("Silicon_Detector_Name", &Silicon_Detector_Name);
+    Tree->Branch("Silicon_Detector_Code", &Silicon_Detector_Code);
     Tree->Branch("Silicon_Detector_DL_Deposit_Energy", &Silicon_Detector_DL_Deposit_Energy);
     ///////////////////////////////////////////////////////////////////
   }
@@ -131,15 +138,16 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       G4ThreeVector Momentum = Primary->GetMomentumDirection();
 
       Event_Number = event->GetEventID();
-      Name = Primary->GetG4code()->GetParticleName();
+      Particle_PDG = Primary->GetG4code()->GetPDGEncoding();
       x = PrimaryVertex->GetX0() / um;
       y = PrimaryVertex->GetY0() / um;
-      z = PrimaryVertex->GetZ0() / nm;
+      z = (0.5*mm+PrimaryVertex->GetZ0()) / nm; ///0.5mm for the start of the aluminuin layer in the support
       px = Momentum.x();
       py = Momentum.y();
       pz = Momentum.z();
       Initial_Kinetic_Energy = Primary->GetKineticEnergy() / keV;
-      Catcher_Deposit_Energy = wisard_sensor_CatcherMylar->GetDictionnary()[part].DepositEnergy + wisard_sensor_CatcherAl1->GetDictionnary()[part].DepositEnergy + wisard_sensor_CatcherAl2->GetDictionnary()[part].DepositEnergy;
+      Catcher_Central_Deposit_Energy = wisard_sensor_CatcherMylar_central->GetDictionnary()[part].DepositEnergy + wisard_sensor_CatcherAl1_central->GetDictionnary()[part].DepositEnergy + wisard_sensor_CatcherAl2_central->GetDictionnary()[part].DepositEnergy;
+      Catcher_Side_Deposit_Energy = wisard_sensor_CatcherMylar_side->GetDictionnary()[part].DepositEnergy + wisard_sensor_CatcherAl1_side->GetDictionnary()[part].DepositEnergy + wisard_sensor_CatcherAl2_side->GetDictionnary()[part].DepositEnergy;
 
       PrimaryInfo PlasticScintillator = wisard_sensor_PlasticScintillator->GetDictionnary()[part];
       PlasticScintillator_Deposit_Energy = PlasticScintillator.DepositEnergy;
@@ -150,12 +158,12 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
 
       for (int i = 0; i < nb_det; i++)
       {
-        PrimaryInfo dic_det = dic_detector[Detector_Name[i]].first->GetDictionnary()[part];
-        PrimaryInfo dic_dl = dic_detector[Detector_Name[i]].second->GetDictionnary()[part];
-        if (dic_detector[Detector_Name[i]].first->GetDictionnary()[part].DepositEnergy != 0)
+        PrimaryInfo dic_det = dic_detector[Detector_Code[i]].first->GetDictionnary()[part];
+        PrimaryInfo dic_dl = dic_detector[Detector_Code[i]].second->GetDictionnary()[part];
+        if (dic_detector[Detector_Code[i]].first->GetDictionnary()[part].DepositEnergy != 0)
         {
-          Silicon_Detector_Name.push_back(Detector_Name[i]);
-          Silicon_Detector_Deposit_Energy.push_back(max(dic_det.DepositEnergy+G4RandGauss::shoot(0.0, resolution_sidet/keV), 0.0));
+          Silicon_Detector_Code.push_back(Detector_Code[i]);
+          Silicon_Detector_Deposit_Energy.push_back(dic_det.DepositEnergy);
           Silicon_Detector_Hit_Position_x.push_back(dic_det.HitPosition.x());
           Silicon_Detector_Hit_Position_y.push_back(dic_det.HitPosition.y());
           Silicon_Detector_Hit_Position_z.push_back(dic_det.HitPosition.z());
@@ -175,7 +183,8 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     py = 0;
     pz = 0;
     Initial_Kinetic_Energy = 0;
-    Catcher_Deposit_Energy = 0;
+    Catcher_Central_Deposit_Energy = 0;
+    Catcher_Side_Deposit_Energy = 0;
     PlasticScintillator_Deposit_Energy = 0;
     PlasticScintillator_Hit_Position_x = 0;
     PlasticScintillator_Hit_Position_x = 0;
@@ -186,7 +195,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Silicon_Detector_Hit_Position_y.clear();
     Silicon_Detector_Hit_Position_z.clear();
     Silicon_Detector_Hit_Angle.clear();
-    Silicon_Detector_Name.clear();
+    Silicon_Detector_Code.clear();
     Silicon_Detector_DL_Deposit_Energy.clear();
     ////////////////////////////////////////////////////////
   }
@@ -215,21 +224,21 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   {
     for (int i = 0; i < nb_det; i++)
     {
-      if (dic_detector[Detector_Name[i]].first->GetDictionnary()[index_delayed].DepositEnergy != 0.)
+      if (dic_detector[Detector_Code[i]].first->GetDictionnary()[index_delayed].DepositEnergy != 0.)
       {
         if (wisard_sensor_PlasticScintillator->GetDictionnary()[index_beta].DepositEnergy >= GetThreshoold()/keV)
         {
-          histos_coinc[i]->Fill(dic_detector[Detector_Name[i]].first->GetDictionnary()[index_delayed].DepositEnergy);
+          histos_coinc[i]->Fill(dic_detector[Detector_Code[i]].first->GetDictionnary()[index_delayed].DepositEnergy);
         }
         else
         {
-          histos_nocoinc[i]->Fill(dic_detector[Detector_Name[i]].first->GetDictionnary()[index_delayed].DepositEnergy);
+          histos_nocoinc[i]->Fill(dic_detector[Detector_Code[i]].first->GetDictionnary()[index_delayed].DepositEnergy);
         }
       }
     }
   }
 
-  int divi = 10000;
+  int divi = 100;
 
   ///// Writing all trees ///////////////////////////////////////////
   if (count % divi == 0)
@@ -247,12 +256,15 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   wisard_sensor_PlasticScintillator->ResetDictionnary();
   for (int i = 0; i < nb_det; i++)
   {
-    dic_detector[Detector_Name[i]].first->ResetDictionnary();
-    dic_detector[Detector_Name[i]].second->ResetDictionnary();
+    dic_detector[Detector_Code[i]].first->ResetDictionnary();
+    dic_detector[Detector_Code[i]].second->ResetDictionnary();
   }
-  wisard_sensor_CatcherMylar->ResetDictionnary();
-  wisard_sensor_CatcherAl1->ResetDictionnary();
-  wisard_sensor_CatcherAl2->ResetDictionnary();
+  wisard_sensor_CatcherMylar_central->ResetDictionnary();
+  wisard_sensor_CatcherAl1_central->ResetDictionnary();
+  wisard_sensor_CatcherAl2_central->ResetDictionnary();
+  wisard_sensor_CatcherMylar_side->ResetDictionnary();
+  wisard_sensor_CatcherAl1_side->ResetDictionnary();
+  wisard_sensor_CatcherAl2_side->ResetDictionnary();
   ///////////////////////////////////////////////////////////////////
 }
 

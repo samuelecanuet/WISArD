@@ -10,14 +10,17 @@
 using namespace std;
 
 class WisardMagnetField
+    // #ifndef STANDALONE
     : public G4MagneticField
+// #endif
 {
-  
-public:
-  WisardMagnetField(const string filename, G4double value);
-  std::vector<double> dataArray[13];
+
   int nz;
   double max, min;
+  double xField[1001], yField[1001], zField[1001], zval[1001];
+
+public:
+  WisardMagnetField(const string filename, G4double value);
 
   void GetFieldValue(const double Point[3],
                      double *Bfield) const;

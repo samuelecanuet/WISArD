@@ -64,7 +64,7 @@ int main(int argc, char **argv)
             ///////////// TREE READER ///////////////
             TTreeReader Reader("Tree", file);
             TTreeReaderValue<int> EventNumber(Reader, "Event_Number");
-            TTreeReaderValue<string> Particle_Name(Reader, "Particle_Name");
+            TTreeReaderValue<string> Particle_PDG(Reader, "Particle_PDG");
             TTreeReaderValue<double> x(Reader, "x");
             TTreeReaderValue<double> y(Reader, "y");
             TTreeReaderValue<double> z(Reader, "z");
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
             TTreeReaderValue<vector<double>> Si_Hit_y(Reader, "Silicon_Detector_Hit_Position_y");
             TTreeReaderValue<vector<double>> Si_Hit_z(Reader, "Silicon_Detector_Hit_Position_z");
             TTreeReaderValue<vector<double>> Si_Hit_Angle(Reader, "Silicon_Detector_Hit_Angle");
-            TTreeReaderValue<vector<string>> Si_Hit_Name(Reader, "Silicon_Detector_Name");
+            TTreeReaderValue<vector<int>> Si_Hit_Name(Reader, "Silicon_Detector_Name");
             TTreeReaderValue<vector<double>> Si_DL_Edep(Reader, "Silicon_Detector_DL_Deposit_Energy");
             int j = 0;
 
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
                 cout.flush();
 
                 // POSITRON
-                if (*Particle_Name == "e+")
+                if (*Particle_PDG == -11)
                 {
                     H1D_E0_positron.Fill(*E0);
                     H1D_pz_positron.Fill(*pz);

@@ -9,7 +9,7 @@
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
-/input/Open_B MAGNETIC_FIELD_data/wisard_field_complete.txt
+/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /input/Open_SRIM SRIM_data/32Ar.txt
 /input/Open_CRADLE ../../../../../../mnt/hgfs/shared-2/data/32Ar_a1_b0_1.txt
 
@@ -19,8 +19,6 @@
 /Magnetic_Field 4 T
 /Threshoold_PlasticScintillator 100 keV
 #/Delta_Position_PlasticScintillator
-#/Resolution_SiPMs   0 keV #not yet implemented
-/Resolution_SiDet   0 keV 0 keV
 
 #---------------------------------------------------------------
 #   Systematic Variables
@@ -29,7 +27,8 @@
 /Beam_Size 2 mm 300 um
 /Beam_Position 0 cm 0 cm
 /Catcher_Position_z 0 mm
-/CatcherMylar_Thickness 0.5 um
+/Catcher_Position catcher2 0 deg     position:[source / catcher2 / catcher1] #delata angle(degree)
+/Catcher_MylarDeltaThickness 0 um
 
 #---------------------------------------------------------------
 #   Generate Events

@@ -71,6 +71,7 @@
         "scoped_allocator": "cpp",
         "shared_mutex": "cpp",
         "typeindex": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "group2tree_XF_MCP_ADC_cor.C": "cpp"
     }
 }

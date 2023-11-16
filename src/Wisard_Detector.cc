@@ -17,6 +17,8 @@
 #include "G4NystromRK4.hh"
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4GenericMessenger.hh"
+#include "G4Trd.hh"
+#include "G4UniformMagField.hh"
 
 // #include "Wisard_Messenger.hh"
 
@@ -30,7 +32,6 @@
 
 Wisard_Detector::Wisard_Detector(Wisard_RunManager *mgr)
 {
-
   cout << "Constructor Wisard_Detectors" << endl;
   manager_ptr = mgr;
 
@@ -125,7 +126,9 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   if (!fieldIsInitialized)
   {
     G4FieldManager *pFieldMgr;
-    G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004);
+    //G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
+
+    G4MagneticField* WisardMagField = new G4UniformMagField(G4ThreeVector(0.,0.,4.*tesla));
     pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
     G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
     pChordFinder->SetDeltaChord(1 * um);
@@ -146,7 +149,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //--------------------------------------------------------------------------------------
   G4double innerRadius = 0 * cm;
   G4double outerRadius = 6.5 * cm; // réduit au raypon du Bore pour opti6.5
-  G4double length = 120. * cm;      // réduit pour opti21cm
+  G4double length = 21. * cm;      // réduit pour opti21cm
   G4double theta1 = 90.0 * deg;
   G4double phi = 360.0 * deg;
 
@@ -196,7 +199,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // - make the bore volume "visible"
   G4VisAttributes *visAtt_WITCHMagnet = new G4VisAttributes(G4Colour(0.5, 0.7, 0.7, 0.2));
-  visAtt_WITCHMagnet->SetVisibility(true);
+  visAtt_WITCHMagnet->SetVisibility(false);
   visAtt_WITCHMagnet->SetForceWireframe(false);
   visAtt_WITCHMagnet->SetForceSolid(true);
   wisard_logic->SetVisAttributes(visAtt_WITCHMagnet);
@@ -229,7 +232,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // - make the bore volume "visible"
   G4VisAttributes *visAttr_Bore = new G4VisAttributes(G4Colour(0.4, 0.4, 0.4, 0.2));
-  visAttr_Bore->SetVisibility(true);
+  visAttr_Bore->SetVisibility(false);
   visAttr_Bore->SetForceWireframe(false);
   visAttr_Bore->SetForceSolid(true);
   bore_logic->SetVisAttributes(visAttr_Bore);
@@ -264,7 +267,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                           false); // copy number
 
   G4VisAttributes *visAtt_MYCILINDER = new G4VisAttributes(G4Colour(1, 1, 0)); // white
-  visAtt_MYCILINDER->SetVisibility(true);
+  visAtt_MYCILINDER->SetVisibility(false);
   fLogicMYCILINDER->SetVisAttributes(visAtt_MYCILINDER);
 
   if (fPhysiMYCILINDER == NULL)
@@ -294,7 +297,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                              false); // copy number
 
   G4VisAttributes *visAtt_MYCILINDER_B1 = new G4VisAttributes(G4Colour(1, 1, 0)); // white
-  visAtt_MYCILINDER_B1->SetVisibility(true);
+  visAtt_MYCILINDER_B1->SetVisibility(false);
   fLogicMYCILINDER_B1->SetVisAttributes(visAtt_MYCILINDER_B1);
 
   if (fPhysiMYCILINDER_B1 == NULL)
@@ -318,7 +321,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                              false); // copy number
 
   G4VisAttributes *visAtt_MYCILINDER_B2 = new G4VisAttributes(G4Colour(1, 1, 0)); // white
-  visAtt_MYCILINDER_B2->SetVisibility(true);
+  visAtt_MYCILINDER_B2->SetVisibility(false);
   fLogicMYCILINDER_B2->SetVisAttributes(visAtt_MYCILINDER_B2);
 
   if (fPhysiMYCILINDER_B2 == NULL)
@@ -483,206 +486,221 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   //      if(Physics_MylarSource == NULL) {}
 
-  /////////////////////////////////////////////////////////////
-  ///////////////////////NEW SUPPORT CATCHER//////////////////
-  /////////////////////////////////////////////////////////////
+  // SUPPORT CATCHER 2023 //
+  ///////////////ELEMENTS//////////////
+  G4Material *Al = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
 
-  G4double x_baseCatcher_Spessa_1 = 14. * mm;
-  y_baseCatcher_Spessa_1 = 16. * mm;
-  thickness_baseCatcher_Spessa_1 = 12. * mm;
-  G4double radius_buco_baseSpessa = 5. * mm;
-  G4double pos_buco_baseSpessa = 0.8963 * mm;
-  G4double x_baseCatcher_Sottile_1 = x_baseCatcher_Spessa_1;
-  y_baseCatcher_Sottile_1 = 24. * mm;
-  thickness_baseCatcher_Sottile_1 = 2. * mm;
-  G4double x_baseCatcher_2 = 60. * mm;
-  y_baseCatcher_2 = 32. * mm;
-  G4double z_baseCatcher_2 = thickness_baseCatcher_Sottile_1; // NB: tutte le misure precedenti sono state prese direttamente dai disegni tecnici di M. Roche
-  G4double radius_int_bucoCatcher = 7.5 * mm;                 /// a revoir
-  G4double radius_bucoCatcher = 9 * mm;
-  thickness_supp_catcher = 1.5 * mm;
-  G4double radius_bucoSource = (20. / 2) * mm;
-  // G4double thickness_supp_radSource        = 3.*mm;
-  // G4double altezza_supp_radSource          = 0.5*mm; //Da Verificare
-  x_pos_bucoCatcher = (25.88 / 2) * mm;
-  // G4double x_pos_bucoSource                = x_pos_bucoCatcher;
-  G4double x_y_triangularCut_baseSpessa = 5. * mm;
-  G4double x_y_triangularCut_baseSottile = 8. * mm;
-  G4Material *materialSupport_Catcher_source = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+  // MOTHER CATCHER
+  G4double Radius_Rotation = 50 * mm;
+  G4Tubs *mother_catcher = new G4Tubs("mother", 0., outerRadius * 5, 5 * mm, 0., 360. * deg);
+  G4LogicalVolume *logic_mother_catcher = new G4LogicalVolume(mother_catcher, vide, "logic_mother_catcher");
+  phys_mother_catcher = new G4PVPlacement(0, // no rotation
+                                          G4ThreeVector(0, -Radius_Rotation, 0),
+                                          logic_mother_catcher, // its fLogical volume
+                                          "mothercatcher",      // its name
+                                          fLogicWorld,          // its mother  volume
+                                          false,                // no boolean operation
+                                          0);
 
-  G4RotationMatrix *myRotation_trSupp = new G4RotationMatrix();
-  myRotation_trSupp->rotateX(0. * deg);
-  myRotation_trSupp->rotateY(180. * deg);
-  myRotation_trSupp->rotateZ(0. * rad);
+  G4double SuppCatcher_Tige_width = 20 * mm;
+  G4double SuppCatcher_Tige_height = 31.2 * mm;
+  G4double SuppCatcher_Catcher_radius_inner = 7.5 * mm;
+  G4double SuppCatcher_Catcher_radius_outer = 9 * mm;
+  G4double SuppCatcher_Source_radius_inner = 4.5 * mm;
+  G4double SuppCatcher_Source_radius_outer = 5.5 * mm;
+  PEEK_thikness = 1.5 * mm;
 
-  G4RotationMatrix *myRotation_trSupp2 = new G4RotationMatrix();
-  myRotation_trSupp2->rotateX(180. * deg);
-  myRotation_trSupp2->rotateY(180. * deg);
-  myRotation_trSupp2->rotateZ(0. * rad);
+  /// Main Plate
+  double L1 = 30 * mm;
+  double L2 = 31 * mm;
+  double H = 30 * mm;
+  double c = 10 * mm;
+  double l = 20 * mm;
+  double h = 9 * mm;
 
-  G4RotationMatrix *myRotation_trSupp3 = new G4RotationMatrix();
-  myRotation_trSupp3->rotateX(180. * deg);
-  myRotation_trSupp3->rotateY(0. * deg);
-  myRotation_trSupp3->rotateZ(0. * rad);
+  double SuppCatcher_Plate_height = H;
 
-  G4Box *SuppCatcher_baseSpessa_senzaBuco = new G4Box("SuppCatcher_baseSpessa_senzaBuco", x_baseCatcher_Spessa_1 / 2, y_baseCatcher_Spessa_1 / 2, thickness_baseCatcher_Spessa_1 / 2);
-  G4Tubs *bucoBaseSpessa = new G4Tubs("bucoBaseSpessa", 0., radius_buco_baseSpessa, 2 * thickness_baseCatcher_Spessa_1, 0., 360 * deg);
-  G4VSolid *SuppCatcher_baseSpessa_intera = new G4SubtractionSolid("SuppCatcher_baseSpessa_intera", SuppCatcher_baseSpessa_senzaBuco, bucoBaseSpessa, 0, G4ThreeVector(0., -0.2962 * mm, 0.));
+  std::vector<G4TwoVector> polygon(9);
 
-  const G4int nsect = 3;
-  std::vector<G4TwoVector> polygon(nsect);
-  polygon[0].set(x_y_triangularCut_baseSpessa, 0.);
-  polygon[1].set(0., 0.);
-  polygon[2].set(x_y_triangularCut_baseSpessa, x_y_triangularCut_baseSpessa);
+  polygon[0].set(-L2 + c, -H / 2);
+  polygon[1].set(-L2, -H / 2 + c);
+  polygon[2].set(-L2, -H / 2 + h + c);
+  polygon[3].set(-L2 + l, -H / 2 + h + c);
+  polygon[4].set(-L2 + l, H / 2);
+  polygon[5].set(L1 - c, H / 2);
+  polygon[6].set(L1, H / 2 - c);
+  polygon[7].set(L1, -H / 2 + c);
+  polygon[8].set(L1 - c, -H / 2);
 
   G4TwoVector offsetA(0, 0), offsetB(0, 0);
   G4double scaleA = 1, scaleB = 1;
-  G4VSolid *triangularCut_baseSpessa = new G4ExtrudedSolid("triangularCut_baseSpessa", polygon, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
+  G4VSolid *SuppCatcher_Plate = new G4ExtrudedSolid("Extruded", polygon, SuppCatcher_thikness / 2, offsetA, scaleA, offsetB, scaleB);
 
-  G4VSolid *SuppCatcher_baseSpessa_parziale = new G4SubtractionSolid("SuppCatcher_baseSpessa_parziale", SuppCatcher_baseSpessa_intera, triangularCut_baseSpessa, 0, G4ThreeVector(x_baseCatcher_Spessa_1 / 2 - x_y_triangularCut_baseSpessa + 0.5 * mm, -y_baseCatcher_Spessa_1 / 2, 0.));
-  G4VSolid *SuppCatcher_baseSpessa = new G4SubtractionSolid("SuppCatcher_baseSpessa", SuppCatcher_baseSpessa_parziale, triangularCut_baseSpessa, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_Spessa_1 / 2 + x_y_triangularCut_baseSpessa - 0.5 * mm, -y_baseCatcher_Spessa_1 / 2 - 0.5 * mm, 0.));
-
-  G4ThreeVector pos_SuppCatcher_baseSpessa = G4ThreeVector(0., pos_buco_baseSpessa, 0.);
-  G4Transform3D tr_SuppCatcher_baseSpessa = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSpessa);
-
-  G4Box *SuppCatcher_baseSottile = new G4Box("SuppCatcher_baseSottile", x_baseCatcher_Sottile_1 / 2, y_baseCatcher_Sottile_1 / 2, thickness_baseCatcher_Sottile_1 / 2);
-  G4ThreeVector pos_SuppCatcher_baseSottile = G4ThreeVector(0., y_baseCatcher_Spessa_1 / 2 + y_baseCatcher_Sottile_1 / 2, thickness_baseCatcher_Spessa_1 / 2 - thickness_baseCatcher_Sottile_1 / 2);
-  G4Transform3D tr_SuppCatcher_baseSottile = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_baseSottile);
-
-  G4Box *SuppCatcher_base_2_senzaBuco = new G4Box("SuppCatcher_base_2_senzaBuco", x_baseCatcher_2 / 2, y_baseCatcher_2 / 2, z_baseCatcher_2 / 2);
-  G4Tubs *bucoCatcher = new G4Tubs("bucoCatcher", 0., radius_bucoCatcher, thickness_supp_catcher / 2, 0., 360 * deg);
-  G4VSolid *SuppCatcher_base_2_conBucoCatcher = new G4SubtractionSolid("SuppCatcher_baseSpessa_conbucoCatcher", SuppCatcher_base_2_senzaBuco, bucoCatcher, 0, G4ThreeVector(-x_pos_bucoCatcher, 0., thickness_baseCatcher_Sottile_1 - thickness_supp_catcher - 0.25 * mm));
-
-  G4Tubs *bucoCatcher1 = new G4Tubs("bucoCatcher1", 0., radius_int_bucoCatcher, thickness_baseCatcher_Sottile_1 - thickness_supp_catcher, 0., 360 * deg);
-  G4VSolid *SuppCatcher_base_2_conBucoCatcher1 = new G4SubtractionSolid("SuppCatcher_baseSpessa_conbucoCatcher1", SuppCatcher_base_2_conBucoCatcher, bucoCatcher1, 0, G4ThreeVector(-x_pos_bucoCatcher, 0., thickness_baseCatcher_Sottile_1 / 2 - thickness_supp_catcher));
-
-  G4Tubs *bucoSource = new G4Tubs("bucoSource", 0., radius_bucoSource, 2 * z_baseCatcher_2, 0., 360 * deg);
-  G4VSolid *SuppCatcher_base_2_intero = new G4SubtractionSolid("SuppCatcher_base_2_intero", SuppCatcher_base_2_conBucoCatcher1, bucoSource, 0, G4ThreeVector(x_pos_bucoCatcher, 0., 0.));
-
-  std::vector<G4TwoVector> polygon2(nsect);
-  polygon2[0].set(x_y_triangularCut_baseSottile, 0.);
-  polygon2[1].set(0., 0.);
-  polygon2[2].set(x_y_triangularCut_baseSottile, x_y_triangularCut_baseSottile);
-
-  G4VSolid *triangularCut_baseSottile = new G4ExtrudedSolid("triangularCut_baseSottile", polygon2, thickness_baseCatcher_Spessa_1, offsetA, scaleA, offsetB, scaleB);
-  G4VSolid *SuppCatcher_base_2_unAngolo = new G4SubtractionSolid("SuppCatcher_base_2_unAngolo", SuppCatcher_base_2_intero, triangularCut_baseSottile, 0, G4ThreeVector(+x_baseCatcher_2 / 2 - x_y_triangularCut_baseSottile + 0.5 * mm, -y_baseCatcher_2 / 2 - 0.5 * mm, 0.));
-  G4VSolid *SuppCatcher_base_2_dueAngoli = new G4SubtractionSolid("SuppCatcher_base_2_dueAngoli", SuppCatcher_base_2_unAngolo, triangularCut_baseSottile, myRotation_trSupp, G4ThreeVector(-x_baseCatcher_2 / 2 + x_y_triangularCut_baseSottile - 0.5 * mm, -y_baseCatcher_2 / 2 - 0.5 * mm, 0.));
-  G4VSolid *SuppCatcher_base_2_treAngoli = new G4SubtractionSolid("SuppCatcher_base_2_treAngoli", SuppCatcher_base_2_dueAngoli, triangularCut_baseSottile, myRotation_trSupp2, G4ThreeVector(-x_baseCatcher_2 / 2 + x_y_triangularCut_baseSottile - 0.5 * mm, +y_baseCatcher_2 / 2 + 0.5 * mm, 0.));
-  G4VSolid *SuppCatcher_base_2 = new G4SubtractionSolid("SuppCatcher_base_2", SuppCatcher_base_2_treAngoli, triangularCut_baseSottile, myRotation_trSupp3, G4ThreeVector(x_baseCatcher_2 / 2 - x_y_triangularCut_baseSottile + 0.5 * mm, +y_baseCatcher_2 / 2 + 0.5 * mm, 0.));
-
-  G4ThreeVector pos_SuppCatcher_base_2 = G4ThreeVector(0., y_baseCatcher_Spessa_1 / 2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2 / 2, thickness_baseCatcher_Spessa_1 / 2 - z_baseCatcher_2 / 2);
-  G4Transform3D tr_SuppCatcher_base_2 = G4Transform3D(G4RotationMatrix(), pos_SuppCatcher_base_2);
-
-  G4MultiUnion *munion_supportCatcher_Source = new G4MultiUnion("munion_supportCatcher_Source");
-  munion_supportCatcher_Source->AddNode(*SuppCatcher_baseSpessa, tr_SuppCatcher_baseSpessa);
-  munion_supportCatcher_Source->AddNode(*SuppCatcher_baseSottile, tr_SuppCatcher_baseSottile);
-  munion_supportCatcher_Source->AddNode(*SuppCatcher_base_2, tr_SuppCatcher_base_2);
-  munion_supportCatcher_Source->Voxelize();
-
-  G4LogicalVolume *logic_munion_supportCatcher_Source = new G4LogicalVolume(munion_supportCatcher_Source, materialSupport_Catcher_source, "logic_munion_supportCatcher_Source");
-  phys_munion_supportCatcher_Source = new G4PVPlacement(0,                                                                                                                                                                                                                                                     // no rotation
-                                                        G4ThreeVector(x_pos_bucoCatcher, -(y_baseCatcher_Spessa_1 / 2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2 / 2), -thickness_baseCatcher_Spessa_1 / 2 + thickness_baseCatcher_Sottile_1 + thickness_baseCatcher_Sottile_1 / 2 - thickness_supp_catcher), //+thickness_supp_catcher/2   //at (0,0,0) //thickness_baseCatcher_Sottile_1
-                                                        logic_munion_supportCatcher_Source,                                                                                                                                                                                                                    // its fLogical volume
-                                                        "phys_munion_supportCatcher_Source",                                                                                                                                                                                                                   // its name
-                                                        fLogicWorld,                                                                                                                                                                                                                                           // its mother  volume
-                                                        false,                                                                                                                                                                                                                                                 // no boolean operation
-                                                        0);                                                                                                                                                                                                                                                    // copy number
-
-  G4VisAttributes *visAtt_munion_supportCatcher_Source = new G4VisAttributes(G4Colour(0.8, 0.8, 0.8));
-  visAtt_munion_supportCatcher_Source->SetVisibility(true);
-  visAtt_munion_supportCatcher_Source->SetForceWireframe(false);
-  visAtt_munion_supportCatcher_Source->SetForceSolid(true);
-  logic_munion_supportCatcher_Source->SetVisAttributes(visAtt_munion_supportCatcher_Source);
-
-  if (phys_munion_supportCatcher_Source == NULL)
-  {
-  }
-
-  // G4double x_pos_Catcher_risp_munion   = x_pos_bucoCatcher;
-  y_pos_Catcher_risp_munion = y_baseCatcher_Spessa_1 / 2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2 / 2;
-
+  // PEEK ring
+  G4Material *PEEK = new G4Material("PEEKS", 1.32 * g / cm3, 3);
   G4NistManager *man = G4NistManager::Instance();
-  G4Material *material_Catcher_Ring = new G4Material("PEEKS", 1.32 * g / cm3, 3); // Plastic
-  material_Catcher_Ring->AddElement(man->FindOrBuildElement("C"), 19);
-  material_Catcher_Ring->AddElement(man->FindOrBuildElement("H"), 12);
-  material_Catcher_Ring->AddElement(man->FindOrBuildElement("O"), 3);
+  PEEK->AddElement(man->FindOrBuildElement("C"), 19);
+  PEEK->AddElement(man->FindOrBuildElement("H"), 12);
+  PEEK->AddElement(man->FindOrBuildElement("O"), 3);
+  G4Tubs *PEEK_Ring = new G4Tubs("PEEK_ring", SuppCatcher_Catcher_radius_inner, SuppCatcher_Catcher_radius_outer, PEEK_thikness / 2, 0., 360 * deg);
 
-  G4Tubs *Supp_catcher = new G4Tubs("Supp_catcher", radius_int_bucoCatcher, radius_bucoCatcher, thickness_supp_catcher / 2, 0., 360 * deg);
-  G4LogicalVolume *logic_Supp_catcher = new G4LogicalVolume(Supp_catcher, vide, "logic_Supp_catcher");
-  phys_Supp_catcher = new G4PVPlacement(0,                                                                                                                                                                                                                                                                                                                                   // no rotation
-                                        G4ThreeVector(0., -(y_baseCatcher_Spessa_1 / 2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2 / 2) + y_pos_Catcher_risp_munion, thickness_baseCatcher_Spessa_1 / 2 + thickness_baseCatcher_Sottile_1 + thickness_baseCatcher_Sottile_1 / 2 - thickness_supp_catcher - thickness_baseCatcher_Spessa_1 / 2 - thickness_supp_catcher / 2), // at (0,0,0)
-                                        logic_Supp_catcher,                                                                                                                                                                                                                                                                                                                  // its fLogical volume
-                                        "phys_Supp_catcher",                                                                                                                                                                                                                                                                                                                 // its name
-                                        fLogicWorld,                                                                                                                                                                                                                                                                                                                         // its mother  volume
-                                        false,                                                                                                                                                                                                                                                                                                                               // no boolean operation
-                                        0);                                                                                                                                                                                                                                                                                                                                  // copy number
+  // Catcher Hole Inner
+  G4Tubs *SuppCatcher_Catcher_inner = new G4Tubs("Catcher_inner", 0., SuppCatcher_Catcher_radius_inner, SuppCatcher_thikness, 0., 360. * deg);
 
-  G4VisAttributes *visAtt_Supp_catcher = new G4VisAttributes(G4Colour(1., 1., 1.));
+  // Catcher Hole Outer
+  G4Tubs *SuppCatcher_Catcher_outer = new G4Tubs("Catcher_outer", 0., SuppCatcher_Catcher_radius_outer, PEEK_thikness / 2, 0., 360. * deg);
+
+  // Source Hole Inner
+  G4Tubs *SuppCatcher_Source_inner = new G4Tubs("Catcher_inner", 0., SuppCatcher_Source_radius_inner, SuppCatcher_thikness, 0., 360. * deg);
+
+  // Source Hole Outer
+  G4Tubs *SuppCatcher_Source_outer = new G4Tubs("Catcher_outer", 0., SuppCatcher_Source_radius_outer, PEEK_thikness / 2, 0., 360. * deg);
+
+  // Tige
+  G4Box *SuppCatcher_Tige = new G4Box("SuppCatcher_Tige", SuppCatcher_Tige_width / 2, SuppCatcher_Tige_height / 2, SuppCatcher_thikness / 2);
+
+  ///////////ASSEMBLY////////////
+  Support_Position = G4ThreeVector(0, -Radius_Rotation * (1 - cos(22.5 * deg)) + Radius_Rotation, 0);
+  // Central Catcher Hole
+  Central_Hole_Position = G4ThreeVector(0, Radius_Rotation * (1 - cos(22.5 * deg)), 0);
+  G4VSolid *SuppCatcher_Plate_centralCatcher_inner = new G4SubtractionSolid("SuppCatcher_Plate-centralCatcher", SuppCatcher_Plate, SuppCatcher_Catcher_inner, 0, Central_Hole_Position);
+  G4VSolid *SuppCatcher_Plate_centralCatcher = new G4SubtractionSolid("SuppCatcher_Plate-centralCatcher", SuppCatcher_Plate_centralCatcher_inner, SuppCatcher_Catcher_outer, 0, Central_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness / 2));
+
+  G4LogicalVolume *logic_centralPEEK_Ring = new G4LogicalVolume(PEEK_Ring, PEEK, "logic_Supp_catcher");
+  phys_centralPEEK_ring = new G4PVPlacement(0, // no rotation
+                                            Support_Position + Central_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness / 2),
+                                            logic_centralPEEK_Ring, // its fLogical volume
+                                            "centralPEEK_Ring",     // its name
+                                            logic_mother_catcher,   // its mother  volume
+                                            false,                  // no boolean operation
+                                            0);
+
+  G4VisAttributes *visAtt_PEEK = new G4VisAttributes(G4Colour(1., 1., 1.));
+  visAtt_PEEK->SetVisibility(true);
+  visAtt_PEEK->SetForceWireframe(false);
+  visAtt_PEEK->SetForceSolid(true);
+  logic_centralPEEK_Ring->SetVisAttributes(visAtt_PEEK);
+
+  // Side Catcher Hole
+  Side_Hole_Position = G4ThreeVector(Radius_Rotation * sin(22.5 * deg), 0, 0);
+  G4VSolid *SuppCatcher_Plate_centralsideCatcher_inner = new G4SubtractionSolid("SuppCatcher_Plate-sideCatcher", SuppCatcher_Plate_centralCatcher, SuppCatcher_Catcher_inner, 0, Side_Hole_Position);
+  G4VSolid *SuppCatcher_Plate_centralsideCatcher = new G4SubtractionSolid("SuppCatcher_Plate-sideCatcher", SuppCatcher_Plate_centralsideCatcher_inner, SuppCatcher_Catcher_outer, 0, Side_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness / 2));
+
+  G4LogicalVolume *logic_sidePEEK_Ring = new G4LogicalVolume(PEEK_Ring, PEEK, "logic_Supp_catcher");
+  phys_sidePEEK_ring = new G4PVPlacement(0, // no rotation
+                                         Support_Position + Side_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness / 2),
+                                         logic_sidePEEK_Ring,  // its fLogical volume
+                                         "sidePEEK_Ring",      // its name
+                                         logic_mother_catcher, // its mother  volume
+                                         false,                // no boolean operation
+                                         0);
+
+  logic_sidePEEK_Ring->SetVisAttributes(visAtt_PEEK);
+
+  // Source Hole
+  G4ThreeVector Source_Hole_Position = G4ThreeVector(-Radius_Rotation * sin(30 * deg), Radius_Rotation * (cos(30 * deg) - cos(22.5 * deg)), 0);
+  G4VSolid *SuppCatcher_Plate_centralsidesourceCatcher_inner = new G4SubtractionSolid("SuppCatcher_Plate-source", SuppCatcher_Plate_centralsideCatcher, SuppCatcher_Source_inner, 0, Source_Hole_Position);
+  G4VSolid *SuppCatcher_Plate_centralsidesourceCatcher = new G4SubtractionSolid("SuppCatcher_Plate-source", SuppCatcher_Plate_centralsidesourceCatcher_inner, SuppCatcher_Source_outer, 0, Source_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness / 2));
+
+  // Tige
+  G4ThreeVector Tige_Position = G4ThreeVector(0, -SuppCatcher_Tige_height / 2 - SuppCatcher_Plate_height / 2, 0);
+  G4UnionSolid *SuppCatcher_Plate_Tige = new G4UnionSolid("SuppCatcher_Plate_Tige", SuppCatcher_Plate_centralsidesourceCatcher, SuppCatcher_Tige, 0, Tige_Position);
+
+  // Plate
+  G4LogicalVolume *logic_SuppCatcher_Plate = new G4LogicalVolume(SuppCatcher_Plate_Tige, Al, "logic_Supp_catcher");
+  phys_Supp_catcher = new G4PVPlacement(0, // no rotation
+                                        Support_Position,
+                                        logic_SuppCatcher_Plate,  // its fLogical volume
+                                        "phys_SuppCatcher_Plate", // its name
+                                        logic_mother_catcher,     // its mother  volume
+                                        false,                    // no boolean operation
+                                        0);
+
+  G4VisAttributes *visAtt_Supp_catcher = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
   visAtt_Supp_catcher->SetVisibility(true);
   visAtt_Supp_catcher->SetForceWireframe(false);
   visAtt_Supp_catcher->SetForceSolid(true);
-  logic_Supp_catcher->SetVisAttributes(visAtt_Supp_catcher);
+  logic_SuppCatcher_Plate->SetVisAttributes(visAtt_Supp_catcher);
 
-  if (phys_Supp_catcher == NULL)
-  {
-  }
-
+  //// CATCHER //////
+  /// CENTRAL
+  Catcher_central_Position = Support_Position + Central_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness);
   G4Material *Mylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
-  G4Material *Al = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
-
-  thicknessMylarSource = 0.5 * um;
+  thicknessMylarSource_central = 0.9 * um;
   thicknessAlSource = 50. * nm;
-  G4double outerRadius_MylarSource = radius_bucoCatcher;
 
-  G4Tubs *AlSource1 = new G4Tubs("AlSource1", 0., outerRadius_MylarSource, thicknessAlSource / 2, 0., 360. * deg);
-  G4LogicalVolume *Logic_AlSource1 = new G4LogicalVolume(AlSource1, Al, "LogicAlSource1"); // solid, material, name
-  Physics_AlSource1 = new G4PVPlacement(0,                                                 // no rotation
-                                        G4ThreeVector(0., 0., thicknessAlSource / 2),      // position
-                                        Logic_AlSource1, "LogicAlSource1",                 // its fLogical volume
-                                        fLogicWorld,                                       // its mother volume
-                                        false,                                             // no boolean op.
-                                        0);                                                // copy nb.
+  G4Tubs *AlSource1 = new G4Tubs("AlSource1_central", 0., SuppCatcher_Catcher_radius_inner, thicknessAlSource / 2, 0., 360. * deg);
+  G4LogicalVolume *Logic_AlSource1_central = new G4LogicalVolume(AlSource1, Al, "LogicAlSource1_central");               // solid, material, name
+  Physics_AlSource1_central = new G4PVPlacement(0,                                                                       // no rotation
+                                                Catcher_central_Position + G4ThreeVector(0., 0., thicknessAlSource / 2), // position
+                                                Logic_AlSource1_central, "LogicAlSource1_central",                       // its fLogical volume
+                                                logic_mother_catcher,                                                    // its mother volume
+                                                false,                                                                   // no boolean op.
+                                                0, true);                                                                // copy nb.
 
-  MylarSource = new G4Tubs("MylarSource", 0., outerRadius_MylarSource, thicknessMylarSource / 2, 0., 360. * deg);
-  G4LogicalVolume *Logic_MylarSource = new G4LogicalVolume(MylarSource, Mylar, "LogicMylarSource");            // solid, material, name
-  Physics_MylarSource = new G4PVPlacement(0,                                                                   // no rotation
-                                          G4ThreeVector(0., 0., thicknessMylarSource / 2 + thicknessAlSource), // position
-                                          Logic_MylarSource, "Logic_MylarSource",                              // its fLogical volume
-                                          fLogicWorld,                                                         // its mother volume
-                                          false,                                                               // no boolean op.
-                                          0);                                                                  // copy nb.
+  MylarSource_central = new G4Tubs("MylarSource", 0., SuppCatcher_Catcher_radius_inner, thicknessMylarSource_central / 2, 0., 360. * deg);
+  G4LogicalVolume *Logic_MylarSource_central = new G4LogicalVolume(MylarSource_central, Mylar, "LogicMylarSource_central");                               // solid, material, name
+  Physics_MylarSource_central = new G4PVPlacement(0,                                                                                                      // no rotation
+                                                  Catcher_central_Position + G4ThreeVector(0., 0., thicknessMylarSource_central / 2 + thicknessAlSource), // position
+                                                  Logic_MylarSource_central, "Logic_MylarSource_central",                                                 // its fLogical volume
+                                                  logic_mother_catcher,                                                                                   // its mother volume
+                                                  false,                                                                                                  // no boolean op.
+                                                  0, true);                                                                                               // copy nb.
 
-  G4Tubs *AlSource2 = new G4Tubs("AlSource2", 0., outerRadius_MylarSource, thicknessAlSource / 2, 0., 360. * deg);
-  G4LogicalVolume *Logic_AlSource2 = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2");                                       // solid, material, name
-  Physics_AlSource2 = new G4PVPlacement(0,                                                                                       // no rotation
-                                        G4ThreeVector(0., 0., thicknessAlSource / 2 + thicknessMylarSource + thicknessAlSource), // position
-                                        Logic_AlSource2, "LogicAlSource2",                                                       // its fLogical volume
-                                        fLogicWorld,                                                                             // its mother volume
-                                        false,                                                                                   // no boolean op.
-                                        0);                                                                                      // copy nb.
+  G4Tubs *AlSource2 = new G4Tubs("AlSource2_central", 0., SuppCatcher_Catcher_radius_inner, thicknessAlSource / 2, 0., 360. * deg);
+  G4LogicalVolume *Logic_AlSource2_central = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2_central");                                                                  // solid, material, name
+  Physics_AlSource2_central = new G4PVPlacement(0,                                                                                                                          // no rotation
+                                                Catcher_central_Position + G4ThreeVector(0., 0., thicknessAlSource / 2 + thicknessMylarSource_central + thicknessAlSource), // position
+                                                Logic_AlSource2_central, "LogicAlSource2_central",                                                                          // its fLogical volume
+                                                logic_mother_catcher,                                                                                                       // its mother volume
+                                                false,                                                                                                                      // no boolean op.
+                                                0, true);                                                                                                                   // copy nb.
 
   G4VisAttributes *MylarSource_att = new G4VisAttributes(G4Colour(0.94, 0.5, 0.5)); // pink
   MylarSource_att->SetVisibility(true);
   MylarSource_att->SetForceWireframe(false);
   MylarSource_att->SetForceSolid(true);
-  Logic_MylarSource->SetVisAttributes(MylarSource_att);
+  Logic_MylarSource_central->SetVisAttributes(MylarSource_att);
 
   G4VisAttributes *AlSource_att = new G4VisAttributes(G4Colour(0.94, 0.2, 0.5)); // pink
   AlSource_att->SetVisibility(true);
   AlSource_att->SetForceWireframe(false);
   AlSource_att->SetForceSolid(true);
-  Logic_AlSource1->SetVisAttributes(AlSource_att);
-  Logic_AlSource2->SetVisAttributes(AlSource_att);
+  Logic_AlSource1_central->SetVisAttributes(AlSource_att);
+  Logic_AlSource2_central->SetVisAttributes(AlSource_att);
 
-  if (Physics_MylarSource == NULL)
-  {
-  }
-  if (Physics_AlSource2 == NULL)
-  {
-  }
-  if (Physics_AlSource1 == NULL)
-  {
-  }
+  /// SIDE
+  Catcher_side_Position = Support_Position + Side_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness);
+  thicknessMylarSource_side = 0.5 * um;
+
+  G4LogicalVolume *Logic_AlSource1_side = new G4LogicalVolume(AlSource1, Al, "LogicAlSource1_side");               // solid, material, name
+  Physics_AlSource1_side = new G4PVPlacement(0,                                                                    // no rotation
+                                             Catcher_side_Position + G4ThreeVector(0., 0., thicknessAlSource / 2), // position
+                                             Logic_AlSource1_side, "LogicAlSource1_side",                          // its fLogical volume
+                                             logic_mother_catcher,                                                 // its mother volume
+                                             false,                                                                // no boolean op.
+                                             0, true);                                                             // copy nb.
+
+  MylarSource_side = new G4Tubs("MylarSource", 0., SuppCatcher_Catcher_radius_inner, thicknessMylarSource_side / 2, 0., 360. * deg);
+  G4LogicalVolume *Logic_MylarSource_side = new G4LogicalVolume(MylarSource_side, Mylar, "LogicMylarSource_side");                               // solid, material, name
+  Physics_MylarSource_side = new G4PVPlacement(0,                                                                                                // no rotation
+                                               Catcher_side_Position + G4ThreeVector(0., 0., thicknessMylarSource_side / 2 + thicknessAlSource), // position
+                                               Logic_MylarSource_side, "Logic_MylarSource_side",                                                 // its fLogical volume
+                                               logic_mother_catcher,                                                                             // its mother volume
+                                               false,                                                                                            // no boolean op.
+                                               0, true);                                                                                         // copy nb.
+
+  G4LogicalVolume *Logic_AlSource2_side = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2_side");                                                                  // solid, material, name
+  Physics_AlSource2_side = new G4PVPlacement(0,                                                                                                                       // no rotation
+                                             Catcher_side_Position + G4ThreeVector(0., 0., thicknessAlSource / 2 + thicknessMylarSource_side + thicknessAlSource), // position
+                                             Logic_AlSource2_side, "LogicAlSource2_side",                                                                             // its fLogical volume
+                                             logic_mother_catcher,                                                                                                    // its mother volume
+                                             false,                                                                                                                   // no boolean op.
+                                             0, true);                                                                                                                // copy nb.
+
+  Logic_MylarSource_side->SetVisAttributes(MylarSource_att);
+  Logic_AlSource1_side->SetVisAttributes(AlSource_att);
+  Logic_AlSource2_side->SetVisAttributes(AlSource_att);
 
   //=========================================================================================================================
   //========================================== SILICON DETECTORS _ COMMON PARAMETERS ========================================
@@ -716,7 +734,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                       pDx1 / 2, pDx2 / 2, pAlp1, pDy2 / 2,
                                       pDx3 / 2, pDx4 / 2, pAlp2);
 
-  SupportSiliconDetector_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)); // red (r,g,b) ->grey
+  SupportSiliconDetector_att = new G4VisAttributes(G4Colour(0.19, 0.8, 0.19)); // green PCB
   SupportSiliconDetector_att->SetForceWireframe(false);
   SupportSiliconDetector_att->SetForceSolid(true);
 
@@ -725,7 +743,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //========================================================================================================================
 
   materialSiliconDetector = G4NistManager::Instance()->FindOrBuildMaterial("G4_Si");
-  SiliconDetector_att = new G4VisAttributes(G4Colour(1., 0., 0.)); // red (r,g,b) ->red
+  SiliconDetector_att = new G4VisAttributes(G4Colour(0., 0., 0.)); // red (r,g,b) ->red
   SiliconDetector_att->SetForceWireframe(false);
   SiliconDetector_att->SetForceSolid(true);
 
@@ -740,10 +758,10 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                                                    height_y_SupportoRame_SiDetector / 2 - y_smallBox_daTagliare_SupportoRame_SiDetector / 2,
                                                                                    0.));
 
-  Box_material_SupportoRame_SiliconDetector_att = new G4VisAttributes(G4Colour(0.7, 0, 0.7));       //(r,g,b) => magenta
-  Box_material_SupportoRame_SiliconDetector_attvide = new G4VisAttributes(G4Colour(0.5, 0.2, 0.8)); //(r,g,b) => magenta
-  Box_material_SupportoRame_SiliconDetector_att->SetForceWireframe(false);
-  Box_material_SupportoRame_SiliconDetector_att->SetForceSolid(true);
+  // Box_material_SupportoRame_SiliconDetector_att = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));      => white
+  // Box_material_SupportoRame_SiliconDetector_attvide = new G4VisAttributes(G4Colour(0.5, 0.2, 0.8));  => magenta
+  //  Box_material_SupportoRame_SiliconDetector_att->SetForceWireframe(false);
+  //  Box_material_SupportoRame_SiliconDetector_att->SetForceSolid(true);
 
   // Support
   supportSiliconDetector = new G4Trap("supportSiliconDetector",
@@ -844,18 +862,18 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //===================================================================================================================================================================
   // NB: per ogni dubbio sulle misure, consultare i disegni tecnici inviati da M. Roche (mail al mio indirizzo cenbg il 18/05/2021).
   G4double distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector = 25.575 * mm;
-  G4double delta = 0*cm;
+  G4double delta = 0 * cm;
   G4Material *fMaterial_PlasticScintillator = G4NistManager::Instance()->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
 
-  G4Tubs *fSolid_PlasticScintillator = new G4Tubs("PlasticScintillator", 0., fRadius_PlasticScintillator, 0.5 * fLength_PlasticScintillator, 0., 360 * deg);                                                                           // name, r : 0->1cm, L : 5cm, phi : 0->2pi
-  G4LogicalVolume *fLogic_PlasticScintillator = new G4LogicalVolume(fSolid_PlasticScintillator, fMaterial_PlasticScintillator, "PlasticScintillator");                                                                                 // solid, material, name
-  G4PVPlacement *fPhys_PlasticScintillator = new G4PVPlacement(0,                                                                                                                                                                      // rotationMatrix
+  G4Tubs *fSolid_PlasticScintillator = new G4Tubs("PlasticScintillator", 0., fRadius_PlasticScintillator, 0.5 * fLength_PlasticScintillator, 0., 360 * deg);                                                                                   // name, r : 0->1cm, L : 5cm, phi : 0->2pi
+  G4LogicalVolume *fLogic_PlasticScintillator = new G4LogicalVolume(fSolid_PlasticScintillator, fMaterial_PlasticScintillator, "PlasticScintillator");                                                                                         // solid, material, name
+  G4PVPlacement *fPhys_PlasticScintillator = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
                                                                G4ThreeVector(0., 0., z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator / 2 + delta), // position
-                                                               fLogic_PlasticScintillator, "PlasticScintillator",                                                                                                                      // its fLogical volume
-                                                               fLogicWorld,                                                                                                                                                            // its mother volume
-                                                               false,                                                                                                                                                                  // no boolean op.
-                                                               0);                                                                                                                                                                   // copy nb.
-  G4VisAttributes *PlasticScintillator_att = new G4VisAttributes(G4Colour(0., 0., 0.)); // red
+                                                               fLogic_PlasticScintillator, "PlasticScintillator",                                                                                                                              // its fLogical volume
+                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                               false,                                                                                                                                                                          // no boolean op.
+                                                               0);                                                                                                                                                                             // copy nb.
+  G4VisAttributes *PlasticScintillator_att = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6, 0.6));                                                                                                                                                // red
   PlasticScintillator_att->SetForceWireframe(false);
   PlasticScintillator_att->SetForceSolid(true);
   fLogic_PlasticScintillator->SetVisAttributes(PlasticScintillator_att);
@@ -879,13 +897,13 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   G4LogicalVolume *logic_Box_material_SupportoRame_PlasticScint = new G4LogicalVolume(Box_material_SupportoRame_PlasticScint, material_SupportoRame_PlasticScint, "logic_Box_material_SupportoRame_PlasticScint"); // solid, material, name
   G4VPhysicalVolume *physics_Box_material_SupportoRame_PlasticScint = new G4PVPlacement(0,                                                                                                                         // no rotation
-                                                                                        G4ThreeVector(0., 0., delta +z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + thickness_z_SupportoRame_SiDetector / 2),
+                                                                                        G4ThreeVector(0., 0., delta + z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + thickness_z_SupportoRame_SiDetector / 2),
                                                                                         logic_Box_material_SupportoRame_PlasticScint, "logic_Box_material_SupportoRame_PlasticScint", // its fLogical volume
                                                                                         fLogicWorld,                                                                                  // its mother volume
                                                                                         false,                                                                                        // no boolean op.
                                                                                         0);                                                                                           // copy nb.
 
-  G4VisAttributes *Box_material_SupportoRame_PlasticScint_att = new G4VisAttributes(G4Colour(0.7, 0, 0.7)); //(r,g,b) => magenta
+  G4VisAttributes *Box_material_SupportoRame_PlasticScint_att = new G4VisAttributes(G4Colour(0.72, 0.45, 0.2)); //(r,g,b) => magenta
   Box_material_SupportoRame_PlasticScint_att->SetForceWireframe(false);
   Box_material_SupportoRame_PlasticScint_att->SetForceSolid(true);
   logic_Box_material_SupportoRame_PlasticScint->SetVisAttributes(Box_material_SupportoRame_PlasticScint_att);
@@ -899,7 +917,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4VSolid *placcaRame_Cilindrica = new G4Tubs("placcaRame_Cilindrica", fRadius_PlasticScintillator, fRadius_PlasticScintillator + thickness_z_SupportoRame_PlasticScint, lenghtPlaccaCilidrica / 2, 0., 360 * deg);
   G4LogicalVolume *logic_placcaRame_Cilindrica = new G4LogicalVolume(placcaRame_Cilindrica, material_SupportoRame_PlasticScint, "placcaRame_Cilindrica"); // solid, material, name
   G4VPhysicalVolume *physics_placcaRame_Cilindrica = new G4PVPlacement(0,                                                                                 // no rotation
-                                                                       G4ThreeVector(0., 0., delta +z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + thickness_z_SupportoRame_SiDetector + lenghtPlaccaCilidrica / 2),
+                                                                       G4ThreeVector(0., 0., delta + z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + thickness_z_SupportoRame_SiDetector + lenghtPlaccaCilidrica / 2),
                                                                        logic_placcaRame_Cilindrica, "logic_placcaRame_Cilindrica", // its fLogical volume
                                                                        fLogicWorld,                                                // its mother volume
                                                                        false,                                                      // no boolean op.
@@ -912,9 +930,12 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   //////// SET SENSITIVE DETECTOR OTHER THAN SiDet /////////
   fLogic_PlasticScintillator->SetSensitiveDetector(manager_ptr->GetWisardSensor_PlasticScintillator());
-  Logic_MylarSource->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherMylar());
-  Logic_AlSource1->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl1());
-  Logic_AlSource2->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl2());
+  Logic_MylarSource_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherMylar_central());
+  Logic_AlSource1_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl1_central());
+  Logic_AlSource2_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl2_central());
+  Logic_MylarSource_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherMylar_side());
+  Logic_AlSource1_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl1_side());
+  Logic_AlSource2_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl2_side());
 
   return fPhysiWorld;
 }
@@ -970,7 +991,8 @@ void Wisard_Detector::SetSiDeadLayer_Thickness(G4double value)
 void Wisard_Detector::SetBFieldValue(G4double value)
 {
   G4FieldManager *pFieldMgr;
-  G4MagneticField *WisardMagField = new WisardMagnetField(GetInputNameB(), value);
+  //G4MagneticField *WisardMagField = new WisardMagnetField(GetInputNameB(), value); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
+  G4MagneticField* WisardMagField = new G4UniformMagField(G4ThreeVector(0.,0.,value));
   pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
   G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
   pChordFinder->SetDeltaChord(1 * um);
@@ -981,19 +1003,45 @@ void Wisard_Detector::SetBFieldValue(G4double value)
 
 void Wisard_Detector::SetCatcherPosition_z(G4double value)
 {
-  phys_munion_supportCatcher_Source->SetTranslation(G4ThreeVector(x_pos_bucoCatcher, -(y_baseCatcher_Spessa_1 / 2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2 / 2), value - thickness_baseCatcher_Spessa_1 / 2 + thickness_baseCatcher_Sottile_1 + thickness_baseCatcher_Sottile_1 / 2 - thickness_supp_catcher));
-  phys_Supp_catcher->SetTranslation(G4ThreeVector(0., -(y_baseCatcher_Spessa_1 / 2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2 / 2) + y_pos_Catcher_risp_munion, value + thickness_baseCatcher_Spessa_1 / 2 + thickness_baseCatcher_Sottile_1 + thickness_baseCatcher_Sottile_1 / 2 - thickness_supp_catcher - thickness_baseCatcher_Spessa_1 / 2 - thickness_supp_catcher / 2));
-  Physics_AlSource1->SetTranslation(G4ThreeVector(0., 0., value + thicknessAlSource / 2));
-  Physics_MylarSource->SetTranslation(G4ThreeVector(0., 0., value + thicknessMylarSource / 2 + thicknessAlSource));
-  Physics_AlSource2->SetTranslation(G4ThreeVector(0., 0., value + thicknessAlSource / 2 + thicknessMylarSource + thicknessAlSource));
+  phys_mother_catcher->SetTranslation(phys_mother_catcher->GetTranslation() + G4ThreeVector(0, 0, value));
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
 
 void Wisard_Detector::SetCatcher_Thickness(G4double value)
 {
-  phys_Supp_catcher->SetTranslation(G4ThreeVector(0., -(y_baseCatcher_Spessa_1 / 2 + y_baseCatcher_Sottile_1 + y_baseCatcher_2 / 2) + y_pos_Catcher_risp_munion, value + thickness_baseCatcher_Spessa_1 / 2 + thickness_baseCatcher_Sottile_1 + thickness_baseCatcher_Sottile_1 / 2 - thickness_supp_catcher - thickness_baseCatcher_Spessa_1 / 2 - thickness_supp_catcher / 2));
-  Physics_AlSource2->SetTranslation(G4ThreeVector(0, 0, Physics_AlSource2->GetTranslation().z() - thicknessMylarSource + value));
-  MylarSource->SetZHalfLength(value / 2);
-  Physics_MylarSource->SetTranslation(G4ThreeVector(0, 0, Physics_MylarSource->GetTranslation().z() - thicknessMylarSource / 2 + value / 2));
+  MylarSource_central->SetZHalfLength(MylarSource_central->GetZHalfLength() + value / 2);
+  Physics_MylarSource_central->SetTranslation(Physics_MylarSource_central->GetTranslation() + G4ThreeVector(0, 0, value / 2));
+  Physics_AlSource2_central->SetTranslation(Physics_AlSource2_central->GetTranslation() + G4ThreeVector(0, 0, value));
+
+  MylarSource_side->SetZHalfLength(MylarSource_side->GetZHalfLength() + value / 2);
+  Physics_MylarSource_side->SetTranslation(Physics_MylarSource_side->GetTranslation() + G4ThreeVector(0, 0, value / 2));
+  Physics_AlSource2_side->SetTranslation(Physics_AlSource2_side->GetTranslation() + G4ThreeVector(0, 0, value));
+  G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
+
+void Wisard_Detector::SetCatcherPosition_theta(G4String position, G4double value)
+{
+  G4RotationMatrix *myRotation = new G4RotationMatrix();
+  myRotation->rotateX(0. * deg);
+  myRotation->rotateY(0. * deg);
+
+  if (position == "source")
+  {
+    myRotation->rotateZ(30 * deg + value);
+  }
+  else if (position == "catcher2")
+  {
+    myRotation->rotateZ(value);
+  }
+  else if (position == "catcher1")
+  {
+    myRotation->rotateZ(-22.5 * deg + value);
+  }
+  else
+  {
+    G4Exception("Wisard_Detector", ("Wrong Catcher position : " + position).c_str(), JustWarning, "");
+  }
+
+  phys_mother_catcher->SetRotation(myRotation);
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }

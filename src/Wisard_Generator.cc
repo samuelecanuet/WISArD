@@ -92,6 +92,7 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
     y += get<1>(tuple)*angstrom;
 
     z = position_catcher_z + get<2>(tuple)*angstrom;
+    
 
     for (int i = 0; i < isubev_len; ++i)
     {
@@ -142,8 +143,7 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
 
         //////FOR TEST/////////
         //  gun.SetParticleDefinition        ( part_geantino );
-        //  gun.SetParticlePosition          ( G4ThreeVector (x,y,47*nm-3*um)  );
-        //  gun.SetParticlePosition          ( G4ThreeVector (0,4.5*cm,-10*cm)  );
+        //  gun.SetParticlePosition          ( G4ThreeVector (0*mm, 0, -30*mm)  );
         //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
         //  gun.SetParticleEnergy            ( ekin );
         //  gun.GeneratePrimaryVertex        ( event );
