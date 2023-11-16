@@ -3,7 +3,6 @@
 
 #include "../Wisard_Global.hh"
 #include "G4VSensitiveDetector.hh"
-#include "G4OpBoundaryProcess.hh"
 
 struct PrimaryInfo
 {

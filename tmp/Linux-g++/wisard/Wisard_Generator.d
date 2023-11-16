@@ -627,13 +627,7 @@
  /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
  /usr/local/root/6.26.10/include/TDirectory.h include/Wisard_Tracking.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
- /usr/include/c++/8/random /usr/include/c++/8/bits/random.h \
- /usr/include/c++/8/x86_64-redhat-linux/bits/opt_random.h \
- /usr/include/c++/8/bits/random.tcc /usr/include/c++/8/numeric \
- /usr/include/c++/8/bits/stl_numeric.h \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
- /softs/geant4.11.1.2/include/Geant4/G4IonTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Ions.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh

@@ -1,4 +1,6 @@
 ./tmp/Linux-g++/wisard/Wisard_Tracking.o tmp/Linux-g++/wisard/Wisard_Tracking.d: src/Wisard_Tracking.cc /usr/include/stdc-predef.h \
+ include/Wisard_Tracking.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Track.hh /usr/include/c++/8/cmath \
  /usr/include/c++/8/x86_64-redhat-linux/bits/c++config.h \
  /usr/include/bits/wordsize.h \
@@ -434,6 +436,4 @@
  /softs/geant4.11.1.2/include/Geant4/G4UItokenNum.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ApplicationState.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh \
- include/Wisard_Tracking.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh
+ /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh

@@ -3,6 +3,8 @@
 rootCRADLEfile=../../../data333/lecanuet/data/
 rootGeant4file=../../../data333/lecanuet/Result/
 
+rootCRADLEfile=../../../../../../mnt/hgfs/shared-2/data/
+rootGeant4file=../../../../../../mnt/hgfs/shared-2/
 
 rm -rf tempory/*
 
@@ -213,7 +215,7 @@ while [ $Saver -le $RunEnd ]; do
         cd -
 
         cp macro_base.mac tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        sed -e "s|%inputCRADLE|../${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.txt|g; s/%inputSRIM/${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}_${constants}_${Saver}_likev2.1.root|g; s/%events/${events}/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
+        sed -e "s|%inputCRADLE|../${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.txt|g; s/%inputSRIM/${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}_${constants}_${Saver}.root|g; s/%events/${events}/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
         rm tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
         wisard tempory/macro_${Saver}_${Nuclei}_${constants}.mac &
         echo -e "$GREEN wisard tempory/macro_${Saver}_${Nuclei}_${constants}.mac $COLOR"

@@ -680,39 +680,23 @@
  /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4SafetyHelper.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4EqMagElectricField.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ChargeState.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ElectroMagneticField.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VIntegrationDriver.hh \
  /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ChargeState.hh \
  /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.icc \
  /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.icc \
  /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.icc \
  /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.icc \
  /softs/geant4.11.1.2/include/Geant4/G4FieldManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4FieldManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4NystromRK4.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Mag_EqRhs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4CachedMagneticField.hh \
- /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh \
- /softs/geant4.11.1.2/include/Geant4/G4NystromRK4.icc \
- /softs/geant4.11.1.2/include/Geant4/G4Mag_UsualEqRhs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Trap.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Trap.icc \
  /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh include/Wisard_Sensor.hh \
  include/Wisard_MagnetField.hh \
  /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh \
- /softs/geant4.11.1.2/include/Geant4/G4GenericMessenger.hh \
- /softs/geant4.11.1.2/include/Geant4/G4AnyType.hh \
- /softs/geant4.11.1.2/include/Geant4/G4AnyMethod.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Trd.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Trd.icc \
  /softs/geant4.11.1.2/include/Geant4/G4UniformMagField.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SDManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SDStructure.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VSensitiveDetector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4HCtable.hh
+ /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh
