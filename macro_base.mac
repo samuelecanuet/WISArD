@@ -9,8 +9,7 @@
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
-#/input/Open_B MAGNETIC_FIELD_data/wisard_field_complete.txt
-/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
+#/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /input/Open_SRIM SRIM_data/%inputSRIM
 /input/Open_CRADLE %inputCRADLE
 

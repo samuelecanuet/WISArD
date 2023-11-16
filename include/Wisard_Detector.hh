@@ -98,7 +98,6 @@ public:
   G4double fRadius_PlasticScintillator = 1.5 * cm;
 
   G4bool event;
-  void SetMagField();
 
   // Functions to create Silicon Detectors
   std::tuple< // std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,

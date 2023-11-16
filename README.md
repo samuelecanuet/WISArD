@@ -23,6 +23,7 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 - Added Catcher position option in macro
 - Replace String particle name by PDG code
 - Replace String name detector to code
+- Uniform Magnetic Field for optimisation
 
 ### TODO
 - Add Garage

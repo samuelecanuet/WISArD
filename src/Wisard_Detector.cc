@@ -18,6 +18,7 @@
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4GenericMessenger.hh"
 #include "G4Trd.hh"
+#include "G4UniformMagField.hh"
 
 // #include "Wisard_Messenger.hh"
 
@@ -125,7 +126,9 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   if (!fieldIsInitialized)
   {
     G4FieldManager *pFieldMgr;
-    G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004);
+    //G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
+
+    G4MagneticField* WisardMagField = new G4UniformMagField(G4ThreeVector(0.,0.,4.*tesla));
     pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
     G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
     pChordFinder->SetDeltaChord(1 * um);
@@ -485,6 +488,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // SUPPORT CATCHER 2023 //
   ///////////////ELEMENTS//////////////
+  G4Material *Al = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
 
   // MOTHER CATCHER
   G4double Radius_Rotation = 50 * mm;
@@ -603,7 +607,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4UnionSolid *SuppCatcher_Plate_Tige = new G4UnionSolid("SuppCatcher_Plate_Tige", SuppCatcher_Plate_centralsidesourceCatcher, SuppCatcher_Tige, 0, Tige_Position);
 
   // Plate
-  G4LogicalVolume *logic_SuppCatcher_Plate = new G4LogicalVolume(SuppCatcher_Plate_Tige, vide, "logic_Supp_catcher");
+  G4LogicalVolume *logic_SuppCatcher_Plate = new G4LogicalVolume(SuppCatcher_Plate_Tige, Al, "logic_Supp_catcher");
   phys_Supp_catcher = new G4PVPlacement(0, // no rotation
                                         Support_Position,
                                         logic_SuppCatcher_Plate,  // its fLogical volume
@@ -623,7 +627,6 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   Catcher_central_Position = Support_Position + Central_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness);
   G4Material *Mylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
   thicknessMylarSource_central = 0.9 * um;
-  G4Material *Al = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
   thicknessAlSource = 50. * nm;
 
   G4Tubs *AlSource1 = new G4Tubs("AlSource1_central", 0., SuppCatcher_Catcher_radius_inner, thicknessAlSource / 2, 0., 360. * deg);
@@ -689,7 +692,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   G4LogicalVolume *Logic_AlSource2_side = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2_side");                                                                  // solid, material, name
   Physics_AlSource2_side = new G4PVPlacement(0,                                                                                                                       // no rotation
-                                             Catcher_side_Position + G4ThreeVector(0., 0., thicknessAlSource / 2 + thicknessMylarSource_central + thicknessAlSource), // position
+                                             Catcher_side_Position + G4ThreeVector(0., 0., thicknessAlSource / 2 + thicknessMylarSource_side + thicknessAlSource), // position
                                              Logic_AlSource2_side, "LogicAlSource2_side",                                                                             // its fLogical volume
                                              logic_mother_catcher,                                                                                                    // its mother volume
                                              false,                                                                                                                   // no boolean op.
@@ -988,7 +991,8 @@ void Wisard_Detector::SetSiDeadLayer_Thickness(G4double value)
 void Wisard_Detector::SetBFieldValue(G4double value)
 {
   G4FieldManager *pFieldMgr;
-  G4MagneticField *WisardMagField = new WisardMagnetField(GetInputNameB(), value);
+  //G4MagneticField *WisardMagField = new WisardMagnetField(GetInputNameB(), value); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
+  G4MagneticField* WisardMagField = new G4UniformMagField(G4ThreeVector(0.,0.,value));
   pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
   G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
   pChordFinder->SetDeltaChord(1 * um);
