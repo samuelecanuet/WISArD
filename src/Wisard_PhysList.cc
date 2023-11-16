@@ -11,9 +11,9 @@
 #include "G4EmStandardPhysics_option3.hh"
 #include "G4EmLivermorePhysics.hh"
 #include "G4EmPenelopePhysics.hh"
-#include "G4TransportationManager.hh"
-#include "G4PropagatorInField.hh"
 #include "G4EmStandardPhysicsGS.hh"
+
+#include "G4TransportationManager.hh"
 
 //----------------------------------------------------------------------
 Wisard_PhysList::Wisard_PhysList()

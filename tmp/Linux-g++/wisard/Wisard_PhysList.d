@@ -532,6 +532,7 @@
  /softs/geant4.11.1.2/include/Geant4/G4EmStandardPhysics_option3.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EmLivermorePhysics.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EmPenelopePhysics.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmStandardPhysicsGS.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Navigator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AffineTransform.hh \
@@ -585,22 +586,4 @@
  /softs/geant4.11.1.2/include/Geant4/G4VExternalNavigation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Navigator.icc \
  /softs/geant4.11.1.2/include/Geant4/G4SafetyHelper.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4PropagatorInField.hh \
- /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ChargeState.hh \
- /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.icc \
- /softs/geant4.11.1.2/include/Geant4/G4FieldManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4FieldManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VIntersectionLocator.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VIntegrationDriver.hh \
- /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.icc \
- /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VIntersectionLocator.icc \
- /softs/geant4.11.1.2/include/Geant4/G4PropagatorInField.icc \
- /softs/geant4.11.1.2/include/Geant4/G4EmStandardPhysicsGS.hh
+ /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc

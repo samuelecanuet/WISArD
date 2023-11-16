@@ -20,18 +20,11 @@
 #include "G4PVPlacement.hh"
 #include "G4Material.hh"
 #include "G4NistManager.hh"
-#include "G4Torus.hh"
 #include "G4TransportationManager.hh"
-#include "G4EqMagElectricField.hh"
 #include "G4ChordFinder.hh"
 #include "G4FieldManager.hh"
-#include "G4NystromRK4.hh"
-#include "G4Mag_UsualEqRhs.hh"
 #include "G4Trap.hh"
 #include "G4VSolid.hh"
-
-#include "G4Trap.hh"
-#include "G4ThreeVector.hh"
 
 #include <unordered_map>
 #include <tuple>

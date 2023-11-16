@@ -469,18 +469,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
  /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpBoundaryProcess.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalPhoton.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalSurface.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4SurfaceProperty.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomTools.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomDirection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VDiscreteProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -623,83 +611,10 @@
  /usr/local/root/6.26.10/include/TFitResultPtr.h \
  /usr/include/c++/8/cfloat \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
- /usr/local/root/6.26.10/include/TDirectory.h \
- /usr/local/root/6.26.10/include/TBranch.h \
- /usr/local/root/6.26.10/include/TObjString.h \
- /softs/geant4.11.1.2/include/Geant4/G4VTrajectoryPoint.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh \
- include/Wisard_Sensor.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RootAnalysisManager.hh \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/ntuple \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/tree \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/itree \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../typedefs \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/iobject \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/idir \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/seek \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/branch_element \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/branch \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/leaf \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/base_leaf \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/named \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/buffer \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/wbuf \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../long_out \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../snpf \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../charp_out \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../stype \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../typedefs \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/ibo \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../realloc \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../mnmx \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../forit \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../vmanip \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/cids \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../cid \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../scast \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../safe_cast \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../cid \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../rcmp \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../cids \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../vdata \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/basket \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/key \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/date \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/ifile \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../press_func \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../sout \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/imutex \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/branch_object \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/icol \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../vfind \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../touplow \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../ntuple_booking \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/mpi_create_basket \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/../impi \
- /softs/geant4.11.1.2/include/Geant4/tools/wroot/columns.icc \
- /softs/geant4.11.1.2/include/Geant4/G4RootAnalysisManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4RootNtupleManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TNtupleManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4BaseNtupleManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TNtupleDescription.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TNtupleManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4RootFileDef.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RootNtupleManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4RootNtupleFileManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VNtupleFileManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RootFileManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTFileManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TFileManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TFileInformation.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TFileManager.icc \
- /softs/geant4.11.1.2/include/Geant4/tools/wcsv_ntuple \
- /softs/geant4.11.1.2/include/Geant4/tools/vfind \
- /softs/geant4.11.1.2/include/Geant4/tools/vmanip \
- /softs/geant4.11.1.2/include/Geant4/tools/scast \
- /softs/geant4.11.1.2/include/Geant4/tools/ntuple_booking \
- /softs/geant4.11.1.2/include/Geant4/tools/sout \
+ /usr/local/root/6.26.10/include/TDirectory.h include/Wisard_Sensor.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UImanager.hh \
  /softs/geant4.11.1.2/include/Geant4/icomsdefs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VStateDependent.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UIcommandStatus.hh \
- /usr/include/c++/8/numeric /usr/include/c++/8/bits/stl_numeric.h
+ /usr/local/root/6.26.10/include/TBranch.h \
+ /usr/local/root/6.26.10/include/TObjString.h

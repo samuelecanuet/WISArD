@@ -11,7 +11,6 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <random>
 
 #include <unordered_map>
 #include <tuple>
@@ -77,9 +76,6 @@ public:
     // function generating the event primary vertex with emitted particles
     void GeneratePrimaries(G4Event *event);
 
-    // std::tuple<std::pair<std::vector<Histogram>, double>, std::pair<std::vector<Histogram>, double>, std::pair<std::vector<Histogram>, double>> GetSRIM_hist();
-    // double GetSRIM_data(std::vector<Histogram>, double);
-
     std::pair<std::vector<Histogram>, G4double>GetSRIM_hist();
     std::tuple<G4double, G4double, G4double> GetSRIM_data(std::vector<Histogram>, G4double);
 
@@ -107,9 +103,8 @@ inline std::pair<std::vector<Histogram>, G4double> Wisard_Generator::GetSRIM_his
         double num;
         
         if (iss >> num >> z_str >> y_str >> x_str) {
-            // Convertissez les valeurs et effectuez les opérations nécessaires ici
             
-            double x = std::stod(x_str.replace(x_str.find(','), 1, ".")); // Remplacez la virgule par un point
+            double x = std::stod(x_str.replace(x_str.find(','), 1, ".")); 
             double y = std::stod(y_str.replace(y_str.find(','), 1, "."));
             double z = std::stod(z_str.replace(z_str.find(','), 1, "."));
         
@@ -140,10 +135,7 @@ inline std::pair<std::vector<Histogram>, G4double> Wisard_Generator::GetSRIM_his
 
 inline std::tuple<G4double, G4double, G4double> Wisard_Generator::GetSRIM_data(std::vector<Histogram> histogram, double totalWeight)
 {
-    // Générer un nombre aléatoire pondéré entre 0 et la somme totale des poids
     G4double randomValue = G4RandFlat::shoot(0.0, totalWeight);
-
-    // Parcourir les bins de l'histogramme et sélectionner le bin en fonction du nombre aléatoire
     G4double cumulativeWeight = 0.0;
     for (const Histogram &bin : histogram)
     {

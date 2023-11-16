@@ -484,18 +484,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
  /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpBoundaryProcess.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalPhoton.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalSurface.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4SurfaceProperty.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomTools.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomDirection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VDiscreteProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -653,6 +641,9 @@
  /softs/geant4.11.1.2/include/Geant4/G4SubtractionSolid.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ExtrudedSolid.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GeomTypes.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
  /softs/geant4.11.1.2/include/Geant4/G4TessellatedSolid.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Voxelizer.hh \
  /softs/geant4.11.1.2/include/Geant4/G4SurfBits.hh \
@@ -688,32 +679,22 @@
  /softs/geant4.11.1.2/include/Geant4/G4ICRU90StoppingData.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Pow.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Exp.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Torus.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Torus.icc \
  /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4SafetyHelper.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4EqMagElectricField.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ChargeState.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ElectroMagneticField.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VIntegrationDriver.hh \
  /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ChargeState.hh \
  /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.icc \
  /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.icc \
  /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.icc \
  /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.icc \
  /softs/geant4.11.1.2/include/Geant4/G4FieldManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4FieldManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4NystromRK4.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Mag_EqRhs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4CachedMagneticField.hh \
- /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh \
- /softs/geant4.11.1.2/include/Geant4/G4NystromRK4.icc \
- /softs/geant4.11.1.2/include/Geant4/G4Mag_UsualEqRhs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Trap.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Trap.icc \
  /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh \
@@ -721,8 +702,4 @@
  /softs/geant4.11.1.2/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
  include/Wisard_Tracking.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
- /usr/include/c++/8/random /usr/include/c++/8/bits/random.h \
- /usr/include/c++/8/x86_64-redhat-linux/bits/opt_random.h \
- /usr/include/c++/8/bits/random.tcc /usr/include/c++/8/numeric \
- /usr/include/c++/8/bits/stl_numeric.h \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh

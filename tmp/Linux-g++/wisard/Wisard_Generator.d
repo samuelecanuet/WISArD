@@ -471,18 +471,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
  /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpBoundaryProcess.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalPhoton.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalSurface.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4SurfaceProperty.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomTools.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomDirection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VDiscreteProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -627,13 +615,7 @@
  /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
  /usr/local/root/6.26.10/include/TDirectory.h include/Wisard_Tracking.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
- /usr/include/c++/8/random /usr/include/c++/8/bits/random.h \
- /usr/include/c++/8/x86_64-redhat-linux/bits/opt_random.h \
- /usr/include/c++/8/bits/random.tcc /usr/include/c++/8/numeric \
- /usr/include/c++/8/bits/stl_numeric.h \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
- /softs/geant4.11.1.2/include/Geant4/G4IonTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Ions.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh

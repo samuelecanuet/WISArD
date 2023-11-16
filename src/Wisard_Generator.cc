@@ -1,17 +1,7 @@
 #include "Wisard_Generator.hh"
-#include "G4IonTable.hh"
 #include "G4ParticleGun.hh"
-#include "G4AnalysisManager.hh"
 #include "G4ParticleTable.hh"
 #include "Randomize.hh"
-#include <CLHEP/Random/RandGaussQ.h>
-
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <random>
 
 //----------------------------------------------------------------------
 
@@ -46,7 +36,6 @@ Wisard_Generator::~Wisard_Generator()
 // It is called by run manager the event loop
 void Wisard_Generator::GeneratePrimaries(G4Event *event)
 {
-
   G4ParticleDefinition *particle;
   G4ThreeVector dir;
   G4ParticleGun gun;

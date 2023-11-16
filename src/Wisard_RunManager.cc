@@ -1,23 +1,13 @@
 #include "Wisard_RunManager.hh"
-#include "CLHEP/Random/RandGauss.h"
-#include "G4AnalysisManager.hh"
+#include "Wisard_Sensor.hh"
 
-#include <iostream>
+#include "G4UImanager.hh"
 
 #include "TBranch.h"
 #include "TH1D.h"
 #include "TObjString.h"
 
-#include "G4VTrajectoryPoint.hh"
-#include "G4VTrajectory.hh"
-
-#include "Wisard_Sensor.hh"
-
-#include "G4RootAnalysisManager.hh"
-
-#include "G4UImanager.hh"
-
-#include <numeric>
+#include <iostream>
 
 //----------------------------------------------------------------------
 
@@ -238,7 +228,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     }
   }
 
-  int divi = 100;
+  int divi = 10000;
 
   ///// Writing all trees ///////////////////////////////////////////
   if (count % divi == 0)
