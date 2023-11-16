@@ -484,18 +484,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
  /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpBoundaryProcess.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalPhoton.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalSurface.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4SurfaceProperty.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomTools.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomDirection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VDiscreteProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -653,6 +641,9 @@
  /softs/geant4.11.1.2/include/Geant4/G4SubtractionSolid.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ExtrudedSolid.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GeomTypes.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
  /softs/geant4.11.1.2/include/Geant4/G4TessellatedSolid.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Voxelizer.hh \
  /softs/geant4.11.1.2/include/Geant4/G4SurfBits.hh \
@@ -688,8 +679,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4ICRU90StoppingData.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Pow.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Exp.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Torus.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Torus.icc \
  /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4SafetyHelper.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc \

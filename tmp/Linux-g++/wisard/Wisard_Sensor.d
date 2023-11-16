@@ -323,14 +323,7 @@
  /softs/geant4.11.1.2/include/Geant4/G4TouchableHistory.icc \
  /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpBoundaryProcess.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalPhoton.hh \
- /softs/geant4.11.1.2/include/Geant4/G4OpticalSurface.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Physics2DVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4SurfaceProperty.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomTools.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RandomDirection.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
  /softs/clhep/2.4.6.2/include/CLHEP/Random/Randomize.h \
  /softs/clhep/2.4.6.2/include/CLHEP/Random/defs.h \
@@ -393,11 +386,6 @@
  /softs/clhep/2.4.6.2/include/CLHEP/Random/RandSkewNormal.icc \
  /softs/clhep/2.4.6.2/include/CLHEP/Random/RandStudentT.h \
  /softs/clhep/2.4.6.2/include/CLHEP/Random/RandStudentT.icc \
- /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VDiscreteProcess.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.icc \
  /softs/geant4.11.1.2/include/Geant4/G4VParticleChange.hh \
@@ -407,7 +395,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.icc \
  /softs/geant4.11.1.2/include/Geant4/G4ProcessType.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4StackManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserStackingAction.hh \
@@ -458,6 +445,7 @@
  /softs/geant4.11.1.2/include/Geant4/G4VExternalNavigation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Navigator.icc \
  /softs/geant4.11.1.2/include/Geant4/G4ProcessManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ProcessVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ProcessVector.icc \
  /softs/geant4.11.1.2/include/Geant4/G4ProcessManager.icc \
