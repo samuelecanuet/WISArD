@@ -25,7 +25,8 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 - Replace String name detector to code
 - Uniform Magnetic Field for optimisation
 
+### v2.3
+- Add Garage (more precise position as to be done)
+
 ### TODO
-- Add Garage
-- Add Source in the Catcher 
-- Change research between primary and detected in Rubmanager or Generator
+- Add Source in the Catcher (adapting the generator)
