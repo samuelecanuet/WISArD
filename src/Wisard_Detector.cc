@@ -696,6 +696,57 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   Logic_AlSource1_side->SetVisAttributes(AlSource_att);
   Logic_AlSource2_side->SetVisAttributes(AlSource_att);
 
+  /// SOURCE
+  G4double thicknessSource = 1.5*mm;
+  Source_Position = Support_Position + Source_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness);
+  G4Material *Cu = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
+  Source = new G4Tubs("Source", 0., SuppCatcher_Source_radius_outer, thicknessSource / 2, 0., 360. * deg);
+  G4LogicalVolume *Logic_Source = new G4LogicalVolume(Source, Cu, "Logic_Source");                               // solid, material, name
+  Physics_Source = new G4PVPlacement(0,                                                                                                      // no rotation
+                                                  Source_Position + G4ThreeVector(0., 0., thicknessSource/2), // position
+                                                  Logic_Source, "Phys_Source",                                                 // its fLogical volume
+                                                  logic_mother_catcher,                                                                                   // its mother volume
+                                                  false,                                                                                                  // no boolean op.
+                                                  0);        
+
+  G4VisAttributes *Copper = new G4VisAttributes(G4Colour(0.72, 0.45, 0.2)); //(r,g,b) => magenta
+  Copper->SetForceWireframe(false);
+  Copper->SetForceSolid(true);
+  Logic_Source->SetVisAttributes(Copper);
+
+  //// GARAGE ////
+  G4double Garage_height = 40*mm;
+  G4double Garage_width= 32*mm;
+  G4double Garage_Thickness = 1*mm;
+  G4double Garage_Space1 = 5*mm;
+  G4double Garage_Space2 = 5*mm;
+  G4double Garage_X = -4.5*cm;
+  G4double Garage_Y = -4.5*cm;
+  G4double Garage_Z = 0*mm;
+  G4ThreeVector Garage_Position = G4ThreeVector(Garage_X, Garage_Y+4*mm, Garage_Z);
+  G4VSolid *Garage1 = new G4Box("Garage1", Garage_width / 2, Garage_height / 2, Garage_Thickness /2);
+  G4LogicalVolume *Logic_Garage1 = new G4LogicalVolume(Garage1, Al, "Logic_Garage1");                               // solid, material, name
+  G4PVPlacement* Physics_Garage1 = new G4PVPlacement(0,                                                                                                // no rotation
+                                               Garage_Position + G4ThreeVector(Garage_width / 2, Garage_height / 2, -Garage_Space1 / 2), // position
+                                               Logic_Garage1, "Phys_Garage1",                                                 // its fLogical volume
+                                               fLogicWorld,                                                                             // its mother volume
+                                               false,                                                                                            // no boolean op.
+                                               0);  
+  G4VSolid *Garage2 = new G4Box("Garage2", Garage_width / 2, Garage_height / 2, Garage_Thickness /2);
+  G4LogicalVolume *Logic_Garage2 = new G4LogicalVolume(Garage2, Al, "Logic_Garage2");                               // solid, material, name
+  G4PVPlacement* Physics_Garage2 = new G4PVPlacement(0,                                                                                                // no rotation
+                                               Garage_Position + G4ThreeVector(Garage_width / 2, Garage_height / 2, Garage_Space2 / 2), // position
+                                               Logic_Garage2, "Phys_Garage2",                                                 // its fLogical volume
+                                               fLogicWorld,                                                                             // its mother volume
+                                               false,                                                                                            // no boolean op.
+                                               0);  
+
+  Logic_Garage2->SetVisAttributes(visAtt_Supp_catcher);
+  Logic_Garage1->SetVisAttributes(visAtt_Supp_catcher);
+
+
+
+
   //=========================================================================================================================
   //========================================== SILICON DETECTORS _ COMMON PARAMETERS ========================================
   //=========================================================================================================================
@@ -880,7 +931,6 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4double height_y_SupportoRame_PlasticScint = 20.5 * mm - 2 * mm;
   G4double thickness_z_SupportoRame_PlasticScint = 1.5 * mm;
 
-  G4Material *material_SupportoRame_PlasticScint = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
   G4VSolid *bigBox_material_SupportoRame_PlasticScint = new G4Box("bigBox_material_SupportoRame_PlasticScint", length_x_SupportoRame_PlasticScint, height_y_SupportoRame_PlasticScint, thickness_z_SupportoRame_PlasticScint / 2); // corretto non div per due x e y
   G4VSolid *holeForPlasticScint = new G4Tubs("holeForPlasticScint", 0., fRadius_PlasticScintillator, thickness_z_SupportoRame_PlasticScint, 0., 360 * deg);
 
@@ -889,7 +939,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                                             0,
                                                                             G4ThreeVector(0., 0., 0.));
 
-  G4LogicalVolume *logic_Box_material_SupportoRame_PlasticScint = new G4LogicalVolume(Box_material_SupportoRame_PlasticScint, material_SupportoRame_PlasticScint, "logic_Box_material_SupportoRame_PlasticScint"); // solid, material, name
+  G4LogicalVolume *logic_Box_material_SupportoRame_PlasticScint = new G4LogicalVolume(Box_material_SupportoRame_PlasticScint, Cu, "logic_Box_material_SupportoRame_PlasticScint"); // solid, material, name
   G4VPhysicalVolume *physics_Box_material_SupportoRame_PlasticScint = new G4PVPlacement(0,                                                                                                                         // no rotation
                                                                                         G4ThreeVector(0., 0., delta + z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + thickness_z_SupportoRame_SiDetector / 2),
                                                                                         logic_Box_material_SupportoRame_PlasticScint, "logic_Box_material_SupportoRame_PlasticScint", // its fLogical volume
@@ -897,10 +947,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                                                         false,                                                                                        // no boolean op.
                                                                                         0);                                                                                           // copy nb.
 
-  G4VisAttributes *Box_material_SupportoRame_PlasticScint_att = new G4VisAttributes(G4Colour(0.72, 0.45, 0.2)); //(r,g,b) => magenta
-  Box_material_SupportoRame_PlasticScint_att->SetForceWireframe(false);
-  Box_material_SupportoRame_PlasticScint_att->SetForceSolid(true);
-  logic_Box_material_SupportoRame_PlasticScint->SetVisAttributes(Box_material_SupportoRame_PlasticScint_att);
+  logic_Box_material_SupportoRame_PlasticScint->SetVisAttributes(Copper);
 
   if (physics_Box_material_SupportoRame_PlasticScint == NULL)
   {
@@ -909,7 +956,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4double lenghtPlaccaCilidrica = fLength_PlasticScintillator - thickness_z_SupportoRame_SiDetector;
 
   G4VSolid *placcaRame_Cilindrica = new G4Tubs("placcaRame_Cilindrica", fRadius_PlasticScintillator, fRadius_PlasticScintillator + thickness_z_SupportoRame_PlasticScint, lenghtPlaccaCilidrica / 2, 0., 360 * deg);
-  G4LogicalVolume *logic_placcaRame_Cilindrica = new G4LogicalVolume(placcaRame_Cilindrica, material_SupportoRame_PlasticScint, "placcaRame_Cilindrica"); // solid, material, name
+  G4LogicalVolume *logic_placcaRame_Cilindrica = new G4LogicalVolume(placcaRame_Cilindrica, Cu, "placcaRame_Cilindrica"); // solid, material, name
   G4VPhysicalVolume *physics_placcaRame_Cilindrica = new G4PVPlacement(0,                                                                                 // no rotation
                                                                        G4ThreeVector(0., 0., delta + z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + thickness_z_SupportoRame_SiDetector + lenghtPlaccaCilidrica / 2),
                                                                        logic_placcaRame_Cilindrica, "logic_placcaRame_Cilindrica", // its fLogical volume
@@ -917,7 +964,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                                        false,                                                      // no boolean op.
                                                                        0);
 
-  logic_placcaRame_Cilindrica->SetVisAttributes(Box_material_SupportoRame_PlasticScint_att);
+  logic_placcaRame_Cilindrica->SetVisAttributes(Copper);
   if (physics_placcaRame_Cilindrica == NULL)
   {
   }
@@ -1010,6 +1057,8 @@ void Wisard_Detector::SetCatcher_Thickness(G4double value)
   MylarSource_side->SetZHalfLength(MylarSource_side->GetZHalfLength() + value / 2);
   Physics_MylarSource_side->SetTranslation(Physics_MylarSource_side->GetTranslation() + G4ThreeVector(0, 0, value / 2));
   Physics_AlSource2_side->SetTranslation(Physics_AlSource2_side->GetTranslation() + G4ThreeVector(0, 0, value));
+
+  Physics_Source->SetTranslation(Physics_Source->GetTranslation() + G4ThreeVector(0, 0, value));
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
 

@@ -124,18 +124,18 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
 
       if (iopt == 1)
       {
-        gun.SetParticleDefinition(particle);
-        gun.SetParticlePosition(G4ThreeVector(x, y, z));
-        gun.SetParticleMomentumDirection(dir);
-        gun.SetParticleEnergy(ekin);
-        gun.GeneratePrimaryVertex(event);
+        // gun.SetParticleDefinition(particle);
+        // gun.SetParticlePosition(G4ThreeVector(x, y, z));
+        // gun.SetParticleMomentumDirection(dir);
+        // gun.SetParticleEnergy(ekin);
+        // gun.GeneratePrimaryVertex(event);
 
-        //////FOR TEST/////////
-        //  gun.SetParticleDefinition        ( part_geantino );
-        //  gun.SetParticlePosition          ( G4ThreeVector (0*mm, 0, -30*mm)  );
-        //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
-        //  gun.SetParticleEnergy            ( ekin );
-        //  gun.GeneratePrimaryVertex        ( event );
+        ////FOR TEST/////////
+         gun.SetParticleDefinition        ( part_geantino );
+         gun.SetParticlePosition          ( G4ThreeVector (-4.5*cm, 0, -50*mm)  );
+         gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
+         gun.SetParticleEnergy            ( ekin );
+         gun.GeneratePrimaryVertex        ( event );
       }
     }
   }

@@ -32,7 +32,7 @@
 /Beam_Size 2 mm 300 um
 /Beam_Position 0 cm 0 cm
 /Catcher_Position_z 0 mm
-/Catcher_Position catcher1 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
+/Catcher_Position catcher2 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
 /Catcher_MylarDeltaThickness 0 um
 
 #---------------------------------------------------------------

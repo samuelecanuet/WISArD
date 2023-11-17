@@ -1,7 +1,3 @@
-//======================================================================
-//  Basic example of Geant4 simulation main program
-//======================================================================
-
 // declaration of the classes used in the main function
 #include "Wisard_RunManager.hh"
 #include "Wisard_Detector.hh"

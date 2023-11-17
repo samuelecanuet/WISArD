@@ -40,20 +40,19 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     index = track->GetTrackID();
     if (step->IsFirstStepInVolume())
     {
-      PrimaryInfo_init.ParticleName = track->GetDefinition()->GetParticleName();
+      PrimaryDictionnary[index] = PrimaryInfo_init;
+      PrimaryDictionnary[index].ParticleName = track->GetDefinition()->GetParticleName();
      
       if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "PlasticScintillator")
       {
-        PrimaryInfo_init.HitAngle = std::acos(G4ThreeVector(0,0,1) * track->GetMomentumDirection()) / deg;
+        PrimaryDictionnary[index].HitAngle = std::acos(G4ThreeVector(0,0,1) * track->GetMomentumDirection()) / deg;
       }
       else
       {
-        PrimaryInfo_init.HitAngle = std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
+        PrimaryDictionnary[index].HitAngle = std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
       }
 
-      PrimaryInfo_init.HitPosition = step->GetPreStepPoint()->GetPosition() / mm;
-      PrimaryInfo_init.DepositEnergy = 0;
-      PrimaryDictionnary[index] = PrimaryInfo_init;
+      PrimaryDictionnary[index].HitPosition = step->GetPreStepPoint()->GetPosition() / mm;    
     }
   }
   else
@@ -71,7 +70,6 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   // if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicMylarSource" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" && step->GetTrack()->GetPosition().z() < -0.*mm)
   if ((step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicAlSource1_side" || step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicAlSource1_central") && step->GetTrack()->GetTrackStatus() == fAlive)
   {
-    //G4cout<<step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName()<<G4endl;
     if (step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" || step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "logic_mother_catcher")
     {
       if (step->GetTrack()->GetDefinition()->GetParticleName() == "e+" || step->GetTrack()->GetDefinition()->GetParticleName() == "e-")

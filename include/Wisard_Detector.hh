@@ -73,7 +73,6 @@ public:
   void CloseInputB();                  // inline
   ifstream inputB;
   string input_nameB;
-
   void SetCatcherPosition_theta(G4String position, G4double angle);
 
   void SetCatcherPosition_z(G4double catcher_z);
@@ -81,6 +80,7 @@ public:
   G4Tubs *MylarSource;
   G4Tubs *MylarSource_central;
   G4Tubs *MylarSource_side;
+  G4Tubs *Source;
 
   G4Tubs *fSolidWorld;
   G4LogicalVolume *fLogicWorld;
@@ -161,6 +161,9 @@ public:
   G4VPhysicalVolume *Physics_AlSource2_central;
   G4VPhysicalVolume *Physics_AlSource2_side;
 
+  G4VPhysicalVolume *Physics_Source;
+
+
   G4VPhysicalVolume *phys_centralPEEK_ring;
   G4VPhysicalVolume *phys_sidePEEK_ring;
 
@@ -169,6 +172,7 @@ public:
   G4ThreeVector Side_Hole_Position;
   G4ThreeVector Catcher_side_Position;
   G4ThreeVector Catcher_central_Position;
+  G4ThreeVector Source_Position;
   G4double PEEK_thikness;
   G4double SuppCatcher_thikness = 2*mm;
 

@@ -28,3 +28,4 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 ### TODO
 - Add Garage
 - Add Source in the Catcher 
+- Change research between primary and detected in Rubmanager or Generator
