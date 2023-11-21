@@ -27,6 +27,13 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 
 ### v2.3
 - Add Garage (more precise position as to be done)
+- More accurate particle recording information in sensor
+- Add ROOT from CRADLE as input file possible
 
 ### TODO
-- Add Source in the Catcher (adapting the generator)
+- Add Source in the Catcher (+adapting the generator)
+
+
+(v2.1 1e6 3h)
+(v2.2 1e6 1h)
+(v2.3 1e6 35min)

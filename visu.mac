@@ -9,14 +9,14 @@
 /run/initialize
 /run/verbose      0
 /event/verbose    0
-/tracking/verbose 1
+/tracking/verbose 0
 
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /input/Open_SRIM SRIM_data/32Ar.txt
-/input/Open_CRADLE ../../../../../../mnt/hgfs/shared-2/data/32Ar_a1_b0_1.txt
+/input/Open_CRADLE ../CRADLE-master/test.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters

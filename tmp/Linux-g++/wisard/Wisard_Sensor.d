@@ -323,7 +323,23 @@
  /softs/geant4.11.1.2/include/Geant4/G4TouchableHistory.icc \
  /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StackManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserStackingAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ClassificationOfNewTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StackedTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackStack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SmartTrackStack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrajectoryContainer.hh \
+ /softs/geant4.11.1.2/include/Geant4/evtdefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PrimaryTransformer.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTableIterator.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4PrimaryParticle.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SteppingManager.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
  /softs/clhep/2.4.6.2/include/CLHEP/Random/Randomize.h \
  /softs/clhep/2.4.6.2/include/CLHEP/Random/defs.h \
@@ -386,32 +402,6 @@
  /softs/clhep/2.4.6.2/include/CLHEP/Random/RandSkewNormal.icc \
  /softs/clhep/2.4.6.2/include/CLHEP/Random/RandStudentT.h \
  /softs/clhep/2.4.6.2/include/CLHEP/Random/RandStudentT.icc \
- /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VParticleChange.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VParticleChange.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ForceCondition.hh \
- /softs/geant4.11.1.2/include/Geant4/G4GPILSelection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ProcessType.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StackManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UserStackingAction.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ClassificationOfNewTrack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StackedTrack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrackStack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SmartTrackStack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrajectoryContainer.hh \
- /softs/geant4.11.1.2/include/Geant4/evtdefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PrimaryTransformer.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTableIterator.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.icc \
- /softs/geant4.11.1.2/include/Geant4/G4PrimaryParticle.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SteppingManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Navigator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GRSVolume.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GRSVolume.icc \
@@ -446,6 +436,15 @@
  /softs/geant4.11.1.2/include/Geant4/G4Navigator.icc \
  /softs/geant4.11.1.2/include/Geant4/G4ProcessManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4VParticleChange.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VParticleChange.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ForceCondition.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GPILSelection.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ProcessType.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ProcessVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ProcessVector.icc \
  /softs/geant4.11.1.2/include/Geant4/G4ProcessManager.icc \
@@ -461,4 +460,10 @@
  /softs/geant4.11.1.2/include/Geant4/G4UItokenNum.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ApplicationState.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh
+ /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Event.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PrimaryVertex.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DCofThisEvent.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VDigiCollection.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VUserEventInformation.hh

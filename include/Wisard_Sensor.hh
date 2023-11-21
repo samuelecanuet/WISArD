@@ -3,6 +3,7 @@
 
 #include "../Wisard_Global.hh"
 #include "G4VSensitiveDetector.hh"
+#include "G4EventManager.hh"
 
 struct PrimaryInfo
 {
@@ -40,8 +41,21 @@ public:
   void ResetDictionnary() { PrimaryDictionnary.clear(); }
   std::unordered_map<G4int, PrimaryInfo> GetDictionnary() { return PrimaryDictionnary; }
 
+  inline void PrintDictionnary(PrimaryInfo dic);
+
   PrimaryInfo PrimaryInfo_init;
 
   int index;
+  
 };
+
+void Wisard_Sensor::PrintDictionnary(PrimaryInfo dic)
+{
+  G4cout<<G4endl;
+  G4cout<<"Name : "<<dic.ParticleName << G4endl;
+  G4cout<<setprecision(4)<<"Energy Deposit : "<< dic.DepositEnergy << " keV"<<G4endl;
+  G4cout<<setprecision(4)<<"Hit Angle : "<< dic.HitAngle << " deg"<<G4endl;
+  G4cout<<"Hit Position : "<< dic.HitPosition << "(mm)"<<G4endl;
+  G4cout<<G4endl;
+}
 #endif

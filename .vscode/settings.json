@@ -72,6 +72,7 @@
         "shared_mutex": "cpp",
         "typeindex": "cpp",
         "valarray": "cpp",
-        "group2tree_XF_MCP_ADC_cor.C": "cpp"
+        "group2tree_XF_MCP_ADC_cor.C": "cpp",
+        "fit.C": "cpp"
     }
 }

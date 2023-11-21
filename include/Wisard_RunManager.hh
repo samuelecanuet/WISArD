@@ -9,6 +9,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1D.h"
+#include "TTreeReader.h"
 #include <TDirectory.h>
 
 #include <unordered_map>
@@ -40,7 +41,7 @@ protected:
   G4int Event_Number;
   G4int count = 0;
 
-  ifstream input;
+  ifstream input_txt;
   string input_name;
 
   ifstream inputSRIM;
@@ -108,7 +109,7 @@ public:
   ////                  declaration
   int OpenInput(const string &fname);
   void CloseInput();                  // inline
-  ifstream &GetInput();               // inline
+  ifstream &GetInput_TXT();               // inline
   const string &GetInputName() const; // inline
 
   int OpenInputSRIM(const string &fname);
@@ -172,15 +173,25 @@ inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl2_side() { ret
 // Close the input file
 inline void Wisard_RunManager::CloseInput()
 {
-  input.close();
+  input_txt.close();
   input_name = "";
 }
 
 // Get the input file stream information
-inline ifstream &Wisard_RunManager::GetInput()
+inline ifstream &Wisard_RunManager::GetInput_TXT()
 {
-  return (input);
+  return (input_txt);
 }
+
+// inline DATA &Wisard_RunManager::GetInput_ROOT()
+// {
+  
+//   root_file = new TFile(input_name.c_str(), "READ");
+
+//   datatree.reader = TTreeReader("ParticleTree", root_file);;
+//   datatree.event = TTreeReaderValue<int>(Reader, "event");
+//   return datatree;
+// }
 
 // Get the input file name
 inline const string &Wisard_RunManager::GetInputName() const
