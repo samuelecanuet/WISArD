@@ -258,36 +258,40 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   ///////////////////////////////////////////////////////////////////
 }
 
-int Wisard_RunManager::OpenInput(const string &fname)
-{
-  int error = 0; // return value
+int Wisard_RunManager::OpenInput(const std::string &fname) {
+    int error = 0; // Valeur de retour
 
-  if (fname != "")
-  {
-    // close previous output... just in case
-    CloseInput();
+    if (fname != "") {
+        // Fermer la sortie précédente au cas où
+        CloseInput();
 
-    // try to open the new file
-    input.open(fname.c_str());
-
-    if (input.fail())
-    {
-      error = 2;
-      cerr << "<W> OpenInput : error opening file " << fname << endl;
+        // Vérifier l'extension du fichier
+        size_t dotPosition = fname.find_last_of('.');
+        if (dotPosition != std::string::npos) {
+            std::string extension = fname.substr(dotPosition + 1);
+            input_name = fname;
+            if (extension == "root") {
+                TFile * file = new TFile(fname.c_str(), "READ");
+                if (file->IsOpen()){std::cout << "<I> Open input file : " << fname << std::endl; file->Close();}
+                 else {std::cerr <<"<W> Unable to open CRADLE input file" << std::endl; error = 2;}
+            } else if (extension == "txt") {
+                input_txt.open(fname.c_str());
+                if (!input_txt.fail()){std::cout << "<I> Open input file : " << fname << std::endl;}
+                else {std::cerr <<"<W> Unable to open CRADLE input file" << std::endl; error = 2;}
+            } else {
+                error = 3;
+                std::cerr << "<W> Unrecognized input file extension : " << extension << std::endl;
+            }
+        } else {
+            error = 4; // Aucune extension de fichier trouvée
+            std::cerr << "<W> No file extension found in input file name : " << fname << std::endl;
+        }
+    } else {
+        error = 1; // Nom de fichier vide
+        std::cerr << "<W> Empty input file name" << std::endl;
     }
-    else
-    {
-      input_name = fname;
-      cout << "<I> Open input file: " << fname << endl;
-    }
-  }
-  else
-  {
-    error = 1;
-    cerr << "<W> OpenInput : empty file name" << endl;
-  }
 
-  return (error);
+    return error;
 }
 
 int Wisard_RunManager::OpenInputSRIM(const string &fname)

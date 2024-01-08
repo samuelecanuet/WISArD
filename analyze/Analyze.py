@@ -226,7 +226,7 @@ class ROOT_DISPLAY:
     
 if __name__ == "__main__":
 
-    file = TFile(f"../../../../../../../mnt/hgfs/shared-2/likev2.1/32Ar_a1_b0.root")
+    file = TFile(f"test_txt.root")
     analyse = ROOT_DISPLAY(file)
     print(analyse.GetEshiftDictionnary())
     
@@ -285,22 +285,22 @@ if __name__ == "__main__":
     #plt.savefig(f"Pl_position.png", dpi=300)
 
     ###
-    colors=["blue", "orange", "red", "green", "purple", "brown", "black", "cyan", "grey", "yellow"]
+    # colors=["blue", "orange", "red", "green", "purple", "brown", "black", "cyan", "grey", "yellow"]
     
-    dic={}
-    for i in [1,2]:
-        fig, axs = plt.subplots()
-        for tesla, color in zip(["1T", "2T", "3T", "4T"],  ["blue", "orange", "red", "green"]):
-            filename = f"32Ar_a1_b0_{i}_{tesla}.root"
-            if tesla == "Pl": label = "4T" 
-            else: label = tesla
+    # dic={}
+    # for i in [1,2]:
+    #     fig, axs = plt.subplots()
+    #     for tesla, color in zip(["1T", "2T", "3T", "4T"],  ["blue", "orange", "red", "green"]):
+    #         filename = f"32Ar_a1_b0_{i}_{tesla}.root"
+    #         if tesla == "Pl": label = "4T" 
+    #         else: label = tesla
 
-            file = ROOT_DISPLAY(TFile(filename))
-            print(file.GetHist("h1d_PL_Angle_positron").Integral())
-            print(file.GetHist("h1d_PL_E0_positron").Integral())
-            ax = file.Display("h1d_PL_Angle_positron", axs, normalized = True, label = label, color=color, title=f"Plastic Scintillator {i} MeV Positron Hit Angle")
-        plt.legend()
-        plt.show()
+    #         file = ROOT_DISPLAY(TFile(filename))
+    #         print(file.GetHist("h1d_PL_Angle_positron").Integral())
+    #         print(file.GetHist("h1d_PL_E0_positron").Integral())
+    #         ax = file.Display("h1d_PL_Angle_positron", axs, normalized = True, label = label, color=color, title=f"Plastic Scintillator {i} MeV Positron Hit Angle")
+    #     plt.legend()
+    #     plt.show()
         #plt.savefig(f"Pl_position_{i}_MeV.png", dpi=300)
 
 

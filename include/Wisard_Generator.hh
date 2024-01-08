@@ -6,6 +6,8 @@
 #include "Wisard_RunManager.hh"
 #include "Wisard_Tracking.hh"
 
+#include "G4ParticleGun.hh"
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -14,6 +16,7 @@
 
 #include <unordered_map>
 #include <tuple>
+#include <functional>
 
 #include "Randomize.hh"
 
@@ -39,7 +42,6 @@ struct TupleHash {
 
 class Wisard_Generator : public G4VUserPrimaryGeneratorAction
 {
-
     //------------------------------------------------------------
     // internal variables definition
 protected:
@@ -47,6 +49,7 @@ protected:
     double energy;
     int ievent, iev_len = 0, isubevent, isubev_len = 0;
 
+    G4ParticleTable *particle_table = G4ParticleTable::GetParticleTable();
     G4ParticleDefinition *part_electron;
     G4ParticleDefinition *part_positron;
     G4ParticleDefinition *part_gamma;
@@ -64,17 +67,41 @@ protected:
     std::tuple<G4double, G4double, G4double> tuple;
     G4double x_SRIM, y_SRIM, z_SRIM;
 
+    G4ParticleDefinition *particle;
+    G4ThreeVector dir;
+    G4ParticleGun gun;
+
     std::pair<std::vector<Histogram>, G4double> res;
+
+    Long64_t current_entry = 0;
 
     //------------------------------------------------------------
     // class functions definition
+private:
+    TFile* root_file;
+    unique_ptr<TTreeReader> Reader;
+
+    unique_ptr<TTreeReaderValue<Int_t>> code;
+    unique_ptr<TTreeReaderValue<Int_t>> eventid;
+    unique_ptr<TTreeReaderValue<double>> ekin_;
+    unique_ptr<TTreeReaderValue<double>> px;
+    unique_ptr<TTreeReaderValue<double>> py;
+    unique_ptr<TTreeReaderValue<double>> pz;
+
+
+
 public:
     // constructor and destructor
     Wisard_Generator(Wisard_RunManager *mgr);
+
+    // destructor
     ~Wisard_Generator();
 
     // function generating the event primary vertex with emitted particles
     void GeneratePrimaries(G4Event *event);
+    void TXT_GENERATOR(G4Event *event);
+    void ROOT_GENERATOR(G4Event *event);
+    std::function<void(G4Event*)> GENERATOR;
 
     std::pair<std::vector<Histogram>, G4double>GetSRIM_hist();
     std::tuple<G4double, G4double, G4double> GetSRIM_data(std::vector<Histogram>, G4double);
@@ -82,6 +109,7 @@ public:
     void SetBeamSize(G4double r, G4double r_std);
     void SetBeamPosition(G4double x, G4double y);
     void SetCatcherPosition_z(G4double catcher_z);
+
 };
 
 inline std::pair<std::vector<Histogram>, G4double> Wisard_Generator::GetSRIM_hist()

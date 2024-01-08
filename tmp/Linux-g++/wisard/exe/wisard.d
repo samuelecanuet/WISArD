@@ -469,6 +469,7 @@
  /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
  /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -611,6 +612,23 @@
  /usr/local/root/6.26.10/include/TFitResultPtr.h \
  /usr/include/c++/8/cfloat \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
+ /usr/local/root/6.26.10/include/TTreeReader.h \
+ /usr/local/root/6.26.10/include/TTree.h \
+ /usr/local/root/6.26.10/include/TTreeReaderUtils.h \
+ /usr/local/root/6.26.10/include/TBranchProxyDirector.h \
+ /usr/local/root/6.26.10/include/TBranchProxy.h \
+ /usr/local/root/6.26.10/include/TLeaf.h \
+ /usr/local/root/6.26.10/include/TClonesArray.h \
+ /usr/local/root/6.26.10/include/TError.h \
+ /usr/local/root/6.26.10/include/DllImport.h \
+ /usr/local/root/6.26.10/include/TVirtualCollectionProxy.h \
+ /usr/local/root/6.26.10/include/TClassRef.h \
+ /usr/local/root/6.26.10/include/TNotifyLink.h \
+ /usr/local/root/6.26.10/include/TObject.h \
+ /usr/local/root/6.26.10/include/TError.h \
+ /usr/local/root/6.26.10/include/TTreeReaderValue.h \
+ /usr/include/c++/8/deque /usr/include/c++/8/bits/stl_deque.h \
+ /usr/include/c++/8/bits/deque.tcc \
  /usr/local/root/6.26.10/include/TDirectory.h include/Wisard_Detector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VUserDetectorConstruction.hh \
  include/Wisard_RunManager.hh \
@@ -699,6 +717,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
  include/Wisard_Tracking.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
  include/Wisard_Messenger.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UImessenger.hh \

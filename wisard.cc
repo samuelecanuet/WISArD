@@ -1,7 +1,3 @@
-//======================================================================
-//  Basic example of Geant4 simulation main program
-//======================================================================
-
 // declaration of the classes used in the main function
 #include "Wisard_RunManager.hh"
 #include "Wisard_Detector.hh"
@@ -22,6 +18,7 @@
 
 int main(int argc, char **argv)
 {
+  system("Logo/logo.ans");
   G4Random::setTheSeed(123456789);
 
   // get run time
@@ -49,6 +46,7 @@ int main(int argc, char **argv)
   run.SetUserAction(ptr_gene);
 
   new Wisard_Messenger(&run, ptr_det, ptr_gene);
+
 
   run.Initialize();
 
