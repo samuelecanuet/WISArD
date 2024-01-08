@@ -2,7 +2,12 @@
 #include "G4VProcess.hh"
 #include "G4TrackingManager.hh"
 #include "G4Event.hh"
-
+#include <G4Field.hh>
+#include "G4FieldManager.hh"
+#include "G4TransportationManager.hh"
+#include "G4LogicalVolume.hh"
+#include "G4TouchableHandle.hh"
+#include "G4Navigator.hh"
 //----------------------------------------------------------------------
 
 // constructor of the sensitive detector associated to the Silicon Detector
@@ -60,8 +65,6 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   }
 
   PrimaryDictionnary[index].DepositEnergy += step->GetTotalEnergyDeposit() / keV;
-
-  //PrintDictionnary(PrimaryDictionnary[index]);
 
   // ####################################################################
   // !!! KILLING down-positron/electron for performance !!!

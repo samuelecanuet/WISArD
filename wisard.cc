@@ -18,6 +18,7 @@
 
 int main(int argc, char **argv)
 {
+  system("Logo/logo.ans");
   G4Random::setTheSeed(123456789);
 
   // get run time
@@ -45,6 +46,7 @@ int main(int argc, char **argv)
   run.SetUserAction(ptr_gene);
 
   new Wisard_Messenger(&run, ptr_det, ptr_gene);
+
 
   run.Initialize();
 

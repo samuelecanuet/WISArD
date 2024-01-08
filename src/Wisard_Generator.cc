@@ -103,7 +103,7 @@ void Wisard_Generator::TXT_GENERATOR(G4Event *event)
       string name;
       double ekin, exc, mom[4], time;
       manager_ptr->GetInput_TXT() >> ievent >> time >> name >> exc >> ekin >> mom[0] >> dir[0] >> dir[1] >> dir[2];
-      /// cout << "\t" << ievent << "\t" << time << "\t" << name << "\t" << exc << "\t" << ekin << "\t" <<  mom[0] << "\t" <<  mom[1] << "\t" <<  mom[2] << "\t" <<  mom[3] << endl;
+      //cout << "\t" << ievent << "\t" << time << "\t" << name << "\t" << exc << "\t" << ekin << "\t" <<  mom[0] << "\t" <<  mom[1] << "\t" <<  mom[2] << "\t" <<  mom[3] << endl;
       currentpartNr++;
 
       if (name.compare(0, 2, "e-") == 0)
@@ -169,8 +169,9 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
 
   z = position_catcher_z + get<2>(tuple) * angstrom;
 
-  while ((*Reader).Next() && **eventid == event->GetEventID())
+  while (Reader->Next() && **eventid == event->GetEventID())
   {
+    if (**code <= 2212 && **code != 12){
       dir[0] = **px;
       dir[1] = **py;
       dir[2] = **pz;
@@ -180,13 +181,6 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
       gun.SetParticleMomentumDirection(dir);
       gun.SetParticleEnergy(**ekin_*keV);
       gun.GeneratePrimaryVertex(event);
-
-      // FOR TEST/////////
-      //   gun.SetParticleDefinition        ( part_geantino );
-      //   gun.SetParticlePosition          ( G4ThreeVector (-4.5*cm, 0, -50*mm)  );
-      //   gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
-      //   gun.SetParticleEnergy            ( *ekin*keV );
-      //   gun.GeneratePrimaryVertex        ( event );
-  }
+  }}
   (*Reader).SetEntry((*Reader).GetCurrentEntry()-1);
 }

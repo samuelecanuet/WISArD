@@ -226,7 +226,7 @@ class ROOT_DISPLAY:
     
 if __name__ == "__main__":
 
-    file = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_a1_b0.root")
+    file = TFile(f"test_txt.root")
     analyse = ROOT_DISPLAY(file)
     print(analyse.GetEshiftDictionnary())
     

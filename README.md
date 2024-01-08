@@ -2,6 +2,26 @@
 
 This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 
+## Prerequisites
+- **Geant4 11.1.2**
+- **ROOT** 
+- **PyROOT** (only for *Analyze.py*)
+- **Environement variables :**
+```bash
+source $G4INSTALL/geant4make.csh $G4INSTALL
+setenv PATH ${PATH}:$WhereGitIs/WISArD/bin/Linux-g++
+```
+
+## Usage
+:warning: 
+
+
+### To run the simulation in visualisation mode :
+
+```bash
+wisard 
+```
+
 ## Version History
 
 ### v1.0

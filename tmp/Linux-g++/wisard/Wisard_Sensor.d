@@ -466,4 +466,13 @@
  /softs/geant4.11.1.2/include/Geant4/G4PrimaryVertex.hh \
  /softs/geant4.11.1.2/include/Geant4/G4DCofThisEvent.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VDigiCollection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VUserEventInformation.hh
+ /softs/geant4.11.1.2/include/Geant4/G4VUserEventInformation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SafetyHelper.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4LogicalVolume.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TouchableHandle.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Navigator.hh
