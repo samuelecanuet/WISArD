@@ -16,7 +16,7 @@
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /input/Open_SRIM SRIM_data/32Ar.txt
-/input/Open_CRADLE ../CRADLE-master/test.root
+/input/Open_CRADLE CRADLE_data/SAMPLE.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
