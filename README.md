@@ -36,8 +36,8 @@ Multith_CRADLE-G4 nucleus=32Ar N=10 n=2 CS=0 CV=1
 ```
 If one parameter is not given it will be set in SM case. Additionaly, *macro_base.txt* will be use as macro sample.
 
-### In this mode you can run CRADLE++ in the same time to generate file for the Geant4 simulation. But if you want to use your own files, you have just to comment the *line 214* in *Multith_CRADLE-G4*. Your file have to be generate by CRADLE++ or with the same architecture.
-### You have to take into account that the file are written like :
+In this mode you can run CRADLE++ in the same time to generate file for the Geant4 simulation. But if you want to use your own files, you have just to comment the *line 214* in *Multith_CRADLE-G4*. Your file have to be generate by CRADLE++ or with the same architecture.
+You have to take into account that the file are written like :
 ```bash
 32Ar_a1_b0_x.txt or .root
 ```
@@ -45,7 +45,7 @@ If one parameter is not given it will be set in SM case. Additionaly, *macro_bas
 ```bash
 32Ar_CS=0_CV=1_x.txt or .root
 ```
-### With x the number of the run (x<=N).
+With x the number of the run (x<=N).
 
 ## Result
 You end up (N ROOT files if you are un MultiThreading mode) with simulation informations, a Tree and a histogram of energy deposit for each detector in a ROOT file. The filename is set in the macro file.
