@@ -1,5 +1,5 @@
 #include "globals.hh"
-#include "../Wisard_Global.hh"
+#include "Wisard_Global.hh"
 #include "G4MagneticField.hh"
 #include "G4ios.hh"
 

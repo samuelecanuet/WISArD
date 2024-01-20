@@ -1,5 +1,5 @@
 ./tmp/Darwin-g++/wisard/Wisard_PhysList.o tmp/Darwin-g++/wisard/Wisard_PhysList.d: src/Wisard_PhysList.cc include/Wisard_PhysList.hh \
-  include/../Wisard_Global.hh \
+  include/Wisard_Global.hh \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/pthread.h \

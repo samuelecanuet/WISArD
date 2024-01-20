@@ -1,7 +1,7 @@
 #ifndef WITCH_SENSOR_HH
 #define WITCH_SENSOR_HH
 
-#include "../Wisard_Global.hh"
+#include "Wisard_Global.hh"
 #include "G4VSensitiveDetector.hh"
 #include "G4EventManager.hh"
 

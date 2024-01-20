@@ -71,11 +71,12 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   // ####################################################################
 
   // if (step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicMylarSource" && step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" && step->GetTrack()->GetPosition().z() < -0.*mm)
-  if ((step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicAlSource1_side" || step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicAlSource1_central") && step->GetTrack()->GetTrackStatus() == fAlive)
+  // if ((step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicAlSource1_side" || step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "LogicAlSource1_central") && step->GetTrack()->GetTrackStatus() == fAlive)
+  if (step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo() == 1 && step->GetPostStepPoint()->GetPosition().z() <  step->GetTrack()->GetVertexPosition().z())
   {
     if (step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" || step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "logic_mother_catcher")
     {
-      if (step->GetTrack()->GetDefinition()->GetParticleName() == "e+" || step->GetTrack()->GetDefinition()->GetParticleName() == "e-")
+      if (step->GetTrack()->GetDefinition()->GetPDGEncoding () == -11 || step->GetTrack()->GetDefinition()->GetPDGEncoding () == 11)
       {
         step->GetTrack()->SetTrackStatus(fStopAndKill);
       }

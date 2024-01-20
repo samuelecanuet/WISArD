@@ -211,11 +211,11 @@ while [ $Saver -le $RunEnd ]; do
         cp ../config/config_base.txt config_${constants}_bis.txt
         sed -e "$replace" config_${constants}_bis.txt > ../config/config_${constants}.txt
         rm config_${constants}_bis.txt
-        ./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.txt
+        ./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.root
         cd -
 
         cp macro_base.mac tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        sed -e "s|%inputCRADLE|../${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.txt|g; s/%inputSRIM/${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}_${constants}_${Saver}.root|g; s/%events/${events}/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
+        sed -e "s|%inputCRADLE|../${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.root|g; s/%inputSRIM/AlMylar_2021_${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}_F_${constants}_${Saver}.root|g; s/%events/${events}/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
         rm tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
         wisard tempory/macro_${Saver}_${Nuclei}_${constants}.mac &
         echo -e "$GREEN wisard tempory/macro_${Saver}_${Nuclei}_${constants}.mac $COLOR"

@@ -9,7 +9,7 @@
 #define STEP_MAX_HH
 
 // simulation general include
-#include "../Wisard_Global.hh"
+#include "Wisard_Global.hh"
 
 // Geant4 includes
 #include "globals.hh"

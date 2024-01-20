@@ -243,7 +243,7 @@
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__node_handle \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/optional \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iomanip \
-  include/../Wisard_Global.hh \
+  include/Wisard_Global.hh \
   /opt/local/include/Geant4/Geant4.10.6/Geant4/G4Colour.hh \
   /opt/local/include/Geant4/Geant4.10.6/Geant4/G4ThreeVector.hh \
   /opt/local/include/Geant4/Geant4.10.6/Geant4/CLHEP/Vector/ThreeVector.h \

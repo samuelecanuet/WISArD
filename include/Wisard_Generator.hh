@@ -1,7 +1,7 @@
 #ifndef WITCH_GENERATOR_HH
 #define WITCH_GENERATOR_HH
 
-#include "../Wisard_Global.hh"
+#include "Wisard_Global.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "Wisard_RunManager.hh"
 #include "Wisard_Tracking.hh"
@@ -190,6 +190,6 @@ inline void Wisard_Generator::SetBeamPosition(G4double x, G4double y)
 
 inline void Wisard_Generator::SetCatcherPosition_z(G4double catcher_z)
 {
-    position_catcher_z = catcher_z-0.5*mm;   ///0.5mm for the start of the aluminuin layer in the support
+    position_catcher_z = catcher_z; 
 }
 #endif

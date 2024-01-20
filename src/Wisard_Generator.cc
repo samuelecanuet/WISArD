@@ -129,7 +129,6 @@ void Wisard_Generator::TXT_GENERATOR(G4Event *event)
         continue;
       }
 
-        //cout<<particle->GetParticleName()<<endl;
         gun.SetParticleDefinition(particle);
         gun.SetParticlePosition(G4ThreeVector(x, y, z));
         gun.SetParticleMomentumDirection(dir);
@@ -171,7 +170,9 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
 
   while (Reader->Next() && **eventid == event->GetEventID())
   {
-    if (**code <= 2212 && **code != 12){
+    if (**code <= 2212 && **code != 12 )
+    {
+      
       dir[0] = **px;
       dir[1] = **py;
       dir[2] = **pz;
@@ -179,8 +180,16 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
       gun.SetParticleDefinition(particle_table->FindParticle(**code));
       gun.SetParticlePosition(G4ThreeVector(x, y, z));
       gun.SetParticleMomentumDirection(dir);
-      gun.SetParticleEnergy(**ekin_*keV);
+      gun.SetParticleEnergy(**ekin_* keV);
       gun.GeneratePrimaryVertex(event);
-  }}
-  (*Reader).SetEntry((*Reader).GetCurrentEntry()-1);
+
+      //////////FOR TEST/////////
+        //  gun.SetParticleDefinition        ( part_geantino );
+        //  gun.SetParticlePosition          ( G4ThreeVector (x, y, z+47*nm)  );
+        //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,-1.) );
+        //  gun.SetParticleEnergy            ( **ekin_*keV );
+        //  gun.GeneratePrimaryVertex        ( event );
+    }
+  }
+  (*Reader).SetEntry((*Reader).GetCurrentEntry() - 1);
 }

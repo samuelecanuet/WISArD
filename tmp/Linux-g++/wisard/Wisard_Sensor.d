@@ -1,5 +1,5 @@
 ./tmp/Linux-g++/wisard/Wisard_Sensor.o tmp/Linux-g++/wisard/Wisard_Sensor.d: src/Wisard_Sensor.cc /usr/include/stdc-predef.h \
- include/Wisard_Sensor.hh include/../Wisard_Global.hh \
+ include/Wisard_Sensor.hh include/Wisard_Global.hh \
  /usr/include/stdio.h /usr/include/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
  /usr/include/bits/wordsize.h /usr/include/bits/long-double.h \

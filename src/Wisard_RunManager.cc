@@ -131,7 +131,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       Particle_PDG = Primary->GetG4code()->GetPDGEncoding();
       x = PrimaryVertex->GetX0() / um;
       y = PrimaryVertex->GetY0() / um;
-      z = (0.5*mm+PrimaryVertex->GetZ0()) / nm; ///0.5mm for the start of the aluminuin layer in the support
+      z = PrimaryVertex->GetZ0() / nm; 
       px = Momentum.x();
       py = Momentum.y();
       pz = Momentum.z();
@@ -166,6 +166,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     
     
     ///// Reset all variables of detectors pour the next primary particle /////////////////
+    Particle_PDG = 0;
     x = 0;
     y = 0;
     z = 0;
@@ -177,8 +178,8 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Catcher_Side_Deposit_Energy = 0;
     PlasticScintillator_Deposit_Energy = 0;
     PlasticScintillator_Hit_Position_x = 0;
-    PlasticScintillator_Hit_Position_x = 0;
-    PlasticScintillator_Hit_Position_x = 0;
+    PlasticScintillator_Hit_Position_y = 0;
+    PlasticScintillator_Hit_Position_z = 0;
     PlasticScintillator_Hit_Angle = 0;
     Silicon_Detector_Deposit_Energy.clear();
     Silicon_Detector_Hit_Position_x.clear();
@@ -195,12 +196,12 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   int index_beta = -1;
   for (int part = 1; part <= event->GetNumberOfPrimaryVertex(); part++)
   {
-    G4String part_name = event->GetPrimaryVertex(part - 1)->GetPrimary()->GetG4code()->GetParticleName();
-    if (part_name == "e+" || part_name == "e-")
+    G4int part_PDG = event->GetPrimaryVertex(part - 1)->GetPrimary()->GetG4code()->GetPDGEncoding();
+    if (part_PDG == -11 || part_PDG == 11)
     {
       index_beta = part;
     }
-    if (part_name == "alpha" || part_name == "proton")
+    if (part_PDG == 1000020040 || part_PDG == 2212)
     {
       if (index_beta != -1)
       {

@@ -1,5 +1,5 @@
 ./tmp/Linux-g++/wisard/exe/wisard.o tmp/Linux-g++/wisard/exe/wisard.d: wisard.cc /usr/include/stdc-predef.h \
- include/Wisard_RunManager.hh include/../Wisard_Global.hh \
+ include/Wisard_RunManager.hh include/Wisard_Global.hh \
  /usr/include/stdio.h /usr/include/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
  /usr/include/bits/wordsize.h /usr/include/bits/long-double.h \

@@ -107,10 +107,17 @@ void Wisard_Messenger::DefineInputCommands()
   input_cmd_catcher_theta->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   // Set Catcher Thickness
-  input_cmd_catcher_thickness = new G4UIcmdWithAString("/Catcher_MylarDeltaThickness", this);
+  input_cmd_catcher_thickness = new G4UIcmdWithAString("/Catcher_Thickness", this);
   input_cmd_catcher_thickness->SetGuidance("Set Catcher thickness");
   input_cmd_catcher_thickness->SetParameterName("catcher_thickness", false);
   input_cmd_catcher_thickness->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+  // Set Catcher Thickness
+  input_cmd_setup = new G4UIcmdWithAString("/Setup", this);
+  input_cmd_setup->SetGuidance("Setup Version");
+  input_cmd_setup->SetParameterName("year", false);
+  input_cmd_setup->AvailableForStates(G4State_PreInit, G4State_Idle);
+
 }
 
 //----------------------------------------------------------------------
@@ -180,7 +187,10 @@ void Wisard_Messenger::SetNewValue(G4UIcommand *cmd, G4String args)
     G4String value, unit1;
     std::istringstream iss(args);
     iss >> value >> value1 >> unit1;
-    det_ptr->SetCatcherPosition_theta(value, value1 * G4UnitDefinition::GetValueOf(unit1));
+    if (Version == 2023)
+    {
+      det_ptr->SetCatcherPosition_theta(value, value1 * G4UnitDefinition::GetValueOf(unit1));
+    }
   }
   if (cmd == input_cmd_filename)
   {
@@ -196,10 +206,33 @@ void Wisard_Messenger::SetNewValue(G4UIcommand *cmd, G4String args)
   }
   if (cmd == input_cmd_catcher_thickness)
   {
-    G4double value;
+    G4double value, value1, value2;
     G4String unit;
     std::istringstream iss(args);
-    iss >> value >> unit;
-    det_ptr->SetCatcher_Thickness(value * G4UnitDefinition::GetValueOf(unit));
+    iss >> value >> value1 >> value2 >> unit;
+    
+    if (value == 0.)
+    {
+      value = -1 / G4UnitDefinition::GetValueOf(unit);
+    }
+    if (value1 == 0.)
+    {
+      value1 = -1 / G4UnitDefinition::GetValueOf(unit);
+    }
+    if (value2 == 0.)
+    {
+      value2 = -1 / G4UnitDefinition::GetValueOf(unit);
+    }
+    det_ptr->SetCatcher_Thickness(value * G4UnitDefinition::GetValueOf(unit), value1 * G4UnitDefinition::GetValueOf(unit), value2 * G4UnitDefinition::GetValueOf(unit));
+  }
+  if (cmd == input_cmd_setup)
+  {
+    G4int value;
+    std::istringstream iss(args);
+    iss >> value;
+    det_ptr->SetSetup(value);
+    Version = value;
+    // gen_ptr->SetSetup(value);
+    // manager_ptr->SetSetup(value)
   }
 }

@@ -1,5 +1,5 @@
 ./tmp/Linux-g++/wisard/Wisard_PhysList.o tmp/Linux-g++/wisard/Wisard_PhysList.d: src/Wisard_PhysList.cc /usr/include/stdc-predef.h \
- include/Wisard_PhysList.hh include/../Wisard_Global.hh \
+ include/Wisard_PhysList.hh include/Wisard_Global.hh \
  /usr/include/stdio.h /usr/include/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/sys/cdefs.h \
  /usr/include/bits/wordsize.h /usr/include/bits/long-double.h \

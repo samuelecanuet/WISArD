@@ -1,7 +1,7 @@
 #ifndef WITCH_RUNMANAGER_HH
 #define WITCH_RUNMANAGER_HH
 
-#include "../Wisard_Global.hh"
+#include "Wisard_Global.hh"
 #include "G4RunManager.hh"
 #include "Wisard_Sensor.hh"
 #include "G4AnalysisManager.hh"

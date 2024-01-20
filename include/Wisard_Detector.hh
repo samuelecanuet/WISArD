@@ -1,7 +1,7 @@
 #ifndef GE_DETECTOR_HH
 #define GE_DETECTOR_HH
 
-#include "../Wisard_Global.hh"
+#include "Wisard_Global.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "Wisard_RunManager.hh"
 #include "G4ThreeVector.hh"
@@ -73,11 +73,14 @@ public:
   void CloseInputB();                  // inline
   ifstream inputB;
   string input_nameB;
+  void SetSetup(G4int Year);
+  G4int Setup_Version = 2023;
   void SetCatcherPosition_theta(G4String position, G4double angle);
-
   void SetCatcherPosition_z(G4double catcher_z);
-  void SetCatcher_Thickness(G4double catcher_thickness);
+  void SetCatcher_Thickness(G4double Al1_e, G4double Mylar_e, G4double Al2_e);
   G4Tubs *MylarSource;
+  G4Tubs *AlSource1;
+  G4Tubs *AlSource2;
   G4Tubs *MylarSource_central;
   G4Tubs *MylarSource_side;
   G4Tubs *Source;
@@ -89,6 +92,8 @@ public:
 
   G4double fLength_PlasticScintillator = 5 * cm;
   G4double fRadius_PlasticScintillator = 1.5 * cm;
+
+  G4String Catcher_Position;
 
   G4bool event;
 

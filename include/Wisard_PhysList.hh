@@ -1,4 +1,4 @@
-#include "../Wisard_Global.hh"
+#include "Wisard_Global.hh"
 #include "G4VUserPhysicsList.hh"
 #include "StepMax.hh"
 

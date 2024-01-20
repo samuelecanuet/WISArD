@@ -9,13 +9,13 @@
 /run/initialize
 /run/verbose      0
 /event/verbose    0
-/tracking/verbose 0
+/tracking/verbose 1
 
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-/input/Open_SRIM SRIM_data/32Ar.txt
+/input/Open_SRIM SRIM_data/AlMylar_2021_32Ar.txt
 /input/Open_CRADLE CRADLE_data/SAMPLE.root
 
 #---------------------------------------------------------------
@@ -31,14 +31,18 @@
 /SiDeadLayer_Thickness 100 nm
 /Beam_Size 2 mm 300 um
 /Beam_Position 0 cm 0 cm
+
+/Setup 2021
 /Catcher_Position_z 0 mm
 /Catcher_Position catcher2 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
-/Catcher_MylarDeltaThickness 0 um
+/Catcher_Thickness 100 700 0 nm     thickness : Al, Mylar Al (0 delete it)
+
+
 
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 1
+/run/printProgress 200
 /output test.root
 #
 #
@@ -141,6 +145,6 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 1
+/run/beamOn 5
 #
 #

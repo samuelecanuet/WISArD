@@ -1,5 +1,5 @@
 ./tmp/Linux-g++/wisard/StepMax.o tmp/Linux-g++/wisard/StepMax.d: src/StepMax.cc /usr/include/stdc-predef.h include/StepMax.hh \
- include/../Wisard_Global.hh /usr/include/stdio.h \
+ include/Wisard_Global.hh /usr/include/stdio.h \
  /usr/include/bits/libc-header-start.h /usr/include/features.h \
  /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
  /usr/include/bits/long-double.h /usr/include/gnu/stubs.h \

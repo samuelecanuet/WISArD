@@ -12,19 +12,19 @@ source $G4INSTALL/geant4make.csh $G4INSTALL
 setenv PATH ${PATH}:$WhereGitIs/WISArD/bin/Linux-g++
 ```
 
-- Only 8B, 8Li, 14O, 20Mg, 24Si, 26S and 32Ar at 30 keV can be use in the simulation because there is a SRIM file for them. But you can generate a file for a other nucleus or energy with SRIM. You have to rename a *RANGE_3D.txt* SRIM file and place it in the SRIM_data folder.
+- Only 8B, 8Li, 14O, 20Mg, 24Si, 26S and 32Ar at 30 keV can be use in the simulation because there is a SRIM file for them. But you can generate a file for an other nucleus or energy with SRIM. You have to rename a *RANGE_3D.txt* SRIM file and place it in the SRIM_data folder.
 
 ## Usage
 ### To run the simulation in visualisation mode :
 ```bash
 wisard 
 ```
-### To run the simulation data mode :
+### To run the simulation in data mode :
 ```bash
 wisard macro.mac
 ```
 
-### To run the simulation multithreading mode :
+### To run the simulation in multithreading mode :
 *Exemple for 32Ar with 10 runs and 2 threads in Standard Model case*
 
 ```bash
@@ -62,10 +62,10 @@ The Tree is update each 10 000 events and contains :
 - Silicon Detectors (deposit energy, hit position, hit angle, detector code, deposit energy in dead layer)
 
 ### Histograms
-There are 2 for each strip, one for the β-p coincidence and an other one the none-coincidence. The β detection threashold is set in the macro file.
+There are 2 for each strip, one for the β-p coincidence and an other one for the none-coincidence. The β detection threashold is set in the macro file.
 
 ## Analysis
-A very rapid analysis is with PyROOT. To use it you have to indicate the filename in the main function.
+A very rapid analysis was made with PyROOT. To use it you have to indicate the filename in the main function.
 
 
 ## Version History
@@ -96,10 +96,5 @@ A very rapid analysis is with PyROOT. To use it you have to indicate the filenam
 - More accurate particle recording information in sensor
 - Add ROOT from CRADLE as input file possible
 
-### TODO
-- Add Source in the Catcher (+adapting the generator)
-
-
-(v2.1 1e6 3h)
-(v2.2 1e6 1h)
-(v2.3 1e6 35min)
+### v2.4
+- Adding 2021 set-up version (indicated in the *macro* file)

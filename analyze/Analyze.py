@@ -6,8 +6,8 @@ import subprocess
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.ticker import MaxNLocator
-
-
+import random
+from root2mpl import *
 custom_params = {
         "xtick.direction" : "out",
         "ytick.direction" : "out",
@@ -29,206 +29,228 @@ custom_params = {
         # 'figure.subplot.top': 0.90
         }
 sns.set_theme(style="ticks", rc=custom_params)
-
-
-class ROOT_HISTO_Analyzer:
-    def __init__(self, filename):
-        self.filename = filename
-        self.open_file()
-
-    def open_file(self):
-        self.rootfile = TFile.Open(self.filename)
-
-        if not self.rootfile or self.rootfile.IsZombie():
-            raise FileNotFoundError(f"ROOT file {self.filename} can not be open")
-    
-    def FindZ(self, nuclei):
-        return ["H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt"].index(nuclei)+1
-    
-    def GetMaximum(self):
-        match = re.match(r'(\d+)([A-Za-z]+)', os.path.basename(self.filename))
-        self.A = int(match.group(1))
-        self.nuclei = match.group(2)
-        self.Z = int(self.FindZ(self.nuclei))
-
-        if self.A-self.Z < self.Z:
-            self.Z_daughter = self.Z-1
-        else:
-            self.Z_daughter = self.Z+1
-
-        ###Spin Parent
-        with open(f"../../CRADLE-master/GammaData/z{self.Z}.a{self.A}", "r") as file:
-            for line in file.readlines():
-                columns = line.split()
-                if columns and columns[0][0] == '0' and columns[1][0] == '-':
-                    Spin_Parent = columns[4]
-        
-        ###Beta Decay
-        dic_beta = {}
-        with open(f"../../CRADLE-master/RadiationData/z{self.Z}.a{self.A}", "r") as file:
-            for line in file.readlines():
-                if ("BetaPlus" in line or "BetaMinus" in line) and len(line.split()) == 5:
-                    dic_beta[round(float(line.split()[1]))] = []
-
-        ###Spin Daughter
-
-        ###Delayed Decay
-        dic_delayed = {}
-        with open(f"../../CRADLE-master/RadiationData/z{self.Z_daughter}.a{self.A}", "r") as file:
-            for line in file.readlines():
-                if line.split()[0] == 'P':
-                    key = round(float(line.split()[1]))
-                elif (line.split()[0] == 'Proton' or line.split()[0] == 'Alpha') and len(line.split()) >= 4:
-                    for key_dic in dic_beta.keys():
-                        if key_dic+10 > key and key_dic-10 < key:
-                                dic_beta[key_dic].append([line.split()[3], line.split()[4]])
-                                break
-        
-class ROOT_DISPLAY:
-    def __init__(self, rootfile):
-        self.rootfile = rootfile
-    
-    ###ROOT File informations
-    def GetHist(self, name):
-        return self.rootfile.Get(name)
-    
-    def ViewHist(self):
-        for key in self.rootfile.GetListOfKeys():
-            print("Name : "+self.rootfile.Get(key.GetName()).GetName()+"\t\t\t Title : "+self.rootfile.Get(key.GetName()).GetTitle())
-            print(self.rootfile.Get(key.GetName()).ClassName())
-
-    ###Calculation
-    def Eshift(self, hist):
-        hist_coinc, hist_nocoinc = hist[0], hist[1]
-        strip = int(hist_coinc.GetName()[-1])
-        dir = "".join(list(hist_coinc.GetName())[0:hist_coinc.GetName().index("_")])
-        single = sum([hist_coinc, hist_nocoinc], TH1D(f"{dir}_single_Strip_{strip}", f"{dir}_single_Strip_{strip}", 100000, 0, 10000))
-        maxi = single.GetMaximumBin()*single.GetBinWidth(1)
-
-        
-        E_coinc, RMS_coinc, N_coinc = self.Infos(hist_coinc, maxi)
-        E_nocoinc, RMS_nocoinc, N_nocoinc = self.Infos(hist_nocoinc, maxi)
-        E_single, RMS_single, N_single = self.Infos(single, maxi)
-        shift = abs((E_coinc-E_nocoinc)*(1-N_coinc/N_single))
-        sigma_shift = np.sqrt((1-N_coinc/N_single)**2*((RMS_coinc/sqrt(N_coinc))**2+(RMS_nocoinc/sqrt(N_nocoinc))**2) + ((abs(E_coinc-E_nocoinc))*(N_nocoinc/N_single**2))**2*(N_coinc+N_coinc**2/N_nocoinc))
-        return shift, sigma_shift
-    
-    def Infos(self, hist, maxi):
-        min_x, max_x = maxi-100, maxi+100
-        hist.GetXaxis().SetRangeUser(min_x, max_x)
-        
-        return hist.GetMean(), hist.GetRMS(), hist.Integral()
-    
-    def GetStripHisto(self, dir, strip, hist_name):
-        
-        hist_coinc = sum([self.rootfile.Get(i) for i in hist_name if f"{dir}_Strip_{strip}_coinc" in i], TH1D(f"{dir}_coinc_Strip_{strip}", f"{dir}_coinc_Strip_{strip}", 100000, 0, 10000))
-        hist_nocoinc = sum([self.rootfile.Get(i) for i in hist_name if f"{dir}_Strip_{strip}_nocoinc" in i], TH1D(f"{dir}_nocoinc_Strip_{strip}", f"{dir}_nocoinc_Strip_{strip}", 100000, 0, 10000))
-        return [hist_coinc, hist_nocoinc]
-    
-    def GetEshiftDictionnary(self):
-        dic={}
-        for dir in ["Up", "Down"]:
-            for strip in range(1, 6):
-                dic[dir+str(strip)] = self.Eshift(self.GetStripHisto(dir, strip, [key.GetName() for key in self.rootfile.GetListOfKeys() if isinstance(key.ReadObj(), TH1D)]))
-        return dic
-
-
-    ###DISPLAY
-    def Display(self, histname, axs, **kwargs):
-        Hist = self.rootfile.Get(histname)
-        type = Hist.ClassName()
-        
-        if type == "TH1D":
-            self.DisplayTH1D(Hist, axs, **kwargs)
-        if type == "TH2D":
-            self.DisplayTH2D(Hist, axs, **kwargs)
-
-    def DisplayTH2D(self, Hist, ax, color='plasma', label=None, title=None, xlabel=None, ylabel=None, xlim=None, ylim=None, xtick=None, ytick=None, ylog=None, xlog=None, zlog=None, rebinx=None, rebiny=None):
-        if rebinx   != None: Hist.RebinX(rebinx)
-        if rebiny   != None: Hist.RebinY(rebiny)
-
-    
-        nbins_x = Hist.GetNbinsX()
-        nbins_y = Hist.GetNbinsY()
-
-        hist_data = np.zeros((nbins_x, nbins_y))
-        bin_centers_x = np.zeros(nbins_x)
-        bin_centers_y = np.zeros(nbins_y)
-
-        for i in range(1, nbins_x + 1):
-            for j in range(1, nbins_y + 1):
-                hist_data[i - 1, j - 1] = Hist.GetBinContent(i, j)
-                bin_centers_x[i - 1] = Hist.GetXaxis().GetBinCenter(i)
-                bin_centers_y[j - 1] = Hist.GetYaxis().GetBinCenter(j)
-
-        if label  == None: label = Hist.GetTitle()
-        if title  == None: title = Hist.GetTitle()
-        if xlabel == None: xlabel = Hist.GetXaxis().GetTitle()
-        if ylabel == None: ylabel = Hist.GetYaxis().GetTitle()
-        if xlim   == None: xlim = ( bin_centers_x.min(), bin_centers_x.max() )
-        if ylim   == None: ylim = (bin_centers_y.min(), bin_centers_y.max())
-        if xtick  != None: ax.set_xticks(np.linspace(xlim[0], xlim[1], xtick))
-        if ytick  != None: ax.set_yticks(np.linspace(ylim[0], ylim[1], ytick))
-        if xlog   != None: ax.set_xscale('log')
-        if ylog   != None: ax.set_yscale('log')
-
-        cax = ax.imshow(hist_data.T, extent=(bin_centers_x.min(), bin_centers_x.max(), bin_centers_y.min(), bin_centers_y.max()), origin='lower', aspect='auto', cmap=color)
-        cbar = plt.colorbar(cax)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.set_title(title)
-        ax.set_xlim(xlim)
-        ax.set_ylim(ylim)
-
-        if zlog     != None: cbar.set_scale('log')
-
-        return ax
-
-    def DisplayTH1D(self, Hist, ax, color=None, label=None, title=None, xlabel=None, ylabel=None, xlim=None, ylim=None, xtick=None, ytick=None, ylog=None, xlog=None, rebin=None, normalized=None):
-        if rebin   != None: Hist.Rebin(rebin)
-        if normalized == True: integral = Hist.Integral()
-        else : integral = 1.
-
-        
-
-        nbins_x = Hist.GetNbinsX()
-
-        hist_data = np.zeros(nbins_x)
-        bin_centers_x = np.zeros(nbins_x)
-
-        for i in range(1, nbins_x + 1):
-            hist_data[i - 1] = Hist.GetBinContent(i)/integral
-            bin_centers_x[i - 1] = Hist.GetXaxis().GetBinCenter(i)
-
-        if color    == None: color = "black"
-        if label    == None: label = Hist.GetTitle()               
-        if title    == None: title = Hist.GetTitle()
-        if xlabel   == None: xlabel = Hist.GetXaxis().GetTitle()
-        if ylabel   == None: ylabel = Hist.GetYaxis().GetTitle()
-        if normalized==True: ylabel = "Normalized" + ylabel
-        if xlim     == None: xlim = ( bin_centers_x.min(), bin_centers_x.max() )
-        if ylim     == None and hist_data.max()*1.1 > ax.get_ylim()[1] : ylim = ( 0, hist_data.max()*1.1 )
-        if xtick    != None: ax.set_xticks(np.linspace(xlim[0], xlim[1], xtick))
-        if ytick    != None: ax.set_yticks(np.linspace(ylim[0], ylim[1], ytick))
-        if xlog     != None: ax.set_xscale('log')
-        if ylog     != None: 
-            ax.set_yscale('log')
-            ylim = ( 1, hist_data.max()*1.1 )
-        
-        ax.step(bin_centers_x, hist_data, label = label, color=color)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.set_title(title)
-        ax.set_xlim(xlim)
-        ax.set_ylim(ylim)
-
-        return ax
     
 if __name__ == "__main__":
 
-    file = TFile(f"test_txt.root")
-    analyse = ROOT_DISPLAY(file)
-    print(analyse.GetEshiftDictionnary())
+    file_mono1 = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono_1mm.root")
+    file_mono2 = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono_2mm.root")
+    file_monom1 = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono_-1mm.root")
+    file_monom2 = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono_-2mm.root")
+    file_mono38 = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono_38deg.root")
+    file_mono45 = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono_45deg.root")
+    file_mono48 = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono_48deg.root")
+    file_mono50 = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono_50deg.root")
+    file_mono52 = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono_52deg.root")
+    file_mono = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_mono.root")
+    file_dist = TFile(f"../../../../../../../mnt/hgfs/shared-2/32Ar_47nm_Mylar_dist.root")
+
+    # tree = file_mono.Get("Tree")
+    # vector_int_variable = vector('int')()
+    # dl_vec = vector('double')()
+    # e_vec = vector('double')()
+    # catcher_vec = vector('double')()
+    # tree.SetBranchAddress("Silicon_Detector_Code", vector_int_variable)
+    # tree.SetBranchAddress("Silicon_Detector_DL_Deposit_Energy", dl_vec)
+    # tree.SetBranchAddress("Silicon_Detector_Deposit_Energy", e_vec)
+    # tree.SetBranchAddress("Catcher_Central_Deposit_Energy", catcher_vec)
+
+    # dic_tree = {}
+    # dic_tree["Up"] = {}
+    # dic_tree["Up"][1] = [TH1D("Catcher_Up1", "Catcher_Up1", 100000,  1e-9, 10000), TH1D("dl_Up1", "dl_Up1", 100000,  1e-9, 10000)]
+    # dic_tree["Up"][2] = [TH1D("Catcher_Up2", "Catcher_Up2", 100000,  1e-9, 10000), TH1D("dl_Up2", "dl_Up2", 100000,  1e-9, 10000)]
+    # dic_tree["Up"][3] = [TH1D("Catcher_Up3", "Catcher_Up3", 100000,  1e-9, 10000), TH1D("dl_Up3", "dl_Up3", 100000,  1e-9, 10000)]
+    # dic_tree["Up"][4] = [TH1D("Catcher_Up4", "Catcher_Up4", 100000,  1e-9, 10000), TH1D("dl_Up4", "dl_Up4", 100000,  1e-9, 10000)]
+    # dic_tree["Up"][5] = [TH1D("Catcher_Up5", "Catcher_Up5", 100000,  1e-9, 10000), TH1D("dl_Up5", "dl_Up5", 100000,  1e-9, 10000)]
+
+    # dic_tree["Down"] = {}
+    # dic_tree["Down"][1] = [TH1D("Catcher_Down1", "Catcher_Down1", 100000,  1e-9, 100000), TH1D("dl_Down1", "dl_Down1", 100000,  1e-9, 10000)]
+    # dic_tree["Down"][2] = [TH1D("Catcher_Down2", "Catcher_Down2", 100000,  1e-9, 100000), TH1D("dl_Down2", "dl_Down2", 100000,  1e-9, 10000)]
+    # dic_tree["Down"][3] = [TH1D("Catcher_Down3", "Catcher_Down3", 100000,  1e-9, 100000), TH1D("dl_Down3", "dl_Down3", 100000,  1e-9, 10000)]
+    # dic_tree["Down"][4] = [TH1D("Catcher_Down4", "Catcher_Down4", 100000,  1e-9, 100000), TH1D("dl_Down4", "dl_Down4", 100000,  1e-9, 10000)]
+    # dic_tree["Down"][5] = [TH1D("Catcher_Down5", "Catcher_Down5", 100000,  1e-9, 100000), TH1D("dl_Down5", "dl_Down5", 100000,  1e-9, 10000)]
+
+    # dic_F = {}
+    # dic_F["Up"] = {1: [[98.2, 0.2], [1.94, 0.02]], 2: [[109.7, 0.2], [1.90, 0.02]], 3: [[122.4, 0.2], [1.91, 0.02]], 4: [[137.3, 0.2], [1.95, 0.02]], 5: [[154.7, 0.2], [2.01, 0.02]]}
+    # dic_F["Down"] = {1: [[0.76, 0.01], [1.91, 0.02]], 2: [[0.85, 0.01], [1.85, 0.02]], 3: [[0.98, 0.01], [1.88, 0.02]], 4: [[1.09, 0.01], [1.92, 0.02]], 5: [[1.14, 0.01], [2.08, 0.02]]}
+
+    # h_dl = TH1D("h", "h", 500, 0, 50)
+    # h_catcher = TH1D("hh", "hh", 100000, 0, 10000)
+    # for i in range(tree.GetEntries()):
+    #     tree.GetEntry(i)
+    #     for j, e_dl in zip(vector_int_variable, dl_vec):
+    #         if j < 0:
+    #             dir = "Down"
+    #         else:
+    #             dir = "Up"
+    #         if tree.Particle_PDG == 2212:
+    #             dic_tree[dir][int(list(str(j))[-1])][0].Fill(tree.Catcher_Central_Deposit_Energy)
+    #             dic_tree[dir][int(list(str(j))[-1])][1].Fill(e_dl)
+    #         # if j in [-12, -22, -32, -42] and tree.Particle_PDG == 2212:
+    #         #     h_dl.Fill(e_dl)
+    #         #     h_catcher.Fill(tree.Catcher_Central_Deposit_Energy)
+
+    # for dir in dic_tree.keys():
+    #     for strip in dic_tree[dir].values():
+    #         strip[0] = [strip[0].GetMean(), strip[0].GetMeanError()]
+    #         strip[1] = [strip[1].GetMean(), strip[1].GetMeanError()]
+
+    # figdl, axdl = plt.subplots(1,2)
+    # for dir, ax in zip(dic_tree.keys(), axdl):
+    #     ax.errorbar([int(key) for key in dic_tree[dir].keys()], [value[1][0] for value in dic_tree[dir].values()], yerr = [value[1][1] for value in dic_tree[dir].values()], capsize=5, marker=".")
+    #     ax.errorbar([int(key) for key in dic_F[dir].keys()], [value[1][0] for value in dic_F[dir].values()], yerr = [value[1][1] for value in dic_F[dir].values()], capsize=5, marker=".", label="Federica")
+    #     ax.set_title(dir)
+    #     ax.set_xlabel("Strip nb")
+    #     ax.set_ylabel("Mean")
+    # plt.legend()
+    # figdl.suptitle("Dead Layer")
+
+    # figcatcher, axcatcher = plt.subplots(1,2)
+    # for dir, ax in zip(dic_tree.keys(), axcatcher):
+    #     ax.errorbar([int(key) for key in dic_tree[dir].keys()], [value[0][0] for value in dic_tree[dir].values()], yerr = [value[0][1] for value in dic_tree[dir].values()], capsize=5, marker=".")
+    #     ax.errorbar([int(key) for key in dic_F[dir].keys()], [value[0][0] for value in dic_F[dir].values()], yerr = [value[0][1] for value in dic_F[dir].values()], capsize=5, marker=".", label="Federica")
+    #     ax.set_title(dir)
+    #     ax.set_xlabel("Strip nb")
+    #     ax.set_ylabel("Mean")
+    # plt.legend()
+    # figcatcher.suptitle("Catcher")
+
+    # fige, axe =  plt.subplots(1,2)
+    # for dir, ax in zip(dic_tree.keys(), axe):
+    #     ax.errorbar([int(key) for key in dic_tree[dir].keys()], [3356-value[0][0]-value[1][0] for value in dic_tree[dir].values()], yerr = [value[0][1]+value[1][1]for value in dic_tree[dir].values()], capsize=5, marker=".")
+    #     ax.errorbar([int(key) for key in dic_F[dir].keys()], [3356-value[0][0]-value[1][0] for value in dic_F[dir].values()], yerr = [value[0][1]+value[1][1]for value in dic_F[dir].values()], capsize=5, marker=".", label="Federica")
+    #     ax.set_title(dir)
+    #     ax.set_xlabel("Strip nb")
+    #     ax.set_ylabel("Mean")
+    # fige.suptitle("e")
+    # plt.legend()
+    # plt.show()
+
+    file_list = [file_mono, 
+                 file_mono38, 
+                 file_mono45, 
+                 file_mono38,
+                 file_mono50, 
+                 file_mono52
+                 ] 
+    
+    file_list = [file_mono, 
+                 file_mono1, 
+                 file_monom1, 
+                 file_mono2
+                 ] 
+
+    file_list = [file_mono, 
+                 file_dist]
+
+
+    dic_F = {}
+    dic_F["Up"] = {1: [3255.86, 0.03], 2: [3244.4, 0.03], 3: [3231.69, 0.03], 4: [3216.75, 0.03], 5: [3199.29, 0.03]}
+    dic_F["Down"] = {1: [3353.33, 0.03], 2: [3353.3, 0.03], 3: [3353.14, 0.03], 4: [3352.99, 0.03], 5: [3352.78, 0.03]}
+    
+    dic = {}
+    dic_histo = {}
+    for file in file_list:
+        dic[file.GetName()] = {}
+        dic_histo[file.GetName()] = {}
+        for dir in ["Up", "Down"]: 
+            dic[file.GetName()][dir]={}
+            dic_histo[file.GetName()][dir]={}
+            
+            for strip in range(1, 6):   
+                histo = file.Get(f"1{dir}_Strip_{strip}_coinc").Clone("h_sum")
+                histo_no = file.Get(f"1{dir}_Strip_{strip}_nocoinc").Clone("h_sum_no")
+                for det in range(2, 5):
+                    h=file.Get(f"{det}{dir}_Strip_{strip}_coinc")
+                    h_no = file.Get(f"{det}{dir}_Strip_{strip}_nocoinc")
+                    histo.Add(h, 1.0)
+                    histo_no.Add(h_no, 1.0)
+
+                histo.Add(histo_no, 1.0)
+
+                histo.GetXaxis().SetRangeUser(3100, 3400)
+                dic[file.GetName()][dir][strip] = [histo.GetMean(), histo.GetMeanError()]
+                dic_histo[file.GetName()][dir][strip]=histo
+                # print(histo.GetEntries())
+                # print(histo.GetMeanError(), histo.GetRMS()/np.sqrt(histo.GetEntries()-1))
+                # fig, ax = plt.subplots()
+                # DisplayTH1D(histo, ax, xlim=(3100, 3400), title="", label="")
+                # plt.show()
+
+
+    ####DISPLAY histograms####
+    fig_hist, ax_hist = plt.subplots(1, 2, gridspec_kw= {"wspace" : 0.3})
+    for i, dir in enumerate(["Up", "Down"]): 
+        ax1 = ax_hist[i]
+        counter = 0
+        for file, color in zip(file_list, ["red", "blue", "orange", "green", "brown", "pink", "purple"]):
+            counter+=1
+            if "mono" in file.GetName():
+                label="mono-energetic"
+                offset = -0.1
+            else:
+                label="distribution"
+                offset = 0.1    
+            
+            if dir == "Down":
+                xlimd = 3300
+                y = 0.08+0.01*counter
+            else:
+                xlimd = 3100
+                y = 0.008+0.001*counter
+            
+            histo = dic_histo[file.GetName()][dir][1]
+            histo.GetXaxis().SetRangeUser(xlimd, 3400)
+            DisplayTH1D(histo, ax1, title="", xlim=(xlimd, 3400), label = label + f"\t: {round(histo.GetMean(), 2)} keV", rebin=4, normalized = True, color=color)
+            ax1.set_title(dir)
+            ax1.set_ylabel("Renormalized(/0.4keV)")
+            ax1.set_xlabel("Energy(keV)")
+            ax1.grid(True)
+            ax1.legend(loc="upper right")
+    plt.show()
+
+    fig, ax = plt.subplots(1, 2, gridspec_kw= {"wspace" : 0.3})
+    for i, dir in enumerate(["Up", "Down"]): 
+        ax1 = ax[i]
+        ax1.set_title(dir)
+        ax1.set_xlabel("Strip nb")
+        ax1.set_ylabel("Mean Energy(keV)")
+        ax1.grid(True)
+        for file, color in zip(file_list, ["red", "blue", "orange", "green", "brown", "pink", "purple"]):
+            if "mono" in file.GetName():
+                label="mono-energetic"
+                offset = -0.1
+            else:
+                label="distribution"
+                offset = 0.1            
+            if "_1mm" in file.GetName():
+                label += " 1mm"
+            if "_-1mm" in file.GetName():
+                label += " -1mm"
+            if "_2mm" in file.GetName():
+                label += " 2mm"
+            if "_-2mm" in file.GetName():
+                label += " -2mm"
+
+            if "38deg" in file.GetName():
+                label += "38deg"
+
+            if "52deg" in file.GetName():
+                label += "52deg"
+
+            if "45deg" in file.GetName():
+                label += "45deg"
+
+            if "48deg" in file.GetName():
+                label += "48deg"
+
+            if "50deg" in file.GetName():
+                label += "50deg"
+            ax1.errorbar([int(key)+offset for key in dic[file.GetName()][dir].keys()], [value[0] for value in dic[file.GetName()][dir].values()], yerr = [value[1] for value in dic[file.GetName()][dir].values()], color=color, capsize=5, marker=".", label=label)
+        #ax1.errorbar([int(key) for key in dic_tree[dir].keys()], [3356-value[0][0]-value[1][0] for value in dic_tree[dir].values()], yerr = [value[0][1]+value[1][1]for value in dic_tree[dir].values()], capsize=5, marker="." ,label="sous")
+        ax1.errorbar([int(key) for key in dic_F[dir].keys()], [value[0] for value in dic_F[dir].values()], yerr = [value[1] for value in dic_F[dir].values()], color='black', capsize=5, marker=".", label="mono-energetic Federica", ms=10, fmt='s')
+    plt.legend()
+    plt.show()
+
     
     # resultat = subprocess.run("g++ -o tree_reader tree_reader.cpp `root-config --cflags --libs`", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
