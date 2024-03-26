@@ -64,6 +64,7 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     }
   }
 
+
   PrimaryDictionnary[index].DepositEnergy += step->GetTotalEnergyDeposit() / keV;
 
   // ####################################################################

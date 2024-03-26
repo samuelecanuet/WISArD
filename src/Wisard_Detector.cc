@@ -57,7 +57,7 @@ Wisard_Detector::Wisard_Detector(Wisard_RunManager *mgr)
   r = fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1 / 2 - (pDy1 / 2 * (1 - cos(theta)));
   r_vide = (pDz + thicknessSiDetector) / 2 * -sin(theta);
   z_vide = -(pDz + thicknessSiDetector) / 2 * cos(theta);
-  z = z_height_Source_biggerBaseSiDet_inVerticale + pDz / 2 + ((pDy1 / 2) * sin(thetaInclinazione_SiDetector));
+  z = z_height_Source_biggerBaseSiDet_inVerticale + pDz / 2 + ((pDy1 / 2) * sin(thetaInclinazione_SiDetector)) - 2.5*mm;
 
   //___________ Supporto in rame della placca in PBC sulla quale é montato il Si detector  ____________
   length_x_SupportoRame_SiDetector = 56. * mm;
@@ -1198,8 +1198,7 @@ void Wisard_Detector::SetSetup(G4int Year)
                                                                Logic_MylarSource_central, "LogicMylarSource", // its fLogical volume
                                                                logic_mother_catcher,                           // its mother volume
                                                                false,                                 // no boolean op.
-                                                               0,
-                                                               true); // copy nb. 
+                                                               0); // copy nb. 
 
     AlSource2 = new G4Tubs("AlSource2_central", 0., outerRadius_MylarSource, thicknessAlSource / 2, 0., 360. * deg);
     G4LogicalVolume *Logic_AlSource2_central = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2_central");                                                                  // solid, material, name

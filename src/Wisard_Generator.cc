@@ -39,6 +39,7 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
   if (event->GetEventID() == 0)
   {
     res = Wisard_Generator::GetSRIM_hist();
+   
 
     if (manager_ptr->GetInputName().find(".txt") != std::string::npos)
     {
@@ -76,6 +77,7 @@ void Wisard_Generator::TXT_GENERATOR(G4Event *event)
   double x = 10 * mm;
   double y = 10 * mm;
   double z;
+
 
   tuple = GetSRIM_data(res.first, res.second);
 
@@ -170,7 +172,7 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
 
   while (Reader->Next() && **eventid == event->GetEventID())
   {
-    if (**code <= 2212 && **code != 12 )
+    if (**code <= 2212 && **code != 12 ) //////:GAMMA EXCLUSION
     {
       
       dir[0] = **px;
@@ -183,10 +185,10 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
       gun.SetParticleEnergy(**ekin_* keV);
       gun.GeneratePrimaryVertex(event);
 
-      //////////FOR TEST/////////
+      ////////FOR TEST/////////
         //  gun.SetParticleDefinition        ( part_geantino );
-        //  gun.SetParticlePosition          ( G4ThreeVector (x, y, z+47*nm)  );
-        //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,-1.) );
+        //  gun.SetParticlePosition          ( G4ThreeVector (44*mm, y, -10*cm)  );
+        //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
         //  gun.SetParticleEnergy            ( **ekin_*keV );
         //  gun.GeneratePrimaryVertex        ( event );
     }

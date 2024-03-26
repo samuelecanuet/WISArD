@@ -65,6 +65,7 @@ public:
 
   TH1D *histos_coinc[nb_det];
   TH1D *histos_nocoinc[nb_det];
+  TH1D *histos_single[nb_det];
 
   std::string Detector_Name[nb_det] = {
       "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
@@ -182,16 +183,6 @@ inline ifstream &Wisard_RunManager::GetInput_TXT()
 {
   return (input_txt);
 }
-
-// inline DATA &Wisard_RunManager::GetInput_ROOT()
-// {
-  
-//   root_file = new TFile(input_name.c_str(), "READ");
-
-//   datatree.reader = TTreeReader("ParticleTree", root_file);;
-//   datatree.event = TTreeReaderValue<int>(Reader, "event");
-//   return datatree;
-// }
 
 // Get the input file name
 inline const string &Wisard_RunManager::GetInputName() const

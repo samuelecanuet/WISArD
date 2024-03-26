@@ -33,11 +33,3 @@ include $(G4INSTALL)/config/binmake.gmk
 clean_all:	clean
 		@echo "Cleaning files"
 		@\rm -Rfv bin tmp *.bck */*.bck vrmlfiles/*.wrl
-
-
-
-
-
-
-
-

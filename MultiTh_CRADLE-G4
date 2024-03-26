@@ -6,6 +6,8 @@ rootGeant4file=../../../data333/lecanuet/Result/
 rootCRADLEfile=../../../../../../mnt/hgfs/shared-2/data/
 rootGeant4file=../../../../../../mnt/hgfs/shared-2/
 
+suffixe=""
+
 rm -rf tempory/*
 
 usage() {
@@ -143,7 +145,7 @@ RunEnd=${N:-$DEFAULT_N}
 events=${events:-$DEFAULT_events}
 
 
-if $a_change || $b_change; then
+if [ "$a_change" == true ] || [ "$b_change" == true ]; then
   constants="a${a}_b${b}"
   replace="s/%CS/${CS}/g; s/%CPS/${CSP}/g; s/%CV/${CV}/g; s/%CPV/${CVP}/g; s/%CA/${CA}/g; s/%CPA/${CAP}/g; s/%CT/${CT}/g; s/%CPT/${CTP}/g; s/%a/${a}/g; s/%b/${b}/g"
 else
@@ -207,18 +209,18 @@ while [ $Saver -le $RunEnd ]; do
             echo "Duree Run $RunKilled : ${JourCurrent}j:${HeureCurrent}h:${MinuteCurrent}m:${SecondCurrent}s" >> "LOG/During_$Nuclei.txt"
         fi
 
-	      cd ../CRADLE-master/build
+	      cd ../CRADLE/build
         cp ../config/config_base.txt config_${constants}_bis.txt
         sed -e "$replace" config_${constants}_bis.txt > ../config/config_${constants}.txt
         rm config_${constants}_bis.txt
-        ./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.root
+        #./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}${suffixe}_${constants}_${Saver}.root
         cd -
 
-        cp macro_base.mac tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        sed -e "s|%inputCRADLE|../${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.root|g; s/%inputSRIM/AlMylar_2021_${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}_F_${constants}_${Saver}.root|g; s/%events/${events}/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
-        rm tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        wisard tempory/macro_${Saver}_${Nuclei}_${constants}.mac &
-        echo -e "$GREEN wisard tempory/macro_${Saver}_${Nuclei}_${constants}.mac $COLOR"
+        cp macro_base.mac tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac
+        sed -e "s|%inputCRADLE|../${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.root|g; s/%inputSRIM/AlMylar_2021_${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}${suffixe}_${constants}_${Saver}.root|g; s/%events/${events}/g" tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}.mac
+        rm tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac
+        wisard tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}.mac &
+        echo -e "$GREEN wisard tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}.mac $COLOR"
 
         TH[$i]=${!}
         THRun[$i]=$Saver

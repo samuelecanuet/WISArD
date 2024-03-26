@@ -35,7 +35,7 @@
 /Setup 2021
 /Catcher_Position_z 0 mm
 /Catcher_Position catcher2 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
-/Catcher_Thickness 100 700 0 nm     thickness : Al, Mylar Al (0 delete it)
+/Catcher_Thickness 800 0 0 nm     thickness : Al, Mylar Al (0 delete it)
 
 
 
@@ -49,7 +49,6 @@
 #---------------------------------------------------------------
 #   set visualisation and scene
 #
-## Federica start
 # Use this open statement to create an OpenGL view:
 /vis/open OGL 600x600-0+0
 #/vis/open VRML2FILE
@@ -145,6 +144,6 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 5
+/run/beamOn 2
 #
 #

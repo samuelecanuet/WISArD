@@ -8,7 +8,7 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 - **PyROOT** (only for *Analyze.py*)
 - **Environement variables :**
 ```bash
-source $G4INSTALL/geant4make.csh $G4INSTALL
+source $G4INSTALL/share/Geant4/geant4make/geant4make.csh $G4INSTALL/share/Geant4/geant4make/
 setenv PATH ${PATH}:$WhereGitIs/WISArD/bin/Linux-g++
 ```
 
@@ -98,3 +98,5 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 
 ### v2.4
 - Adding 2021 set-up version (indicated in the *macro* file)
+- Discard all the inter-strip event in histograms
+

@@ -36,6 +36,7 @@ Wisard_RunManager::Wisard_RunManager()
   {
     histos_coinc[i] = new TH1D((Detector_Name[i] + "_coinc").c_str(), (Detector_Name[i] + "_coinc").c_str(), 100000, 0.0, 10000.0);
     histos_nocoinc[i] = new TH1D((Detector_Name[i] + "_nocoinc").c_str(), (Detector_Name[i] + "_nocoinc").c_str(), 100000, 0.0, 10000.0);
+    histos_single[i] = new TH1D((Detector_Name[i] + "_single").c_str(), (Detector_Name[i] + "_single").c_str(), 100000, 0.0, 10000.0);
   }
   ///////////////////////////////////////////////////////////////////
 }
@@ -123,7 +124,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     count++;
     for (int part = 1; part <= event->GetNumberOfPrimaryVertex(); part++)
     {
-      
+
       G4PrimaryParticle *Primary = event->GetPrimaryVertex(part - 1)->GetPrimary();
       G4ThreeVector Momentum = Primary->GetMomentumDirection();
 
@@ -131,7 +132,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       Particle_PDG = Primary->GetG4code()->GetPDGEncoding();
       x = PrimaryVertex->GetX0() / um;
       y = PrimaryVertex->GetY0() / um;
-      z = PrimaryVertex->GetZ0() / nm; 
+      z = PrimaryVertex->GetZ0() / nm;
       px = Momentum.x();
       py = Momentum.y();
       pz = Momentum.z();
@@ -163,8 +164,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       }
       Tree->Fill();
     }
-    
-    
+
     ///// Reset all variables of detectors pour the next primary particle /////////////////
     Particle_PDG = 0;
     x = 0;
@@ -191,6 +191,18 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     ////////////////////////////////////////////////////////
   }
 
+  int detector_counter = 0;
+  for (int i = 0; i < nb_det; i++)
+  {
+    for (int part = 1; part <= event->GetNumberOfPrimaryVertex(); part++)
+    {
+      if (dic_detector[Detector_Code[i]].first->GetDictionnary()[part].DepositEnergy != 0.)
+      {
+        detector_counter++;
+      }
+    }
+  }
+
   // HISTOGRAMS ///#condition à revoir pour plus précis et générale
   int index_delayed = -1;
   int index_beta = -1;
@@ -211,20 +223,21 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     }
   }
 
-  if (index_beta != -1 && index_delayed != -1)
+  if (index_beta != -1 && index_delayed != -1 && detector_counter == 1)
   {
     for (int i = 0; i < nb_det; i++)
     {
       if (dic_detector[Detector_Code[i]].first->GetDictionnary()[index_delayed].DepositEnergy != 0.)
       {
-        if (wisard_sensor_PlasticScintillator->GetDictionnary()[index_beta].DepositEnergy >= GetThreshoold()/keV)
+        if (wisard_sensor_PlasticScintillator->GetDictionnary()[index_beta].DepositEnergy >= GetThreshoold() / keV)
         {
-          histos_coinc[i]->Fill(dic_detector[Detector_Code[i]].first->GetDictionnary()[index_delayed].DepositEnergy);
+          histos_coinc[i]->Fill(dic_detector[Detector_Code[i]].first->GetDictionnary()[index_delayed].DepositEnergy-dic_detector[Detector_Code[i]].second->GetDictionnary()[index_delayed].DepositEnergy);
         }
         else
         {
-          histos_nocoinc[i]->Fill(dic_detector[Detector_Code[i]].first->GetDictionnary()[index_delayed].DepositEnergy);
+          histos_nocoinc[i]->Fill(dic_detector[Detector_Code[i]].first->GetDictionnary()[index_delayed].DepositEnergy-dic_detector[Detector_Code[i]].second->GetDictionnary()[index_delayed].DepositEnergy);
         }
+        histos_single[i]->Fill(dic_detector[Detector_Code[i]].first->GetDictionnary()[index_delayed].DepositEnergy);
       }
     }
   }
@@ -240,6 +253,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     {
       histos_coinc[i]->Write("", TObject::kOverwrite);
       histos_nocoinc[i]->Write("", TObject::kOverwrite);
+      histos_single[i]->Write("", TObject::kOverwrite);
     }
   }
 
@@ -259,40 +273,67 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   ///////////////////////////////////////////////////////////////////
 }
 
-int Wisard_RunManager::OpenInput(const std::string &fname) {
-    int error = 0; // Valeur de retour
+int Wisard_RunManager::OpenInput(const std::string &fname)
+{
+  int error = 0; // Valeur de retour
 
-    if (fname != "") {
-        // Fermer la sortie précédente au cas où
-        CloseInput();
+  if (fname != "")
+  {
+    // Fermer la sortie précédente au cas où
+    CloseInput();
 
-        // Vérifier l'extension du fichier
-        size_t dotPosition = fname.find_last_of('.');
-        if (dotPosition != std::string::npos) {
-            std::string extension = fname.substr(dotPosition + 1);
-            input_name = fname;
-            if (extension == "root") {
-                TFile * file = new TFile(fname.c_str(), "READ");
-                if (file->IsOpen()){std::cout << "<I> Open input file : " << fname << std::endl; file->Close();}
-                 else {std::cerr <<"<W> Unable to open CRADLE input file" << std::endl; error = 2;}
-            } else if (extension == "txt") {
-                input_txt.open(fname.c_str());
-                if (!input_txt.fail()){std::cout << "<I> Open input file : " << fname << std::endl;}
-                else {std::cerr <<"<W> Unable to open CRADLE input file" << std::endl; error = 2;}
-            } else {
-                error = 3;
-                std::cerr << "<W> Unrecognized input file extension : " << extension << std::endl;
-            }
-        } else {
-            error = 4; // Aucune extension de fichier trouvée
-            std::cerr << "<W> No file extension found in input file name : " << fname << std::endl;
+    // Vérifier l'extension du fichier
+    size_t dotPosition = fname.find_last_of('.');
+    if (dotPosition != std::string::npos)
+    {
+      std::string extension = fname.substr(dotPosition + 1);
+      input_name = fname;
+      if (extension == "root")
+      {
+        TFile *file = new TFile(fname.c_str(), "READ");
+        if (file->IsOpen())
+        {
+          std::cout << "<I> Open input file : " << fname << std::endl;
+          file->Close();
         }
-    } else {
-        error = 1; // Nom de fichier vide
-        std::cerr << "<W> Empty input file name" << std::endl;
+        else
+        {
+          std::cerr << "<W> Unable to open CRADLE input file" << std::endl;
+          error = 2;
+        }
+      }
+      else if (extension == "txt")
+      {
+        input_txt.open(fname.c_str());
+        if (!input_txt.fail())
+        {
+          std::cout << "<I> Open input file : " << fname << std::endl;
+        }
+        else
+        {
+          std::cerr << "<W> Unable to open CRADLE input file" << std::endl;
+          error = 2;
+        }
+      }
+      else
+      {
+        error = 3;
+        std::cerr << "<W> Unrecognized input file extension : " << extension << std::endl;
+      }
     }
+    else
+    {
+      error = 4; // Aucune extension de fichier trouvée
+      std::cerr << "<W> No file extension found in input file name : " << fname << std::endl;
+    }
+  }
+  else
+  {
+    error = 1; // Nom de fichier vide
+    std::cerr << "<W> Empty input file name" << std::endl;
+  }
 
-    return error;
+  return error;
 }
 
 int Wisard_RunManager::OpenInputSRIM(const string &fname)

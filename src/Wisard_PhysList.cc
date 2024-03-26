@@ -8,7 +8,7 @@
 #include "G4ProcessManager.hh"
 
 #include "G4EmStandardPhysics.hh"
-#include "G4EmStandardPhysics_option3.hh"
+#include "G4EmStandardPhysics_option4.hh"
 #include "G4EmLivermorePhysics.hh"
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmStandardPhysicsGS.hh"
@@ -90,10 +90,10 @@ void Wisard_PhysList::ConstructProcess()
   // define transportation process
   AddTransportation();
 
-  // G4VPhysicsConstructor * emPhysicsList = new G4EmPenelopePhysics();
+  // G4VPhysicsConstructor * emPhysicsList = new G4EmPenelopePhysics(0);
   // G4VPhysicsConstructor * emPhysicsList = new G4EmLivermorePhysics();
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics(1);
-  // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics_option3(1);
+  // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics_option4(0);
   G4VPhysicsConstructor *emPhysicsList = new G4EmStandardPhysicsGS(0);
   emPhysicsList->ConstructProcess();
 }
@@ -107,10 +107,10 @@ void Wisard_PhysList::SetCuts()
   //   the default cut value for all particle types
   SetCutsWithDefault();
 
-  SetCutValue(0.001 * mm, "gamma");
-  SetCutValue(0.001 * mm, "proton");
-  SetCutValue(0.001 * mm, "e-");
-  SetCutValue(0.001 * mm, "e+");
+  SetCutValue(0.001 * um, "gamma");
+  SetCutValue(0.001 * um, "proton");
+  SetCutValue(0.001 * um, "e-");
+  SetCutValue(0.001 * um, "e+");
   defaultCutValue = 10. * nm;
 }
 

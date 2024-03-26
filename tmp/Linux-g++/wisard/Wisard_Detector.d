@@ -1,9 +1,9 @@
 ./tmp/Linux-g++/wisard/Wisard_Detector.o tmp/Linux-g++/wisard/Wisard_Detector.d: src/Wisard_Detector.cc /usr/include/stdc-predef.h \
- include/Wisard_Detector.hh include/Wisard_Global.hh \
- /usr/include/stdio.h /usr/include/bits/libc-header-start.h \
- /usr/include/features.h /usr/include/sys/cdefs.h \
- /usr/include/bits/wordsize.h /usr/include/bits/long-double.h \
- /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h \
+ include/Wisard_Detector.hh include/Wisard_Global.hh /usr/include/stdio.h \
+ /usr/include/bits/libc-header-start.h /usr/include/features.h \
+ /usr/include/sys/cdefs.h /usr/include/bits/wordsize.h \
+ /usr/include/bits/long-double.h /usr/include/gnu/stubs.h \
+ /usr/include/gnu/stubs-64.h \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/stddef.h \
  /usr/lib/gcc/x86_64-redhat-linux/8/include/stdarg.h \
  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
