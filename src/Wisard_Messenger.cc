@@ -70,10 +70,10 @@ void Wisard_Messenger::DefineInputCommands()
   input_cmd_B->SetParameterName("B", false);
   input_cmd_B->AvailableForStates(G4State_PreInit, G4State_Idle);
 
-  // Set Plastic Sintillator threshoold for histograms
-  input_cmd_th = new G4UIcmdWithAString("/Threshoold_PlasticScintillator", this);
-  input_cmd_th->SetGuidance("Set Threshoold PlasticScintillator");
-  input_cmd_th->SetParameterName("threshoold", false);
+  // Set Plastic Sintillator threshold for histograms
+  input_cmd_th = new G4UIcmdWithAString("/Threshold_PlasticScintillator", this);
+  input_cmd_th->SetGuidance("Set Threshold PlasticScintillator");
+  input_cmd_th->SetParameterName("threshold", false);
   input_cmd_th->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   // Set Ion Beam Size
@@ -153,7 +153,7 @@ void Wisard_Messenger::SetNewValue(G4UIcommand *cmd, G4String args)
     G4String unit;
     std::istringstream iss(args);
     iss >> value >> unit;
-    manager_ptr->SetThreshoold(value * G4UnitDefinition::GetValueOf(unit));
+    manager_ptr->SetThreshold(value * G4UnitDefinition::GetValueOf(unit));
   }
   if (cmd == input_cmd_beam_size)
   {

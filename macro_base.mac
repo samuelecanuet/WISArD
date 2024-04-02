@@ -17,7 +17,7 @@
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Magnetic_Field 4 T
-/Threshoold_PlasticScintillator 100 keV
+/Threshold_PlasticScintillator 100 keV
 
 #---------------------------------------------------------------
 #   Systematic Variables

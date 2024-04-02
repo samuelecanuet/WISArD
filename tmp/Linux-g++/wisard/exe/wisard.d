@@ -715,8 +715,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4Step.hh \
  include/Wisard_Generator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
- include/Wisard_Tracking.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \

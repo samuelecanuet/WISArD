@@ -9,7 +9,7 @@
 /run/initialize
 /run/verbose      0
 /event/verbose    0
-/tracking/verbose 1
+/tracking/verbose 0
 
 #---------------------------------------------------------------
 #   Input Files
@@ -22,8 +22,8 @@
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Magnetic_Field 4 T
-/Threshoold_PlasticScintillator 100 keV
-#/Delta_Position_Threshoold_PlasticScintillator
+/Threshold_PlasticScintillator 100 keV
+#/Delta_Position_Threshold_PlasticScintillator
 
 #---------------------------------------------------------------
 #   Systematic Variables
@@ -144,6 +144,6 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 2
+/run/beamOn 20
 #
 #

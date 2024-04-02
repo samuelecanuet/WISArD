@@ -10,14 +10,14 @@
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-#/input/Open_SRIM SRIM_data/AlMylar_32Ar.txt
+/input/Open_SRIM SRIM_data/AlMylar_2021_32Ar.txt
 /input/Open_CRADLE CRADLE_data/SAMPLE.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Magnetic_Field 4 T
-/Threshoold_PlasticScintillator 100 keV
+/Threshold_PlasticScintillator 100 keV
 
 #---------------------------------------------------------------
 #   Systematic Variables
@@ -29,11 +29,11 @@
 /Setup 2021
 /Catcher_Position_z 0 mm
 /Catcher_Position catcher2 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
-/Catcher_Thickness 0 0 0 nm     thickness : Al, Mylar Al (0 delete it)
+/Catcher_Thickness 800 0 0 nm     thickness : Al, Mylar Al (0 delete it)
 
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 10000
+/run/printProgress 1000
 /output SAMPLE.root
 /run/beamOn 10000

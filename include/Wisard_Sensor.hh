@@ -5,57 +5,38 @@
 #include "G4VSensitiveDetector.hh"
 #include "G4EventManager.hh"
 
-struct PrimaryInfo
-{
-  G4double DepositEnergy;
-  G4double HitAngle;
-  G4ThreeVector HitPosition;
-  G4String ParticleName;
-};
-
-//----------------------------------------------------------------------
-// This class is associated with a volume of the geometry to make this
-// volume "sensitive"
-// When a particle track produces a "hit" in the corresponding volume,
-// the ProcessHits function is called
 class Wisard_Sensor : public G4VSensitiveDetector
 {
-
-  //------------------------------------------------------------
-  // internal variables definition
-protected:
-
-  //------------------------------------------------------------
-  // class functions definition
 public:
-  // constructor and destructor
   Wisard_Sensor();
   ~Wisard_Sensor();
 
-  // hits processing
   void Initialize(G4HCofThisEvent *);
   G4bool ProcessHits(G4Step *, G4TouchableHistory *);
 
-  std::unordered_map<G4int, PrimaryInfo> PrimaryDictionnary;
+  G4double DepositEnergy;
+  G4double ProtonHitAngle;
+  G4double PositronHitAngle;
+  G4ThreeVector ProtonHitPosition;
+  G4ThreeVector PositronHitPosition;
 
-  void ResetDictionnary() { PrimaryDictionnary.clear(); }
-  std::unordered_map<G4int, PrimaryInfo> GetDictionnary() { return PrimaryDictionnary; }
-
-  inline void PrintDictionnary(PrimaryInfo dic);
-
-  PrimaryInfo PrimaryInfo_init;
-
-  int index;
+  void inline ResetDetector();
+  G4double GetDepositEnergy() { return DepositEnergy; }
+  G4double GetProtonHitAngle() { return ProtonHitAngle; }
+  G4double GetPositronHitAngle() { return PositronHitAngle; }
+  vector<G4double> GetProtonHitPosition() { return {ProtonHitPosition.x(), ProtonHitPosition.y(), ProtonHitPosition.z()}; }
+  vector<G4double> GetPositronHitPosition() { return {PositronHitPosition.x(), PositronHitPosition.y(), PositronHitPosition.z()}; }
   
 };
 
-void Wisard_Sensor::PrintDictionnary(PrimaryInfo dic)
+void Wisard_Sensor::ResetDetector()
 {
-  G4cout<<G4endl;
-  G4cout<<"Name : "<<dic.ParticleName << G4endl;
-  G4cout<<setprecision(4)<<"Energy Deposit : "<< dic.DepositEnergy << " keV"<<G4endl;
-  G4cout<<setprecision(4)<<"Hit Angle : "<< dic.HitAngle << " deg"<<G4endl;
-  G4cout<<"Hit Position : "<< dic.HitPosition << "(mm)"<<G4endl;
-  G4cout<<G4endl;
+  DepositEnergy = 0;
+  ProtonHitAngle = 0;
+  PositronHitAngle = 0;
+  ProtonHitPosition = G4ThreeVector(0, 0, 0);
+  PositronHitPosition = G4ThreeVector(0, 0, 0);
 }
+
+
 #endif

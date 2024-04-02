@@ -38,9 +38,6 @@ int main(int argc, char **argv)
   Wisard_PhysList *ptr_phys = new Wisard_PhysList;
   run.SetUserInitialization(ptr_phys);
 
-  Wisard_Tracking *ptr_track = new Wisard_Tracking();
-  run.SetUserAction(ptr_track);
-
   // create the generator for events
   Wisard_Generator *ptr_gene = new Wisard_Generator(&run);
   run.SetUserAction(ptr_gene);

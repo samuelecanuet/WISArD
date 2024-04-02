@@ -16,14 +16,9 @@
 #include <utility>
 #include <vector>
 
-//----------------------------------------------------------------------
-// This class defines the simulation core (from the base class G4RunManager)
-// including information to get the required information
 class Wisard_RunManager : public G4RunManager
 {
 
-  //------------------------------------------------------------
-  // internal variables definition
 protected:
   Wisard_Sensor *wisard_sensor_PlasticScintillator;
   Wisard_Sensor *wisard_sensor_CatcherMylar_central;
@@ -33,12 +28,28 @@ protected:
   Wisard_Sensor *wisard_sensor_CatcherAl1_side;
   Wisard_Sensor *wisard_sensor_CatcherAl2_side;
 
-  G4double x, y, z, px, py, pz, Initial_Kinetic_Energy, Catcher_Central_Deposit_Energy, Catcher_Side_Deposit_Energy, PlasticScintillator_Deposit_Energy, PlasticScintillator_Hit_Position_x, PlasticScintillator_Hit_Position_y, PlasticScintillator_Hit_Position_z, PlasticScintillator_Hit_Angle;
-  std::vector<double> Silicon_Detector_Deposit_Energy, Silicon_Detector_Hit_Position_x, Silicon_Detector_Hit_Position_y, Silicon_Detector_Hit_Position_z, Silicon_Detector_Hit_Angle, Silicon_Detector_DL_Deposit_Energy;
-  G4int Particle_PDG;
-  std::vector<std::string> Silicon_Detector_Name;
-  std::vector<int> Silicon_Detector_Code;
-  G4int Event_Number;
+  /// TREE VARIABLES ////
+  vector<G4int> Particle_PDG;
+  vector<G4double> x;
+  vector<G4double> y; 
+  vector<G4double> z;
+  vector<G4double> px; 
+  vector<G4double> py; 
+  vector<G4double> pz;
+  vector<G4double> Kinetic_Energy;
+
+  G4double PlasticScintillator_Deposit_Energy;
+  vector<G4double>  PlasticScintillator_Proton_Hit_Position, PlasticScintillator_Positron_Hit_Position;
+  G4double PlasticScintillator_Proton_Hit_Angle, PlasticScintillator_Positron_Hit_Angle;
+
+  vector<G4double> Silicon_Detector_Deposit_Energy, Silicon_Detector_DL_Deposit_Energy;
+  vector<vector<G4double>> Silicon_Detector_Proton_Hit_Position, Silicon_Detector_Positron_Hit_Position;
+  vector<G4double> Silicon_Detector_Proton_Hit_Angle, Silicon_Detector_Positron_Hit_Angle;
+  vector<G4int> Silicon_Detector_Code;
+  
+  G4double  Catcher_Central_Deposit_Energy, Catcher_Side_Deposit_Energy;
+  ///////////////////////
+
   G4int count = 0;
 
   ifstream input_txt;
@@ -47,11 +58,9 @@ protected:
   ifstream inputSRIM;
   string input_nameSRIM;
 
-  G4double threshoold;
+  G4double threshold;
   G4String filename;
 
-  //------------------------------------------------------------
-  // class functions definition
 public:
   // constructor and destructor
   Wisard_RunManager();
@@ -63,9 +72,10 @@ public:
 
   TTree *Tree;
 
-  TH1D *histos_coinc[nb_det];
-  TH1D *histos_nocoinc[nb_det];
-  TH1D *histos_single[nb_det];
+  TH1D *silicon_coinc[nb_det];
+  TH1D *silicon_nocoinc[nb_det];
+  TH1D *silicon_single[nb_det];
+  TH1D *plastic_coinc;
 
   std::string Detector_Name[nb_det] = {
       "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
@@ -117,8 +127,8 @@ public:
   void CloseInputSRIM();    // inline
   ifstream &GetInputSRIM(); // inline
 
-  void SetThreshoold(G4double th);
-  G4double GetThreshoold();
+  void SetThreshold(G4double th);
+  G4double GetThreshold();
 
   void SetOutputFilename(G4String fn);
   G4String GetOutputFilename();
@@ -202,8 +212,8 @@ inline ifstream &Wisard_RunManager::GetInputSRIM()
 }
 
 // THRESHOOLD
-inline void Wisard_RunManager::SetThreshoold(G4double th) { threshoold = th; }
-inline G4double Wisard_RunManager::GetThreshoold() { return (threshoold); }
+inline void Wisard_RunManager::SetThreshold(G4double th) { threshold = th; }
+inline G4double Wisard_RunManager::GetThreshold() { return (threshold); }
 
 // OUPUT FILE
 inline void Wisard_RunManager::SetOutputFilename(G4String fn) { filename = fn; }

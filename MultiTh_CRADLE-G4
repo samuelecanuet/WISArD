@@ -213,7 +213,7 @@ while [ $Saver -le $RunEnd ]; do
         cp ../config/config_base.txt config_${constants}_bis.txt
         sed -e "$replace" config_${constants}_bis.txt > ../config/config_${constants}.txt
         rm config_${constants}_bis.txt
-        #./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}${suffixe}_${constants}_${Saver}.root
+        ./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}${suffixe}_${constants}_${Saver}.root
         cd -
 
         cp macro_base.mac tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac

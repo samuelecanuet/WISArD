@@ -634,5 +634,4 @@
  /softs/geant4.11.1.2/include/Geant4/icomsdefs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VStateDependent.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UIcommandStatus.hh \
- /usr/local/root/6.26.10/include/TBranch.h \
  /usr/local/root/6.26.10/include/TObjString.h

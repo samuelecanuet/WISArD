@@ -100,3 +100,7 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Adding 2021 set-up version (indicated in the *macro* file)
 - Discard all the inter-strip event in histograms
 
+### v2.5
+- Simplification of the simulation (deleting particle information of the energy deposit)
+- New TTree 
+- Output file include coincidence Plastic Scintillator deposit energy

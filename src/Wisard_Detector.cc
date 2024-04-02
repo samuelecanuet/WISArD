@@ -497,7 +497,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                                fLogic_PlasticScintillator, "PlasticScintillator",                                                                                                                              // its fLogical volume
                                                                fLogicWorld,                                                                                                                                                                    // its mother volume
                                                                false,                                                                                                                                                                          // no boolean op.
-                                                               0);                                                                                                                                                                             // copy nb.
+                                                               99);                                                                                                                                                                             // copy nb.
   G4VisAttributes *PlasticScintillator_att = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6, 0.6));                                                                                                                                                // red
   PlasticScintillator_att->SetForceWireframe(false);
   PlasticScintillator_att->SetForceSolid(true);
