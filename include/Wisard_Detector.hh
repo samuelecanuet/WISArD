@@ -25,18 +25,19 @@
 #include "G4FieldManager.hh"
 #include "G4Trap.hh"
 #include "G4VSolid.hh"
-
+#include "G4GenericMessenger.hh"
 #include <unordered_map>
 #include <tuple>
 #include <string>
 #include <iostream>
 
-class G4GenericMessenger;
+// class G4GenericMessenger;
 
 //----------------------------------------------------------------------
 
 class Wisard_Detector : public G4VUserDetectorConstruction
 {
+
 
   //------------------------------------------------------------
   // internal variables definition
@@ -60,6 +61,9 @@ public:
   // destructor
   ~Wisard_Detector();
 
+  G4GenericMessenger* aMessenger;
+G4double test = 10*mm;
+
   // setup construction (mandatory class function)
   G4VPhysicalVolume *Construct();
 
@@ -73,8 +77,6 @@ public:
   void CloseInputB();                  // inline
   ifstream inputB;
   string input_nameB;
-  void SetSetup(G4int Year);
-  G4int Setup_Version = 2023;
   void SetCatcherPosition_theta(G4String position, G4double angle);
   void SetCatcherPosition_z(G4double catcher_z);
   void SetCatcher_Thickness(G4double Al1_e, G4double Mylar_e, G4double Al2_e);
@@ -110,22 +112,42 @@ public:
       std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
       std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
       std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+      std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+      std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+      std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+      std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+      std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+      std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+      std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+      std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+      std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
       std::pair<G4LogicalVolume *, G4VPhysicalVolume *>>
-  Make_Sidet(int num, string dir, G4VisAttributes *strip_att, G4VisAttributes *cooling_att, G4VisAttributes *support_att, G4VisAttributes *vide_att, G4Material *strip_mat, G4Material *cooling_mat, G4Material *support_mat, G4Material *vide_mat);
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeSupport(int num, string dir, G4VisAttributes *support_att, G4Material *support_mat);
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeCooling(int num, string dir, G4LogicalVolume *mother, G4VisAttributes *cooling_att, G4Material *cooling_mat);
+  Make_Sidet(int num, G4VisAttributes *strip_att, G4VisAttributes *cooling_att, G4VisAttributes *support_att, G4VisAttributes *vide_att, G4Material *strip_mat, G4Material *cooling_mat, G4Material *support_mat, G4Material *vide_mat);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeSupport(int num, G4VisAttributes *support_att, G4Material *support_mat);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeCooling(int num, G4LogicalVolume *mother, G4VisAttributes *cooling_att, G4Material *cooling_mat);
 
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeVide(int num, string dir, G4VisAttributes *vide_att, G4Material *vide_mat);
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeStrip(int strip, int num, string dir, G4LogicalVolume *mother, G4VisAttributes *strip_att, G4Material *strip_mat);
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeDL(int strip, int num, string dir, G4LogicalVolume *mother, G4VisAttributes *strip_att, G4Material *strip_mat);
-
-  std::unordered_map<int, std::tuple<G4Trap *, G4ThreeVector, G4Trap *>> dic_strip;
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeVide(int num, G4VisAttributes *vide_att, G4Material *vide_mat);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeStrip(int strip, int num, G4LogicalVolume *mother, G4VisAttributes *strip_att, G4Material *strip_mat);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeDL(int strip, int num, G4LogicalVolume *mother, G4VisAttributes *strip_att, G4Material *strip_mat);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeStripGrid(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *grid_att, G4Material *grid_mat);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeInterStrip(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *strip_att, G4Material *strip_mat);
+  std::unordered_map<int, std::tuple<G4Trap *, G4ThreeVector, G4Trap *, G4VSolid*>> dic_strip;
+  std::unordered_map<int, std::tuple<G4Trap *, G4ThreeVector>> dic_interstrip;
   std::unordered_map<std::string, G4ThreeVector> dic_position;
   std::unordered_map<std::string, G4ThreeVector> dic_positionvide;
   std::unordered_map<std::string, std::tuple<double, double, double>> dic_rotate;
 
   std::tuple<std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
              // std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+             std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+             std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+             std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+             std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+             std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+             std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+             std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+             std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+             std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
              std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
              std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
              std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
@@ -147,7 +169,6 @@ public:
   G4Material *material_SupportoRame_SiliconDetector;
   G4Material *materialSupportSiliconDetector;
   G4Material *vide = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
-  std::vector<std::string> directions = {"Up", "Down"};
   G4double thicknessMylarSource;
 
   G4double thicknessMylarSource_central;
@@ -204,12 +225,19 @@ public:
   G4Trap *SiDet_Strip_3_dl;
   G4Trap *SiDet_Strip_4_dl;
   G4Trap *SiDet_Strip_5_dl;
+  G4VSolid *SiDet_Strip_1_grid;
+  G4VSolid *SiDet_Strip_2_grid;
+  G4VSolid *SiDet_Strip_3_grid;
+  G4VSolid *SiDet_Strip_4_grid;
+  G4VSolid *SiDet_Strip_5_grid;
   double r, z, r_vide, z_vide, theta;
   G4VSolid *Box_material_SupportoRame_SiliconDetector;
   G4double spazio_tra_Bordo_e_strip5;
   G4double spazio_tra_Strip;
   G4double thicknessSiDetector, length_x_SupportoRame_SiDetector, x_smallBox_daTagliare_SupportoRame_SiDetector, distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector, y_smallBox_daTagliare_SupportoRame_SiDetector, thetaInclinazione_SiDetector, pDy1, height_y_SupportoRame_SiDetector, pDz, thickness_z_SupportoRame_SiDetector;
   G4VSolid *supportSiliconDetector;
+  G4double thicknessSiDetectorGrid;
+  G4double WidthSiDetectorGrid;
   G4double xHigh_SiDet_Strip_5;
   G4double xLow_SiDet_Strip_5;
   G4double y_SiDet_Strip_5;
@@ -239,52 +267,71 @@ inline std::tuple<std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
                   std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
                   std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
                   std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+                  std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+                  std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+                  std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+                  std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+                  std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+                  std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+                  std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+                  std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
+                  std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
                   std::pair<G4LogicalVolume *, G4VPhysicalVolume *>>
-Wisard_Detector::Make_Sidet(int num, string dir, G4VisAttributes *strip_att, G4VisAttributes *cooling_att, G4VisAttributes *support_att, G4VisAttributes *vide_att, G4Material *strip_mat, G4Material *cooling_mat, G4Material *support_mat, G4Material *vide_mat)
+Wisard_Detector::Make_Sidet(int num, G4VisAttributes *strip_att, G4VisAttributes *cooling_att, G4VisAttributes *support_att, G4VisAttributes *vide_att, G4Material *strip_mat, G4Material *cooling_mat, G4Material *support_mat, G4Material *vide_mat)
 {
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Support = MakeSupport(num, dir, support_att, support_mat);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Support = MakeSupport(num, support_att, support_mat);
   // std::pair<G4LogicalVolume*, G4VPhysicalVolume*> Cooling = MakeCooling(num, dir, Support.first, cooling_att, cooling_mat);
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Vide = MakeVide(num, dir, vide_att, vide_mat);
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Strips[10];
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Vide = MakeVide(num, vide_att, vide_mat);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Strips[19];
 
-  for (int i = 1; i < 6; i++)
+  G4VisAttributes *Al = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
+  Al->SetVisibility(true);
+  Al->SetForceWireframe(false);
+  Al->SetForceSolid(true);
+
+  G4VisAttributes *visAtt_PEEK = new G4VisAttributes(G4Colour(1., 1., 1.));
+    visAtt_PEEK->SetVisibility(true);
+    visAtt_PEEK->SetForceWireframe(false);
+    visAtt_PEEK->SetForceSolid(true);
+
+  for (int i = 1; i <= 5; i++)
   {
-    Strips[i - 1] = MakeStrip(i, num, dir, Vide.first, strip_att, strip_mat);
-    Strips[i + 4] = MakeDL(i, num, dir, Strips[i - 1].first, vide_att, strip_mat);
+    Strips[i - 1] = MakeStrip(i, num, Vide.first, strip_att, strip_mat);
+    Strips[i + 4] = MakeDL(i, num, Strips[i - 1].first, cooling_att, strip_mat);
+    Strips[i + 9] = MakeStripGrid(i, num, Vide.first, Al, strip_mat);
+    if (i != 5)
+    {
+      Strips[i + 14] = MakeInterStrip(i, num, Vide.first, visAtt_PEEK, strip_mat);
+    }
 
-    string sign;
-    if (dir == "Down") 
+    Strips[i - 1].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector( ("D"+ to_string(num) + "." + to_string(i))) );
+    Strips[i + 4].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector( ("D"+ to_string(num) + "." + to_string(i) + "dl") ) );
+    if (i != 5)
     {
-      sign = "-";
+      Strips[i + 14].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector( ("D"+ to_string(num) + "." + to_string(i) + to_string(i+1) + "interstrip") ) );
     }
-    if (dir == "Up") 
-    {
-      sign = "";
-    }
-    Strips[i - 1].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector((sign + num+i).Data()));
-    Strips[i + 4].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector((sign + num+i + "_dl").Data()));
   }
 
-  return std::make_tuple(Support, Vide, Strips[0], Strips[1], Strips[2], Strips[3], Strips[4], Strips[5], Strips[6], Strips[7], Strips[8], Strips[9]);
+  return std::make_tuple(Support, Vide, Strips[0], Strips[1], Strips[2], Strips[3], Strips[4], Strips[5], Strips[6], Strips[7], Strips[8], Strips[9], Strips[10], Strips[11], Strips[12], Strips[13], Strips[14], Strips[15], Strips[16], Strips[17], Strips[18]);
 }
 
-inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeSupport(int num, string dir, G4VisAttributes *support_att, G4Material *support_mat)
+inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeSupport(int num, G4VisAttributes *support_att, G4Material *support_mat)
 {
   G4LogicalVolume *logicSupportSiliconDetector = new G4LogicalVolume(
       supportSiliconDetector,
       support_mat,
-      ("logicSupportSiliconDetector_" + std::to_string(num) + dir).data());
+      ("logicSupportSiliconDetector_" + std::to_string(num)).data());
 
   G4RotationMatrix *rotate = new G4RotationMatrix();
-  rotate->rotateX(get<0>(dic_rotate[(num + dir).Data()]));
-  rotate->rotateY(get<1>(dic_rotate[(num + dir).Data()]));
-  rotate->rotateZ(get<2>(dic_rotate[(num + dir).Data()]));
+  rotate->rotateX(get<0>(dic_rotate["D" + to_string(num)]));
+  rotate->rotateY(get<1>(dic_rotate["D" + to_string(num)]));
+  rotate->rotateZ(get<2>(dic_rotate["D" + to_string(num)]));
 
   G4VPhysicalVolume *physSupportSiliconDetector = new G4PVPlacement(
       rotate,
-      dic_position[(num + dir).Data()],
+      dic_position["D" + to_string(num)],
       logicSupportSiliconDetector,
-      ("physSupportSiliconDetector_" + std::to_string(num) + dir).data(),
+      ("physSupportSiliconDetector_" + std::to_string(num)).data(),
       fLogicWorld,
       false,
       0);
@@ -294,23 +341,23 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeSu
   return std::make_pair(logicSupportSiliconDetector, physSupportSiliconDetector);
 }
 
-inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeVide(int num, string dir, G4VisAttributes *vide_att, G4Material *vide_mat)
+inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeVide(int num, G4VisAttributes *vide_att, G4Material *vide_mat)
 {
   G4LogicalVolume *logicSupportSiliconDetectorvide = new G4LogicalVolume(
       supportSiliconDetectorvide,
       vide_mat,
-      ("logicSupportSiliconDetector_" + std::to_string(num) + dir + "vide").data());
+      ("logicSupportSiliconDetector_" + std::to_string(num) + "vide").data());
 
   G4RotationMatrix *rotate = new G4RotationMatrix();
-  rotate->rotateX(get<0>(dic_rotate[(num + dir).Data()]));
-  rotate->rotateY(get<1>(dic_rotate[(num + dir).Data()]));
-  rotate->rotateZ(get<2>(dic_rotate[(num + dir).Data()]));
-
+  rotate->rotateX(get<0>(dic_rotate["D" + to_string(num)]));
+  rotate->rotateY(get<1>(dic_rotate["D" + to_string(num)]));
+  rotate->rotateZ(get<2>(dic_rotate["D" + to_string(num)]));
+  
   G4VPhysicalVolume *physSupportSiliconDetectorvide = new G4PVPlacement(
       rotate,
-      dic_positionvide[(num + dir).Data()],
+      dic_positionvide["D" + to_string(num)],
       logicSupportSiliconDetectorvide,
-      ("physSupportSiliconDetector_" + std::to_string(num) + dir + "vide").data(),
+      ("physSupportSiliconDetector_" + std::to_string(num) + "vide").data(),
       fLogicWorld,
       false,
       0);
@@ -319,18 +366,18 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeVi
   return std::make_pair(logicSupportSiliconDetectorvide, physSupportSiliconDetectorvide);
 }
 
-inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeCooling(int num, string dir, G4LogicalVolume *mother, G4VisAttributes *cooling_att, G4Material *cooling_mat)
+inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeCooling(int num, G4LogicalVolume *mother, G4VisAttributes *cooling_att, G4Material *cooling_mat)
 {
   G4LogicalVolume *logic_Box_material_SupportoRame_SiliconDetector = new G4LogicalVolume(
       Box_material_SupportoRame_SiliconDetector,
       cooling_mat,
-      ("logic_Box_material_SupportoRame_SiliconDetector_" + std::to_string(num) + dir).data());
+      ("logic_Box_material_SupportoRame_SiliconDetector_" + std::to_string(num)).data());
 
   G4VPhysicalVolume *physics_Box_material_SupportoRame_SiliconDetector = new G4PVPlacement(
       0,
       G4ThreeVector((length_x_SupportoRame_SiDetector / 2 - x_smallBox_daTagliare_SupportoRame_SiDetector - distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector - (y_smallBox_daTagliare_SupportoRame_SiDetector / tan(thetaInclinazione_SiDetector) - 1. * mm)), pDy1 / 2 - height_y_SupportoRame_SiDetector / 2, -pDz / 2 - thickness_z_SupportoRame_SiDetector / 2),
       logic_Box_material_SupportoRame_SiliconDetector,
-      ("phys_Box_material_SupportoRame_SiliconDetector_" + std::to_string(num) + dir).data(),
+      ("phys_Box_material_SupportoRame_SiliconDetector_" + std::to_string(num)).data(),
       mother,
       false,
       0);
@@ -340,42 +387,88 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeCo
   return std::make_pair(logic_Box_material_SupportoRame_SiliconDetector, physics_Box_material_SupportoRame_SiliconDetector);
 }
 
-inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeStrip(int strip, int num, string dir, G4LogicalVolume *videe, G4VisAttributes *strip_att, G4Material *strip_mat)
+inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeStrip(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *strip_att, G4Material *strip_mat)
 {
   G4LogicalVolume *logicSiDet = new G4LogicalVolume(
       get<0>(dic_strip[strip]),
       strip_mat,
-      ("logicSi_" + num + dir + "_Strip_" + strip).Data());
+      ("logicSi_" + to_string(num) + "_Strip_" + to_string(strip)).data());
 
   G4VPhysicalVolume *physSiDet = new G4PVPlacement(
       0,
       get<1>(dic_strip[strip]),
       logicSiDet,
-      ("physSi_" + num + dir + "_Strip_" + strip).Data(),
+      ("physSi_" + to_string(num) + "_Strip_" + to_string(strip)).data(),
       videe,
       false,
-      0);
+      num*10+strip);
 
   logicSiDet->SetVisAttributes(strip_att);
 
   return std::make_pair(logicSiDet, physSiDet);
 }
 
-inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeDL(int strip, int num, string dir, G4LogicalVolume *mother, G4VisAttributes *strip_att, G4Material *strip_mat)
+inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeDL(int strip, int num, G4LogicalVolume *mother, G4VisAttributes *strip_att, G4Material *strip_mat)
 {
   G4LogicalVolume *logicSiDet = new G4LogicalVolume(
       get<2>(dic_strip[strip]),
       strip_mat,
-      ("logicSi_" + num + dir + "_Strip_" + strip + "_dl").Data());
+      ("logicSi_" + to_string(num) + "_Strip_" + to_string(strip) + "_dl").data());
 
   G4VPhysicalVolume *physSiDet = new G4PVPlacement(
       0,
       G4ThreeVector(0., 0., thicknessSiDetector / 2 - thicknessSiDetectorDeadLayer / 2),
       logicSiDet,
-      ("physSi_" + num + dir + "_Strip_" + strip + "_dl").Data(),
+      ("physSi_" + to_string(num) + "_Strip_" + to_string(strip) + "_dl").data(),
       mother,
       false,
+      num*100+strip*10);
+
+  logicSiDet->SetVisAttributes(strip_att);
+
+  return std::make_pair(logicSiDet, physSiDet);
+}
+
+inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeStripGrid(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *grid_att, G4Material *grid_mat)
+{
+
+  G4ThreeVector position = get<1>(dic_strip[strip]);
+  position.setZ(position.z() + thicknessSiDetector / 2 + thicknessSiDetectorGrid / 2);
+
+  G4LogicalVolume *logicSiDet = new G4LogicalVolume(
+      get<3>(dic_strip[strip]),
+      grid_mat,
+      ("logicSi_" + to_string(num) + "_Strip_" + to_string(strip) + "_Grid").data());
+
+  G4VPhysicalVolume *physSiDet = new G4PVPlacement(
+      0,
+      position,
+      logicSiDet,
+      ("physSi_" + to_string(num) + "_Strip_" + to_string(strip) + "_Grid").data(),
+      videe,
+      false,
       0);
+
+  logicSiDet->SetVisAttributes(grid_att);
+
+  return std::make_pair(logicSiDet, physSiDet);
+}
+
+inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeInterStrip(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *strip_att, G4Material *strip_mat)
+{
+  G4LogicalVolume *logicSiDet = new G4LogicalVolume(
+      get<0>(dic_interstrip[strip*10+strip+1]),
+      strip_mat,
+      ("logicSi_" + to_string(num) + "_InterStrip_" + to_string(strip) + to_string(strip+1)).data());
+
+  G4VPhysicalVolume *physSiDet = new G4PVPlacement(
+      0,
+      get<1>(dic_interstrip[strip*10+strip+1]),
+      logicSiDet,
+      ("physSi_" + to_string(num) + "_InterStrip_" + to_string(strip) + to_string(strip+1) ).data(),
+      videe,
+      false,
+      num*1000 + (2*strip+1)*100/2);
 
   logicSiDet->SetVisAttributes(strip_att);
 

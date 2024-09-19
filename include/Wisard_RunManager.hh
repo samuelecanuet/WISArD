@@ -37,17 +37,23 @@ protected:
   vector<G4double> py; 
   vector<G4double> pz;
   vector<G4double> Kinetic_Energy;
-
-  G4double PlasticScintillator_Deposit_Energy;
-  vector<G4double>  PlasticScintillator_Proton_Hit_Position, PlasticScintillator_Positron_Hit_Position;
-  G4double PlasticScintillator_Proton_Hit_Angle, PlasticScintillator_Positron_Hit_Angle;
-
-  vector<G4double> Silicon_Detector_Deposit_Energy, Silicon_Detector_DL_Deposit_Energy;
-  vector<vector<G4double>> Silicon_Detector_Proton_Hit_Position, Silicon_Detector_Positron_Hit_Position;
-  vector<G4double> Silicon_Detector_Proton_Hit_Angle, Silicon_Detector_Positron_Hit_Angle;
-  vector<G4int> Silicon_Detector_Code;
   
-  G4double  Catcher_Central_Deposit_Energy, Catcher_Side_Deposit_Energy;
+  // catcher //
+  vector<G4double> Catcher_Central_Energy_Deposit, Catcher_Side_Energy_Deposit;
+
+  // plastic scientillator //
+  vector<G4double> PlasticScintillator_Hit_Angle, PlasticScintillator_Energy_Deposit;
+  vector<G4ThreeVector> PlasticScintillator_Hit_Position;
+
+  // silicon detectors //
+  vector<vector<G4ThreeVector>> Silicon_Detector_Hit_Position;
+  vector<vector<G4double>> Silicon_Detector_Hit_Angle, Silicon_Detector_Energy_Deposit, Silicon_Detector_DL_Energy_Deposit;
+  vector<vector<G4int>> Silicon_Detector_Code;
+
+  vector<vector<vector<G4ThreeVector>>> Silicon_Detector_InterStrip_Hit_Position;
+  vector<vector<vector<G4double>>> Silicon_Detector_InterStrip_Energy_Deposit;
+
+  
   ///////////////////////
 
   G4int count = 0;
@@ -78,26 +84,38 @@ public:
   TH1D *plastic_coinc;
 
   std::string Detector_Name[nb_det] = {
-      "1Up_Strip_1", "1Up_Strip_2", "1Up_Strip_3", "1Up_Strip_4", "1Up_Strip_5",
-      "2Up_Strip_1", "2Up_Strip_2", "2Up_Strip_3", "2Up_Strip_4", "2Up_Strip_5",
-      "3Up_Strip_1", "3Up_Strip_2", "3Up_Strip_3", "3Up_Strip_4", "3Up_Strip_5",
-      "4Up_Strip_1", "4Up_Strip_2", "4Up_Strip_3", "4Up_Strip_4", "4Up_Strip_5",
-      "1Down_Strip_1", "1Down_Strip_2", "1Down_Strip_3", "1Down_Strip_4", "1Down_Strip_5",
-      "2Down_Strip_1", "2Down_Strip_2", "2Down_Strip_3", "2Down_Strip_4", "2Down_Strip_5",
-      "3Down_Strip_1", "3Down_Strip_2", "3Down_Strip_3", "3Down_Strip_4", "3Down_Strip_5",
-      "4Down_Strip_1", "4Down_Strip_2", "4Down_Strip_3", "4Down_Strip_4", "4Down_Strip_5"};
+      "D1.1", "D1.2", "D1.3", "D1.4", "D1.5",
+      "D2.1", "D2.2", "D2.3", "D2.4", "D2.5",
+      "D3.1", "D3.2", "D3.3", "D3.4", "D3.5",
+      "D4.1", "D4.2", "D4.3", "D4.4", "D4.5",
+      "D5.1", "D5.2", "D5.3", "D5.4", "D5.5",
+      "D6.1", "D6.2", "D6.3", "D6.4", "D6.5",
+      "D7.1", "D7.2", "D7.3", "D7.4", "D7.5",
+      "D8.1", "D8.2", "D8.3", "D8.4", "D8.5"};
 
   int Detector_Code[nb_det] = {
       11, 12, 13, 14, 15,
       21, 22, 23, 24, 25, 
       31, 32, 33, 34, 35,
       41, 42, 43, 44, 45,
-      -11, -12, -13, -14, -15,
-      -21, -22, -23, -24, -25,
-      -31, -32, -33, -34, -35,
-      -41, -42, -43, -44, -45};
+      51, 52, 53, 54, 55,
+      61, 62, 63, 64, 65,
+      71, 72, 73, 74, 75,
+      81, 82, 83, 84, 85};
+  
+  int InterDetector_Code[32] = { 
+      1150, 1250, 1350, 1450,
+      2150, 2250, 2350, 2450,
+      3150, 3250, 3350, 3450,
+      4150, 4250, 4350, 4450,
+      5150, 5250, 5350, 5450,
+      6150, 6250, 6350, 6450,
+      7150, 7250, 7350, 7450,
+      8150, 8250, 8350, 8450};
+
       
   std::unordered_map<int, std::pair<Wisard_Sensor *, Wisard_Sensor *>> dic_detector;
+  std::unordered_map<int, Wisard_Sensor *> dic_interdetector;
 
   Wisard_Sensor *GetWisardSensor_PlasticScintillator();
   Wisard_Sensor *GetWisardSensor_Detector(string name);
@@ -145,12 +163,13 @@ public:
 
 inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_Detector(string name)
 {
+  int code = stoi ( name.substr(1, 1) ) * 10 + stoi( name.substr(3, 4)) ;
 
   if (name.substr(name.length() - 2) == "dl")
   {
-    if (dic_detector.find( stoi( name.substr(0, name.length() - 3)) ) != dic_detector.end())
+    if (dic_detector.find( code ) != dic_detector.end())
     {
-      return (dic_detector[ stoi( name.substr(0, name.length() - 3))].second);
+      return (dic_detector[ code ].second);
     }
     else
     {
@@ -159,11 +178,25 @@ inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_Detector(string name)
     }
   }
 
-  else
+  else if (name.length() == 4)
   {
-    if (dic_detector.find( stoi( name)) != dic_detector.end())
+    if (dic_detector.find( code ) != dic_detector.end())
     {
-      return (dic_detector[ stoi( name)].first);
+      return (dic_detector[ code ].first);
+    }
+    else
+    {
+      G4Exception("GetWisard_Sensor_GetDetector", ("Detector Name not found : " + name).c_str(), JustWarning, "");
+      return nullptr;
+    }
+  }
+
+  else 
+  {
+    code = stoi ( name.substr(1, 1) ) * 1000 + (stoi( name.substr(3, 1) ) + stoi( name.substr(4, 1) )) * 100 / 2;
+    if (dic_interdetector.find( code ) != dic_interdetector.end())
+    {
+      return (dic_interdetector[ code ]);
     }
     else
     {

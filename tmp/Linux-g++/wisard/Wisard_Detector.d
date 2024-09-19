@@ -702,8 +702,11 @@
  /softs/geant4.11.1.2/include/Geant4/G4FieldManager.icc \
  /softs/geant4.11.1.2/include/Geant4/G4Trap.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Trap.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh include/Wisard_Sensor.hh \
- include/Wisard_MagnetField.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericMessenger.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyMethod.hh \
+ include/Wisard_Sensor.hh include/Wisard_MagnetField.hh \
  /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UniformMagField.hh \
  /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh

@@ -631,7 +631,8 @@
  /usr/local/root/6.26.10/include/TTreeReaderValue.h \
  /usr/include/c++/8/deque /usr/include/c++/8/bits/stl_deque.h \
  /usr/include/c++/8/bits/deque.tcc \
- /usr/local/root/6.26.10/include/TDirectory.h \
+ /usr/local/root/6.26.10/include/TDirectory.h include/Wisard_Tracking.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \

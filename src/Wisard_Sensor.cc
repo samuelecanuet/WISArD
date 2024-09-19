@@ -23,47 +23,53 @@ void Wisard_Sensor::Initialize(G4HCofThisEvent *)
 {
   cerr << "Wisard_Sensor Initialisation" << endl;
 
-  ResetDetector();
+  // ResetDetector();
+  ResetDictionnary();
 }
 
 G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
 {
   G4Track *track = step->GetTrack();
 
+  //Getting the primary track id
   if (track->GetParentID() == 0)
   {
-    if (step->IsFirstStepInVolume())
+    index = track->GetTrackID();
+  }
+  else
+  {
+    index = track->GetParentID();
+  }
+
+  // Cheking if the primary or a secondary already enter in this volume
+  // == if first time seen 
+  if (PrimaryDictionnary.find(index) == PrimaryDictionnary.end())
+  {
+    // Initial info for this volume, particle event name to get the name of the initial particle, position hit and angle if the particle is primary 
+    PrimaryDictionnary[index] = PrimaryInfo_init;
+    if (track->GetParentID() == 0)
     {
-      if (track->GetTouchable()->GetVolume()->GetCopyNo() == 99)
+      PrimaryDictionnary[index].HitPosition = step->GetPreStepPoint()->GetPosition() / mm;
+      if (track->GetTouchable()->GetVolume()->GetCopyNo() == 99) // plastic scintillator
       {
-        if (track->GetDefinition()->GetPDGEncoding() == 2212)
-        {
-          ProtonHitPosition = step->GetPreStepPoint()->GetPosition();
-          ProtonHitAngle = acos(G4ThreeVector(0, 0, 1) * track->GetMomentumDirection()) / deg;
-        }
-        else if (track->GetDefinition()->GetPDGEncoding() == -11)
-        {
-          PositronHitPosition = step->GetPreStepPoint()->GetPosition();
-          PositronHitAngle = acos(G4ThreeVector(0, 0, 1) * track->GetMomentumDirection()) / deg;
-        }
+        PrimaryDictionnary[index].HitAngle = std::acos(G4ThreeVector(0, 0, 1) * track->GetMomentumDirection()) / deg;
       }
-      else
+      else 
       {
-        if (track->GetDefinition()->GetPDGEncoding() == 2212)
-        {
-          ProtonHitPosition = step->GetPreStepPoint()->GetPosition();
-          ProtonHitAngle = acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
-        }
-        else if (track->GetDefinition()->GetPDGEncoding() == -11)
-        {
-          PositronHitPosition = step->GetPreStepPoint()->GetPosition();
-          PositronHitAngle = acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
-        }
+        PrimaryDictionnary[index].HitAngle = std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
       }
     }
   }
 
-  DepositEnergy += step->GetTotalEnergyDeposit() / keV;
+  /// If is an interstrip
+  if (step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo() > 1000)
+  {
+    PrimaryDictionnary[index].InterStrip_HitPosition.push_back(step->GetPreStepPoint()->GetPosition() / mm);
+    PrimaryDictionnary[index].InterStrip_EnergyDeposit.push_back(step->GetTotalEnergyDeposit() / keV);
+  }
+
+  PrimaryDictionnary[index].EnergyDeposit += step->GetTotalEnergyDeposit() / keV;
+  
 
   // ####################################################### ///
   // !!! KILLING down-positron/electron for performance !!!  ///

@@ -104,3 +104,9 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Simplification of the simulation (deleting particle information of the energy deposit)
 - New TTree 
 - Output file include coincidence Plastic Scintillator deposit energy
+
+### v3.0-
+- Re-implemenatation of particle independant information saving
+- Adding Al grid on silicon detectors
+- Adding interstrip saving information
+- Modification of distance in geometry

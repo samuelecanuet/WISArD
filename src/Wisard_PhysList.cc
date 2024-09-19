@@ -20,7 +20,7 @@ Wisard_PhysList::Wisard_PhysList()
 {
   step_max = NULL;
   cout << "Constructor Wisard_PhysList" << endl;
-  defaultCutValue = 10 * nm;
+  defaultCutValue = 0.001 * um;
 }
 
 Wisard_PhysList::~Wisard_PhysList()
@@ -111,7 +111,7 @@ void Wisard_PhysList::SetCuts()
   SetCutValue(0.001 * um, "proton");
   SetCutValue(0.001 * um, "e-");
   SetCutValue(0.001 * um, "e+");
-  defaultCutValue = 10. * nm;
+  defaultCutValue = 0.001 * um;
 }
 
 //----------------------------------------------------------------------

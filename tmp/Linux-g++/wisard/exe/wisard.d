@@ -703,6 +703,9 @@
  /softs/geant4.11.1.2/include/Geant4/G4Trap.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Trap.icc \
  /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericMessenger.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyMethod.hh \
  include/Wisard_PhysList.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VUserPhysicsList.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ProductionCutsTable.hh \
@@ -715,6 +718,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4Step.hh \
  include/Wisard_Generator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
+ include/Wisard_Tracking.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
@@ -831,4 +836,16 @@
  /softs/geant4.11.1.2/include/Geant4/G4OpenGLImmediateQt.hh \
  /softs/geant4.11.1.2/include/Geant4/G4OpenGLQt.hh \
  /softs/geant4.11.1.2/include/Geant4/G4OpenGLStoredQt.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIExecutive.hh
+ /softs/geant4.11.1.2/include/Geant4/G4UIExecutive.hh \
+ /usr/local/root/6.26.10/include/TSystem.h /usr/include/fcntl.h \
+ /usr/include/bits/fcntl.h /usr/include/bits/fcntl-linux.h \
+ /usr/include/bits/types/struct_iovec.h /usr/include/linux/falloc.h \
+ /usr/include/bits/stat.h /usr/local/root/6.26.10/include/TInetAddress.h \
+ /usr/local/root/6.26.10/include/TTimer.h \
+ /usr/local/root/6.26.10/include/TSysEvtHandler.h \
+ /usr/local/root/6.26.10/include/TQObject.h \
+ /usr/local/root/6.26.10/include/TVirtualQConnection.h \
+ /usr/local/root/6.26.10/include/TInterpreter.h \
+ /usr/local/root/6.26.10/include/TInterpreterValue.h \
+ /usr/local/root/6.26.10/include/TTime.h \
+ /usr/local/root/6.26.10/include/TInterpreter.h

@@ -716,8 +716,13 @@
  /softs/geant4.11.1.2/include/Geant4/G4Trap.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Trap.icc \
  /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericMessenger.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyMethod.hh \
  include/Wisard_Generator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
+ include/Wisard_Tracking.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh

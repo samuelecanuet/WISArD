@@ -1,3 +1,4 @@
 *.wrl
-test.root
+*.root
 tempory/*
+analyze

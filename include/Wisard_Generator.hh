@@ -4,6 +4,7 @@
 #include "Wisard_Global.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "Wisard_RunManager.hh"
+#include "Wisard_Tracking.hh"
 
 #include "G4ParticleGun.hh"
 
@@ -62,6 +63,11 @@ protected:
     G4double x_beam;
     G4double y_beam;
     G4double position_catcher_z;
+
+    G4ThreeVector position_array[10001];
+    G4ThreeVector direction_array[10001];
+    G4double energy_array[10001];
+    G4int event_counter = 0;
     
     std::tuple<G4double, G4double, G4double> tuple;
     G4double x_SRIM, y_SRIM, z_SRIM;
@@ -87,6 +93,8 @@ private:
     unique_ptr<TTreeReaderValue<double>> py;
     unique_ptr<TTreeReaderValue<double>> pz;
 
+    TH1D* Energy_Hist;
+
 
 
 public:
@@ -100,6 +108,7 @@ public:
     void GeneratePrimaries(G4Event *event);
     void TXT_GENERATOR(G4Event *event);
     void ROOT_GENERATOR(G4Event *event);
+    void ROOT_DISTRIBUTION_GENERATOR(G4Event *event);
     std::function<void(G4Event*)> GENERATOR;
 
     std::pair<std::vector<Histogram>, G4double>GetSRIM_hist();
@@ -172,6 +181,7 @@ inline std::tuple<G4double, G4double, G4double> Wisard_Generator::GetSRIM_data(s
             return std::make_tuple(bin.value_x, bin.value_y, bin.value_z);
         }
     }
+    return std::make_tuple(0.0, 0.0, 0.0);
 }
 
 

@@ -48,14 +48,30 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
     else if (manager_ptr->GetInputName().find(".root") != std::string::npos)
     {
       root_file = new TFile(manager_ptr->GetInputName().c_str(), "READ");
-      GENERATOR = std::bind(&Wisard_Generator::ROOT_GENERATOR, this, std::placeholders::_1);
-      Reader = std::make_unique<TTreeReader>("ParticleTree", root_file);
-      code = std::make_unique<TTreeReaderValue<int>>(*Reader, "code");
-      eventid = std::make_unique<TTreeReaderValue<int>>(*Reader, "event");
-      ekin_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "energy");
-      px = std::make_unique<TTreeReaderValue<double>>(*Reader, "px");
-      py = std::make_unique<TTreeReaderValue<double>>(*Reader, "py");
-      pz = std::make_unique<TTreeReaderValue<double>>(*Reader, "pz");
+      if (manager_ptr->GetInputName().find("RMATRIX") != std::string::npos)
+      {
+        if (manager_ptr->GetInputName().find("32Ar") == std::string::npos || manager_ptr->GetInputName().find("33Ar") == std::string::npos)
+        {
+          particle = part_alpha;
+        }
+        else
+        {
+          particle = part_proton;
+        }
+        GENERATOR = std::bind(&Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR, this, std::placeholders::_1);
+        Energy_Hist = (TH1D*)root_file->Get("histogram");
+      }
+      else
+      {      
+        GENERATOR = std::bind(&Wisard_Generator::ROOT_GENERATOR, this, std::placeholders::_1);
+        Reader = std::make_unique<TTreeReader>("ParticleTree", root_file);
+        code = std::make_unique<TTreeReaderValue<int>>(*Reader, "code");
+        eventid = std::make_unique<TTreeReaderValue<int>>(*Reader, "event");
+        ekin_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "energy");
+        px = std::make_unique<TTreeReaderValue<double>>(*Reader, "px");
+        py = std::make_unique<TTreeReaderValue<double>>(*Reader, "py");
+        pz = std::make_unique<TTreeReaderValue<double>>(*Reader, "pz");
+      }
     }
     else
     {
@@ -172,9 +188,8 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
 
   while (Reader->Next() && **eventid == event->GetEventID())
   {
-    if (**code <= 2212 && **code != 12 ) //////:GAMMA EXCLUSION
+    if (((**code <= 2212 && **code != 12 ) || **code == 1000020040) && **code != 11) //////GAMMA EXCLUSION BUT TAKING ALPHA 
     {
-      
       dir[0] = **px;
       dir[1] = **py;
       dir[2] = **pz;
@@ -185,13 +200,71 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
       gun.SetParticleEnergy(**ekin_* keV);
       gun.GeneratePrimaryVertex(event);
 
-      ////////FOR TEST/////////
-        //  gun.SetParticleDefinition        ( part_geantino );
-        //  gun.SetParticlePosition          ( G4ThreeVector (44*mm, y, -10*cm)  );
-        //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
-        //  gun.SetParticleEnergy            ( **ekin_*keV );
-        //  gun.GeneratePrimaryVertex        ( event );
+      // //////FOR TEST/////////
+      //    gun.SetParticleDefinition        ( part_geantino );
+      //     gun.SetParticlePosition          ( G4ThreeVector (0, 0.03*mm, -0*mm)  ); 
+      //   //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 42.7*mm)  ); // measueing space between the strips 1
+      //   //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 24.1*mm)  ); //measuring space between the strips 5
+      //    gun.SetParticleMomentumDirection ( G4ThreeVector(0.,sin(40.2*degree),cos(40.2*degree)) );
+      //    gun.SetParticleEnergy            ( **ekin_*MeV );
+      //    gun.GeneratePrimaryVertex        ( event );
     }
   }
   (*Reader).SetEntry((*Reader).GetCurrentEntry() - 1);
+}
+
+
+void Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR(G4Event* event)
+{ 
+  if (event_counter % 10000 == 0)
+  {
+    event_counter = 0;
+    for (int i = 0; i < 10000; i++)
+    {
+      double x = 10 * mm;
+      double y = 10 * mm;
+      double z;
+
+      tuple = GetSRIM_data(res.first, res.second);
+
+      while (x >= x_beam + radius || x <= x_beam - radius)
+      {
+        x = G4RandGauss::shoot(x_beam, radius_std);
+      }
+      x += get<0>(tuple) * angstrom;
+
+      while (y >= y_beam + radius || y <= y_beam - radius)
+      {
+        y = G4RandGauss::shoot(y_beam, radius_std);
+      }
+      y += get<1>(tuple) * angstrom;
+
+      z = position_catcher_z + get<2>(tuple) * angstrom;
+
+      
+      
+      // shoot isotropicaly in the sphere
+      double phi = G4UniformRand() * 2 * M_PI;
+      double costheta = 2 * G4UniformRand() - 1;
+      double theta = acos(costheta);
+      double px = sin(theta) * cos(phi);
+      double py = sin(theta) * sin(phi);
+      double pz = cos(theta);
+
+      position_array[i] = G4ThreeVector(x, y, z);
+      direction_array[i] = G4ThreeVector(px, py, pz);
+      energy_array[i] = Energy_Hist->GetRandom()*keV;
+    }
+  }
+
+  gun.SetParticleDefinition(particle);
+  gun.SetParticlePosition(position_array[event_counter]);
+  gun.SetParticleMomentumDirection(direction_array[event_counter]);
+  gun.SetParticleEnergy(energy_array[event_counter]);
+  gun.GeneratePrimaryVertex(event);
+
+
+
+  event_counter++;
+
 }

@@ -112,12 +112,6 @@ void Wisard_Messenger::DefineInputCommands()
   input_cmd_catcher_thickness->SetParameterName("catcher_thickness", false);
   input_cmd_catcher_thickness->AvailableForStates(G4State_PreInit, G4State_Idle);
 
-  // Set Catcher Thickness
-  input_cmd_setup = new G4UIcmdWithAString("/Setup", this);
-  input_cmd_setup->SetGuidance("Setup Version");
-  input_cmd_setup->SetParameterName("year", false);
-  input_cmd_setup->AvailableForStates(G4State_PreInit, G4State_Idle);
-
 }
 
 //----------------------------------------------------------------------
@@ -187,10 +181,9 @@ void Wisard_Messenger::SetNewValue(G4UIcommand *cmd, G4String args)
     G4String value, unit1;
     std::istringstream iss(args);
     iss >> value >> value1 >> unit1;
-    if (Version == 2023)
-    {
-      det_ptr->SetCatcherPosition_theta(value, value1 * G4UnitDefinition::GetValueOf(unit1));
-    }
+
+    det_ptr->SetCatcherPosition_theta(value, value1 * G4UnitDefinition::GetValueOf(unit1));
+    
   }
   if (cmd == input_cmd_filename)
   {
@@ -225,14 +218,5 @@ void Wisard_Messenger::SetNewValue(G4UIcommand *cmd, G4String args)
     }
     det_ptr->SetCatcher_Thickness(value * G4UnitDefinition::GetValueOf(unit), value1 * G4UnitDefinition::GetValueOf(unit), value2 * G4UnitDefinition::GetValueOf(unit));
   }
-  if (cmd == input_cmd_setup)
-  {
-    G4int value;
-    std::istringstream iss(args);
-    iss >> value;
-    det_ptr->SetSetup(value);
-    Version = value;
-    // gen_ptr->SetSetup(value);
-    // manager_ptr->SetSetup(value)
-  }
+  
 }

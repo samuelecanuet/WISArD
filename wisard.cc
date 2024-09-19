@@ -12,7 +12,8 @@
 
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
-
+#include "TSystem.h"
+#include "TInterpreter.h"
 //----------------------------------------------------------------------
 // program main function
 
@@ -26,6 +27,18 @@ int main(int argc, char **argv)
   t1 = clock();
 
   //------------------------------------------------------------
+  
+  G4cout << "Generating Dictionnaries" << G4endl;
+  gSystem->AddIncludePath("-I/softs/clhep/2.4.6.2/include/");
+  gSystem->AddIncludePath("-I/softs/clhep/2.4.6.2/include/CLHEP/Vector/");
+
+  gInterpreter->GenerateDictionary("vector<vector<int> >", "vector");
+  gInterpreter->GenerateDictionary("vector<vector<vector<double> > >", "vector");
+  gInterpreter->GenerateDictionary("vector<CLHEP::Hep3Vector>", "vector;ThreeVector.h");
+  gInterpreter->GenerateDictionary("vector<vector<CLHEP::Hep3Vector>>", "vector;ThreeVector.h");
+  gInterpreter->GenerateDictionary("vector<vector<vector<CLHEP::Hep3Vector>>>", "vector;ThreeVector.h");
+
+  //------------------------------------------------------------
   //  Simulation customisation
   // define the core simulation object
   Wisard_RunManager run;
@@ -37,6 +50,10 @@ int main(int argc, char **argv)
   // create the physics list
   Wisard_PhysList *ptr_phys = new Wisard_PhysList;
   run.SetUserInitialization(ptr_phys);
+
+  // create the tracking action
+  Wisard_Tracking *ptr_track = new Wisard_Tracking();
+  run.SetUserAction(ptr_track);
 
   // create the generator for events
   Wisard_Generator *ptr_gene = new Wisard_Generator(&run);

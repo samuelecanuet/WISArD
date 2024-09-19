@@ -59,7 +59,6 @@ class Wisard_Messenger : public G4UImessenger
   G4UIcmdWithAString *input_cmd_catcher_theta;
   G4UIcmdWithAString *input_cmd_filename;
   G4UIcmdWithAString *input_cmd_catcher_thickness;
-  G4UIcmdWithAString *input_cmd_setup;
 
   G4int Version;
   //------------------------------------------------------------
