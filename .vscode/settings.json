@@ -75,6 +75,8 @@
         "group2tree_XF_MCP_ADC_cor.C": "cpp",
         "fit.C": "cpp",
         "plot.C": "cpp",
-        "Fitting_B.C": "cpp"
+        "Fitting_B.C": "cpp",
+        "script.C": "cpp",
+        "test.C": "cpp"
     }
 }

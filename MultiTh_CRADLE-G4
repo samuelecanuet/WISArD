@@ -181,7 +181,7 @@ echo -e "$COLOR"
 
 TimeStart=$SECONDS
 
-RunStart=2
+RunStart=1
 TH=()
 THRun=()
 Saver=0

@@ -50,7 +50,7 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
       root_file = new TFile(manager_ptr->GetInputName().c_str(), "READ");
       if (manager_ptr->GetInputName().find("RMATRIX") != std::string::npos)
       {
-        if (manager_ptr->GetInputName().find("32Ar") == std::string::npos || manager_ptr->GetInputName().find("33Ar") == std::string::npos)
+        if (manager_ptr->GetInputName().find("32Ar") == std::string::npos && manager_ptr->GetInputName().find("33Ar") == std::string::npos)
         {
           particle = part_alpha;
         }
@@ -109,7 +109,7 @@ void Wisard_Generator::TXT_GENERATOR(G4Event *event)
   }
   y += get<1>(tuple) * angstrom;
 
-  z = position_catcher_z + get<2>(tuple) * angstrom;
+  z = get<2>(tuple) * angstrom;
 
   while (currentpartNr < totpartNr)
   {
@@ -186,6 +186,11 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
 
   z = position_catcher_z + get<2>(tuple) * angstrom;
 
+  // G4ThreeVector position = GetPosition();
+  //     x = position.x();
+  //     y = position.y();
+  //     z = position.z();
+
   while (Reader->Next() && **eventid == event->GetEventID())
   {
     if (((**code <= 2212 && **code != 12 ) || **code == 1000020040) && **code != 11) //////GAMMA EXCLUSION BUT TAKING ALPHA 
@@ -201,13 +206,14 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
       gun.GeneratePrimaryVertex(event);
 
       // //////FOR TEST/////////
+      // double a = -5.6*mm;
       //    gun.SetParticleDefinition        ( part_geantino );
-      //     gun.SetParticlePosition          ( G4ThreeVector (0, 0.03*mm, -0*mm)  ); 
+      //     gun.SetParticlePosition          ( G4ThreeVector (0, a*cos((40.2+90)*degree)*mm, a*cos(40.2*degree)*mm)  ); 
       //   //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 42.7*mm)  ); // measueing space between the strips 1
       //   //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 24.1*mm)  ); //measuring space between the strips 5
-      //    gun.SetParticleMomentumDirection ( G4ThreeVector(0.,sin(40.2*degree),cos(40.2*degree)) );
-      //    gun.SetParticleEnergy            ( **ekin_*MeV );
-      //    gun.GeneratePrimaryVertex        ( event );
+        //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,sin(40.2*degree),cos(40.2*degree)) );
+        //  gun.SetParticleEnergy            ( **ekin_*MeV );
+        //  gun.GeneratePrimaryVertex        ( event );
     }
   }
   (*Reader).SetEntry((*Reader).GetCurrentEntry() - 1);
@@ -221,9 +227,9 @@ void Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR(G4Event* event)
     event_counter = 0;
     for (int i = 0; i < 10000; i++)
     {
-      double x = 10 * mm;
-      double y = 10 * mm;
-      double z;
+      double x = 0 * mm;
+      double y = 0 * mm;
+      double z = 0 * mm;
 
       tuple = GetSRIM_data(res.first, res.second);
 
@@ -241,7 +247,11 @@ void Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR(G4Event* event)
 
       z = position_catcher_z + get<2>(tuple) * angstrom;
 
-      
+      // G4ThreeVector position = GetPosition();
+      // x = position.x();
+      // y = position.y();
+      // z = position.z();
+
       
       // shoot isotropicaly in the sphere
       double phi = G4UniformRand() * 2 * M_PI;

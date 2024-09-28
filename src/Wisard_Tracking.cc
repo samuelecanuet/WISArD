@@ -9,14 +9,14 @@
 
 Wisard_Tracking::Wisard_Tracking() : G4UserTrackingAction()
 {
-    G4cout << "Wisard_Tracking Constructor" << G4endl;
+    G4cout << "Constructor Wisard_Tracking" << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
 Wisard_Tracking::~Wisard_Tracking()
 {
-    G4cout << "Wisard_Tracking Destructor" << G4endl;
+    G4cout << "Destructor Wisard_Tracking" << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....

@@ -13,7 +13,7 @@
 /input/Open_SRIM SRIM_data/AlMylar_2021_32Ar.txt
 #/input/Open_CRADLE CRADLE_data/SAMPLE.root
 #/input/Open_CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/R-MATRIX/18N_RMATRIX.root
-/input/Open_CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/alphas_input/241Am_Distribution.root
+/input/Open_CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/alphas_input/239Pu_RMATRIX.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -36,5 +36,5 @@
 #   Generate Events
 #---------------------------------------------------------------
 /run/printProgress 10000
-/output 241Am.root
-/run/beamOn 1000000
+/output ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/239Pu_700nm_width.root
+/run/beamOn 10000000

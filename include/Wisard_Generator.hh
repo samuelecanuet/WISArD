@@ -19,6 +19,7 @@
 #include <functional>
 
 #include "Randomize.hh"
+#include "G4ThreeVector.hh"
 
 
 //----------------------------------------------------------------------
@@ -96,6 +97,14 @@ private:
     TH1D* Energy_Hist;
 
 
+    //
+    // TFile *f = new TFile("../../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/148Gd_analysed.root", "READ");
+    // TTreeReader *tree_Reader = new TTreeReader("OutTree_Pos", f);
+    // TTreeReaderValue<Double_t> *tree_x = new TTreeReaderValue<Double_t>(*tree_Reader, "x");
+    // TTreeReaderValue<Double_t> *tree_y = new TTreeReaderValue<Double_t>(*tree_Reader, "y");
+    // TTreeReaderValue<Double_t> *tree_z = new TTreeReaderValue<Double_t>(*tree_Reader, "z");
+
+
 
 public:
     // constructor and destructor
@@ -117,6 +126,8 @@ public:
     void SetBeamSize(G4double r, G4double r_std);
     void SetBeamPosition(G4double x, G4double y);
     void SetCatcherPosition_z(G4double catcher_z);
+
+    G4ThreeVector GetPosition();
 
 };
 
@@ -201,4 +212,18 @@ inline void Wisard_Generator::SetCatcherPosition_z(G4double catcher_z)
 {
     position_catcher_z = catcher_z; 
 }
+
+// inline G4ThreeVector Wisard_Generator::GetPosition()
+// {
+//     if (tree_Reader->GetCurrentEntry() == tree_Reader->GetEntries()-10)
+//     {
+//         tree_Reader->Restart();
+//     }
+//     tree_Reader->Next();
+//     while (**tree_x == 0.)
+//     {
+//         tree_Reader->Next();
+//     }
+//     return G4ThreeVector(**tree_x, **tree_y, **tree_z);
+// }
 #endif

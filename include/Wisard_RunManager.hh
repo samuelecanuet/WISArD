@@ -50,11 +50,18 @@ protected:
   vector<vector<G4double>> Silicon_Detector_Hit_Angle, Silicon_Detector_Energy_Deposit, Silicon_Detector_DL_Energy_Deposit;
   vector<vector<G4int>> Silicon_Detector_Code;
 
+  // interstrip //
+  vector<vector<G4int>> Silicon_Detector_InterStrip_Code;
   vector<vector<vector<G4ThreeVector>>> Silicon_Detector_InterStrip_Hit_Position;
   vector<vector<vector<G4double>>> Silicon_Detector_InterStrip_Energy_Deposit;
-
-  
   ///////////////////////
+
+  vector<G4double> Silicon_Detector_Energy_Deposit_part, Silicon_Detector_DL_Energy_Deposit_part, Silicon_Detector_Hit_Angle_part;
+  vector<G4ThreeVector> Silicon_Detector_Hit_Position_part;
+  vector<G4int> Silicon_Detector_Code_part;
+  vector<vector<G4double>> Silicon_Detector_InterStrip_Energy_Deposit_part;
+  vector<vector<G4ThreeVector>> Silicon_Detector_InterStrip_Hit_Position_part;
+  vector<G4int> Silicon_Detector_InterStrip_Code_part;
 
   G4int count = 0;
 

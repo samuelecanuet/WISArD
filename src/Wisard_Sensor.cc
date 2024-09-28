@@ -21,9 +21,6 @@ Wisard_Sensor::~Wisard_Sensor()
 
 void Wisard_Sensor::Initialize(G4HCofThisEvent *)
 {
-  cerr << "Wisard_Sensor Initialisation" << endl;
-
-  // ResetDetector();
   ResetDictionnary();
 }
 
@@ -64,11 +61,15 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   /// If is an interstrip
   if (step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo() > 1000)
   {
-    PrimaryDictionnary[index].InterStrip_HitPosition.push_back(step->GetPreStepPoint()->GetPosition() / mm);
+    G4ThreeVector localPos = step->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(step->GetPreStepPoint()->GetPosition());
+    PrimaryDictionnary[index].InterStrip_HitPosition.push_back(localPos /mm);
     PrimaryDictionnary[index].InterStrip_EnergyDeposit.push_back(step->GetTotalEnergyDeposit() / keV);
   }
 
-  PrimaryDictionnary[index].EnergyDeposit += step->GetTotalEnergyDeposit() / keV;
+
+  PrimaryDictionnary[index].EnergyDeposit += step->GetTotalEnergyDeposit() / keV ;
+  
+  
   
 
   // ####################################################### ///

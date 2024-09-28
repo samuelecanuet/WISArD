@@ -116,6 +116,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Tree->Branch("Silicon_Detector_Hit_Angle", &Silicon_Detector_Hit_Angle);
     Tree->Branch("Silicon_Detector_Code", &Silicon_Detector_Code);
     Tree->Branch("Silicon_Detector_DL_Energy_Deposit", &Silicon_Detector_DL_Energy_Deposit);
+    Tree->Branch("Silicon_Detector_InterStrip_Code", &Silicon_Detector_InterStrip_Code);
     Tree->Branch("Silicon_Detector_InterStrip_Energy_Deposit", &Silicon_Detector_InterStrip_Energy_Deposit);
     Tree->Branch("Silicon_Detector_InterStrip_Hit_Position", &Silicon_Detector_InterStrip_Hit_Position);
     ///////////////////////////////////////////////////////////////////
@@ -128,9 +129,9 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   if (PrimaryVertex != 0)
   {
     
-    for (int part = 0; part < event->GetNumberOfPrimaryVertex(); part++)
+    for (int part = 1; part <= event->GetNumberOfPrimaryVertex(); part++)
     {
-      G4PrimaryParticle *Primary = event->GetPrimaryVertex(part)->GetPrimary();
+      G4PrimaryParticle *Primary = event->GetPrimaryVertex(part-1)->GetPrimary();
       G4ThreeVector Momentum = Primary->GetMomentumDirection();
 
       Particle_PDG.push_back(Primary->GetG4code()->GetPDGEncoding());
@@ -142,6 +143,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       pz.push_back(Momentum.z());
       Kinetic_Energy.push_back(Primary->GetKineticEnergy() / keV);
 
+
       //# CATCHER #//
       Catcher_Central_Energy_Deposit.push_back(wisard_sensor_CatcherMylar_central->GetDictionnary()[part].EnergyDeposit + wisard_sensor_CatcherAl1_central->GetDictionnary()[part].EnergyDeposit + wisard_sensor_CatcherAl2_central->GetDictionnary()[part].EnergyDeposit);
       Catcher_Side_Energy_Deposit.push_back(wisard_sensor_CatcherMylar_side->GetDictionnary()[part].EnergyDeposit + wisard_sensor_CatcherAl1_side->GetDictionnary()[part].EnergyDeposit + wisard_sensor_CatcherAl2_side->GetDictionnary()[part].EnergyDeposit);
@@ -152,13 +154,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       PlasticScintillator_Hit_Angle.push_back(wisard_sensor_PlasticScintillator->GetDictionnary()[part].HitAngle);
 
       //# SILICON DETECTORS #//
-      vector<G4double> Silicon_Detector_Energy_Deposit_part, Silicon_Detector_DL_Energy_Deposit_part, Silicon_Detector_Hit_Angle_part;
-      vector<G4ThreeVector> Silicon_Detector_Hit_Position_part;
-      vector<G4int> Silicon_Detector_Code_part;
-      vector<vector<G4double>> Silicon_Detector_InterStrip_Energy_Deposit_part;
-      vector<vector<G4ThreeVector>> Silicon_Detector_InterStrip_Hit_Position_part;
-      vector<G4int> Silicon_Detector_InterStrip_Code_part;
-
+      
       for (int i = 0; i < nb_det; i++)
       {
         if (dic_detector[Detector_Code[i]].first->GetDictionnary()[part].EnergyDeposit != 0 || dic_detector[Detector_Code[i]].second->GetDictionnary()[part].EnergyDeposit != 0)
@@ -166,8 +162,8 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
           Silicon_Detector_Code_part.push_back(Detector_Code[i]);
           Silicon_Detector_Energy_Deposit_part.push_back(dic_detector[Detector_Code[i]].first->GetDictionnary()[part].EnergyDeposit);
           Silicon_Detector_DL_Energy_Deposit_part.push_back(dic_detector[Detector_Code[i]].second->GetDictionnary()[part].EnergyDeposit);
-          Silicon_Detector_Hit_Position_part.push_back(dic_detector[Detector_Code[i]].first->GetDictionnary()[part].HitPosition);
-          Silicon_Detector_Hit_Angle_part.push_back(dic_detector[Detector_Code[i]].first->GetDictionnary()[part].HitAngle);
+          Silicon_Detector_Hit_Position_part.push_back(dic_detector[Detector_Code[i]].second->GetDictionnary()[part].HitPosition);
+          Silicon_Detector_Hit_Angle_part.push_back(dic_detector[Detector_Code[i]].second->GetDictionnary()[part].HitAngle);
         }
       }
 
@@ -188,8 +184,19 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       Silicon_Detector_Hit_Position.push_back(Silicon_Detector_Hit_Position_part);
       Silicon_Detector_Hit_Angle.push_back(Silicon_Detector_Hit_Angle_part);
 
+      Silicon_Detector_InterStrip_Code.push_back(Silicon_Detector_InterStrip_Code_part);
       Silicon_Detector_InterStrip_Energy_Deposit.push_back(Silicon_Detector_InterStrip_Energy_Deposit_part);
       Silicon_Detector_InterStrip_Hit_Position.push_back(Silicon_Detector_InterStrip_Hit_Position_part);
+
+      Silicon_Detector_Code_part.clear();
+      Silicon_Detector_Energy_Deposit_part.clear();
+      Silicon_Detector_DL_Energy_Deposit_part.clear();
+      Silicon_Detector_Hit_Position_part.clear();
+      Silicon_Detector_Hit_Angle_part.clear();
+
+      Silicon_Detector_InterStrip_Code_part.clear();
+      Silicon_Detector_InterStrip_Energy_Deposit_part.clear();
+      Silicon_Detector_InterStrip_Hit_Position_part.clear();
     }
   }
 
@@ -198,11 +205,17 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   /// HISTOGRAMS ///
 
   int proton_index = -1;
-  for (int part = 0; part < event->GetNumberOfPrimaryVertex(); part++)
+  int positron_index = -1;
+  for (int part = 1; part <= event->GetNumberOfPrimaryVertex(); part++)
   {
-    if (event->GetPrimaryVertex(part)->GetPrimary()->GetG4code()->GetPDGEncoding() == 2212)
+    if (event->GetPrimaryVertex(part-1)->GetPrimary()->GetG4code()->GetPDGEncoding() == 2212 || event->GetPrimaryVertex(part-1)->GetPrimary()->GetG4code()->GetPDGEncoding() == 1000020040)
     {
       proton_index = part;
+    }
+
+    if (event->GetPrimaryVertex(part-1)->GetPrimary()->GetG4code()->GetPDGEncoding() == 11 || event->GetPrimaryVertex(part-1)->GetPrimary()->GetG4code()->GetPDGEncoding() == -11)
+    {
+      positron_index = part;
     }
   }
 
@@ -212,10 +225,10 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     {
       if (dic_detector[Detector_Code[i]].first->GetDictionnary()[proton_index].EnergyDeposit != 0)
       {
-        if (wisard_sensor_PlasticScintillator->GetDictionnary()[proton_index].EnergyDeposit >= GetThreshold() / keV)
+        if (wisard_sensor_PlasticScintillator->GetDictionnary()[positron_index].EnergyDeposit >= GetThreshold() / keV)
         {
           silicon_coinc[i]->Fill(dic_detector[Detector_Code[i]].first->GetDictionnary()[proton_index].EnergyDeposit);
-          plastic_coinc->Fill(wisard_sensor_PlasticScintillator->GetDictionnary()[proton_index].EnergyDeposit);
+          plastic_coinc->Fill(wisard_sensor_PlasticScintillator->GetDictionnary()[positron_index].EnergyDeposit);
         }
         else
         {
@@ -235,6 +248,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
 
     for (int i = 0; i < nb_det; i++)
     {
+      // cout << Detector_Name[i] << " : " << silicon_coinc[i]->GetEntries() << " " << silicon_nocoinc[i]->GetEntries() << " " << silicon_single[i]->GetEntries() << endl;
       silicon_coinc[i]->Write("", TObject::kOverwrite);
       silicon_nocoinc[i]->Write("", TObject::kOverwrite);
       silicon_single[i]->Write("", TObject::kOverwrite);
@@ -275,6 +289,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   Silicon_Detector_DL_Energy_Deposit.clear();
   Silicon_Detector_Hit_Position.clear();
   Silicon_Detector_Hit_Angle.clear();
+  Silicon_Detector_InterStrip_Code.clear();
   Silicon_Detector_InterStrip_Energy_Deposit.clear();
   Silicon_Detector_InterStrip_Hit_Position.clear();
   PlasticScintillator_Energy_Deposit.clear();
@@ -282,9 +297,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   PlasticScintillator_Hit_Position.clear();
   Catcher_Central_Energy_Deposit.clear();
   Catcher_Side_Energy_Deposit.clear();
-
-
-
   ///////////////////////////////////////////////////////////////////
 
 }
