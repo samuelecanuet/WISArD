@@ -4,7 +4,6 @@
 #include "Wisard_Global.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "Wisard_RunManager.hh"
-#include "Wisard_Tracking.hh"
 
 #include "G4ParticleGun.hh"
 

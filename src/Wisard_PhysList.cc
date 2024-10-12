@@ -13,6 +13,11 @@
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmStandardPhysicsGS.hh"
 
+#include "G4VModularPhysicsList.hh"
+#include "G4EmStandardPhysics.hh"
+#include "G4OpticalPhysics.hh"
+#include "G4RadioactiveDecayPhysics.hh"
+
 #include "G4TransportationManager.hh"
 
 //----------------------------------------------------------------------
@@ -96,6 +101,9 @@ void Wisard_PhysList::ConstructProcess()
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics_option4(0);
   G4VPhysicsConstructor *emPhysicsList = new G4EmStandardPhysicsGS(0);
   emPhysicsList->ConstructProcess();
+
+  G4VPhysicsConstructor *decayPhysicList = new G4RadioactiveDecayPhysics(0);
+  decayPhysicList->ConstructProcess();
 }
 
 //----------------------------------------------------------------------

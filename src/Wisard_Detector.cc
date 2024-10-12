@@ -55,10 +55,6 @@ Wisard_Detector::Wisard_Detector(Wisard_RunManager *mgr)
   y_SiDet_Strip_1 = 8.50 * mm+ 2*WidthSiDetectorGrid;
   xHigh_SiDet_Strip_1 = xLow_SiDet_Strip_1 + (2 * y_SiDet_Strip_1 * (cos(thetaInclinazione_SiDetector) / sin(thetaInclinazione_SiDetector)));
 
-  cout << "x_h = " << xHigh_SiDet_Strip_1 << endl;
-  cout << "x_l = " << xLow_SiDet_Strip_1 << endl;
-  cout << "y = " << y_SiDet_Strip_1 << endl;
-
   theta = (40.2) * degree; ////40deg
   G4double z_height_Source_biggerBaseSiDet_inVerticale = 24.92 * mm;
   r = fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1 / 2 - (pDy1 / 2 * (1 - cos(theta)))- 2.2*mm;
@@ -833,25 +829,25 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //////////////////////////// Interstrips //////////////////////////////////
   // Strip n. 5
   G4Trap* SiDet_InterStrip_45 = new G4Trap("SiDet_InterStrip_45",
-                             thicknessSiDetector / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
+                             (thicknessSiDetector + thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_5 / 2, xHigh_SiDet_Strip_4 / 2, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_5 / 2, xHigh_SiDet_Strip_4 / 2, 0. * degree);
 
   // Strip n. 4
   G4Trap* SiDet_InterStrip_34 = new G4Trap("SiDet_InterStrip_34",
-                             thicknessSiDetector / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
+                             (thicknessSiDetector + thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_4 / 2, xHigh_SiDet_Strip_3 / 2, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_4 / 2, xHigh_SiDet_Strip_3 / 2, 0. * degree);
 
   // Strip n. 3
   G4Trap* SiDet_InterStrip_23 = new G4Trap("SiDet_InterStrip_23",
-                             thicknessSiDetector / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
+                             (thicknessSiDetector + thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_3 / 2, xHigh_SiDet_Strip_2 / 2, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_3 / 2, xHigh_SiDet_Strip_2 / 2, 0. * degree);
 
   // Strip n. 2
   G4Trap* SiDet_InterStrip_12 = new G4Trap("SiDet_InterStrip_12",
-                             thicknessSiDetector / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
+                             (thicknessSiDetector + thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_2 / 2, xHigh_SiDet_Strip_1 / 2, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_2 / 2, xHigh_SiDet_Strip_1 / 2, 0. * degree);
 
@@ -863,10 +859,10 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   dic_strip[4] = std::make_tuple(SiDet_Strip_4, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_4_dl, SiDet_Strip_4_grid);
   dic_strip[5] = std::make_tuple(SiDet_Strip_5, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_5_dl, SiDet_Strip_5_grid);
 
-  dic_interstrip[12] = std::make_tuple(SiDet_InterStrip_12, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip / 2, -thicknessSiDetectorGrid/2));
-  dic_interstrip[23] = std::make_tuple(SiDet_InterStrip_23, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip / 2, -thicknessSiDetectorGrid/2));
-  dic_interstrip[34] = std::make_tuple(SiDet_InterStrip_34, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip / 2, -thicknessSiDetectorGrid/2));
-  dic_interstrip[45] = std::make_tuple(SiDet_InterStrip_45, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip / 2, -thicknessSiDetectorGrid/2));
+  dic_interstrip[12] = std::make_tuple(SiDet_InterStrip_12, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip / 2, 0));
+  dic_interstrip[23] = std::make_tuple(SiDet_InterStrip_23, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip / 2, 0));
+  dic_interstrip[34] = std::make_tuple(SiDet_InterStrip_34, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip / 2, 0));
+  dic_interstrip[45] = std::make_tuple(SiDet_InterStrip_45, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip / 2, 0));
 
   // Loop to construct Silicon Detetors
   for (int i = 1; i <= 8; i++)

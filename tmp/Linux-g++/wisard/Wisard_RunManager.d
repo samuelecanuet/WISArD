@@ -470,6 +470,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
+ include/ParticleInformation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \

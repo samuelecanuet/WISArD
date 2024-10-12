@@ -460,6 +460,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4UItokenNum.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ApplicationState.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
+ include/ParticleInformation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Event.hh \

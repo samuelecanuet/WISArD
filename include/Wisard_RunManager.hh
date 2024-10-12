@@ -5,6 +5,7 @@
 #include "G4RunManager.hh"
 #include "Wisard_Sensor.hh"
 #include "G4AnalysisManager.hh"
+#include "ParticleInformation.hh"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -76,8 +77,10 @@ protected:
 
 public:
   // constructor and destructor
-  Wisard_RunManager();
+  Wisard_RunManager(ParticleInformation *);
   ~Wisard_RunManager();
+
+  ParticleInformation *PartInfo;
 
   static const int nb_det = 40;
 
@@ -89,6 +92,8 @@ public:
   TH1D *silicon_nocoinc[nb_det];
   TH1D *silicon_single[nb_det];
   TH1D *plastic_coinc;
+
+  map<G4int, TH1D*> H_E0 = {};
 
   std::string Detector_Name[nb_det] = {
       "D1.1", "D1.2", "D1.3", "D1.4", "D1.5",

@@ -4,6 +4,8 @@
 #include "Wisard_PhysList.hh"
 #include "Wisard_Generator.hh"
 #include "Wisard_Messenger.hh"
+#include "Wisard_Tracking.hh"
+#include "ParticleInformation.hh"
 
 // include files for interactive sessions and for display
 #include "G4UImanager.hh"
@@ -14,6 +16,7 @@
 #include "G4UIExecutive.hh"
 #include "TSystem.h"
 #include "TInterpreter.h"
+
 //----------------------------------------------------------------------
 // program main function
 
@@ -25,9 +28,10 @@ int main(int argc, char **argv)
   // get run time
   clock_t t1, t2;
   t1 = clock();
+  G4cout << "Stepping action" << G4endl;
 
   //------------------------------------------------------------
-  
+
   G4cout << "Generating Dictionnaries" << G4endl;
   gSystem->AddIncludePath("-I/softs/clhep/2.4.6.2/include/");
   gSystem->AddIncludePath("-I/softs/clhep/2.4.6.2/include/CLHEP/Vector/");
@@ -41,7 +45,10 @@ int main(int argc, char **argv)
   //------------------------------------------------------------
   //  Simulation customisation
   // define the core simulation object
-  Wisard_RunManager run;
+
+  ParticleInformation *particle_info = new ParticleInformation();
+
+  Wisard_RunManager run(particle_info);
 
   // create the detector definition
   Wisard_Detector *ptr_det = new Wisard_Detector(&run);
@@ -52,7 +59,7 @@ int main(int argc, char **argv)
   run.SetUserInitialization(ptr_phys);
 
   // create the tracking action
-  Wisard_Tracking *ptr_track = new Wisard_Tracking();
+  Wisard_Tracking *ptr_track = new Wisard_Tracking(particle_info);
   run.SetUserAction(ptr_track);
 
   // create the generator for events
@@ -61,9 +68,9 @@ int main(int argc, char **argv)
 
   new Wisard_Messenger(&run, ptr_det, ptr_gene);
 
-
   run.Initialize();
-
+  
+  
   //------------------------------------------------------------
   //  Session start
 

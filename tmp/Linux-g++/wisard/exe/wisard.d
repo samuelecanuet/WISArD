@@ -470,6 +470,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
+ include/ParticleInformation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -718,8 +720,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4Step.hh \
  include/Wisard_Generator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
- include/Wisard_Tracking.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
@@ -737,6 +737,9 @@
  /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithoutParameter.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithABool.hh \
  include/Wisard_Detector.hh include/Wisard_Generator.hh \
+ include/Wisard_Tracking.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
+ include/ParticleInformation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UImanager.hh \
  /softs/geant4.11.1.2/include/Geant4/icomsdefs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VStateDependent.hh \

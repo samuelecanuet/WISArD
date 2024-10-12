@@ -6,7 +6,7 @@ rootGeant4file=../../../data333/lecanuet/Result/
 rootCRADLEfile=../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/
 rootGeant4file=../../../../../../mnt/hgfs/shared-2/
 
-suffixe="RMATRIX_"
+suffixe=""
 
 rm -rf tempory/*
 

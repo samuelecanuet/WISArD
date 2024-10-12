@@ -533,6 +533,11 @@
  /softs/geant4.11.1.2/include/Geant4/G4EmLivermorePhysics.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EmPenelopePhysics.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EmStandardPhysicsGS.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VModularPhysicsList.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VUserPhysicsList.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4OpticalPhysics.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4OpticalParameters.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4RadioactiveDecayPhysics.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Navigator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AffineTransform.hh \

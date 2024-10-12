@@ -9,8 +9,7 @@
 #include "G4TouchableHandle.hh"
 #include "G4Navigator.hh"
 
-Wisard_Sensor::Wisard_Sensor()
-    : G4VSensitiveDetector("WisardSensor")
+Wisard_Sensor::Wisard_Sensor( ParticleInformation* PartInfos, G4int code) : G4VSensitiveDetector("WisardSensor"), PartInfo(PartInfos), DetCode(code)
 {
 }
 
@@ -38,54 +37,39 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     index = track->GetParentID();
   }
 
-  // Cheking if the primary or a secondary already enter in this volume
-  // == if first time seen 
-  if (PrimaryDictionnary.find(index) == PrimaryDictionnary.end())
+  //new 
+  if (PartInfo->FirstHit(index, DetCode) && DetCode < 1000)
   {
-    // Initial info for this volume, particle event name to get the name of the initial particle, position hit and angle if the particle is primary 
-    PrimaryDictionnary[index] = PrimaryInfo_init;
-    if (track->GetParentID() == 0)
+    PartInfo->SetHitPosition(index, DetCode, step->GetPreStepPoint()->GetPosition() / mm);
+    if (DetCode == 99)
     {
-      PrimaryDictionnary[index].HitPosition = step->GetPreStepPoint()->GetPosition() / mm;
-      if (track->GetTouchable()->GetVolume()->GetCopyNo() == 99) // plastic scintillator
-      {
-        PrimaryDictionnary[index].HitAngle = std::acos(G4ThreeVector(0, 0, 1) * track->GetMomentumDirection()) / deg;
-      }
-      else 
-      {
-        PrimaryDictionnary[index].HitAngle = std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg;
-      }
+      PartInfo->SetHitAngle(index, DetCode, std::acos(G4ThreeVector(0, 0, 1) * track->GetMomentumDirection()) / deg);
+    }
+    else
+    {
+      PartInfo->SetHitAngle(index, DetCode, std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg);
     }
   }
 
-  /// If is an interstrip
-  if (step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo() > 1000)
-  {
-    G4ThreeVector localPos = step->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(step->GetPreStepPoint()->GetPosition());
-    PrimaryDictionnary[index].InterStrip_HitPosition.push_back(localPos /mm);
-    PrimaryDictionnary[index].InterStrip_EnergyDeposit.push_back(step->GetTotalEnergyDeposit() / keV);
-  }
+  if (DetCode > 1000) // interstrip
+    PartInfo->AddHitPosition(index, DetCode, step->GetPreStepPoint()->GetPosition() / mm);
 
-
-  PrimaryDictionnary[index].EnergyDeposit += step->GetTotalEnergyDeposit() / keV ;
-  
-  
-  
+  PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
 
   // ####################################################### ///
   // !!! KILLING down-positron/electron for performance !!!  ///
   // ####################################################### ///
 
-  if (step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo() == 1 && step->GetPostStepPoint()->GetPosition().z() < step->GetTrack()->GetVertexPosition().z())
-  {
-    if (step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" || step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "logic_mother_catcher")
-    {
-      if (step->GetTrack()->GetDefinition()->GetPDGEncoding () == -11 || step->GetTrack()->GetDefinition()->GetPDGEncoding () == 11)
-      {
-        step->GetTrack()->SetTrackStatus(fStopAndKill);
-      }
-    }
-  }
+  // if (step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo() == 1 && step->GetPostStepPoint()->GetPosition().z() < step->GetTrack()->GetVertexPosition().z())
+  // {
+  //   if (step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" || step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "logic_mother_catcher")
+  //   {
+  //     if (step->GetTrack()->GetDefinition()->GetPDGEncoding () == -11 || step->GetTrack()->GetDefinition()->GetPDGEncoding () == 11)
+  //     {
+  //       step->GetTrack()->SetTrackStatus(fStopAndKill);
+  //     }
+  //   }
+  // }
 
   return (true);
 }

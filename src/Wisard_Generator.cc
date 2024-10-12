@@ -1,5 +1,6 @@
 #include "Wisard_Generator.hh"
 #include "G4ParticleTable.hh"
+#include "G4IonTable.hh"
 #include "Randomize.hh"
 
 //----------------------------------------------------------------------
@@ -190,30 +191,69 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
   //     x = position.x();
   //     y = position.y();
   //     z = position.z();
+  
+  // z = G4RandFlat::shoot(-60 * mm, 0 * mm);
 
   while (Reader->Next() && **eventid == event->GetEventID())
   {
     if (((**code <= 2212 && **code != 12 ) || **code == 1000020040) && **code != 11) //////GAMMA EXCLUSION BUT TAKING ALPHA 
+    // if (((**code == 2212))) //proton
     {
       dir[0] = **px;
       dir[1] = **py;
       dir[2] = **pz;
 
-      gun.SetParticleDefinition(particle_table->FindParticle(**code));
-      gun.SetParticlePosition(G4ThreeVector(x, y, z));
-      gun.SetParticleMomentumDirection(dir);
-      gun.SetParticleEnergy(**ekin_* keV);
-      gun.GeneratePrimaryVertex(event);
+    //   const double c = 299792458;  // speed of light in m/s
+    // const double MeV_to_keV = 1000.0;  // conversion factor
+    // const double m_p_MeV = 938.272;  // proton mass in MeV/c^2
+    // const double m_Cl_MeV = 32.0 * 931.5;  // 32Cl mass in MeV/c^2
+    // const double K_Cl_lab_keV = 30.0;  // kinetic energy of 32Cl in lab frame (in keV)
+    // const double K_p_rest_keV = **ekin_;  // proton kinetic energy in rest frame (in keV)
 
-      // //////FOR TEST/////////
-      // double a = -5.6*mm;
-      //    gun.SetParticleDefinition        ( part_geantino );
-      //     gun.SetParticlePosition          ( G4ThreeVector (0, a*cos((40.2+90)*degree)*mm, a*cos(40.2*degree)*mm)  ); 
-      //   //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 42.7*mm)  ); // measueing space between the strips 1
-      //   //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 24.1*mm)  ); //measuring space between the strips 5
-        //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,sin(40.2*degree),cos(40.2*degree)) );
-        //  gun.SetParticleEnergy            ( **ekin_*MeV );
-        //  gun.GeneratePrimaryVertex        ( event );
+    // double Cl_direction[3] = {0.0, 0.0, -1.0};
+    // double gamma_Cl_lab = 1 + K_Cl_lab_keV / (m_Cl_MeV * MeV_to_keV);
+    // double beta_Cl_lab = std::sqrt(1.0 - 1.0 / (gamma_Cl_lab * gamma_Cl_lab));
+    // double dot_product = Cl_direction[0] * dir[0] + Cl_direction[1] * dir[1] + Cl_direction[2] * dir[2];
+    // double magnitude_dir = std::sqrt(dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2]);
+    // double cos_theta = dot_product / magnitude_dir;
+    // double E_p_rest_MeV = K_p_rest_keV / MeV_to_keV + m_p_MeV;  // total energy in rest frame (MeV)
+    // double p_p_rest_MeV = std::sqrt(E_p_rest_MeV * E_p_rest_MeV - m_p_MeV * m_p_MeV);  // momentum in rest frame (MeV/c)
+    // double E_p_lab_MeV = gamma_Cl_lab * (E_p_rest_MeV + beta_Cl_lab * p_p_rest_MeV * cos_theta);
+    // double ekin_lab_keV = (E_p_lab_MeV - m_p_MeV) * MeV_to_keV;
+
+    if ( **code == 2212)
+    cout << "Proton energy: " << **ekin_ << " keV" << endl;
+
+    gun.SetParticleDefinition(particle_table->FindParticle(**code));
+    gun.SetParticlePosition(G4ThreeVector(x, y, z));
+    gun.SetParticleMomentumDirection(dir);
+    gun.SetParticleEnergy(**ekin_*keV);
+    gun.GeneratePrimaryVertex(event);
+
+    // G4int Z = 18;
+    // G4int A = 32;
+
+    // G4double charge = 0. * eplus;
+    // G4double energy = 0. * keV;
+
+    // G4ParticleDefinition *ion = G4IonTable::GetIonTable()->GetIon(Z, A, 0. * keV);
+    // gun.SetParticlePosition(G4ThreeVector(x, y, z));
+    // gun.SetParticleDefinition(ion);
+    // gun.SetParticleCharge(charge);
+    // gun.SetParticleEnergy(0);
+    // gun.GeneratePrimaryVertex(event);
+
+    // //////FOR TEST/////////
+    // double a = -5.65*mm;
+    //    gun.SetParticleDefinition        ( part_gamma);
+    //    gun.SetParticlePosition          ( G4ThreeVector (0, 0, -6*cm)  );
+    //   gun.SetParticlePosition          ( G4ThreeVector (0, a*cos((40.2+90)*degree)*mm, a*cos(40.2*degree)*mm)  );
+    //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 42.7*mm)  ); // measueing space between the strips 1
+    //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 24.1*mm)  ); //measuring space between the strips 5
+    //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,sin(40.2*degree),cos(40.2*degree)) );
+    // gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
+    //  gun.SetParticleEnergy            ( **ekin_*keV );
+    //  gun.GeneratePrimaryVertex        ( event );
     }
   }
   (*Reader).SetEntry((*Reader).GetCurrentEntry() - 1);
