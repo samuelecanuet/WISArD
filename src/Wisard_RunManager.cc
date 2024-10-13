@@ -13,7 +13,8 @@
 // constructor
 Wisard_RunManager::Wisard_RunManager(ParticleInformation* PartInfos) : PartInfo(PartInfos)
 { 
-  G4cout<< "Constructor Wisard_Sensor" <<G4endl;
+  G4cout << "\033[32m" << "Constructor Wisard_RunManager" << "\033[0m" << G4endl;
+  G4cout << "\033[32m" << "Constructor Wisard_Sensor" << "\033[0m" << G4endl;
   ////////////// Construct all sensors //////////////////////////////
  
   wisard_sensor_PlasticScintillator = new Wisard_Sensor(PartInfo, 99);
@@ -61,12 +62,12 @@ Wisard_RunManager::Wisard_RunManager(ParticleInformation* PartInfos) : PartInfo(
 Wisard_RunManager::~Wisard_RunManager()
 {
   Tree->AutoSave("FlushBaskets");
- G4cout<< "Destructor Wisard_RunManager" <<G4endl;
+ G4cout << "\033[31m" << "Destructor Wisard_RunManager"  << "\033[0m" << G4endl;
 
   f->Close();
   delete f;
 
- G4cout<< "Destructor Wisard_Sensor" <<G4endl;
+ G4cout << "\033[31m" << "Destructor Wisard_Sensor"  << "\033[0m" << G4endl;
   delete wisard_sensor_PlasticScintillator;
   for (int i = 0; i < nb_det; i++)
   {

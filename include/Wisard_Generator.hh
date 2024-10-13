@@ -103,13 +103,9 @@ private:
 
     TH1D* Energy_Hist;
 public:
-    // constructor and destructor
     Wisard_Generator(Wisard_RunManager *mgr);
-
-    // destructor
     ~Wisard_Generator();
 
-    // function generating the event primary vertex with emitted particles
     void GeneratePrimaries(G4Event *event);
     void TXT_GENERATOR(G4Event *event);
     void ROOT_GENERATOR(G4Event *event);

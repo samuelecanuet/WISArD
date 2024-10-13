@@ -77,9 +77,28 @@ int main(int argc, char **argv)
   {
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
+
+    // read the macro file and cout if line begin by /Input/CRADLE or /Input/Ion withut the # 
+    std::ifstream file(fileName);
+    std::string line;
+    G4cout << G4endl;
+    while (std::getline(file, line))
+    {
+      if (line.find("/Input/CRADLE") != std::string::npos || line.find("/Input/Ion") != std::string::npos)
+      {
+        if (line.find("#") == std::string::npos)
+        {
+          G4cout << "\033[34m" << line << "\033[0m" << G4endl;
+        }
+      }
+    }
+
     G4cout << G4endl << "Reading macro file: " << fileName << G4endl;
     UI->ApplyCommand("/control/alias currentMacro " + fileName);
-    UI->ApplyCommand(command + fileName);    
+    UI->ApplyCommand(command + fileName);  
+
+
+    
   }
   else
   // start of an interactive session

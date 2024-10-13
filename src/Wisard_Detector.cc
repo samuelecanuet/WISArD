@@ -8,7 +8,7 @@
 
 Wisard_Detector::Wisard_Detector(Wisard_RunManager *mgr)
 {
- G4cout<< "Constructor Wisard_Detectors" <<G4endl;
+ G4cout << "\033[32m" << "Constructor Wisard_Detectors" << "\033[0m" << G4endl;
  
   manager_ptr = mgr;
 
@@ -89,7 +89,7 @@ Wisard_Detector::Wisard_Detector(Wisard_RunManager *mgr)
 // destructor
 Wisard_Detector::~Wisard_Detector()
 {
- G4cout<< "Destructor Wisard_Detectors" <<G4endl;
+ G4cout << "\033[31m" << "Destructor Wisard_Detector"  << "\033[0m" << G4endl;
 }
 
 //----------------------------------------------------------------------

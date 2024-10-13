@@ -11,14 +11,14 @@
 
 Wisard_Tracking::Wisard_Tracking(ParticleInformation *Part_Infos) : G4UserTrackingAction(), Part_Info(Part_Infos)
 {
-    G4cout << "Constructor Wisard_Tracking" << G4endl;
+    G4cout << "\033[32m" << "Constructor Wisard_Tracking"  << "\033[0m" << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
 Wisard_Tracking::~Wisard_Tracking()
 {
-    G4cout << "Destructor Wisard_Tracking" << G4endl;
+    G4cout << "\033[31m" << "Destructor Wisard_Tracking"  << "\033[0m" << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....

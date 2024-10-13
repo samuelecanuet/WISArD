@@ -5,7 +5,7 @@
 
 Wisard_Generator::Wisard_Generator(Wisard_RunManager *mgr)
 {
- G4cout<< "Constructor Wisard_Generator" <<G4endl;
+ G4cout << "\033[32m" << "Constructor Wisard_Generator"  << "\033[0m" << G4endl;
 
   manager_ptr = mgr;
 

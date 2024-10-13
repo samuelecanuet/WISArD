@@ -2,7 +2,7 @@
 
 Wisard_Messenger::Wisard_Messenger(Wisard_Detector *det, Wisard_Generator *gen)
 {
- G4cout<< "Constructor Wisard_Messenger" <<G4endl;
+ G4cout << "\033[32m" << "Constructor Wisard_Messenger" << "\033[0m" << G4endl;
 
   det_ptr = det;
   gen_ptr = gen;
@@ -12,7 +12,7 @@ Wisard_Messenger::Wisard_Messenger(Wisard_Detector *det, Wisard_Generator *gen)
 
 Wisard_Messenger::~Wisard_Messenger()
 {
- G4cout<< "Destructor Wisard_Messenger" <<G4endl;
+ G4cout << "\033[31m" << "Destructor_Messenger"  << "\033[0m" << G4endl;
 
   delete input_dir;
   delete input_cmd_B;

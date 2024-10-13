@@ -5,13 +5,13 @@
 Wisard_PhysList::Wisard_PhysList()
 {
   step_max = NULL;
- G4cout<< "Constructor Wisard_PhysList" <<G4endl;
+ G4cout << "\033[32m" << "Constructor Wisard_PhysList"  << "\033[0m" << G4endl;
   defaultCutValue = 0.001 * um;
 }
 
 Wisard_PhysList::~Wisard_PhysList()
 {
- G4cout<< "Destructor Wisard_PhysList" <<G4endl;
+ G4cout << "\033[31m" << "Destructor Wisard_PhysicList"  << "\033[0m" << G4endl;
 }
 
 //----------------------------------------------------------------------
