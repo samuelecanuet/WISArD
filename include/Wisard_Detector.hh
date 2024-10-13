@@ -1,9 +1,12 @@
-#ifndef GE_DETECTOR_HH
-#define GE_DETECTOR_HH
+#ifndef WISARD_DETECTOR_HH
+#define WISARD_DETECTOR_HH
 
-#include "Wisard_Global.hh"
+#include <unordered_map>
+#include <tuple>
+#include <string>
+#include <iostream>
+
 #include "G4VUserDetectorConstruction.hh"
-#include "Wisard_RunManager.hh"
 #include "G4ThreeVector.hh"
 #include "G4UnionSolid.hh"
 #include "G4GeometryManager.hh"
@@ -25,61 +28,40 @@
 #include "G4FieldManager.hh"
 #include "G4Trap.hh"
 #include "G4VSolid.hh"
-#include "G4GenericMessenger.hh"
-#include <unordered_map>
-#include <tuple>
-#include <string>
-#include <iostream>
+#include "G4UniformMagField.hh"
 
-// class G4GenericMessenger;
+#include "Wisard_Global.hh"
+#include "Wisard_RunManager.hh"
 
 //----------------------------------------------------------------------
 
 class Wisard_Detector : public G4VUserDetectorConstruction
 {
-
-
-  //------------------------------------------------------------
-  // internal variables definition
-protected:
-  // pointer to the run manager
-  Wisard_RunManager *manager_ptr;
-  G4GenericMessenger *fMessenger;
-  // detectors
-  double pos_detp1, pos_detp2, pos_dete;
-  double radius1_detp, radius2_detp, radius1_dete, radius2_dete;
-  double thickness_detp, thickness_dete;
-  // catcher
-  double pos_catcher, thickness_catcher, radius_catcher;
-
-  //------------------------------------------------------------
-  // class functions definition
 public:
-  // constructor with arguments
   Wisard_Detector(Wisard_RunManager *mgr);
-
-  // destructor
   ~Wisard_Detector();
 
-  G4GenericMessenger* aMessenger;
-G4double test = 10*mm;
-
-  // setup construction (mandatory class function)
+  Wisard_RunManager *manager_ptr;
   G4VPhysicalVolume *Construct();
 
-  void SetSiDeadLayer_Thickness(G4double value);
-  G4double thicknessSiDetectorDeadLayer = 100 * nm;
+ G4double pos_detp1, pos_detp2, pos_dete;
+ G4double radius1_detp, radius2_detp, radius1_dete, radius2_dete;
+ G4double thickness_detp, thickness_dete;
+ G4double pos_catcher, thickness_catcher, radius_catcher;
+
+  
 
   void SetBFieldValue(G4double val);
-
-  int OpenInputB(const string &fname);
-  const string &GetInputNameB() const; // inline
-  void CloseInputB();                  // inline
-  ifstream inputB;
-  string input_nameB;
+  void SetSiDeadLayer_Thickness(G4double value);
+  int OpenInputB(const G4String &fname);
+  const G4String &GetInputNameB() const;
+  void CloseInputB();                 
   void SetCatcherPosition_theta(G4String position, G4double angle);
   void SetCatcherPosition_z(G4double catcher_z);
   void SetCatcher_Thickness(G4double Al1_e, G4double Mylar_e, G4double Al2_e);
+  G4double thicknessSiDetectorDeadLayer = 100 * nm;
+  ifstream inputB;
+  G4String input_nameB;
   G4Tubs *MylarSource;
   G4Tubs *AlSource1;
   G4Tubs *AlSource2;
@@ -99,7 +81,6 @@ G4double test = 10*mm;
 
   G4bool event;
 
-  // Functions to create Silicon Detectors
   std::tuple< // std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
       std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
       std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
@@ -135,7 +116,7 @@ G4double test = 10*mm;
   std::unordered_map<int, std::tuple<G4Trap *, G4ThreeVector>> dic_interstrip;
   std::unordered_map<std::string, G4ThreeVector> dic_position;
   std::unordered_map<std::string, G4ThreeVector> dic_positionvide;
-  std::unordered_map<std::string, std::tuple<double, double, double>> dic_rotate;
+  std::unordered_map<std::string, std::tuple<double,G4double,G4double>> dic_rotate;
 
   std::tuple<std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
              // std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
@@ -230,7 +211,7 @@ G4double test = 10*mm;
   G4VSolid *SiDet_Strip_3_grid;
   G4VSolid *SiDet_Strip_4_grid;
   G4VSolid *SiDet_Strip_5_grid;
-  double r, z, r_vide, z_vide, theta;
+ G4double r, z, r_vide, z_vide, theta;
   G4VSolid *Box_material_SupportoRame_SiliconDetector;
   G4double spazio_tra_Bordo_e_strip5;
   G4double spazio_tra_Strip;
@@ -280,6 +261,9 @@ inline std::tuple<std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
 Wisard_Detector::Make_Sidet(int num, G4VisAttributes *strip_att, G4VisAttributes *cooling_att, G4VisAttributes *support_att, G4VisAttributes *vide_att, G4Material *strip_mat, G4Material *cooling_mat, G4Material *support_mat, G4Material *vide_mat)
 {
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Support = MakeSupport(num, support_att, support_mat);
+  if (cooling_mat == nullptr)
+  {
+  }
   // std::pair<G4LogicalVolume*, G4VPhysicalVolume*> Cooling = MakeCooling(num, dir, Support.first, cooling_att, cooling_mat);
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Vide = MakeVide(num, vide_att, vide_mat);
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Strips[19];
@@ -475,7 +459,7 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeIn
   return std::make_pair(logicSiDet, physSiDet);
 }
 
-inline int Wisard_Detector::OpenInputB(const string &fname)
+inline int Wisard_Detector::OpenInputB(const G4String &fname)
 {
   int error = 0; // return value
 
@@ -490,25 +474,24 @@ inline int Wisard_Detector::OpenInputB(const string &fname)
     if (inputB.fail())
     {
       error = 2;
-      cerr << "<W> OpenInput : error opening file " << fname << endl;
+      cerr << "<W> OpenInput : error opening file " << fname <<G4endl;
     }
     else
     {
       input_nameB = fname;
-      cout << "<I> Open input file: " << fname << endl;
+     G4cout<< "<I> Open input file: " << fname <<G4endl;
     }
   }
   else
   {
     error = 1;
-    cerr << "<W> OpenInput : empty file name" << endl;
+    cerr << "<W> OpenInput : empty file name" <<G4endl;
   }
 
   return (error);
 }
 
-// Get the input file name
-inline const string &Wisard_Detector::GetInputNameB() const
+inline const G4String &Wisard_Detector::GetInputNameB() const
 {
   return (input_nameB);
 }

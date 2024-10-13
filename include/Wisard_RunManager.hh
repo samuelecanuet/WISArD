@@ -1,21 +1,23 @@
-#ifndef WITCH_RUNMANAGER_HH
-#define WITCH_RUNMANAGER_HH
+#ifndef WISARD_RUNMANAGER_HH
+#define WISARD_RUNMANAGER_HH
 
-#include "Wisard_Global.hh"
-#include "G4RunManager.hh"
-#include "Wisard_Sensor.hh"
-#include "G4AnalysisManager.hh"
-#include "ParticleInformation.hh"
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1D.h"
 #include "TTreeReader.h"
-#include <TDirectory.h>
+#include "TDirectory.h"
 
-#include <unordered_map>
-#include <utility>
-#include <vector>
+#include "G4RunManager.hh"
+#include "G4AnalysisManager.hh"
+#include "G4GenericMessenger.hh"
+
+#include "Wisard_Global.hh"
+#include "Wisard_Sensor.hh"
+#include "ParticleInformation.hh"
 
 class Wisard_RunManager : public G4RunManager
 {
@@ -66,11 +68,8 @@ protected:
 
   G4int count = 0;
 
-  ifstream input_txt;
-  string input_name;
-
   ifstream inputSRIM;
-  string input_nameSRIM;
+  G4String input_nameSRIM;
 
   G4double threshold;
   G4String filename;
@@ -79,6 +78,8 @@ public:
   // constructor and destructor
   Wisard_RunManager(ParticleInformation *);
   ~Wisard_RunManager();
+
+  G4GenericMessenger *RunMessenger;
 
   ParticleInformation *PartInfo;
 
@@ -148,21 +149,9 @@ public:
   ////--------------------------------------------------
   //// added input file functions
   ////                  declaration
-  int OpenInput(const string &fname);
-  void CloseInput();                  // inline
-  ifstream &GetInput_TXT();               // inline
-  const string &GetInputName() const; // inline
-
-  int OpenInputSRIM(const string &fname);
-  void CloseInputSRIM();    // inline
-  ifstream &GetInputSRIM(); // inline
 
   void SetThreshold(G4double th);
   G4double GetThreshold();
-
-  void SetOutputFilename(G4String fn);
-  G4String GetOutputFilename();
-
   //----------------------------------------------------------
   // Functions for events processing and output histogram
 
@@ -226,41 +215,8 @@ inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherMylar_side() { r
 inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl1_side() { return (wisard_sensor_CatcherAl1_side); }
 inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_CatcherAl2_side() { return (wisard_sensor_CatcherAl2_side); }
 
-// Close the input file
-inline void Wisard_RunManager::CloseInput()
-{
-  input_txt.close();
-  input_name = "";
-}
-
-// Get the input file stream information
-inline ifstream &Wisard_RunManager::GetInput_TXT()
-{
-  return (input_txt);
-}
-
-// Get the input file name
-inline const string &Wisard_RunManager::GetInputName() const
-{
-  return (input_name);
-}
-
-// SRIM
-inline void Wisard_RunManager::CloseInputSRIM()
-{
-  inputSRIM.close();
-  input_nameSRIM = "";
-}
-inline ifstream &Wisard_RunManager::GetInputSRIM()
-{
-  return (inputSRIM);
-}
-
 // THRESHOOLD
 inline void Wisard_RunManager::SetThreshold(G4double th) { threshold = th; }
 inline G4double Wisard_RunManager::GetThreshold() { return (threshold); }
 
-// OUPUT FILE
-inline void Wisard_RunManager::SetOutputFilename(G4String fn) { filename = fn; }
-inline G4String Wisard_RunManager::GetOutputFilename() { return filename; }
 #endif

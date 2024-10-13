@@ -12,11 +12,10 @@
 
 // constructor
 Wisard_RunManager::Wisard_RunManager(ParticleInformation* PartInfos) : PartInfo(PartInfos)
-{
-  cout << "Constructor Wisard_RunManager" << endl;
-  
+{ 
+  G4cout<< "Constructor Wisard_Sensor" <<G4endl;
   ////////////// Construct all sensors //////////////////////////////
-  cout << "Constructor Wisard_Sensor" << endl;
+ 
   wisard_sensor_PlasticScintillator = new Wisard_Sensor(PartInfo, 99);
   for (int i = 0; i < nb_det; i++)
   {
@@ -43,18 +42,31 @@ Wisard_RunManager::Wisard_RunManager(ParticleInformation* PartInfos) : PartInfo(
   }
   plastic_coinc = new TH1D("plastic_coinc", "plastic_coinc", 120000, 0.0, 12000.0);
   ///////////////////////////////////////////////////////////////////
+
+  // Messenger //
+  RunMessenger = new G4GenericMessenger(this, "/Run/", "Output Settings");
+
+  RunMessenger->DeclareProperty("File", filename)
+      .SetGuidance("Set ROOT Output filename")
+      .SetParameterName("Filename", false)
+      .SetDefaultValue("output.root");
+
+  RunMessenger->DeclarePropertyWithUnit("Threshold_PlasticScintillator", "keV", threshold)
+      .SetGuidance("Set the threshold for the detectors")
+      .SetParameterName("Threshold", false)
+      .SetDefaultValue("100.");
 }
 
-// destructor
+
 Wisard_RunManager::~Wisard_RunManager()
 {
   Tree->AutoSave("FlushBaskets");
-  cout << "Destructor Wisard_RunManager" << endl;
+ G4cout<< "Destructor Wisard_RunManager" <<G4endl;
 
   f->Close();
   delete f;
 
-  cout << "Destructor Wisard_Sensor" << endl;
+ G4cout<< "Destructor Wisard_Sensor" <<G4endl;
   delete wisard_sensor_PlasticScintillator;
   for (int i = 0; i < nb_det; i++)
   {
@@ -71,8 +83,6 @@ Wisard_RunManager::~Wisard_RunManager()
   delete wisard_sensor_CatcherMylar_side;
   delete wisard_sensor_CatcherAl1_side;
   delete wisard_sensor_CatcherAl2_side;
-
-  CloseInput();
 }
 
 //----------------------------------------------------------------------
@@ -80,18 +90,19 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
 {  
   if (event->GetEventID() == 0)
   {
-    f = new TFile(GetOutputFilename(), "recreate");
+    f = new TFile(filename, "recreate");
     ////////////// Construct Log /////////////////////////////////////
-    TDirectory *dir = f->mkdir("Log");
-    dir->cd();
+    // TDirectory *dir = f->mkdir("Log");
+    // dir->cd();
     G4UImanager *uiManager = G4UImanager::GetUIpointer();
     for (int i = 0; i < uiManager->GetNumberOfHistory(); i++)
     {
-      string command = uiManager->GetPreviousCommand(i).substr(1);
-      if (command.find("run") != 0 && command.find("event") != 0 && command.find("tracking") != 0 && command.find("input") != 0 && command.find("output") != 0)
+      G4String command = uiManager->GetPreviousCommand(i).substr(1);
+      if (command.find("run") != 0 && command.find("event") != 0 && command.find("tracking") != 0 && command.find("Input") != 0 && command.find("Run") != 0 && command.find("vis") != 0 && command.find("process") != 0)
       {
         char const *num_char = command.c_str();
-        dir->WriteObject(&command, num_char);
+        TObjString objString(command.c_str());
+        f->WriteObject(&objString, num_char);
       }
       f->cd();
     }
@@ -130,9 +141,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   {
     Particle particle = pair.second;
 
-    if (particle.Particle_PDG == 2212)
-      cout << particle.E0 << endl;
-
     Particle_PDG.push_back(particle.Particle_PDG);
     x.push_back(particle.Pos.x());
     y.push_back(particle.Pos.y());
@@ -143,7 +151,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Kinetic_Energy.push_back(particle.E0);
 
     // # Catcher Central #//
-    double catcher_central = 0;
+   G4double catcher_central = 0;
     if (particle.Detectors.find(1) != particle.Detectors.end())
       catcher_central += particle.Detectors[1].EnergyDeposit;
     if (particle.Detectors.find(2) != particle.Detectors.end())
@@ -153,7 +161,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Catcher_Central_Energy_Deposit.push_back(catcher_central);
 
     // # Catcher Side #//
-    double catcher_side = 0;
+   G4double catcher_side = 0;
     if (particle.Detectors.find(4) != particle.Detectors.end())
       catcher_side += particle.Detectors[4].EnergyDeposit;
     if (particle.Detectors.find(5) != particle.Detectors.end())
@@ -266,7 +274,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       if (!Det.EnergyDeposit)
         continue;
       
-      if (PartInfo->GetInfo()[positron_index].Detectors[99].EnergyDeposit >= GetThreshold() / keV)
+      if (PartInfo->GetInfo()[positron_index].Detectors[99].EnergyDeposit >= threshold)
       {
         silicon_coinc[i]->Fill(Det.EnergyDeposit);
         plastic_coinc->Fill((PartInfo->GetInfo()[positron_index]).Detectors[99].EnergyDeposit);
@@ -288,7 +296,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
 
     for (int i = 0; i < nb_det; i++)
     {
-      // cout << Detector_Name[i] << " : " << silicon_coinc[i]->GetEntries() << " " << silicon_nocoinc[i]->GetEntries() << " " << silicon_single[i]->GetEntries() << endl;
+      //G4cout<< Detector_Name[i] << " : " << silicon_coinc[i]->GetEntries() << " " << silicon_nocoinc[i]->GetEntries() << " " << silicon_single[i]->GetEntries() <<G4endl;
       silicon_coinc[i]->Write("", TObject::kOverwrite);
       silicon_nocoinc[i]->Write("", TObject::kOverwrite);
       silicon_single[i]->Write("", TObject::kOverwrite);
@@ -327,116 +335,4 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   PartInfo->Clear();
   ///////////////////////////////////////////////////////////////////
 
-}
-
-int Wisard_RunManager::OpenInput(const std::string &fname)
-{
-  int error = 0; // Valeur de retour
-
-  if (fname != "")
-  {
-    // Fermer la sortie précédente au cas où
-    CloseInput();
-
-    // Vérifier l'extension du fichier
-    size_t dotPosition = fname.find_last_of('.');
-    if (dotPosition != std::string::npos)
-    {
-      std::string extension = fname.substr(dotPosition + 1);
-      input_name = fname;
-      if (extension == "root")
-      {
-        TFile *file = new TFile(fname.c_str(), "READ");
-        if (file->IsOpen())
-        {
-        //     file->Close();
-        //     file = new TFile(fname.c_str(), "UPDATE");
-        //     TTree *tree = (TTree *)file->Get("ParticleTree");
-        //     TTreeReader *Reader = new TTreeReader("ParticleTree", file);
-        //     TTreeReaderValue<int> code(*Reader, "code");
-        //     TTreeReaderValue<double> energy(*Reader, "energy");
-        //     TH1D* hist = new TH1D("histogram", "histogram", 100000, 0.0, 10000.0);
-        //     while (Reader->Next())
-        //     {
-        //       if (*code == 1000020040 || *code == 2212)
-        //       {
-        //         hist->Fill(*energy);
-        //       }
-        //     }
-        //     hist->Write();  
-        //     
-          std::cout << "<I> Open input file : " << fname << std::endl;
-          file->Close();
-          
-        }
-        else
-        {
-          std::cerr << "<W> Unable to open CRADLE input file" << std::endl;
-          error = 2;
-        }
-      }
-      else if (extension == "txt")
-      {
-        input_txt.open(fname.c_str());
-        if (!input_txt.fail())
-        {
-          std::cout << "<I> Open input file : " << fname << std::endl;
-        }
-        else
-        {
-          std::cerr << "<W> Unable to open CRADLE input file" << std::endl;
-          error = 2;
-        }
-      }
-      else
-      {
-        error = 3;
-        std::cerr << "<W> Unrecognized input file extension : " << extension << std::endl;
-      }
-    }
-    else
-    {
-      error = 4; // Aucune extension de fichier trouvée
-      std::cerr << "<W> No file extension found in input file name : " << fname << std::endl;
-    }
-  }
-  else
-  {
-    error = 1; // Nom de fichier vide
-    std::cerr << "<W> Empty input file name" << std::endl;
-  }
-
-  return error;
-}
-
-int Wisard_RunManager::OpenInputSRIM(const string &fname)
-{
-  int error = 0; // return value
-
-  if (fname != "")
-  {
-    // close previous output... just in case
-    CloseInputSRIM();
-
-    // try to open the new file
-    inputSRIM.open(fname.c_str());
-
-    if (inputSRIM.fail())
-    {
-      error = 2;
-      cerr << "<W> OpenInput : error opening file " << fname << endl;
-    }
-    else
-    {
-      input_nameSRIM = fname;
-      cout << "<I> Open input file : " << fname << endl;
-    }
-  }
-  else
-  {
-    error = 1;
-    cerr << "<W> OpenInput : empty file name" << endl;
-  }
-
-  return (error);
 }

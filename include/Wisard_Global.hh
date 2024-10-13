@@ -1,5 +1,5 @@
-// #ifndef WITCH_GLOBAL_HH
-// #define WITCH_GLOBAL_HH
+// #ifndef WISARD_GLOBAL_HH
+// #define WISARD_GLOBAL_HH
 
 
 // standard C include files

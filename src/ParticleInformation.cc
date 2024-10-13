@@ -9,17 +9,6 @@ ParticleInformation::~ParticleInformation()
 {
 }
 
-// void InitDetectors(vector<int> Detectors)
-// {
-//     for (int i : Detectors)
-//     {
-//         if (i > 1000)
-//             AllEmptyInterStripDetectors[i] = InterStripDetector{{}, {}};
-//         else
-//             AllEmptyDetectors[i] = Detector{0, 0, G4ThreeVector(0, 0, 0)};
-//     }
-// }
-
 void ParticleInformation::SetParticle(G4int TrackID, G4int Particle_PDG, G4double E0, G4ThreeVector Dir, G4ThreeVector Pos, G4double T0)
 {
     if (Particles.find(TrackID) == Particles.end())
@@ -35,7 +24,7 @@ void ParticleInformation::SetParticle(G4int TrackID, G4int Particle_PDG, G4doubl
 
 void ParticleInformation::AddParticle(G4int TrackID)
 {
-    Particles[TrackID] = Particle{TrackID, 0, 0, G4ThreeVector(0, 0, 0), G4ThreeVector(0, 0, 0), 0};
+    Particles[TrackID] = Particle{TrackID, 0, 0, G4ThreeVector(0, 0, 0), G4ThreeVector(0, 0, 0), 0, {}, {}};
 }
 
 bool ParticleInformation::FirstHit(G4int TrackID, G4int SensorID)
@@ -110,11 +99,6 @@ void ParticleInformation::Parse()
             G4cout << "-------- Energy Deposit : " << pair.second.Detectors[pair2.first].EnergyDeposit << " keV" << G4endl;
             G4cout << "-------- Hit Angle : " << pair.second.Detectors[pair2.first].HitAngle << " deg" << G4endl;
             G4cout << "-------- Hit Position : " << pair.second.Detectors[pair2.first].HitPosition << G4endl;
-        }
-
-        for (auto &pair2 : pair.second.InterStripDetectors)
-        {
-            // G4cout 
         }
     }
 }

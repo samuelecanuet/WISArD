@@ -15,34 +15,32 @@
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-/input/Open_SRIM SRIM_data/AlMylar_2021_32Ar.txt
-#/input/Open_CRADLE CRADLE_data/SAMPLE.root
-/input/Open_CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/32Ar_CS0_CSP0_CV1_CVP1_1.root
+/Input/SRIM SRIM_data/AlMylar_2021_32Ar.txt
+/Input/Ion 32Ar
+#/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/32Ar_CS0_CSP0_CV1_CVP1_1.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
-/Magnetic_Field 4 T
-/Threshold_PlasticScintillator 100 keV
-#/Delta_Position_Threshold_PlasticScintillator
+/Run/Threshold_PlasticScintillator 100 keV
 
-#---------------------------------------------------------------
-#   Systematic Variables
-#---------------------------------------------------------------
-/SiDeadLayer_Thickness 100 nm
-#/geometry/SiDeadLayer_Thickness 100 mm
-/Beam_Size 2 mm 300 um
-/Beam_Position 0 cm 0 cm
+/Beam/X 0. mm
+/Beam/Y 0. mm
+/Beam/Radius 2 mm
+/Beam/Sigma_X 0.3 mm
+/Beam/Sigma_Y 0.3 mm
 
-/Catcher_Position_z 0 mm
-/Catcher_Position catcher1 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
-/Catcher_Thickness 50 500 50 nm     thickness : Al, Mylar Al (0 delete it)
+/Geometry/Magnetic_Field 4 T
+/Geometry/SiDeadLayer_Thickness 100 nm
+/Geometry/Catcher_Position_z 0 mm
+/Geometry/Catcher_Position catcher1 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
+/Geometry/Catcher_Thickness 50 500 50 nm     thickness : Al, Mylar Al (0 delete it)
 
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
 /run/printProgress 200
-/output test.root
+/Run/File test.root
 #
 #
 #---------------------------------------------------------------

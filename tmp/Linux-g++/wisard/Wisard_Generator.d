@@ -189,15 +189,129 @@
  /softs/clhep/2.4.6.2/include/CLHEP/Units/defs.h \
  /softs/clhep/2.4.6.2/include/CLHEP/Units/PhysicalConstants.h \
  /softs/geant4.11.1.2/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
- include/Wisard_RunManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RunManager.hh \
+ include/Wisard_RunManager.hh /usr/include/c++/8/unordered_map \
+ /usr/include/c++/8/bits/hashtable.h \
+ /usr/include/c++/8/bits/hashtable_policy.h \
+ /usr/include/c++/8/bits/unordered_map.h \
+ /usr/local/root/6.26.10/include/TFile.h /usr/include/c++/8/atomic \
+ /usr/include/c++/8/bits/atomic_base.h \
+ /usr/include/c++/8/bits/atomic_lockfree_defines.h \
+ /usr/local/root/6.26.10/include/Compression.h \
+ /usr/local/root/6.26.10/include/RtypesCore.h \
+ /usr/local/root/6.26.10/include/ROOT/RConfig.hxx \
+ /usr/local/root/6.26.10/include/ROOT/../RVersion.h \
+ /usr/local/root/6.26.10/include/RConfigure.h \
+ /usr/local/root/6.26.10/include/DllImport.h /usr/include/c++/8/cstddef \
+ /usr/local/root/6.26.10/include/TDirectoryFile.h \
+ /usr/local/root/6.26.10/include/TDirectory.h \
+ /usr/local/root/6.26.10/include/TNamed.h \
+ /usr/local/root/6.26.10/include/TObject.h \
+ /usr/local/root/6.26.10/include/Rtypes.h \
+ /usr/local/root/6.26.10/include/strtok.h \
+ /usr/local/root/6.26.10/include/strlcpy.h /usr/include/unistd.h \
+ /usr/include/bits/posix_opt.h /usr/include/bits/environments.h \
+ /usr/include/bits/confname.h /usr/include/bits/getopt_posix.h \
+ /usr/include/bits/getopt_core.h \
+ /usr/local/root/6.26.10/include/snprintf.h \
+ /usr/local/root/6.26.10/include/TGenericClassInfo.h \
+ /usr/local/root/6.26.10/include/TSchemaHelper.h \
+ /usr/local/root/6.26.10/include/TIsAProxy.h \
+ /usr/local/root/6.26.10/include/TVirtualIsAProxy.h \
+ /usr/local/root/6.26.10/include/TStorage.h \
+ /usr/local/root/6.26.10/include/TVersionCheck.h \
+ /usr/local/root/6.26.10/include/RVersion.h \
+ /usr/local/root/6.26.10/include/TString.h \
+ /usr/local/root/6.26.10/include/TMathBase.h \
+ /usr/local/root/6.26.10/include/ROOT/RStringView.hxx \
+ /usr/local/root/6.26.10/include/ROOT/TypeTraits.hxx \
+ /usr/include/c++/8/memory /usr/include/c++/8/bits/stl_raw_storage_iter.h \
+ /usr/include/c++/8/ext/concurrence.h \
+ /usr/include/c++/8/bits/shared_ptr.h \
+ /usr/include/c++/8/bits/shared_ptr_base.h \
+ /usr/include/c++/8/bits/allocated_ptr.h \
+ /usr/include/c++/8/bits/refwrap.h \
+ /usr/include/c++/8/bits/shared_ptr_atomic.h \
+ /usr/include/c++/8/backward/auto_ptr.h /usr/include/c++/8/cstdarg \
+ /usr/local/root/6.26.10/include/TClass.h \
+ /usr/local/root/6.26.10/include/TDictionary.h \
+ /usr/local/root/6.26.10/include/ESTLType.h \
+ /usr/local/root/6.26.10/include/TObjArray.h \
+ /usr/local/root/6.26.10/include/TSeqCollection.h \
+ /usr/local/root/6.26.10/include/TCollection.h \
+ /usr/local/root/6.26.10/include/TIterator.h \
+ /usr/local/root/6.26.10/include/TVirtualRWMutex.h \
+ /usr/local/root/6.26.10/include/TVirtualMutex.h \
+ /usr/local/root/6.26.10/include/ROOT/RRangeCast.hxx \
+ /usr/local/root/6.26.10/include/ROOT/RSpan.hxx \
+ /usr/local/root/6.26.10/include/ROOT/span.hxx \
+ /usr/include/c++/8/iterator /usr/include/c++/8/bits/stream_iterator.h \
+ /usr/include/c++/8/cassert /usr/include/assert.h \
+ /usr/include/c++/8/unordered_set /usr/include/c++/8/bits/unordered_set.h \
+ /usr/local/root/6.26.10/include/TUUID.h \
+ /usr/local/root/6.26.10/include/TList.h \
+ /usr/local/root/6.26.10/include/TBuffer.h \
+ /usr/local/root/6.26.10/include/TDataType.h \
+ /usr/local/root/6.26.10/include/Bytes.h \
+ /usr/local/root/6.26.10/include/Byteswap.h \
+ /usr/local/root/6.26.10/include/TDatime.h \
+ /usr/local/root/6.26.10/include/TUrl.h \
+ /usr/local/root/6.26.10/include/ROOT/RConcurrentHashColl.hxx \
+ /usr/local/root/6.26.10/include/Rtypes.h \
+ /usr/local/root/6.26.10/include/ROOT/TRWSpinLock.hxx \
+ /usr/local/root/6.26.10/include/ROOT/TSpinMutex.hxx \
+ /usr/include/c++/8/condition_variable \
+ /usr/local/root/6.26.10/include/TTree.h \
+ /usr/local/root/6.26.10/include/ROOT/TIOFeatures.hxx \
+ /usr/local/root/6.26.10/include/TArrayD.h \
+ /usr/local/root/6.26.10/include/TArray.h \
+ /usr/local/root/6.26.10/include/TArrayI.h \
+ /usr/local/root/6.26.10/include/TAttFill.h \
+ /usr/local/root/6.26.10/include/TAttLine.h \
+ /usr/local/root/6.26.10/include/TAttMarker.h \
+ /usr/local/root/6.26.10/include/TVirtualTreePlayer.h \
+ /usr/local/root/6.26.10/include/TBranch.h \
+ /usr/local/root/6.26.10/include/TBranchCacheInfo.h \
+ /usr/local/root/6.26.10/include/TBits.h \
+ /usr/local/root/6.26.10/include/TH1D.h \
+ /usr/local/root/6.26.10/include/TH1.h \
+ /usr/local/root/6.26.10/include/TAxis.h \
+ /usr/local/root/6.26.10/include/TAttAxis.h \
+ /usr/local/root/6.26.10/include/TArrayC.h \
+ /usr/local/root/6.26.10/include/TArrayS.h \
+ /usr/local/root/6.26.10/include/TArrayF.h \
+ /usr/local/root/6.26.10/include/Foption.h \
+ /usr/local/root/6.26.10/include/ROOT/EExecutionPolicy.hxx \
+ /usr/local/root/6.26.10/include/TVectorFfwd.h \
+ /usr/local/root/6.26.10/include/TVectorDfwd.h \
+ /usr/local/root/6.26.10/include/TFitResultPtr.h \
+ /usr/include/c++/8/cfloat \
+ /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
+ /usr/local/root/6.26.10/include/TTreeReader.h \
+ /usr/local/root/6.26.10/include/TTree.h \
+ /usr/local/root/6.26.10/include/TTreeReaderUtils.h \
+ /usr/local/root/6.26.10/include/TBranchProxyDirector.h \
  /usr/include/c++/8/list /usr/include/c++/8/bits/stl_list.h \
- /usr/include/c++/8/bits/allocated_ptr.h /usr/include/c++/8/bits/list.tcc \
+ /usr/include/c++/8/bits/list.tcc \
+ /usr/local/root/6.26.10/include/TBranchProxy.h \
+ /usr/local/root/6.26.10/include/TLeaf.h \
+ /usr/local/root/6.26.10/include/TClonesArray.h \
+ /usr/local/root/6.26.10/include/TError.h \
+ /usr/local/root/6.26.10/include/DllImport.h \
+ /usr/include/c++/8/functional /usr/include/c++/8/bits/std_function.h \
+ /usr/local/root/6.26.10/include/TVirtualCollectionProxy.h \
+ /usr/local/root/6.26.10/include/TClassRef.h \
+ /usr/local/root/6.26.10/include/TNotifyLink.h \
+ /usr/local/root/6.26.10/include/TObject.h \
+ /usr/local/root/6.26.10/include/TError.h \
+ /usr/local/root/6.26.10/include/TTreeReaderValue.h \
+ /usr/include/c++/8/deque /usr/include/c++/8/bits/stl_deque.h \
+ /usr/include/c++/8/bits/deque.tcc \
+ /usr/local/root/6.26.10/include/TDirectory.h \
+ /softs/geant4.11.1.2/include/Geant4/G4RunManager.hh \
  /softs/geant4.11.1.2/include/Geant4/rundefs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Event.hh \
  /softs/geant4.11.1.2/include/Geant4/evtdefs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Allocator.hh \
- /usr/include/c++/8/cstddef \
  /softs/geant4.11.1.2/include/Geant4/G4AllocatorPool.hh \
  /softs/geant4.11.1.2/include/Geant4/G4PrimaryVertex.hh \
  /softs/geant4.11.1.2/include/Geant4/pwdefs.hh \
@@ -211,11 +325,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4VUserEventInformation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Profiler.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Profiler.icc \
- /usr/include/c++/8/functional /usr/include/c++/8/bits/refwrap.h \
- /usr/include/c++/8/bits/std_function.h /usr/include/c++/8/unordered_map \
- /usr/include/c++/8/bits/hashtable.h \
- /usr/include/c++/8/bits/hashtable_policy.h \
- /usr/include/c++/8/bits/unordered_map.h \
  /softs/geant4.11.1.2/include/Geant4/PTL/Globals.hh \
  /softs/geant4.11.1.2/include/Geant4/PTL/Types.hh \
  /softs/geant4.11.1.2/include/Geant4/PTL/Utility.hh \
@@ -231,21 +340,12 @@
  /softs/geant4.11.1.2/include/Geant4/G4Track.hh \
  /softs/geant4.11.1.2/include/Geant4/trkdefs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4LogicalVolume.hh \
- /usr/include/c++/8/memory /usr/include/c++/8/bits/stl_raw_storage_iter.h \
- /usr/include/c++/8/ext/concurrence.h \
- /usr/include/c++/8/bits/shared_ptr.h \
- /usr/include/c++/8/bits/shared_ptr_base.h \
- /usr/include/c++/8/bits/shared_ptr_atomic.h \
- /usr/include/c++/8/bits/atomic_base.h \
- /usr/include/c++/8/bits/atomic_lockfree_defines.h \
- /usr/include/c++/8/backward/auto_ptr.h \
  /softs/geant4.11.1.2/include/Geant4/G4Region.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GeomSplitter.hh \
  /softs/geant4.11.1.2/include/Geant4/geomwdefs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AutoLock.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Threading.hh \
- /usr/include/c++/8/condition_variable /usr/include/c++/8/future \
- /usr/include/c++/8/thread /usr/include/c++/8/atomic \
+ /usr/include/c++/8/future /usr/include/c++/8/thread \
  /usr/include/c++/8/bits/atomic_futex.h \
  /softs/geant4.11.1.2/include/Geant4/G4Region.icc \
  /softs/geant4.11.1.2/include/Geant4/G4VPhysicalVolume.hh \
@@ -308,7 +408,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4OrderedTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4DataVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4DataVector.icc \
- /usr/include/assert.h \
  /softs/geant4.11.1.2/include/Geant4/G4MaterialTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Track.icc \
  /softs/geant4.11.1.2/include/Geant4/G4Step.hh \
@@ -464,16 +563,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4ApplicationState.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4RunManagerKernel.hh \
- include/Wisard_Sensor.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VSensitiveDetector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VHit.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VReadOutGeometry.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
- /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
- include/ParticleInformation.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \
@@ -534,108 +623,22 @@
  /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.icc \
  /softs/geant4.11.1.2/include/Geant4/G4GenericFileManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericFileManager.icc \
- /usr/local/root/6.26.10/include/TFile.h \
- /usr/local/root/6.26.10/include/Compression.h \
- /usr/local/root/6.26.10/include/RtypesCore.h \
- /usr/local/root/6.26.10/include/ROOT/RConfig.hxx \
- /usr/local/root/6.26.10/include/ROOT/../RVersion.h \
- /usr/local/root/6.26.10/include/RConfigure.h \
- /usr/local/root/6.26.10/include/DllImport.h \
- /usr/local/root/6.26.10/include/TDirectoryFile.h \
- /usr/local/root/6.26.10/include/TDirectory.h \
- /usr/local/root/6.26.10/include/TNamed.h \
- /usr/local/root/6.26.10/include/TObject.h \
- /usr/local/root/6.26.10/include/Rtypes.h \
- /usr/local/root/6.26.10/include/strtok.h \
- /usr/local/root/6.26.10/include/strlcpy.h /usr/include/unistd.h \
- /usr/include/bits/posix_opt.h /usr/include/bits/environments.h \
- /usr/include/bits/confname.h /usr/include/bits/getopt_posix.h \
- /usr/include/bits/getopt_core.h \
- /usr/local/root/6.26.10/include/snprintf.h \
- /usr/local/root/6.26.10/include/TGenericClassInfo.h \
- /usr/local/root/6.26.10/include/TSchemaHelper.h \
- /usr/local/root/6.26.10/include/TIsAProxy.h \
- /usr/local/root/6.26.10/include/TVirtualIsAProxy.h \
- /usr/local/root/6.26.10/include/TStorage.h \
- /usr/local/root/6.26.10/include/TVersionCheck.h \
- /usr/local/root/6.26.10/include/RVersion.h \
- /usr/local/root/6.26.10/include/TString.h \
- /usr/local/root/6.26.10/include/TMathBase.h \
- /usr/local/root/6.26.10/include/ROOT/RStringView.hxx \
- /usr/local/root/6.26.10/include/ROOT/TypeTraits.hxx \
- /usr/include/c++/8/cstdarg /usr/local/root/6.26.10/include/TClass.h \
- /usr/local/root/6.26.10/include/TDictionary.h \
- /usr/local/root/6.26.10/include/ESTLType.h \
- /usr/local/root/6.26.10/include/TObjArray.h \
- /usr/local/root/6.26.10/include/TSeqCollection.h \
- /usr/local/root/6.26.10/include/TCollection.h \
- /usr/local/root/6.26.10/include/TIterator.h \
- /usr/local/root/6.26.10/include/TVirtualRWMutex.h \
- /usr/local/root/6.26.10/include/TVirtualMutex.h \
- /usr/local/root/6.26.10/include/ROOT/RRangeCast.hxx \
- /usr/local/root/6.26.10/include/ROOT/RSpan.hxx \
- /usr/local/root/6.26.10/include/ROOT/span.hxx \
- /usr/include/c++/8/iterator /usr/include/c++/8/bits/stream_iterator.h \
- /usr/include/c++/8/cassert /usr/include/c++/8/unordered_set \
- /usr/include/c++/8/bits/unordered_set.h \
- /usr/local/root/6.26.10/include/TUUID.h \
- /usr/local/root/6.26.10/include/TList.h \
- /usr/local/root/6.26.10/include/TBuffer.h \
- /usr/local/root/6.26.10/include/TDataType.h \
- /usr/local/root/6.26.10/include/Bytes.h \
- /usr/local/root/6.26.10/include/Byteswap.h \
- /usr/local/root/6.26.10/include/TDatime.h \
- /usr/local/root/6.26.10/include/TUrl.h \
- /usr/local/root/6.26.10/include/ROOT/RConcurrentHashColl.hxx \
- /usr/local/root/6.26.10/include/Rtypes.h \
- /usr/local/root/6.26.10/include/ROOT/TRWSpinLock.hxx \
- /usr/local/root/6.26.10/include/ROOT/TSpinMutex.hxx \
- /usr/local/root/6.26.10/include/TTree.h \
- /usr/local/root/6.26.10/include/ROOT/TIOFeatures.hxx \
- /usr/local/root/6.26.10/include/TArrayD.h \
- /usr/local/root/6.26.10/include/TArray.h \
- /usr/local/root/6.26.10/include/TArrayI.h \
- /usr/local/root/6.26.10/include/TAttFill.h \
- /usr/local/root/6.26.10/include/TAttLine.h \
- /usr/local/root/6.26.10/include/TAttMarker.h \
- /usr/local/root/6.26.10/include/TVirtualTreePlayer.h \
- /usr/local/root/6.26.10/include/TBranch.h \
- /usr/local/root/6.26.10/include/TBranchCacheInfo.h \
- /usr/local/root/6.26.10/include/TBits.h \
- /usr/local/root/6.26.10/include/TH1D.h \
- /usr/local/root/6.26.10/include/TH1.h \
- /usr/local/root/6.26.10/include/TAxis.h \
- /usr/local/root/6.26.10/include/TAttAxis.h \
- /usr/local/root/6.26.10/include/TArrayC.h \
- /usr/local/root/6.26.10/include/TArrayS.h \
- /usr/local/root/6.26.10/include/TArrayF.h \
- /usr/local/root/6.26.10/include/Foption.h \
- /usr/local/root/6.26.10/include/ROOT/EExecutionPolicy.hxx \
- /usr/local/root/6.26.10/include/TVectorFfwd.h \
- /usr/local/root/6.26.10/include/TVectorDfwd.h \
- /usr/local/root/6.26.10/include/TFitResultPtr.h \
- /usr/include/c++/8/cfloat \
- /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
- /usr/local/root/6.26.10/include/TTreeReader.h \
- /usr/local/root/6.26.10/include/TTree.h \
- /usr/local/root/6.26.10/include/TTreeReaderUtils.h \
- /usr/local/root/6.26.10/include/TBranchProxyDirector.h \
- /usr/local/root/6.26.10/include/TBranchProxy.h \
- /usr/local/root/6.26.10/include/TLeaf.h \
- /usr/local/root/6.26.10/include/TClonesArray.h \
- /usr/local/root/6.26.10/include/TError.h \
- /usr/local/root/6.26.10/include/DllImport.h \
- /usr/local/root/6.26.10/include/TVirtualCollectionProxy.h \
- /usr/local/root/6.26.10/include/TClassRef.h \
- /usr/local/root/6.26.10/include/TNotifyLink.h \
- /usr/local/root/6.26.10/include/TObject.h \
- /usr/local/root/6.26.10/include/TError.h \
- /usr/local/root/6.26.10/include/TTreeReaderValue.h \
- /usr/include/c++/8/deque /usr/include/c++/8/bits/stl_deque.h \
- /usr/include/c++/8/bits/deque.tcc \
- /usr/local/root/6.26.10/include/TDirectory.h \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericMessenger.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyMethod.hh \
+ include/Wisard_Sensor.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSensitiveDetector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VHit.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VReadOutGeometry.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
+ include/ParticleInformation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
  /softs/geant4.11.1.2/include/Geant4/G4IonTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Ions.hh
+ /softs/geant4.11.1.2/include/Geant4/G4Ions.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Element.hh

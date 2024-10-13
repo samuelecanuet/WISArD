@@ -1,4 +1,3 @@
-// declaration of the classes used in the main function
 #include "Wisard_RunManager.hh"
 #include "Wisard_Detector.hh"
 #include "Wisard_PhysList.hh"
@@ -7,11 +6,9 @@
 #include "Wisard_Tracking.hh"
 #include "ParticleInformation.hh"
 
-// include files for interactive sessions and for display
 #include "G4UImanager.hh"
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
-
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 #include "TSystem.h"
@@ -28,7 +25,6 @@ int main(int argc, char **argv)
   // get run time
   clock_t t1, t2;
   t1 = clock();
-  G4cout << "Stepping action" << G4endl;
 
   //------------------------------------------------------------
 
@@ -43,61 +39,47 @@ int main(int argc, char **argv)
   gInterpreter->GenerateDictionary("vector<vector<vector<CLHEP::Hep3Vector>>>", "vector;ThreeVector.h");
 
   //------------------------------------------------------------
-  //  Simulation customisation
-  // define the core simulation object
 
   ParticleInformation *particle_info = new ParticleInformation();
 
   Wisard_RunManager run(particle_info);
 
-  // create the detector definition
   Wisard_Detector *ptr_det = new Wisard_Detector(&run);
   run.SetUserInitialization(ptr_det);
 
-  // create the physics list
   Wisard_PhysList *ptr_phys = new Wisard_PhysList;
   run.SetUserInitialization(ptr_phys);
 
-  // create the tracking action
   Wisard_Tracking *ptr_track = new Wisard_Tracking(particle_info);
   run.SetUserAction(ptr_track);
 
-  // create the generator for events
   Wisard_Generator *ptr_gene = new Wisard_Generator(&run);
   run.SetUserAction(ptr_gene);
 
-  new Wisard_Messenger(&run, ptr_det, ptr_gene);
+  new Wisard_Messenger(ptr_det, ptr_gene);
 
   run.Initialize();
   
   
   //------------------------------------------------------------
   //  Session start
+  // ptr_phys->AddStepMax(1 * mm, 0x2);
 
-  // the process must be added after initialization (so that particles
-  // are defined)
-
-  ptr_phys->AddStepMax(1 * mm, 0x2);
-
-  // set the details of Geant4 messages
   G4EventManager::GetEventManager()->SetVerboseLevel(0);
   G4EventManager::GetEventManager()->GetTrackingManager()->SetVerboseLevel(0);
 
-  // visualisation manager (required for displays)
-  G4VisManager *visu_manager = new G4VisExecutive;
-  visu_manager->SetVerboseLevel(0);
+  G4VisManager *visu_manager = new G4VisExecutive("0");
   visu_manager->Initialize();
 
-  // get the command interpreter pointer
   G4UImanager *UI = G4UImanager::GetUIpointer();
 
-  // execution of a macro given as command-line argument
   if (argc > 1)
   {
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
     G4cout << G4endl << "Reading macro file: " << fileName << G4endl;
-    UI->ApplyCommand(command + fileName);
+    UI->ApplyCommand("/control/alias currentMacro " + fileName);
+    UI->ApplyCommand(command + fileName);    
   }
   else
   // start of an interactive session
@@ -121,13 +103,11 @@ int main(int argc, char **argv)
 
   //------------------------------------------------------------
 
-  // analysisManager->CloseFile();
-  // get run tiime
   t2 = clock();
   float diff((float)t2 - (float)t1);
-  cout << " " << endl;
-  cout << "<I>: Run time: " << diff / 1.e6 << " s" << endl;
-  cout << " " << endl;
+ G4cout<< " " <<G4endl;
+ G4cout<< "<I>: Run time: " << diff / 1.e6 << " s" <<G4endl;
+ G4cout<< " " <<G4endl;
 
   delete visu_manager;
 

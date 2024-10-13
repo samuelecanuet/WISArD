@@ -205,69 +205,17 @@
  /softs/geant4.11.1.2/include/Geant4/G4UIcmdWith3VectorAndUnit.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithoutParameter.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithABool.hh \
- include/Wisard_Detector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VUserDetectorConstruction.hh \
- include/Wisard_RunManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RunManager.hh \
- /usr/include/c++/8/list /usr/include/c++/8/bits/stl_list.h \
- /usr/include/c++/8/bits/allocated_ptr.h /usr/include/c++/8/bits/list.tcc \
- /softs/geant4.11.1.2/include/Geant4/rundefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Event.hh \
- /softs/geant4.11.1.2/include/Geant4/evtdefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Allocator.hh \
- /usr/include/c++/8/cstddef \
- /softs/geant4.11.1.2/include/Geant4/G4AllocatorPool.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PrimaryVertex.hh \
- /softs/geant4.11.1.2/include/Geant4/pwdefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PrimaryParticle.hh \
- /softs/geant4.11.1.2/include/Geant4/G4HCofThisEvent.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VHitsCollection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4DCofThisEvent.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VDigiCollection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrajectoryContainer.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VUserEventInformation.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Profiler.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Profiler.icc \
- /usr/include/c++/8/functional /usr/include/c++/8/bits/refwrap.h \
- /usr/include/c++/8/bits/std_function.h /usr/include/c++/8/unordered_map \
+ include/Wisard_Detector.hh /usr/include/c++/8/unordered_map \
  /usr/include/c++/8/bits/hashtable.h \
  /usr/include/c++/8/bits/hashtable_policy.h \
  /usr/include/c++/8/bits/unordered_map.h \
- /softs/geant4.11.1.2/include/Geant4/PTL/Globals.hh \
- /softs/geant4.11.1.2/include/Geant4/PTL/Types.hh \
- /softs/geant4.11.1.2/include/Geant4/PTL/Utility.hh \
- /usr/include/c++/8/set /usr/include/c++/8/bits/stl_set.h \
- /usr/include/c++/8/bits/stl_multiset.h \
- /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StackManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UserStackingAction.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ClassificationOfNewTrack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StackedTrack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrackStack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SmartTrackStack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Track.hh \
- /softs/geant4.11.1.2/include/Geant4/trkdefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4LogicalVolume.hh \
- /usr/include/c++/8/memory /usr/include/c++/8/bits/stl_raw_storage_iter.h \
- /usr/include/c++/8/ext/concurrence.h \
- /usr/include/c++/8/bits/shared_ptr.h \
- /usr/include/c++/8/bits/shared_ptr_base.h \
- /usr/include/c++/8/bits/shared_ptr_atomic.h \
- /usr/include/c++/8/bits/atomic_base.h \
- /usr/include/c++/8/bits/atomic_lockfree_defines.h \
- /usr/include/c++/8/backward/auto_ptr.h \
- /softs/geant4.11.1.2/include/Geant4/G4Region.hh \
- /softs/geant4.11.1.2/include/Geant4/G4GeomSplitter.hh \
- /softs/geant4.11.1.2/include/Geant4/geomwdefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4AutoLock.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Threading.hh \
- /usr/include/c++/8/condition_variable /usr/include/c++/8/future \
- /usr/include/c++/8/thread /usr/include/c++/8/atomic \
- /usr/include/c++/8/bits/atomic_futex.h \
- /softs/geant4.11.1.2/include/Geant4/G4Region.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VPhysicalVolume.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VUserDetectorConstruction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UnionSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4BooleanSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DisplacedSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh \
  /softs/geant4.11.1.2/include/Geant4/geomdefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSolid.icc \
  /softs/geant4.11.1.2/include/Geant4/G4RotationMatrix.hh \
  /softs/clhep/2.4.6.2/include/CLHEP/Vector/Rotation.h \
  /softs/clhep/2.4.6.2/include/CLHEP/Vector/RotationInterfaces.h \
@@ -284,24 +232,84 @@
  /softs/clhep/2.4.6.2/include/CLHEP/Vector/RotationZ.h \
  /softs/clhep/2.4.6.2/include/CLHEP/Vector/RotationZ.icc \
  /softs/clhep/2.4.6.2/include/CLHEP/Vector/Rotation.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Transform3D.hh \
+ /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Transform3D.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Geometry/defs.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Transform3D.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Point3D.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Geometry/BasicVector3D.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Vector3D.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Normal3D.h \
+ /softs/geant4.11.1.2/include/Geant4/G4AffineTransform.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AffineTransform.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4BooleanSolid.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4GeometryManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SmartVoxelStat.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicalVolumeStore.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VPhysicalVolume.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GeomSplitter.hh \
+ /softs/geant4.11.1.2/include/Geant4/geomwdefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AutoLock.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Threading.hh \
+ /usr/include/c++/8/condition_variable \
+ /usr/include/c++/8/ext/concurrence.h \
+ /usr/include/c++/8/bits/shared_ptr.h \
+ /usr/include/c++/8/bits/shared_ptr_base.h \
+ /usr/include/c++/8/bits/allocated_ptr.h \
+ /usr/include/c++/8/bits/refwrap.h /usr/include/c++/8/future \
+ /usr/include/c++/8/thread /usr/include/c++/8/memory \
+ /usr/include/c++/8/bits/stl_raw_storage_iter.h \
+ /usr/include/c++/8/bits/shared_ptr_atomic.h \
+ /usr/include/c++/8/bits/atomic_base.h \
+ /usr/include/c++/8/bits/atomic_lockfree_defines.h \
+ /usr/include/c++/8/backward/auto_ptr.h /usr/include/c++/8/atomic \
+ /usr/include/c++/8/bits/atomic_futex.h \
+ /usr/include/c++/8/bits/std_function.h \
  /softs/geant4.11.1.2/include/Geant4/G4VPhysicalVolume.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4VStoreNotifier.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VNotifier.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4LogicalVolumeStore.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4LogicalVolume.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Region.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Region.icc \
  /softs/geant4.11.1.2/include/Geant4/G4LogicalVolume.icc \
- /softs/geant4.11.1.2/include/Geant4/G4DynamicParticle.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleDefinition.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PDefManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleDefinition.icc \
- /softs/geant4.11.1.2/include/Geant4/G4LorentzVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Log.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleMomentum.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ElectronOccupancy.hh \
- /softs/geant4.11.1.2/include/Geant4/G4DynamicParticle.icc \
- /softs/geant4.11.1.2/include/Geant4/G4TrackStatus.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TouchableHandle.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTouchable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTouchable.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ReferenceCountedHandle.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VUserTrackInformation.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PhysicsModelCatalog.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SolidStore.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SubtractionSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ExtrudedSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GeomTypes.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4TessellatedSolid.hh \
+ /usr/include/c++/8/set /usr/include/c++/8/bits/stl_set.h \
+ /usr/include/c++/8/bits/stl_multiset.h \
+ /softs/geant4.11.1.2/include/Geant4/G4Voxelizer.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SurfBits.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Box.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4CSGSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Polyhedron.hh \
+ /softs/geant4.11.1.2/include/Geant4/HepPolyhedron.h \
+ /softs/geant4.11.1.2/include/Geant4/G4Point3D.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Normal3D.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Visible.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Visible.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Box.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4VFacet.hh \
+ /softs/geant4.11.1.2/include/Geant4/windefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Voxelizer.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ExtrudedSolid.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4MultiUnion.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Vector3D.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VisAttributes.hh \
+ /softs/geant4.11.1.2/include/Geant4/graphics_reps_defs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Colour.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Color.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VisAttributes.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Box.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Tubs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Tubs.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4LogicalVolume.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PVPlacement.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Material.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Element.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Isotope.hh \
@@ -318,6 +326,7 @@
  /usr/include/c++/8/x86_64-redhat-linux/bits/basic_file.h \
  /usr/include/c++/8/x86_64-redhat-linux/bits/c++io.h \
  /usr/include/c++/8/bits/fstream.tcc \
+ /softs/geant4.11.1.2/include/Geant4/G4Log.hh \
  /softs/geant4.11.1.2/include/Geant4/G4PhysicsVectorType.hh \
  /softs/geant4.11.1.2/include/Geant4/G4PhysicsVector.icc \
  /softs/geant4.11.1.2/include/Geant4/G4IonisParamMat.hh \
@@ -328,97 +337,26 @@
  /softs/geant4.11.1.2/include/Geant4/G4DataVector.icc \
  /usr/include/assert.h \
  /softs/geant4.11.1.2/include/Geant4/G4MaterialTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Track.icc \
- /softs/geant4.11.1.2/include/Geant4/G4Step.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StepPoint.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SteppingControl.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StepStatus.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StepPoint.icc \
- /softs/geant4.11.1.2/include/Geant4/G4TrackVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Step.icc \
- /softs/geant4.11.1.2/include/Geant4/G4PrimaryTransformer.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTableIterator.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.icc \
- /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SteppingManager.hh \
- /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/Randomize.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/defs.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/DRand48Engine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandomEngine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandomEngine.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Utility/noncopyable.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Utility/defs.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/DualRand.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/Hurd160Engine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/Hurd288Engine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/JamesRandom.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/MixMaxRng.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/MTwistEngine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandEngine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RanecuEngine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RanluxEngine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/Ranlux64Engine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RanluxppEngine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RanshiEngine.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/TripleRand.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBinomial.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/Random.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/Random.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Utility/memory.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBinomial.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBreitWigner.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandFlat.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Utility/thread_local.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandFlat.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBreitWigner.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandChiSquare.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandChiSquare.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandExponential.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandExponential.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandExpZiggurat.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBit.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBit.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGamma.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGamma.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGauss.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGauss.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussQ.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussQ.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussT.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/Stat.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussT.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussZiggurat.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGeneral.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGeneral.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandLandau.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandLandau.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoissonQ.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoisson.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoisson.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoissonQ.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoissonT.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoissonT.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandSkewNormal.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandSkewNormal.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandStudentT.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Random/RandStudentT.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4NistManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Material.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NistElementBuilder.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NistMaterialBuilder.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ICRU90StoppingData.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Pow.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Exp.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Navigator.hh \
- /softs/geant4.11.1.2/include/Geant4/G4AffineTransform.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Transform3D.hh \
- /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Transform3D.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Geometry/defs.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Transform3D.icc \
- /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Point3D.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Geometry/BasicVector3D.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Vector3D.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Geometry/Normal3D.h \
- /softs/geant4.11.1.2/include/Geant4/G4AffineTransform.icc \
  /softs/geant4.11.1.2/include/Geant4/G4GRSVolume.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VTouchable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VTouchable.icc \
  /softs/geant4.11.1.2/include/Geant4/G4GRSVolume.icc \
  /softs/geant4.11.1.2/include/Geant4/G4GRSSolid.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GRSSolid.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4TouchableHandle.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ReferenceCountedHandle.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Allocator.hh \
+ /usr/include/c++/8/cstddef \
+ /softs/geant4.11.1.2/include/Geant4/G4AllocatorPool.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TouchableHistoryHandle.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TouchableHistory.hh \
  /softs/geant4.11.1.2/include/Geant4/G4NavigationHistory.hh \
@@ -430,8 +368,6 @@
  /softs/geant4.11.1.2/include/Geant4/G4NavigationHistory.icc \
  /softs/geant4.11.1.2/include/Geant4/G4TouchableHistory.icc \
  /softs/geant4.11.1.2/include/Geant4/G4NormalNavigation.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VSolid.icc \
  /softs/geant4.11.1.2/include/Geant4/G4AuxiliaryNavServices.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AuxiliaryNavServices.icc \
  /softs/geant4.11.1.2/include/Geant4/G4NormalNavigation.icc \
@@ -455,99 +391,27 @@
  /softs/geant4.11.1.2/include/Geant4/G4RegularNavigation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VExternalNavigation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Navigator.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ProcessManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VParticleChange.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VParticleChange.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ForceCondition.hh \
- /softs/geant4.11.1.2/include/Geant4/G4GPILSelection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ProcessType.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ProcessVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ProcessVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ProcessManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4NoProcess.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UserSteppingAction.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VSteppingVerbose.hh \
- /softs/geant4.11.1.2/include/Geant4/trkgdefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrackingMessenger.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UImessenger.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RunManagerKernel.hh \
- include/Wisard_Sensor.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VSensitiveDetector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VHit.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VReadOutGeometry.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
- /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
- include/ParticleInformation.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VAnalysisManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4AnalysisManagerState.hh \
- /softs/geant4.11.1.2/include/Geant4/G4AnalysisVerbose.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTBaseHnManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4HnInformation.hh \
- /softs/geant4.11.1.2/include/Geant4/G4AnalysisUtilities.hh \
- /softs/geant4.11.1.2/include/Geant4/G4BinScheme.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Fcn.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VAnalysisManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4HnManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4BaseAnalysisManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4NtupleBookingManager.hh \
- /softs/geant4.11.1.2/include/Geant4/tools/ntuple_booking \
- /softs/geant4.11.1.2/include/Geant4/tools/cids \
- /softs/geant4.11.1.2/include/Geant4/tools/cid \
- /softs/geant4.11.1.2/include/Geant4/tools/typedefs \
- /softs/geant4.11.1.2/include/Geant4/tools/forit \
- /softs/geant4.11.1.2/include/Geant4/G4NtupleBookingManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VNtupleManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VFileManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4BaseFileManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTHnFileManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TH1ToolsManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4THnToolsManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4THnManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4THnManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4THnMessenger.hh \
- /softs/geant4.11.1.2/include/Geant4/G4THnToolsManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4THnMessenger.icc \
- /softs/geant4.11.1.2/include/Geant4/G4Tokenizer.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TH2ToolsManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TH3ToolsManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TP1ToolsManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TP2ToolsManager.hh \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/h1d \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/h1 \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/b1 \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/base_histo \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/histo_data \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/axes \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/axis \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/../eqT \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/h2d \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/h2 \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/b2 \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/h3d \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/h3 \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/b3 \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/p1d \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/p1 \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/profile_data \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/p2d \
- /softs/geant4.11.1.2/include/Geant4/tools/histo/p2 \
- /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4GenericFileManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4GenericFileManager.icc \
- /usr/local/root/6.26.10/include/TFile.h \
+ /softs/geant4.11.1.2/include/Geant4/G4SafetyHelper.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VIntegrationDriver.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ChargeState.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Trap.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Trap.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UniformMagField.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh \
+ include/Wisard_RunManager.hh /usr/local/root/6.26.10/include/TFile.h \
  /usr/local/root/6.26.10/include/Compression.h \
  /usr/local/root/6.26.10/include/RtypesCore.h \
  /usr/local/root/6.26.10/include/ROOT/RConfig.hxx \
@@ -633,11 +497,14 @@
  /usr/local/root/6.26.10/include/TTree.h \
  /usr/local/root/6.26.10/include/TTreeReaderUtils.h \
  /usr/local/root/6.26.10/include/TBranchProxyDirector.h \
+ /usr/include/c++/8/list /usr/include/c++/8/bits/stl_list.h \
+ /usr/include/c++/8/bits/list.tcc \
  /usr/local/root/6.26.10/include/TBranchProxy.h \
  /usr/local/root/6.26.10/include/TLeaf.h \
  /usr/local/root/6.26.10/include/TClonesArray.h \
  /usr/local/root/6.26.10/include/TError.h \
  /usr/local/root/6.26.10/include/DllImport.h \
+ /usr/include/c++/8/functional \
  /usr/local/root/6.26.10/include/TVirtualCollectionProxy.h \
  /usr/local/root/6.26.10/include/TClassRef.h \
  /usr/local/root/6.26.10/include/TNotifyLink.h \
@@ -647,82 +514,221 @@
  /usr/include/c++/8/deque /usr/include/c++/8/bits/stl_deque.h \
  /usr/include/c++/8/bits/deque.tcc \
  /usr/local/root/6.26.10/include/TDirectory.h \
- /softs/geant4.11.1.2/include/Geant4/G4UnionSolid.hh \
- /softs/geant4.11.1.2/include/Geant4/G4BooleanSolid.hh \
- /softs/geant4.11.1.2/include/Geant4/G4DisplacedSolid.hh \
- /softs/geant4.11.1.2/include/Geant4/G4BooleanSolid.icc \
- /softs/geant4.11.1.2/include/Geant4/G4GeometryManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SmartVoxelStat.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PhysicalVolumeStore.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VStoreNotifier.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VNotifier.hh \
- /softs/geant4.11.1.2/include/Geant4/G4LogicalVolumeStore.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SolidStore.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SubtractionSolid.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ExtrudedSolid.hh \
- /softs/geant4.11.1.2/include/Geant4/G4GeomTypes.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
- /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
- /softs/geant4.11.1.2/include/Geant4/G4TessellatedSolid.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Voxelizer.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SurfBits.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Box.hh \
- /softs/geant4.11.1.2/include/Geant4/G4CSGSolid.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Polyhedron.hh \
- /softs/geant4.11.1.2/include/Geant4/HepPolyhedron.h \
- /softs/geant4.11.1.2/include/Geant4/G4Point3D.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Normal3D.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Visible.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Visible.icc \
- /softs/geant4.11.1.2/include/Geant4/G4Box.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VFacet.hh \
- /softs/geant4.11.1.2/include/Geant4/windefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Voxelizer.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ExtrudedSolid.icc \
- /softs/geant4.11.1.2/include/Geant4/G4MultiUnion.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Vector3D.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VisAttributes.hh \
- /softs/geant4.11.1.2/include/Geant4/graphics_reps_defs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Colour.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Color.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VisAttributes.icc \
- /softs/geant4.11.1.2/include/Geant4/G4Box.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Tubs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Tubs.icc \
- /softs/geant4.11.1.2/include/Geant4/G4LogicalVolume.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PVPlacement.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Material.hh \
- /softs/geant4.11.1.2/include/Geant4/G4NistManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4NistElementBuilder.hh \
- /softs/geant4.11.1.2/include/Geant4/G4NistMaterialBuilder.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ICRU90StoppingData.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Pow.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Exp.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SafetyHelper.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VIntegrationDriver.hh \
- /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ChargeState.hh \
- /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.icc \
- /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.icc \
- /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.icc \
- /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.icc \
- /softs/geant4.11.1.2/include/Geant4/G4FieldManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4FieldManager.icc \
- /softs/geant4.11.1.2/include/Geant4/G4Trap.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Trap.icc \
- /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4RunManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/rundefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Event.hh \
+ /softs/geant4.11.1.2/include/Geant4/evtdefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PrimaryVertex.hh \
+ /softs/geant4.11.1.2/include/Geant4/pwdefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PrimaryParticle.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4HCofThisEvent.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VHitsCollection.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DCofThisEvent.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VDigiCollection.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrajectoryContainer.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VUserEventInformation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Profiler.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Profiler.icc \
+ /softs/geant4.11.1.2/include/Geant4/PTL/Globals.hh \
+ /softs/geant4.11.1.2/include/Geant4/PTL/Types.hh \
+ /softs/geant4.11.1.2/include/Geant4/PTL/Utility.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StackManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserStackingAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ClassificationOfNewTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StackedTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackStack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SmartTrackStack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Track.hh \
+ /softs/geant4.11.1.2/include/Geant4/trkdefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DynamicParticle.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleDefinition.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PDefManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleDefinition.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4LorentzVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleMomentum.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ElectronOccupancy.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DynamicParticle.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackStatus.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VUserTrackInformation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicsModelCatalog.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Track.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Step.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StepPoint.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SteppingControl.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StepStatus.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StepPoint.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Step.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4PrimaryTransformer.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTableIterator.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SteppingManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/Randomize.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/defs.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/DRand48Engine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandomEngine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandomEngine.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Utility/noncopyable.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Utility/defs.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/DualRand.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/Hurd160Engine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/Hurd288Engine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/JamesRandom.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/MixMaxRng.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/MTwistEngine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandEngine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RanecuEngine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RanluxEngine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/Ranlux64Engine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RanluxppEngine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RanshiEngine.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/TripleRand.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBinomial.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/Random.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/Random.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Utility/memory.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBinomial.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBreitWigner.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandFlat.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Utility/thread_local.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandFlat.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBreitWigner.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandChiSquare.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandChiSquare.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandExponential.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandExponential.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandExpZiggurat.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBit.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandBit.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGamma.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGamma.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGauss.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGauss.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussQ.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussQ.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussT.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/Stat.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussT.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGaussZiggurat.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGeneral.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandGeneral.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandLandau.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandLandau.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoissonQ.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoisson.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoisson.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoissonQ.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoissonT.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandPoissonT.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandSkewNormal.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandSkewNormal.icc \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandStudentT.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Random/RandStudentT.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ProcessManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicsTable.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4VParticleChange.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VParticleChange.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ForceCondition.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GPILSelection.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleChange.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ProcessType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ProcessVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ProcessVector.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ProcessManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4NoProcess.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserSteppingAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSteppingVerbose.hh \
+ /softs/geant4.11.1.2/include/Geant4/trkgdefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackingMessenger.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UImessenger.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4RunManagerKernel.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnalysisManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VAnalysisManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnalysisManagerState.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnalysisVerbose.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VTBaseHnManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4HnInformation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnalysisUtilities.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4BinScheme.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Fcn.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VAnalysisManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4HnManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4BaseAnalysisManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NtupleBookingManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/tools/ntuple_booking \
+ /softs/geant4.11.1.2/include/Geant4/tools/cids \
+ /softs/geant4.11.1.2/include/Geant4/tools/cid \
+ /softs/geant4.11.1.2/include/Geant4/tools/typedefs \
+ /softs/geant4.11.1.2/include/Geant4/tools/forit \
+ /softs/geant4.11.1.2/include/Geant4/G4NtupleBookingManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4VNtupleManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VFileManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4BaseFileManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VTHnFileManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TH1ToolsManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4THnToolsManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4THnManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4THnManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4THnMessenger.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4THnToolsManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4THnMessenger.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Tokenizer.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TH2ToolsManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TH3ToolsManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TP1ToolsManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TP2ToolsManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/h1d \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/h1 \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/b1 \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/base_histo \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/histo_data \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/axes \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/axis \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/../eqT \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/h2d \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/h2 \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/b2 \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/h3d \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/h3 \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/b3 \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/p1d \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/p1 \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/profile_data \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/p2d \
+ /softs/geant4.11.1.2/include/Geant4/tools/histo/p2 \
+ /softs/geant4.11.1.2/include/Geant4/G4ToolsAnalysisManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericAnalysisManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericFileManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericFileManager.icc \
  /softs/geant4.11.1.2/include/Geant4/G4GenericMessenger.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnyType.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AnyMethod.hh \
+ include/Wisard_Sensor.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSensitiveDetector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VHit.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VReadOutGeometry.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
+ include/ParticleInformation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
  include/Wisard_Generator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
- /softs/geant4.11.1.2/include/Geant4/Randomize.hh
+ /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4IonTable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Ions.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Element.hh

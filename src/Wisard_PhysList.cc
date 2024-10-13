@@ -1,46 +1,23 @@
 #include "Wisard_PhysList.hh"
 
-// declare the Geant4 particles definition classes
-#include "G4ParticleTypes.hh"
-#include "G4ParticleDefinition.hh"
-
-// declare classes related to physics processes
-#include "G4ProcessManager.hh"
-
-#include "G4EmStandardPhysics.hh"
-#include "G4EmStandardPhysics_option4.hh"
-#include "G4EmLivermorePhysics.hh"
-#include "G4EmPenelopePhysics.hh"
-#include "G4EmStandardPhysicsGS.hh"
-
-#include "G4VModularPhysicsList.hh"
-#include "G4EmStandardPhysics.hh"
-#include "G4OpticalPhysics.hh"
-#include "G4RadioactiveDecayPhysics.hh"
-
-#include "G4TransportationManager.hh"
 
 //----------------------------------------------------------------------
 Wisard_PhysList::Wisard_PhysList()
 {
   step_max = NULL;
-  cout << "Constructor Wisard_PhysList" << endl;
+ G4cout<< "Constructor Wisard_PhysList" <<G4endl;
   defaultCutValue = 0.001 * um;
 }
 
 Wisard_PhysList::~Wisard_PhysList()
 {
-  cout << "Destructor Wisard_PhysList" << endl;
-
-  if (step_max != NULL)
-    delete step_max;
+ G4cout<< "Destructor Wisard_PhysList" <<G4endl;
 }
 
 //----------------------------------------------------------------------
 // Register the particles that will be handled in the simulation
 void Wisard_PhysList::ConstructParticle()
 {
-
   // pseudo-particles
   G4Geantino::GeantinoDefinition();
   G4ChargedGeantino::ChargedGeantinoDefinition();
@@ -99,10 +76,10 @@ void Wisard_PhysList::ConstructProcess()
   // G4VPhysicsConstructor * emPhysicsList = new G4EmLivermorePhysics();
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics(1);
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics_option4(0);
-  G4VPhysicsConstructor *emPhysicsList = new G4EmStandardPhysicsGS(0);
+  emPhysicsList = new G4EmStandardPhysicsGS(0);
   emPhysicsList->ConstructProcess();
 
-  G4VPhysicsConstructor *decayPhysicList = new G4RadioactiveDecayPhysics(0);
+  decayPhysicList = new G4RadioactiveDecayPhysics(0);
   decayPhysicList->ConstructProcess();
 }
 
@@ -136,7 +113,7 @@ void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
 {
   if (step_max == NULL)
   {
-    cout << "<I> Adding a StepMax process " << endl;
+   G4cout<< "<I> Adding a StepMax process " <<G4endl;
 
     // Step limitation seen as a process
     step_max = new StepMax;
@@ -154,7 +131,7 @@ void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
       if (step_max->IsApplicable(*particle) && (pmanager != NULL))
       {
         bool apply = false;
-        double qtest = fabs(0.01 * electron_charge);
+       G4double qtest = fabs(0.01 * electron_charge);
 
         if (particle->GetPDGCharge() > qtest) // Q > 0
         {
@@ -174,7 +151,7 @@ void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
 
         if (apply)
         {
-          // cout << "- step max for " << particle->GetParticleName() << endl;
+          //G4cout<< "- step max for " << particle->GetParticleName() <<G4endl;
           pmanager->AddDiscreteProcess(step_max);
         }
       }
@@ -185,7 +162,7 @@ void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
   }
   else
   {
-    cerr << "<W> Wisard_PhysList::AddStepMax(): StepMax process already defined" << endl;
+    cerr << "<W> Wisard_PhysList::AddStepMax(): StepMax process already defined" <<G4endl;
   }
 }
 
@@ -197,8 +174,8 @@ void Wisard_PhysList::SetStepMax(G4double step)
   if (step_max == NULL)
     AddStepMax();
 
-  cout << "<I> Setting StepMax to "
-       << string(G4BestUnit(step, "Length")) << endl;
+ G4cout<< "<I> Setting StepMax to "
+       << G4String(G4BestUnit(step, "Length")) <<G4endl;
 
   step_max->SetMaxStep(step);
 }

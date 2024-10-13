@@ -105,8 +105,15 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - New TTree 
 - Output file include coincidence Plastic Scintillator deposit energy
 
-### v3.0-
+### v3.0
 - Re-implemenatation of particle independant information saving
 - Adding Al grid on silicon detectors
 - Adding interstrip saving information
 - Modification of distance in geometry
+
+### v4.0
+- Decay physics implemented to use radioactive nucleus in the particle gun
+- Modification of particle information saving for parent-secondaries (*ParticleInformation.xx*)
+- New messenger for particle gun
+- macro modification
+- In nucleus decay particule gun all particle and nucleu are saved in the tree

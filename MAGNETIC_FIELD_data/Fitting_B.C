@@ -1,14 +1,14 @@
 
 
-double function1D_Bz(double *x, double *par)
+double function1D_Bz(double *x,G4double *par)
 {
     // gate convoluted with gaussian
-    double A  = par[0];
-    double mu = par[1];
-    double sigma = par[2];
-    double l = par[3];
-    double a = par[4];
-    double b = par[5];
+   G4double A  = par[0];
+   G4double mu = par[1];
+   G4double sigma = par[2];
+   G4double l = par[3];
+   G4double a = par[4];
+   G4double b = par[5];
 
 
     if (x[0] > 350 || x[0] < -350)
@@ -19,17 +19,17 @@ double function1D_Bz(double *x, double *par)
     return A * (erf((x[0] - mu + l) / (sqrt(2) * sigma)) - erf((x[0] - mu - l ) / (sqrt(2) * sigma)));
 }
 
-double function1D_Br(double *x, double *p)
+double function1D_Br(double *x,G4double *p)
 {
-    double A = p[0];
-    double mu = p[1];
-    double sigma = p[2]; 
-    double A1 = p[3];
-    double mu1 = p[4];
-    double sigma1 = p[5];
+   G4double A = p[0];
+   G4double mu = p[1];
+   G4double sigma = p[2]; 
+   G4double A1 = p[3];
+   G4double mu1 = p[4];
+   G4double sigma1 = p[5];
 
-    double first = A * exp(-pow((x[0] - mu), 2) / (2 * pow(sigma, 2)));
-    double second = 0;
+   G4double first = A * exp(-pow((x[0] - mu), 2) / (2 * pow(sigma, 2)));
+   G4double second = 0;
 
     if (-400 > x[0])
     {
@@ -75,7 +75,7 @@ void Fitting_B()
         }
 
         std::istringstream iss(line);
-        double z, Bz10, Br10, Bz28, Br28, Bz48, Br48, Bz68, Br68, Bz88, Br88;
+       G4double z, Bz10, Br10, Bz28, Br28, Bz48, Br48, Bz68, Br68, Bz88, Br88;
         iss >> z >> Bz10 >> Br10 >> Bz28 >> Br28 >> Bz48 >> Br48 >> Bz68 >> Br68 >> Bz88 >> Br88;
 
         hBr->Fill(z, 10, Br10);
@@ -135,7 +135,7 @@ void Fitting_B()
     TGraph *gResidusr = new TGraph();
     for (int i = 0; i < gBr10->GetN(); i++)
     {
-        double x, y;
+       G4double x, y;
         gBr10->GetPoint(i, x, y);
         gResidusr->SetPoint(i, x, y - f1Dr->Eval(x));
     }
@@ -168,7 +168,7 @@ void Fitting_B()
     // TGraph *gResidus = new TGraph();
     // for (int i = 0; i < gBz10->GetN(); i++)
     // {
-    //     double x, y;
+    //    G4double x, y;
     //     gBz10->GetPoint(i, x, y);
     //     gResidus->SetPoint(i, x, y - f1D->Eval(x));
     // }
