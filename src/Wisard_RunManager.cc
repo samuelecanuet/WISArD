@@ -188,18 +188,18 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
         Silicon_Detector_Hit_Angle_part.push_back(Det.second.HitAngle);
       }
       // DL
-      else if (Det.first < 1000)
+      else if (Det.first < 1000 && Det.first > 100)
       {
         Silicon_Detector_Code_part.push_back(Det.first);
         Silicon_Detector_DL_Energy_Deposit_part.push_back(Det.second.EnergyDeposit);
       }
-      // InterStrip
-      for (auto interDet : particle.InterStripDetectors)
-      {
-        Silicon_Detector_InterStrip_Code_part.push_back(interDet.first);
-        Silicon_Detector_InterStrip_Energy_Deposit_part.push_back(interDet.second.EnergyDeposit);
-        Silicon_Detector_InterStrip_Hit_Position_part.push_back(interDet.second.HitPosition);
-      }
+    }
+    // InterStrip
+    for (auto interDet : particle.InterStripDetectors)
+    {
+      Silicon_Detector_InterStrip_Code_part.push_back(interDet.first);
+      Silicon_Detector_InterStrip_Energy_Deposit_part.push_back(interDet.second.EnergyDeposit);
+      Silicon_Detector_InterStrip_Hit_Position_part.push_back(interDet.second.HitPosition);
     }
 
     Silicon_Detector_Code.push_back(Silicon_Detector_Code_part);
@@ -288,7 +288,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     }
   }
 
-  int divi = 1000;
+  int divi = 10000;
 
   ///// Writing in file ///////////////////////////////////////////
   if (event->GetEventID() % divi == 0)

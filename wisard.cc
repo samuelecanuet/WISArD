@@ -2,7 +2,6 @@
 #include "Wisard_Detector.hh"
 #include "Wisard_PhysList.hh"
 #include "Wisard_Generator.hh"
-#include "Wisard_Messenger.hh"
 #include "Wisard_Tracking.hh"
 #include "ParticleInformation.hh"
 
@@ -14,6 +13,13 @@
 #include "TSystem.h"
 #include "TInterpreter.h"
 
+#include "FTFP_BERT.hh"
+#include "G4EmStandardPhysicsGS.hh"
+#include "G4RadioactiveDecayPhysics.hh"
+
+#include "G4EmParameters.hh"
+#include "G4LossTableManager.hh"
+#include "G4RadioactiveDecay.hh"
 //----------------------------------------------------------------------
 // program main function
 
@@ -47,16 +53,23 @@ int main(int argc, char **argv)
   Wisard_Detector *ptr_det = new Wisard_Detector(&run);
   run.SetUserInitialization(ptr_det);
 
-  Wisard_PhysList *ptr_phys = new Wisard_PhysList;
-  run.SetUserInitialization(ptr_phys);
+  // Wisard_PhysList *ptr_phys = new Wisard_PhysList;
+  // run.SetUserInitialization(ptr_phys);
+
+  G4VModularPhysicsList *phys = new FTFP_BERT(0);
+  phys->RemovePhysics(2);
+  phys->RegisterPhysics(new G4EmStandardPhysicsGS());
+  phys->RegisterPhysics(new G4RadioactiveDecayPhysics());
+  phys->SetDefaultCutValue(1 * nm);
+  G4EmParameters *emParams = G4EmParameters::Instance();
+  emParams->SetNumberOfBinsPerDecade(200);
+  run.SetUserInitialization(phys);
 
   Wisard_Tracking *ptr_track = new Wisard_Tracking(particle_info);
   run.SetUserAction(ptr_track);
 
   Wisard_Generator *ptr_gene = new Wisard_Generator(&run);
   run.SetUserAction(ptr_gene);
-
-  new Wisard_Messenger(ptr_det, ptr_gene);
 
   run.Initialize();
   

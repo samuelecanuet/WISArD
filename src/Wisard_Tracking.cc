@@ -36,7 +36,7 @@ void Wisard_Tracking::PostUserTrackingAction(const G4Track *track)
         for (unsigned int index = 0; index < childrens->size(); ++index)
         {
             G4Track *tr = (*childrens)[index];
-            if (tr->GetCreatorProcess() && tr->GetCreatorProcess()->GetProcessType() == fDecay)
+            if (tr->GetCreatorProcess() && tr->GetCreatorProcess()->GetProcessName() == "RadioactiveDecay")
             {
                 tr->SetParentID(tr->GetTrackID());
             }

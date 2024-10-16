@@ -49,17 +49,16 @@ public:
  G4double thickness_detp, thickness_dete;
  G4double pos_catcher, thickness_catcher, radius_catcher;
 
-  
+ G4GenericMessenger *GeometryMessenger;           
 
-  void SetBFieldValue(G4double val);
-  void SetSiDeadLayer_Thickness(G4double value);
-  int OpenInputB(const G4String &fname);
-  const G4String &GetInputNameB() const;
-  void CloseInputB();                 
-  void SetCatcherPosition_theta(G4String position, G4double angle);
-  void SetCatcherPosition_z(G4double catcher_z);
-  void SetCatcher_Thickness(G4double Al1_e, G4double Mylar_e, G4double Al2_e);
-  G4double thicknessSiDetectorDeadLayer = 100 * nm;
+  G4double thicknessSiDetectorDeadLayer = 100*nm;
+  G4double Magnetic_Field = 4*tesla;
+  G4double Catcher_Position_z = 0.*mm;
+  G4String Catcher_Position = "catcher1";
+  G4double Catcher_Angle = 0*deg;
+  G4double Catcher_Thickness_Al1 = 50 * nm;
+  G4double Catcher_Thickness_Mylar = 500 *nm;
+  G4double Catcher_Thickness_Al2 = 50*nm;
   ifstream inputB;
   G4String input_nameB;
   G4Tubs *MylarSource;
@@ -76,8 +75,6 @@ public:
 
   G4double fLength_PlasticScintillator = 5 * cm;
   G4double fRadius_PlasticScintillator = 1.5 * cm;
-
-  G4String Catcher_Position;
 
   G4bool event;
 
@@ -457,49 +454,6 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeIn
   logicSiDet->SetVisAttributes(strip_att);
 
   return std::make_pair(logicSiDet, physSiDet);
-}
-
-inline int Wisard_Detector::OpenInputB(const G4String &fname)
-{
-  int error = 0; // return value
-
-  if (fname != "")
-  {
-    // close previous output... just in case
-    CloseInputB();
-
-    // try to open the new file
-    inputB.open(fname.c_str());
-
-    if (inputB.fail())
-    {
-      error = 2;
-      cerr << "<W> OpenInput : error opening file " << fname <<G4endl;
-    }
-    else
-    {
-      input_nameB = fname;
-     G4cout<< "<I> Open input file: " << fname <<G4endl;
-    }
-  }
-  else
-  {
-    error = 1;
-    cerr << "<W> OpenInput : empty file name" <<G4endl;
-  }
-
-  return (error);
-}
-
-inline const G4String &Wisard_Detector::GetInputNameB() const
-{
-  return (input_nameB);
-}
-
-inline void Wisard_Detector::CloseInputB()
-{
-  inputB.close();
-  input_nameB = "";
 }
 
 #endif

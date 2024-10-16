@@ -1,10 +1,10 @@
 #---------------------------------------------------------------
 #   Verbosity
 #---------------------------------------------------------------
-/run/initialize
+#/run/initialize
 /run/verbose      0
 /event/verbose    0
-/tracking/verbose 0
+/tracking/verbose 1
 /process/verbose 0
 
 #---------------------------------------------------------------
@@ -12,7 +12,7 @@
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /Input/SRIM SRIM_data/AlMylar_2021_32Ar.txt
-/Input/Ion 32Ar
+/Input/Ion 207Bi
 #/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/32Ar_CS0_CSP0_CV1_CVP1_1.root
 
 #---------------------------------------------------------------
@@ -29,12 +29,13 @@
 /Geometry/Magnetic_Field 4 T
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
-/Geometry/Catcher_Position catcher1 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
+/Geometry/Catcher_Position catcher1     position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Angle 0 deg
 /Geometry/Catcher_Thickness 50 500 50 nm     thickness : Al, Mylar Al (0 delete it)
 
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
 /run/printProgress 10000
-/Run/File test.root
+/Run/File ../../../../../../mnt/hgfs/shared-2/2024_DATA/test.root
 /run/beamOn 10000000

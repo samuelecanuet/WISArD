@@ -1,6 +1,13 @@
 #include "Wisard_PhysList.hh"
+#include "G4VUserPhysicsList.hh"
+#include "G4RadioactiveDecay.hh"
+#include "G4PhotonEvaporation.hh"
+#include "G4ProcessManager.hh"
+#include "G4GenericIon.hh"
+#include "G4PhysicsListHelper.hh"
+#include "G4ParticleTypes.hh"
 
-
+#include "G4EmParameters.hh"
 //----------------------------------------------------------------------
 Wisard_PhysList::Wisard_PhysList()
 {
@@ -76,11 +83,18 @@ void Wisard_PhysList::ConstructProcess()
   // G4VPhysicsConstructor * emPhysicsList = new G4EmLivermorePhysics();
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics(1);
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics_option4(0);
-  emPhysicsList = new G4EmStandardPhysicsGS(0);
+
+  emPhysicsList = new G4EmStandardPhysicsGS();
   emPhysicsList->ConstructProcess();
 
-  decayPhysicList = new G4RadioactiveDecayPhysics(0);
+  decayPhysicList1 = new G4DecayPhysics();
+  decayPhysicList1->ConstructProcess();
+
+  decayPhysicList = new G4RadioactiveDecayPhysics();
   decayPhysicList->ConstructProcess();
+
+  G4EmParameters *emParams = G4EmParameters::Instance();
+  emParams->SetNumberOfBinsPerDecade(200);
 }
 
 //----------------------------------------------------------------------

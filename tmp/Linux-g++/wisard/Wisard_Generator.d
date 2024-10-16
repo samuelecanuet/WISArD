@@ -641,4 +641,17 @@
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
  /softs/geant4.11.1.2/include/Geant4/G4IonTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Ions.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Element.hh
+ /softs/geant4.11.1.2/include/Geant4/G4Element.hh \
+ /usr/local/root/6.26.10/include/TF2.h \
+ /usr/local/root/6.26.10/include/TF1.h \
+ /usr/local/root/6.26.10/include/RConfigure.h \
+ /usr/local/root/6.26.10/include/TFormula.h \
+ /usr/local/root/6.26.10/include/TInterpreter.h \
+ /usr/local/root/6.26.10/include/TInterpreterValue.h \
+ /usr/local/root/6.26.10/include/Math/Types.h \
+ /usr/local/root/6.26.10/include/RtypesCore.h \
+ /usr/local/root/6.26.10/include/TMethodCall.h \
+ /usr/local/root/6.26.10/include/TF1AbsComposition.h \
+ /usr/local/root/6.26.10/include/TMath.h /usr/include/c++/8/math.h \
+ /usr/local/root/6.26.10/include/Math/Types.h \
+ /usr/local/root/6.26.10/include/Math/ParamFunctor.h

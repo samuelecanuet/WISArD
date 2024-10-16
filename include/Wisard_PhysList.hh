@@ -17,6 +17,10 @@
 #include "Wisard_Global.hh"
 #include "StepMax.hh"
 
+#include "G4LossTableManager.hh"
+#include "G4UAtomicDeexcitation.hh"
+#include "G4EmParameters.hh"
+
 //----------------------------------------------------------------------
 
 class Wisard_PhysList: public G4VUserPhysicsList
@@ -31,6 +35,7 @@ class Wisard_PhysList: public G4VUserPhysicsList
 
     G4VPhysicsConstructor *emPhysicsList;
     G4VPhysicsConstructor *decayPhysicList;
+    G4VPhysicsConstructor *decayPhysicList1;
 
   protected:
     void ConstructParticle();

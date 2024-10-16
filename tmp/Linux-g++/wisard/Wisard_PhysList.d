@@ -596,4 +596,44 @@
  /softs/geant4.11.1.2/include/Geant4/G4UnitsTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UnitsTable.icc include/StepMax.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VDiscreteProcess.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Step.hh
+ /softs/geant4.11.1.2/include/Geant4/G4Step.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4LossTableManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VEnergyLossProcess.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VContinuousDiscreteProcess.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmModelManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmTableType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmProcessSubType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VEmModel.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VEmFluctuationModel.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VEmAngularDistribution.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmElementSelector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicsLogVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleChangeForLoss.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmSecondaryParticleType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmParameters.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4MscStepLimitType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NuclearFormfactorType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DNAModelSubType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmFluoDirectory.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UAtomicDeexcitation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VAtomDeexcitation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AtomicShell.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AtomicShellEnumerator.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmParameters.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4RadioactiveDecay.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleChangeForRadDecay.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NucleusLimits.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4RadioactiveDecayMode.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhotonEvaporation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VEvaporationChannel.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Fragment.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NuclearPolarization.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NucleiProperties.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4HyperNucleiProperties.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NuclearLevelData.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DeexPrecoParameters.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4LevelManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NucLevel.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericIon.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicsListHelper.hh

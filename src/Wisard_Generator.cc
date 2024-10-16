@@ -59,12 +59,9 @@ Wisard_Generator::Wisard_Generator(Wisard_RunManager *mgr)
 
 Wisard_Generator::~Wisard_Generator()
 {
-  InputROOT->Close();
-  SRIMTXT.close();
-  delete InputROOT;
   delete BeamMessenger;
   delete InputMessenger;
- G4cout<< "Destructor Wisard_Generator" <<G4endl;
+ G4cout << "\033[31m" << "Destructor Wisard_Generator"  << "\033[0m" << G4endl;
 }
 
 //----------------------------------------------------------------------
@@ -75,6 +72,7 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
   if (event->GetEventID() == 0)
   {
     res = Wisard_Generator::GetSRIM_hist();
+    InitBeam();
     ChooseGENERATOR();
   }
 
@@ -232,10 +230,11 @@ void Wisard_Generator::ION_GENERATOR(G4Event *event)
 {
   G4ThreeVector beam = Beam();
 
+
   G4ParticleDefinition *ion = G4IonTable::GetIonTable()->GetIon(Z, A, 0. * keV);
   gun.SetParticlePosition(beam);
   gun.SetParticleDefinition(ion);
-  gun.SetParticleCharge(0);
-  gun.SetParticleEnergy(0);
+  gun.SetParticleCharge(1*eplus);
+  gun.SetParticleEnergy(0*keV);
   gun.GeneratePrimaryVertex(event);
 }

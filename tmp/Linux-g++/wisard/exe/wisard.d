@@ -880,6 +880,30 @@
  include/StepMax.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VDiscreteProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Step.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4LossTableManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VEnergyLossProcess.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VContinuousDiscreteProcess.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmModelManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmTableType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmProcessSubType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VEmModel.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VEmFluctuationModel.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VEmAngularDistribution.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmElementSelector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicsLogVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleChangeForLoss.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmSecondaryParticleType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmParameters.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4MscStepLimitType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NuclearFormfactorType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DNAModelSubType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmFluoDirectory.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UAtomicDeexcitation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VAtomDeexcitation.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AtomicShell.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AtomicShellEnumerator.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EmParameters.hh \
  include/Wisard_Generator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VUserPrimaryGeneratorAction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
@@ -887,20 +911,19 @@
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
  /softs/geant4.11.1.2/include/Geant4/G4IonTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Element.hh \
- include/Wisard_Messenger.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UImessenger.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIdirectory.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIcommand.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIparameter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithAString.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithAnInteger.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithADoubleAndUnit.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithADouble.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIcmdWith3Vector.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIcmdWith3VectorAndUnit.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithoutParameter.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UIcmdWithABool.hh \
- include/Wisard_Detector.hh include/Wisard_Generator.hh \
+ /usr/local/root/6.26.10/include/TF2.h \
+ /usr/local/root/6.26.10/include/TF1.h \
+ /usr/local/root/6.26.10/include/RConfigure.h \
+ /usr/local/root/6.26.10/include/TFormula.h \
+ /usr/local/root/6.26.10/include/TInterpreter.h \
+ /usr/local/root/6.26.10/include/TInterpreterValue.h \
+ /usr/local/root/6.26.10/include/Math/Types.h \
+ /usr/local/root/6.26.10/include/RtypesCore.h \
+ /usr/local/root/6.26.10/include/TMethodCall.h \
+ /usr/local/root/6.26.10/include/TF1AbsComposition.h \
+ /usr/local/root/6.26.10/include/TMath.h /usr/include/c++/8/math.h \
+ /usr/local/root/6.26.10/include/Math/Types.h \
+ /usr/local/root/6.26.10/include/Math/ParamFunctor.h \
  include/Wisard_Tracking.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  include/ParticleInformation.hh \
@@ -1012,7 +1035,11 @@
  /usr/local/root/6.26.10/include/TSysEvtHandler.h \
  /usr/local/root/6.26.10/include/TQObject.h \
  /usr/local/root/6.26.10/include/TVirtualQConnection.h \
- /usr/local/root/6.26.10/include/TInterpreter.h \
- /usr/local/root/6.26.10/include/TInterpreterValue.h \
  /usr/local/root/6.26.10/include/TTime.h \
- /usr/local/root/6.26.10/include/TInterpreter.h
+ /usr/local/root/6.26.10/include/TInterpreter.h \
+ /softs/geant4.11.1.2/include/Geant4/FTFP_BERT.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VModularPhysicsList.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4RadioactiveDecay.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleChangeForRadDecay.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NucleusLimits.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4RadioactiveDecayMode.hh

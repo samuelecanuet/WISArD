@@ -11,8 +11,8 @@
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /Input/SRIM SRIM_data/AlMylar_2021_32Ar.txt
-#/Input/Ion 32Ar
-/Input/CRADLE %inputCRADLE
+/Input/Ion 207Bi
+#/Input/CRADLE %inputCRADLE
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -30,6 +30,11 @@
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
 /Geometry/Catcher_Thickness 50 500 50 nm     thickness : Al, Mylar Al (0 delete it)
+/run/reinitializeGeometry
+
+/process/em/fluo true
+/process/em/auger true
+/process/em/deexcitationIgnoreCut true
 
 #---------------------------------------------------------------
 #   Generate Events

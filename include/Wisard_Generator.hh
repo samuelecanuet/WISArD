@@ -25,6 +25,8 @@
 #include "G4ParticleTable.hh"
 #include "G4Element.hh"
 
+#include "TF2.h"
+
 
 
 //----------------------------------------------------------------------
@@ -102,6 +104,8 @@ private:
     unique_ptr<TTreeReaderValue<double>> pz;
 
     TH1D* Energy_Hist;
+
+    TF2 *Gauss2D;
 public:
     Wisard_Generator(Wisard_RunManager *mgr);
     ~Wisard_Generator();
@@ -118,6 +122,7 @@ public:
 
     void SetCatcherPosition_z(G4double catcher_z);
     void ChooseGENERATOR();
+    void InitBeam();
     G4ThreeVector Beam();
 
 };
@@ -263,24 +268,25 @@ inline void Wisard_Generator::ChooseGENERATOR()
     }
 }
 
+inline void Wisard_Generator::InitBeam()
+{
+    Gauss2D = new TF2("Gauss2D", "exp(-0.5*((x-[0])/(sqrt(2)*[1]))**2)*exp(-0.5*((y-[2])/(sqrt(2)*[3]))**2)", -100, 100, -100, 100);
+    Gauss2D->SetParameters(X, Sigma_X, Y, Sigma_Y);
+}
+
 inline G4ThreeVector Wisard_Generator::Beam()
 {
-   G4double x = 10 * m;
-   G4double y = 10 * m;
-   G4double z;
+    G4double x, y, z;
 
-    tuple = GetSRIM_data(res.first, res.second);
+    //Shoot in Beam profile
+    Gauss2D->GetRandom2(x, y);
+    cout << "x = " << x << " y = " << y << endl;
+    z = Position_catcher_z;
 
-    while (sqrt(pow(x - X, 2) + pow(y - Y, 2)) > Radius)
-    {
-        x = G4RandGauss::shoot(X, Sigma_X);
-        y = G4RandGauss::shoot(Y, Sigma_Y);
-    }
-
+    //Adding SRIM 
     x += get<0>(tuple) * angstrom;
     y += get<1>(tuple) * angstrom;
-
-    z = Position_catcher_z + get<2>(tuple) * angstrom;
+    z += get<2>(tuple) * angstrom;
 
     return G4ThreeVector(x, y, z);
 }
