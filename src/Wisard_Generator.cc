@@ -68,7 +68,6 @@ Wisard_Generator::~Wisard_Generator()
 
 void Wisard_Generator::GeneratePrimaries(G4Event *event)
 {
-  // Ouverture du fichier
   if (event->GetEventID() == 0)
   {
     res = Wisard_Generator::GetSRIM_hist();

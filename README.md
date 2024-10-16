@@ -116,4 +116,7 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Modification of particle information saving for parent-secondaries (*ParticleInformation.xx*)
 - New messenger for particle gun
 - macro modification
-- In nucleus decay particule gun all particle and nucleu are saved in the tree
+- In nucleus decay particule gun all particle and nucleus are saved in the tree
+
+### v4.1
+- Personnalized messenger for all the classes
