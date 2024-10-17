@@ -20,6 +20,7 @@
 #include "G4EmParameters.hh"
 #include "G4LossTableManager.hh"
 #include "G4RadioactiveDecay.hh"
+#include "G4StepLimiterPhysics.hh"
 //----------------------------------------------------------------------
 // program main function
 
@@ -56,20 +57,23 @@ int main(int argc, char **argv)
   // Wisard_PhysList *ptr_phys = new Wisard_PhysList;
   // run.SetUserInitialization(ptr_phys);
 
-  G4VModularPhysicsList *phys = new FTFP_BERT(0);
-  phys->RemovePhysics(2);
-  phys->RegisterPhysics(new G4EmStandardPhysicsGS());
-  phys->RegisterPhysics(new G4RadioactiveDecayPhysics());
-  phys->SetDefaultCutValue(1 * nm);
+  G4VModularPhysicsList *ptr_phys = new FTFP_BERT(0);
+  ptr_phys->RemovePhysics(2);
+  ptr_phys->RegisterPhysics(new G4EmStandardPhysicsGS(0));
+  ptr_phys->RegisterPhysics(new G4RadioactiveDecayPhysics(0));
+  ptr_phys->SetDefaultCutValue(1 * nm);
   G4EmParameters *emParams = G4EmParameters::Instance();
   emParams->SetNumberOfBinsPerDecade(200);
-  run.SetUserInitialization(phys);
+  ptr_phys->RegisterPhysics(new G4StepLimiterPhysics(0));
+  run.SetUserInitialization(ptr_phys);
 
   Wisard_Tracking *ptr_track = new Wisard_Tracking(particle_info);
   run.SetUserAction(ptr_track);
 
   Wisard_Generator *ptr_gene = new Wisard_Generator(&run);
   run.SetUserAction(ptr_gene);
+
+  
 
   run.Initialize();
   

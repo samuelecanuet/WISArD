@@ -1042,4 +1042,5 @@
  /softs/geant4.11.1.2/include/Geant4/G4RadioactiveDecay.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleChangeForRadDecay.hh \
  /softs/geant4.11.1.2/include/Geant4/G4NucleusLimits.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RadioactiveDecayMode.hh
+ /softs/geant4.11.1.2/include/Geant4/G4RadioactiveDecayMode.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StepLimiterPhysics.hh

@@ -3,6 +3,7 @@
 
 #include "Wisard_Detector.hh"
 #include "Wisard_MagnetField.hh"
+#include "G4UserLimits.hh"
 
 //----------------------------------------------------------------------
 
@@ -140,21 +141,16 @@ Wisard_Detector::~Wisard_Detector()
 
 G4VPhysicalVolume *Wisard_Detector::Construct()
 {
-  static G4bool fieldIsInitialized = false;
 
-  if (!fieldIsInitialized)
-  {
-    G4FieldManager *pFieldMgr;
-    // G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
+  G4FieldManager *pFieldMgr;
+  // G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
 
-    G4MagneticField *WisardMagField = new G4UniformMagField(G4ThreeVector(0., 0., Magnetic_Field));
-    pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-    G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
-    pChordFinder->SetDeltaChord(0.01 * um);
-    pFieldMgr->SetChordFinder(pChordFinder);
-    pFieldMgr->SetDetectorField(WisardMagField);
-    fieldIsInitialized = true;
-  }
+  G4MagneticField *WisardMagField = new G4UniformMagField(G4ThreeVector(0., 0., Magnetic_Field));
+  pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+  G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
+  pChordFinder->SetDeltaChord(0.01 * um);
+  pFieldMgr->SetChordFinder(pChordFinder);
+  pFieldMgr->SetDetectorField(WisardMagField);
 
   G4GeometryManager::GetInstance()->OpenGeometry();
   G4PhysicalVolumeStore::GetInstance()->Clean();
@@ -187,6 +183,10 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4VisAttributes *visAtt_World = new G4VisAttributes(G4Colour(1, 1, 1)); // white
   visAtt_World->SetVisibility(false);
   fLogicWorld->SetVisAttributes(visAtt_World);
+
+  G4double maxStep = 10.*mm;
+G4UserLimits *myStepLimit = new G4UserLimits(maxStep);
+fLogicWorld->SetUserLimits(myStepLimit);
 
   //==================================================================================================
   //========================================  WISArD MAGNET =========================================

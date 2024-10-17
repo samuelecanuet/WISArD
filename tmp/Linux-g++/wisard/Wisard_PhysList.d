@@ -636,4 +636,5 @@
  /softs/geant4.11.1.2/include/Geant4/G4LevelManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4NucLevel.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericIon.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PhysicsListHelper.hh
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicsListHelper.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StepLimiterPhysics.hh

@@ -277,10 +277,11 @@ inline void Wisard_Generator::InitBeam()
 inline G4ThreeVector Wisard_Generator::Beam()
 {
     G4double x, y, z;
+    x = 0;
+    y = 0;
 
     //Shoot in Beam profile
-    Gauss2D->GetRandom2(x, y);
-    cout << "x = " << x << " y = " << y << endl;
+    // Gauss2D->GetRandom2(x, y);
     z = Position_catcher_z;
 
     //Adding SRIM 

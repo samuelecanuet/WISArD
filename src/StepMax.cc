@@ -26,7 +26,7 @@ StepMax::StepMax(const G4double step,
 StepMax::StepMax(const StepMax &original)
     : G4VDiscreteProcess((StepMax &)original)
 {
-  cerr << "<W> StepMax: copy constructor should not be used" <<G4endl;
+  cerr << "<W> StepMax: copy constructor should not be used" << G4endl;
 }
 
 /*! Destructor of the process.*/

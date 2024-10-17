@@ -4,8 +4,7 @@
 #/run/initialize
 /run/verbose      0
 /event/verbose    0
-/tracking/verbose 1
-/process/verbose 0
+/tracking/verbose 0
 
 #---------------------------------------------------------------
 #   Input Files
@@ -22,20 +21,23 @@
 
 /Beam/X 0. mm
 /Beam/Y 0. mm
-/Beam/Radius 2 mm
+/Beam/Radius 2.5 mm
 /Beam/Sigma_X 0.3 mm
 /Beam/Sigma_Y 0.3 mm
 
 /Geometry/Magnetic_Field 4 T
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
-/Geometry/Catcher_Position catcher1     position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Position source     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
-/Geometry/Catcher_Thickness 50 500 50 nm     thickness : Al, Mylar Al (0 delete it)
+/Geometry/Catcher_Thickness_Al1 50 nm
+/Geometry/Catcher_Thickness_Mylar 500 nm
+/Geometry/Catcher_Thickness_Al2 50 nm
+/run/reinitializeGeometry
 
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
 /run/printProgress 10000
-/Run/File ../../../../../../mnt/hgfs/shared-2/2024_DATA/test.root
-/run/beamOn 10000000
+/Run/File ../../../../../../mnt/hgfs/shared-2/2024_DATA/207Bi_a1_b0.root
+/run/beamOn 1000000
