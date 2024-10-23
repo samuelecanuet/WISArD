@@ -147,6 +147,13 @@ public:
   G4Material *material_SupportoRame_SiliconDetector;
   G4Material *materialSupportSiliconDetector;
   G4Material *vide = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+   G4Material *PEEK = new G4Material("PEEKS", 1.32 * g / cm3, 3);
+  G4double a, density;
+  G4String name, symbol;
+  G4int nelements, natoms, zatoms;
+  G4Element *elSi = new G4Element(name = "Silicon", symbol = "Si", zatoms = 14., a = 28.0855 * g / mole);
+  G4Element *elO = new G4Element(name = "Oxigen", symbol = "O", zatoms = 8., a = 15.9994 * g / mole);
+  
   G4double thicknessMylarSource;
 
   G4double thicknessMylarSource_central;

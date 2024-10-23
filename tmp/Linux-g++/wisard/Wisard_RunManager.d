@@ -642,7 +642,7 @@
  /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
  include/ParticleInformation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
- include/Wisard_Sensor.hh \
+ include/Wisard_Killer.hh include/Wisard_Sensor.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UImanager.hh \
  /softs/geant4.11.1.2/include/Geant4/icomsdefs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VStateDependent.hh \

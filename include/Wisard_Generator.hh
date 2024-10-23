@@ -26,7 +26,7 @@
 #include "G4Element.hh"
 
 #include "TF2.h"
-
+#include "TH2D.h"
 
 
 //----------------------------------------------------------------------
@@ -106,6 +106,7 @@ private:
     TH1D* Energy_Hist;
 
     TF2 *Gauss2D;
+    TH2D* HGauss2D;
 public:
     Wisard_Generator(Wisard_RunManager *mgr);
     ~Wisard_Generator();
@@ -272,6 +273,9 @@ inline void Wisard_Generator::InitBeam()
 {
     Gauss2D = new TF2("Gauss2D", "exp(-0.5*((x-[0])/(sqrt(2)*[1]))**2)*exp(-0.5*((y-[2])/(sqrt(2)*[3]))**2)", -100, 100, -100, 100);
     Gauss2D->SetParameters(X, Sigma_X, Y, Sigma_Y);
+    Gauss2D->SetNpx(10000);
+    Gauss2D->SetNpy(10000);
+    HGauss2D = (TH2D*)Gauss2D->GetHistogram();
 }
 
 inline G4ThreeVector Wisard_Generator::Beam()
@@ -281,7 +285,12 @@ inline G4ThreeVector Wisard_Generator::Beam()
     y = 0;
 
     //Shoot in Beam profile
-    // Gauss2D->GetRandom2(x, y);
+    HGauss2D->GetRandom2(x, y);
+    while (sqrt(x * x + y * y) > Radius)
+    {
+        HGauss2D->GetRandom2(x, y);
+    }
+    
     z = Position_catcher_z;
 
     //Adding SRIM 

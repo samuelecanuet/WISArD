@@ -637,4 +637,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4NucLevel.hh \
  /softs/geant4.11.1.2/include/Geant4/G4GenericIon.hh \
  /softs/geant4.11.1.2/include/Geant4/G4PhysicsListHelper.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StepLimiterPhysics.hh
+ /softs/geant4.11.1.2/include/Geant4/G4StepLimiterPhysics.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticlePropertyData.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticlePropertyData.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4IonTable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4IonPhysics.hh

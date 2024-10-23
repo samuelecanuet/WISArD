@@ -32,6 +32,8 @@ Wisard_RunManager::Wisard_RunManager(ParticleInformation* PartInfos) : PartInfo(
   wisard_sensor_CatcherMylar_side = new Wisard_Sensor(PartInfo, 4);
   wisard_sensor_CatcherAl1_side = new Wisard_Sensor(PartInfo, 5);
   wisard_sensor_CatcherAl2_side = new Wisard_Sensor(PartInfo, 6);
+
+  wisard_killer = new Wisard_Killer();
   ///////////////////////////////////////////////////////////////////
 
   ////////////// Construct strips coinc/anticoinc HISTOGRAMS ////////

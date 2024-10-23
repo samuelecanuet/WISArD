@@ -9,6 +9,10 @@
 
 #include "G4EmParameters.hh"
 #include "G4StepLimiterPhysics.hh"
+#include "G4ParticlePropertyData.hh"
+#include "G4IonTable.hh"
+#include "G4IonPhysics.hh"
+
 //----------------------------------------------------------------------
 Wisard_PhysList::Wisard_PhysList()
 {
@@ -70,7 +74,7 @@ void Wisard_PhysList::ConstructParticle()
   G4Deuteron::DeuteronDefinition();
   G4Triton::TritonDefinition();
   G4Alpha::AlphaDefinition();
-  G4GenericIon::GenericIonDefinition();
+  G4GenericIon::GenericIonDefinition();  
 }
 
 //----------------------------------------------------------------------
@@ -88,16 +92,15 @@ void Wisard_PhysList::ConstructProcess()
   emPhysicsList = new G4EmStandardPhysicsGS();
   emPhysicsList->ConstructProcess();
 
-  // G4StepLimiterPhysics *process = new G4StepLimiterPhysics();
-  // process->ConstructProcess();
+  G4StepLimiterPhysics *process = new G4StepLimiterPhysics();
+  process->ConstructProcess();
 
   decayPhysicList = new G4RadioactiveDecayPhysics();
   decayPhysicList->ConstructProcess();
 
-  // G4HadronicParameters::Instance()->SetTimeThresholdForRadioactiveDecay(1.0e+60*CLHEP::year);
-
   G4EmParameters *emParams = G4EmParameters::Instance();
   emParams->SetNumberOfBinsPerDecade(200);
+
 }
 
 //----------------------------------------------------------------------

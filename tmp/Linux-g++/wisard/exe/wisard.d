@@ -642,7 +642,7 @@
  /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
  include/ParticleInformation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
- include/Wisard_Detector.hh \
+ include/Wisard_Killer.hh include/Wisard_Detector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VUserDetectorConstruction.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UnionSolid.hh \
  /softs/geant4.11.1.2/include/Geant4/G4BooleanSolid.hh \
@@ -924,6 +924,10 @@
  /usr/local/root/6.26.10/include/TMath.h /usr/include/c++/8/math.h \
  /usr/local/root/6.26.10/include/Math/Types.h \
  /usr/local/root/6.26.10/include/Math/ParamFunctor.h \
+ /usr/local/root/6.26.10/include/TH2D.h \
+ /usr/local/root/6.26.10/include/TH2.h \
+ /usr/local/root/6.26.10/include/TMatrixFBasefwd.h \
+ /usr/local/root/6.26.10/include/TMatrixDBasefwd.h \
  include/Wisard_Tracking.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  include/ParticleInformation.hh \

@@ -86,6 +86,15 @@ Wisard_Detector::Wisard_Detector(Wisard_RunManager *mgr)
   dic_rotate["D7"] = std::make_tuple(theta, 0., 0.);
   dic_rotate["D8"] = std::make_tuple(180. * deg, 180. * deg + theta, -90. * deg);
 
+  G4NistManager *man = G4NistManager::Instance();
+  PEEK->AddElement(man->FindOrBuildElement("C"), 19);
+  PEEK->AddElement(man->FindOrBuildElement("H"), 12);
+  PEEK->AddElement(man->FindOrBuildElement("O"), 3);
+
+  materialSupportSiliconDetector = new G4Material(name = "Vetronite", density = 2. * g / cm3, nelements = 2); // vetro epossidico, ossia PCB
+  materialSupportSiliconDetector->AddElement(elSi, natoms = 1);
+  materialSupportSiliconDetector->AddElement(elO, natoms = 2);
+
   GeometryMessenger = new G4GenericMessenger(this, "/Geometry/", "All Geometry Settings");
 
   GeometryMessenger->DeclarePropertyWithUnit("SiDeadLayer_Thickness", "nm", thicknessSiDetectorDeadLayer)
@@ -127,8 +136,6 @@ GeometryMessenger->DeclarePropertyWithUnit("Catcher_Thickness_Al2", "nm", Catche
       .SetGuidance("Set Catcher Thickness Al.")
       .SetParameterName("Catcher_Thickness_Al2", false)
       .SetDefaultValue("50 nm");
-
-  
 }
 
 // destructor
@@ -141,21 +148,22 @@ Wisard_Detector::~Wisard_Detector()
 
 G4VPhysicalVolume *Wisard_Detector::Construct()
 {
-
+  G4GeometryManager::GetInstance()->OpenGeometry();
+  G4PhysicalVolumeStore::GetInstance()->Clean();
+  G4LogicalVolumeStore::GetInstance()->Clean();
+  G4SolidStore::GetInstance()->Clean();
+ 
   G4FieldManager *pFieldMgr;
   // G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
 
   G4MagneticField *WisardMagField = new G4UniformMagField(G4ThreeVector(0., 0., Magnetic_Field));
   pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
   G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
-  pChordFinder->SetDeltaChord(0.01 * um);
+  pChordFinder->SetDeltaChord(0.01 * mm);
   pFieldMgr->SetChordFinder(pChordFinder);
   pFieldMgr->SetDetectorField(WisardMagField);
 
-  G4GeometryManager::GetInstance()->OpenGeometry();
-  G4PhysicalVolumeStore::GetInstance()->Clean();
-  G4LogicalVolumeStore::GetInstance()->Clean();
-  G4SolidStore::GetInstance()->Clean();
+  
 
   //--------------------------------------------------------------------------------------
   //------------------------------------ World -------------------------------------------
@@ -184,9 +192,10 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   visAtt_World->SetVisibility(false);
   fLogicWorld->SetVisAttributes(visAtt_World);
 
-  G4double maxStep = 10.*mm;
-G4UserLimits *myStepLimit = new G4UserLimits(maxStep);
-fLogicWorld->SetUserLimits(myStepLimit);
+  G4double maxStep = 1*km;
+  G4UserLimits *myStepLimit = new G4UserLimits();
+  myStepLimit->SetUserMaxTrackLength(maxStep);
+  fLogicWorld->SetUserLimits(myStepLimit);
 
   //==================================================================================================
   //========================================  WISArD MAGNET =========================================
@@ -385,6 +394,8 @@ fLogicWorld->SetUserLimits(myStepLimit);
                                           fLogicWorld,          // its mother  volume
                                           false,                // no boolean operation
                                           0);
+  
+  // logic_mother_catcher->SetUserLimits(myStepLimit);
 
   G4double SuppCatcher_Tige_width = 20 * mm;
   G4double SuppCatcher_Tige_height = 31.2 * mm;
@@ -424,11 +435,6 @@ fLogicWorld->SetUserLimits(myStepLimit);
   G4VSolid *SuppCatcher_Plate = new G4ExtrudedSolid("Extruded", polygon, SuppCatcher_thikness / 2, offsetA, scaleA, offsetB, scaleB);
 
   // PEEK ring
-  G4Material *PEEK = new G4Material("PEEKS", 1.32 * g / cm3, 3);
-  G4NistManager *man = G4NistManager::Instance();
-  PEEK->AddElement(man->FindOrBuildElement("C"), 19);
-  PEEK->AddElement(man->FindOrBuildElement("H"), 12);
-  PEEK->AddElement(man->FindOrBuildElement("O"), 3);
   G4Tubs *PEEK_Ring = new G4Tubs("PEEK_ring", SuppCatcher_Catcher_radius_inner, SuppCatcher_Catcher_radius_outer, PEEK_thikness / 2, 0., 360 * deg);
 
   // Catcher Hole Inner
@@ -592,7 +598,7 @@ fLogicWorld->SetUserLimits(myStepLimit);
   Logic_AlSource2_side->SetVisAttributes(AlSource_att);
 
   /// SOURCE
-  G4double thicknessSource = 1.5 * mm;
+  G4double thicknessSource = 0.1 * mm;
   Source_Position = Support_Position + Source_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness);
 
   Source = new G4Tubs("Source", 0., SuppCatcher_Source_radius_outer, thicknessSource / 2, 0., 360. * deg);
@@ -652,21 +658,16 @@ fLogicWorld->SetUserLimits(myStepLimit);
   //=========================================================================================================================
   //========================================== SILICON DETECTORS _ COMMON PARAMETERS ========================================
   //=========================================================================================================================
-  G4double a, density;
-  G4String name, symbol;
-  G4int nelements, natoms, zatoms;
+  
 
   // Il materiale che compone il supporto dei detector al silicio é il PCB. Non esiste nella libreria di G4, occorre fabbricarselo
-  G4Element *elSi = new G4Element(name = "Silicon", symbol = "Si", zatoms = 14., a = 28.0855 * g / mole);
-  G4Element *elO = new G4Element(name = "Oxigen", symbol = "O", zatoms = 8., a = 15.9994 * g / mole);
+  
   // G4Material *Cu = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
   // G4Material *Al = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
   // G4VisAttributes *Copper = new G4VisAttributes(G4Colour(0.72, 0.45, 0.2)); 
   Copper->SetForceWireframe(false);
   Copper->SetForceSolid(true);                                  //(r,g,b) => magenta
-  materialSupportSiliconDetector = new G4Material(name = "Vetronite", density = 2. * g / cm3, nelements = 2); // vetro epossidico, ossia PCB
-  materialSupportSiliconDetector->AddElement(elSi, natoms = 1);
-  materialSupportSiliconDetector->AddElement(elO, natoms = 2);
+  
 
   G4double z_height_Source_biggerBaseSiDet_inVerticale = 24.92 * mm;
 
@@ -988,6 +989,28 @@ fLogicWorld->SetUserLimits(myStepLimit);
 
   //////// SET SENSITIVE DETECTOR OTHER THAN SiDet and Catcher /////////
   fLogic_PlasticScintillator->SetSensitiveDetector(manager_ptr->GetWisardSensor_PlasticScintillator());
+
+
+  /////// SET SENSITUVE DETECOR FOR KILLER //////
+  G4Tubs *fSolid_Killer = new G4Tubs("KillerSolid", 0., fRadius_PlasticScintillator, 0.1*mm, 0., 360 * deg);  
+  G4LogicalVolume *fLogic_Killer = new G4LogicalVolume(fSolid_Killer, vide, "Killer");                                                                                         // solid, material, name
+  G4PVPlacement *fPhys_Killer = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                               G4ThreeVector(0., 0., -10*mm),//25*mm-(z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator / 2 + delta)), // position
+                                                               fLogic_Killer, "Killer",                                                                                                                              // its fLogical volume
+                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                               false,                                                                                                                                                                          // no boolean op.
+                                                               -1);                                                                                                                                                                             // copy nb.
+
+  if (fPhys_Killer == NULL)
+  {
+  }
+  G4VisAttributes *Killer_att = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6, 0.6));                                                                                                                                                // red
+  Killer_att->SetForceWireframe(false);
+  Killer_att->SetForceSolid(true);
+  Killer_att->SetVisibility(false);
+  fLogic_Killer->SetVisAttributes(Killer_att);
+
+  fLogic_Killer->SetSensitiveDetector(manager_ptr->GetWisardKiller());
 
   return fPhysiWorld;
 }

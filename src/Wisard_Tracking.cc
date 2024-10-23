@@ -5,6 +5,9 @@
 #include "G4TrackingManager.hh"
 
 #include "Wisard_Global.hh"
+#include "G4IonTable.hh"
+#include "G4DynamicParticle.hh"
+#include "G4ParticleTable.hh"
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....

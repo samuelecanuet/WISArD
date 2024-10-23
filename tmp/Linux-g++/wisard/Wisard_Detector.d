@@ -717,7 +717,7 @@
  /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
  include/ParticleInformation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
- include/Wisard_MagnetField.hh \
+ include/Wisard_Killer.hh include/Wisard_MagnetField.hh \
  /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserLimits.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserLimits.icc

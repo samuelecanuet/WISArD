@@ -2,6 +2,7 @@
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
 #include "Randomize.hh"
+#include "G4ParticlePropertyData.hh"
 
 Wisard_Generator::Wisard_Generator(Wisard_RunManager *mgr)
 {
@@ -233,7 +234,7 @@ void Wisard_Generator::ION_GENERATOR(G4Event *event)
   G4ParticleDefinition *ion = G4IonTable::GetIonTable()->GetIon(Z, A, 0. * keV);
   gun.SetParticlePosition(beam);
   gun.SetParticleDefinition(ion);
-  gun.SetParticleCharge(1*eplus);
-  gun.SetParticleEnergy(0*keV);
+  gun.SetParticleCharge(0);
+  gun.SetParticleEnergy(0);
   gun.GeneratePrimaryVertex(event);
 }

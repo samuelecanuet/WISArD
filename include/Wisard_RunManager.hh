@@ -17,6 +17,7 @@
 
 #include "Wisard_Global.hh"
 #include "Wisard_Sensor.hh"
+#include "Wisard_Killer.hh"
 #include "ParticleInformation.hh"
 
 class Wisard_RunManager : public G4RunManager
@@ -30,6 +31,7 @@ protected:
   Wisard_Sensor *wisard_sensor_CatcherMylar_side;
   Wisard_Sensor *wisard_sensor_CatcherAl1_side;
   Wisard_Sensor *wisard_sensor_CatcherAl2_side;
+  Wisard_Killer *wisard_killer;
 
   /// TREE VARIABLES ////
   vector<G4int> Particle_PDG;
@@ -138,6 +140,7 @@ public:
   Wisard_Sensor *GetWisardSensor_CatcherMylar_side();
   Wisard_Sensor *GetWisardSensor_CatcherAl1_side();
   Wisard_Sensor *GetWisardSensor_CatcherAl2_side();
+  Wisard_Killer *GetWisardKiller() { return (wisard_killer); }
 
   //----------------------------------------------------------
   // Commands definitions

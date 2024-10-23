@@ -450,4 +450,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4ios.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Colour.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UnitsTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UnitsTable.icc
+ /softs/geant4.11.1.2/include/Geant4/G4UnitsTable.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4IonTable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Ions.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DynamicParticle.hh

@@ -636,6 +636,7 @@
  /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
  include/ParticleInformation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
+ include/Wisard_Killer.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleGun.hh \
  /softs/geant4.11.1.2/include/Geant4/G4VPrimaryGenerator.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
@@ -654,4 +655,10 @@
  /usr/local/root/6.26.10/include/TF1AbsComposition.h \
  /usr/local/root/6.26.10/include/TMath.h /usr/include/c++/8/math.h \
  /usr/local/root/6.26.10/include/Math/Types.h \
- /usr/local/root/6.26.10/include/Math/ParamFunctor.h
+ /usr/local/root/6.26.10/include/Math/ParamFunctor.h \
+ /usr/local/root/6.26.10/include/TH2D.h \
+ /usr/local/root/6.26.10/include/TH2.h \
+ /usr/local/root/6.26.10/include/TMatrixFBasefwd.h \
+ /usr/local/root/6.26.10/include/TMatrixDBasefwd.h \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticlePropertyData.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticlePropertyData.icc
