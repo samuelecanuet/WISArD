@@ -120,5 +120,5 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 
 ### v4.1
 - Personnalized messenger for all the classes
-- All problems related to Decay physics solved (except IC without FTFP_BERT)
 - Adding Killer volume in the geometry for computing time performance *Wisard_Killer*
+- Adding particle and ion gun

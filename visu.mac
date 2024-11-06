@@ -9,15 +9,17 @@
 #/run/initialize
 /run/verbose      0
 /event/verbose    0
-/tracking/verbose 0
+/tracking/verbose 1
 
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /Input/SRIM SRIM_data/AlMylar_2021_32Ar.txt
-/Input/Ion 207Bi
-#/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/32Ar_CS0_CSP0_CV1_CVP1_1.root
+#/Input/Particle e-
+#/Input/Energy 0.5 MeV
+#/Input/Direction 0 0 1
+/Input/CRADLE ../../../../../../../mnt/hgfs/shared-2/207Bi_a1_b0_1.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -33,7 +35,7 @@
 /Geometry/Magnetic_Field 4 tesla
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
-/Geometry/Catcher_Position source     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
 /Geometry/Catcher_Thickness_Al1 50 nm
 /Geometry/Catcher_Thickness_Mylar 500 nm
@@ -145,6 +147,7 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 100
+/run/beamOn 10
+
 #
 #

@@ -5,6 +5,8 @@
 #include "G4VSensitiveDetector.hh"
 #include "G4EventManager.hh"
 #include "ParticleInformation.hh"
+#include "G4LossTableManager.hh"
+#include "G4EmSaturation.hh"
 
 struct StructInfo
 {
@@ -20,6 +22,8 @@ class Wisard_Sensor : public G4VSensitiveDetector
 public:
   Wisard_Sensor(ParticleInformation *, G4int );
   ~Wisard_Sensor();
+
+  G4EmSaturation *emSaturation = G4LossTableManager::Instance()->EmSaturation();
 
   ParticleInformation* PartInfo;
   G4int DetCode;

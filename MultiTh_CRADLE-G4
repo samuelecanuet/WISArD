@@ -3,8 +3,8 @@
 rootCRADLEfile=../../../../data333/lecanuet/data/
 rootGeant4file=../../../data333/lecanuet/Result/
 
-rootCRADLEfile=../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/
-rootGeant4file=../../../../../../mnt/hgfs/shared-2/
+rootCRADLEfile=../../../../../../mnt/hgfs/shared-2/
+rootGeant4file=../../../../../../mnt/hgfs/shared-2/2024_DATA/
 
 suffixe=""
 
@@ -215,7 +215,7 @@ while [ $Saver -le $RunEnd ]; do
         cp ../config/config_base.txt config_${constants}_bis_${Saver}.txt &&
         sed -e "$replace" config_${constants}_bis_${Saver}.txt > ../config/config_${constants}_${Saver}.txt &&
         rm config_${constants}_bis_${Saver}.txt &&
-        #./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}_${Saver}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}${suffixe}_${constants}_${Saver}.root && 
+        ./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}_${Saver}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}${suffixe}_${constants}_${Saver}.root && 
         cd - && 
 
         cp macro_base.mac tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac && 

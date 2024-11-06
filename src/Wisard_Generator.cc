@@ -52,10 +52,25 @@ Wisard_Generator::Wisard_Generator(Wisard_RunManager *mgr)
       .SetParameterName("SRIM", false)
       .SetDefaultValue("SRIM_data/AlMylar_2021_32Ar.txt");
 
-  InputMessenger->DeclareProperty("Ion", Nucleus)
-      .SetGuidance("Set Ion nucleus.")
+  InputMessenger->DeclareProperty("Ion", nucleus_string)
+      .SetGuidance("Set Ion.")
       .SetParameterName("Ion", false)
       .SetDefaultValue("");
+    
+  InputMessenger->DeclareProperty("Particle", particle_string)
+      .SetGuidance("Set particle.")
+      .SetParameterName("Particle", false)
+      .SetDefaultValue("");
+
+  InputMessenger->DeclarePropertyWithUnit("Energy", "keV", energy)
+      .SetGuidance("Set Energy.")
+      .SetParameterName("Energy", false)
+      .SetDefaultValue("0.0 keV");
+
+  InputMessenger->DeclareProperty("Direction", dir_string)
+      .SetGuidance("Set Direction.")
+      .SetDefaultValue("0 0 1");
+  
 }
 
 Wisard_Generator::~Wisard_Generator()
@@ -150,7 +165,9 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
 
   while (Reader->Next() && **eventid == event->GetEventID())
   {
-    if (((**code <= 2212 && **code != 12 ) || **code == 1000020040) && **code != 11) //////GAMMA EXCLUSION BUT TAKING ALPHA 
+    // if (((**code <= 2212 && **code != 12 ) || **code == 1000020040) && **code != 11) //////GAMMA EXCLUSION BUT TAKING ALPHA 
+    // {
+      if (**code < 10000000) //////ION EXCLUSION
     {
       dir[0] = **px;
       dir[1] = **py;
@@ -230,11 +247,10 @@ void Wisard_Generator::ION_GENERATOR(G4Event *event)
 {
   G4ThreeVector beam = Beam();
 
-
-  G4ParticleDefinition *ion = G4IonTable::GetIonTable()->GetIon(Z, A, 0. * keV);
   gun.SetParticlePosition(beam);
-  gun.SetParticleDefinition(ion);
+  gun.SetParticleDefinition(Gun_Particle);
   gun.SetParticleCharge(0);
-  gun.SetParticleEnergy(0);
+  gun.SetParticleEnergy(energy);
+  gun.SetParticleMomentumDirection(GetDirection(dir));
   gun.GeneratePrimaryVertex(event);
 }

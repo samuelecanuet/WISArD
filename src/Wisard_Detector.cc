@@ -192,10 +192,10 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   visAtt_World->SetVisibility(false);
   fLogicWorld->SetVisAttributes(visAtt_World);
 
-  G4double maxStep = 1*km;
-  G4UserLimits *myStepLimit = new G4UserLimits();
-  myStepLimit->SetUserMaxTrackLength(maxStep);
-  fLogicWorld->SetUserLimits(myStepLimit);
+  // G4double maxStep = 1*km;
+  // G4UserLimits *myStepLimit = new G4UserLimits();
+  // myStepLimit->SetUserMaxTrackLength(maxStep);
+  // fLogicWorld->SetUserLimits(myStepLimit);
 
   //==================================================================================================
   //========================================  WISArD MAGNET =========================================
@@ -926,6 +926,9 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4double distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector = 25.575 * mm;
   G4double delta = 0 * cm;
   G4Material *fMaterial_PlasticScintillator = G4NistManager::Instance()->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
+
+  // TODO Add Birks Constant
+  // fMaterial_PlasticScintillator->GetIonisation()->SetBirksConstant(0.126 * mm / MeV); 
 
   G4Tubs *fSolid_PlasticScintillator = new G4Tubs("PlasticScintillator", 0., fRadius_PlasticScintillator, 0.5 * fLength_PlasticScintillator, 0., 360 * deg);                                                                                   // name, r : 0->1cm, L : 5cm, phi : 0->2pi
   G4LogicalVolume *fLogic_PlasticScintillator = new G4LogicalVolume(fSolid_PlasticScintillator, fMaterial_PlasticScintillator, "PlasticScintillator");                                                                                         // solid, material, name

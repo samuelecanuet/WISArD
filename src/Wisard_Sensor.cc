@@ -9,6 +9,8 @@
 #include "G4TouchableHandle.hh"
 #include "G4Navigator.hh"
 
+
+
 Wisard_Sensor::Wisard_Sensor( ParticleInformation* PartInfos, G4int code) : G4VSensitiveDetector("WisardSensor"), PartInfo(PartInfos), DetCode(code)
 {
 }
@@ -54,7 +56,31 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   if (DetCode > 1000) // interstrip
     PartInfo->AddHitPosition(index, DetCode, step->GetPreStepPoint()->GetPosition() / mm);
 
+
   PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
+
+
+
+  // TODO : Add Birks law for scintillator  
+  // if (DetCode == 99)
+  // {
+  //   PartInfo->AddEnergyDeposit(index, DetCode, emSaturation->VisibleEnergyDepositionAtAStep(step) / keV);
+  // }
+  // else
+  // {
+  //   PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
+  // }
+
+  // if (DetCode == 99)
+  // {
+  //   double edep = step->GetTotalEnergyDeposit() / keV;
+  //   double Vedep = emSaturation->VisibleEnergyDepositionAtAStep(step) / keV;
+
+  //   if (edep != Vedep)
+  //   {
+  //     G4cout << "edep = " << edep << " Vedep = " << Vedep << G4endl;
+  //   }
+  // }
 
   // ####################################################### ///
   // !!! KILLING down-positron/electron for performance !!!  ///

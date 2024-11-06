@@ -55,18 +55,18 @@ int main(int argc, char **argv)
   Wisard_Detector *ptr_det = new Wisard_Detector(&run);
   run.SetUserInitialization(ptr_det);
 
-// Wisard_PhysList *ptr_phys = new Wisard_PhysList;
-// run.SetUserInitialization(ptr_phys);
+Wisard_PhysList *ptr_phys = new Wisard_PhysList;
+run.SetUserInitialization(ptr_phys);
 
-  G4VModularPhysicsList *ptr_phys = new FTFP_BERT();
+  // G4VModularPhysicsList *ptr_phys = new FTFP_BERT();
   // ptr_phys->RemovePhysics(2);
   // ptr_phys->RegisterPhysics( new G4EmStandardPhysicsGS(0));
-  ptr_phys->RegisterPhysics(new G4RadioactiveDecayPhysics());
-  ptr_phys->SetDefaultCutValue(1 * nm);
-  G4EmParameters *emParams = G4EmParameters::Instance();
-  emParams->SetNumberOfBinsPerDecade(200);
-  ptr_phys->RegisterPhysics(new G4StepLimiterPhysics());
-  run.SetUserInitialization(ptr_phys);
+  // ptr_phys->RegisterPhysics(new G4RadioactiveDecayPhysics());
+  // ptr_phys->SetDefaultCutValue(1 * nm);
+  // G4EmParameters *emParams = G4EmParameters::Instance();
+  // emParams->SetNumberOfBinsPerDecade(200);
+  // ptr_phys->RegisterPhysics(new G4StepLimiterPhysics());
+  // run.SetUserInitialization(ptr_phys);
 
   Wisard_Tracking *ptr_track = new Wisard_Tracking(particle_info);
   run.SetUserAction(ptr_track);
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 
   //------------------------------------------------------------
   //  Session start
-  // ptr_phys->AddStepMax(1 * mm, 0x2);
+  ptr_phys->AddStepMax(1 * um, 0x2);
 
   G4EventManager::GetEventManager()->SetVerboseLevel(0);
   G4EventManager::GetEventManager()->GetTrackingManager()->SetVerboseLevel(0);

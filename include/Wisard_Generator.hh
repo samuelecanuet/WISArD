@@ -54,7 +54,6 @@ class Wisard_Generator : public G4VUserPrimaryGeneratorAction
     // internal variables definition
 protected:
     Wisard_RunManager *manager_ptr;
-   G4double energy;
     int ievent, iev_len = 0, isubevent, isubev_len = 0;
 
     G4ParticleTable *particle_table = G4ParticleTable::GetParticleTable();
@@ -65,12 +64,17 @@ protected:
     G4ParticleDefinition *part_enubar;
     G4ParticleDefinition *part_alpha;
     G4ParticleDefinition *part_geantino;
+    G4ParticleDefinition *Gun_Particle;
 
     G4GenericMessenger* BeamMessenger;
     G4GenericMessenger* InputMessenger;
-   G4double X, Y, Sigma_X, Sigma_Y, Q, Position_catcher_z, Radius;
+    G4double X, Y, Sigma_X, Sigma_Y, Q, Position_catcher_z, Radius;
     G4int Z, A;
-    G4String InputFileName, SRIMFileName, Nucleus;
+    G4double energy = 0;
+    G4String particle_string;
+    G4String nucleus_string;
+    G4String dir_string = "0 0 1";
+    G4String InputFileName, SRIMFileName;
     ifstream InputTXT, SRIMTXT;
     TFile *InputROOT;
 
@@ -124,6 +128,8 @@ public:
     void SetCatcherPosition_z(G4double catcher_z);
     void ChooseGENERATOR();
     void InitBeam();
+    G4ThreeVector ConvertStringToG4ThreeVector(G4String);
+    G4ThreeVector GetDirection(G4ThreeVector);
     G4ThreeVector Beam();
 
 };
@@ -200,14 +206,14 @@ inline void Wisard_Generator::SetCatcherPosition_z(G4double catcher_z)
 
 inline void Wisard_Generator::ChooseGENERATOR()
 {
-    if (Nucleus != "" && InputFileName != "")
+    if (nucleus_string != "" && InputFileName != "" && particle_string != "")
     {
         G4Exception("Wisard_Generator::ChooseGENERATOR", "Both Nucleus and InputFile set in the macro", JustWarning, "");
     }
-    else if (Nucleus != "")
+    else if (nucleus_string != "")
     {
-        A = stoi(Nucleus.substr(0, Nucleus.find_first_not_of("0123456789")));
-        G4String symbol = Nucleus.substr(Nucleus.find_first_not_of("0123456789"));
+        A = stoi(nucleus_string.substr(0, nucleus_string.find_first_not_of("0123456789")));
+        G4String symbol = nucleus_string.substr(nucleus_string.find_first_not_of("0123456789"));
         G4IonTable *ionTable = G4IonTable::GetIonTable();
         Z = -1;
         for (int i = 1 ; i < A ; i++)
@@ -215,7 +221,8 @@ inline void Wisard_Generator::ChooseGENERATOR()
             G4ParticleDefinition *ion = ionTable->GetIon(i, A, 0);
             if (ion->GetParticleName().substr(0, ion->GetParticleName().find_first_of("0123456789")) == symbol)
             {
-                Z = ion->GetAtomicNumber();
+                // Z = ion->GetAtomicNumber();
+                Gun_Particle = ion;
                 break;
             }
         }
@@ -223,7 +230,25 @@ inline void Wisard_Generator::ChooseGENERATOR()
         {
             G4Exception("Wisard_Generator::ChooseGENERATOR", "Nucleus not found", JustWarning, "");
         }
+
+
+        dir = ConvertStringToG4ThreeVector(dir_string);
+        
         GENERATOR = std::bind(&Wisard_Generator::ION_GENERATOR, this, std::placeholders::_1);
+    }
+    else if (particle_string != "")
+    {
+        G4ParticleDefinition* particlee = G4ParticleTable::GetParticleTable()->FindParticle(particle_string);
+        if (!particlee)
+        {
+            G4Exception("Wisard_Generator::ChooseGENERATOR", "Particle not found", JustWarning, "");
+        }
+        else
+        {
+            Gun_Particle = particlee;
+            dir = ConvertStringToG4ThreeVector(dir_string);
+            GENERATOR = std::bind(&Wisard_Generator::ION_GENERATOR, this, std::placeholders::_1);
+        }
     }
     else if (InputFileName.find(".txt") != std::string::npos)
     {
@@ -272,7 +297,7 @@ inline void Wisard_Generator::ChooseGENERATOR()
 inline void Wisard_Generator::InitBeam()
 {
     Gauss2D = new TF2("Gauss2D", "exp(-0.5*((x-[0])/(sqrt(2)*[1]))**2)*exp(-0.5*((y-[2])/(sqrt(2)*[3]))**2)", -100, 100, -100, 100);
-    Gauss2D->SetParameters(X, Sigma_X, Y, Sigma_Y);
+    Gauss2D->SetParameters(0, Sigma_X, 0, Sigma_Y);
     Gauss2D->SetNpx(10000);
     Gauss2D->SetNpy(10000);
     HGauss2D = (TH2D*)Gauss2D->GetHistogram();
@@ -298,6 +323,44 @@ inline G4ThreeVector Wisard_Generator::Beam()
     y += get<1>(tuple) * angstrom;
     z += get<2>(tuple) * angstrom;
 
-    return G4ThreeVector(x, y, z);
+    return G4ThreeVector(X+x, Y+y, z);
+}
+
+inline G4ThreeVector Wisard_Generator::ConvertStringToG4ThreeVector(G4String str)
+{
+    if (str != "iso")
+    {
+        std::istringstream iss(str);
+        G4double x, y, z;
+        if (iss >> x >> y >> z)
+        {
+            return G4ThreeVector(x, y, z);
+        }
+        else
+        {
+            G4Exception("Wisard_Generator::ConvertStringToG4ThreeVector", "Impossible to convert string to G4ThreeVector", JustWarning, "");
+            return G4ThreeVector(0, 0, 0);
+        }
+    }
+    else
+    {
+        return G4ThreeVector(0,0,0);
+    }
+}
+
+inline G4ThreeVector Wisard_Generator::GetDirection(G4ThreeVector dirr)
+{
+    if (dirr == G4ThreeVector(0, 0, 0))
+    {
+        //RADOM DIRECTION
+        G4double phi = G4UniformRand() * 2 * M_PI;
+        // G4double costheta = 2 * G4UniformRand() - 1;
+        G4double theta = G4UniformRand() * 2 * M_PI;
+        return G4ThreeVector(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+    }
+    else
+    {
+        return dirr;
+    }
 }
 #endif

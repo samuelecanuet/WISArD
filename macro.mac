@@ -24,7 +24,7 @@
 /Beam/Sigma_X 0.3 mm
 /Beam/Sigma_Y 0.3 mm
 
-/Geometry/Magnetic_Field 4 tesla
+/Geometry/Magnetic_Field 0 tesla
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position source     #position:[source / catcher2 / catcher1]
@@ -37,6 +37,6 @@
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 1000
+/run/printProgress 10000
 /Run/File ../../../../../../mnt/hgfs/shared-2/2024_DATA/207Bi_a1_b0.root
-/run/beamOn 1000000
+/run/beamOn 10000000

@@ -11,8 +11,7 @@
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /Input/SRIM SRIM_data/AlMylar_2021_32Ar.txt
-/Input/Ion 207Bi
-#/Input/CRADLE %inputCRADLE
+/Input/CRADLE %inputCRADLE
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -25,10 +24,10 @@
 /Beam/Sigma_X 0.3 mm
 /Beam/Sigma_Y 0.3 mm
 
-/Geometry/Magnetic_Field 4 T
+/Geometry/Magnetic_Field 4 tesla
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
-/Geometry/Catcher_Position source     position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Position source     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
 /Geometry/Catcher_Thickness_Al1 50 nm
 /Geometry/Catcher_Thickness_Mylar 500 nm

@@ -13,6 +13,9 @@
 #include "G4IonTable.hh"
 #include "G4IonPhysics.hh"
 
+#include "G4Scintillation.hh"
+#include "G4EmSaturation.hh"
+
 //----------------------------------------------------------------------
 Wisard_PhysList::Wisard_PhysList()
 {
@@ -38,7 +41,7 @@ void Wisard_PhysList::ConstructParticle()
   G4Gamma::GammaDefinition();
 
   // optical photon
-  G4OpticalPhoton::OpticalPhotonDefinition();
+  // G4OpticalPhoton::OpticalPhotonDefinition();
 
   // leptons
   G4Electron::ElectronDefinition();
@@ -89,14 +92,8 @@ void Wisard_PhysList::ConstructProcess()
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics(1);
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics_option4(0);
 
-  emPhysicsList = new G4EmStandardPhysicsGS();
+  emPhysicsList = new G4EmStandardPhysicsGS(0);
   emPhysicsList->ConstructProcess();
-
-  G4StepLimiterPhysics *process = new G4StepLimiterPhysics();
-  process->ConstructProcess();
-
-  decayPhysicList = new G4RadioactiveDecayPhysics();
-  decayPhysicList->ConstructProcess();
 
   G4EmParameters *emParams = G4EmParameters::Instance();
   emParams->SetNumberOfBinsPerDecade(200);
