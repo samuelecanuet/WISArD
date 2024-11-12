@@ -133,9 +133,12 @@ GeometryMessenger->DeclarePropertyWithUnit("Catcher_Thickness_Mylar", "nm", Catc
       .SetDefaultValue("500 nm");
 
 GeometryMessenger->DeclarePropertyWithUnit("Catcher_Thickness_Al2", "nm", Catcher_Thickness_Al2)
-      .SetGuidance("Set Catcher Thickness Al.")
-      .SetParameterName("Catcher_Thickness_Al2", false)
-      .SetDefaultValue("50 nm");
+    .SetGuidance("Set Catcher Thickness Al.")
+    .SetParameterName("Catcher_Thickness_Al2", false)
+    .SetDefaultValue("50 nm");
+
+myStepLimit = new G4UserLimits();
+myStepLimit->SetMaxAllowedStep(10 * nm);
 }
 
 // destructor
@@ -998,7 +1001,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4Tubs *fSolid_Killer = new G4Tubs("KillerSolid", 0., fRadius_PlasticScintillator, 0.1*mm, 0., 360 * deg);  
   G4LogicalVolume *fLogic_Killer = new G4LogicalVolume(fSolid_Killer, vide, "Killer");                                                                                         // solid, material, name
   G4PVPlacement *fPhys_Killer = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
-                                                               G4ThreeVector(0., 0., -10*mm),//25*mm-(z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator / 2 + delta)), // position
+                                                               G4ThreeVector(0., 0., 25*mm-(z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator / 2 + delta)), // position
                                                                fLogic_Killer, "Killer",                                                                                                                              // its fLogical volume
                                                                fLogicWorld,                                                                                                                                                                    // its mother volume
                                                                false,                                                                                                                                                                          // no boolean op.

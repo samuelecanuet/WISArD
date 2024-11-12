@@ -78,6 +78,8 @@ public:
 
   G4bool event;
 
+  G4UserLimits *myStepLimit ;
+
   std::tuple< // std::pair<G4LogicalVolume*, G4VPhysicalVolume*>,
       std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
       std::pair<G4LogicalVolume *, G4VPhysicalVolume *>,
@@ -413,6 +415,7 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeDL
       num*100+strip*10);
 
   logicSiDet->SetVisAttributes(strip_att);
+  logicSiDet->SetUserLimits(myStepLimit);
 
   return std::make_pair(logicSiDet, physSiDet);
 }
@@ -438,6 +441,7 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeSt
       0);
 
   logicSiDet->SetVisAttributes(grid_att);
+  logicSiDet->SetUserLimits(myStepLimit);
 
   return std::make_pair(logicSiDet, physSiDet);
 }

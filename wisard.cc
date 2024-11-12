@@ -79,7 +79,7 @@ run.SetUserInitialization(ptr_phys);
 
   //------------------------------------------------------------
   //  Session start
-  ptr_phys->AddStepMax(1 * um, 0x2);
+  ptr_phys->AddStepMax(1 * mm, 0x2);
 
   G4EventManager::GetEventManager()->SetVerboseLevel(0);
   G4EventManager::GetEventManager()->GetTrackingManager()->SetVerboseLevel(0);

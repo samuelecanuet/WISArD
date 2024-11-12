@@ -43,6 +43,7 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   if (PartInfo->FirstHit(index, DetCode) && DetCode < 1000)
   {
     PartInfo->SetHitPosition(index, DetCode, step->GetPreStepPoint()->GetPosition() / mm);
+    PartInfo->SetHitTime(index, DetCode, step->GetPreStepPoint()->GetGlobalTime() / ns);
     if (DetCode == 99)
     {
       PartInfo->SetHitAngle(index, DetCode, std::acos(G4ThreeVector(0, 0, 1) * track->GetMomentumDirection()) / deg);

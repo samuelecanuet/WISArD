@@ -15,6 +15,7 @@ struct Detector
     G4double EnergyDeposit = 0;
     G4double HitAngle = 0;
     G4ThreeVector HitPosition = G4ThreeVector(0, 0, 0);
+    G4double HitTime = 0;
 };
 
 struct InterStripDetector
@@ -30,7 +31,6 @@ struct Particle
     G4double E0 = 0;
     G4ThreeVector Dir = G4ThreeVector(0, 0, 0);
     G4ThreeVector Pos = G4ThreeVector(0, 0, 0);
-    G4double T0 = 0;
 
     map<G4int, Detector> Detectors;
     map<G4int, InterStripDetector> InterStripDetectors;
@@ -50,14 +50,13 @@ public:
     static map<G4int, InterStripDetector> AllEmptyInterStripDetectors;
 
     void AddParticle(G4int TrackID);
-    void SetParticle(G4int TrackID, G4int Particle_PDG, G4double E0, G4ThreeVector Dir, G4ThreeVector Pos, G4double T0);
+    void SetParticle(G4int TrackID, G4int Particle_PDG, G4double E0, G4ThreeVector Dir, G4ThreeVector Pos);
     void AddEnergyDeposit(G4int TrackID, G4int SensorID, G4double EnergyDeposit);
     void SetHitAngle(G4int TrackID, G4int SensorID, G4double HitAngle);
     void SetHitPosition(G4int TrackID, G4int SensorID, G4ThreeVector HitPosition);
     bool FirstHit(G4int TrackID, G4int SensorID);
     void AddHitPosition(G4int TrackID, G4int SensorID, G4ThreeVector HitPosition);
-
-    // void MergeGammaDecayNuclei();
+    void SetHitTime(G4int TrackID, G4int SensorID, G4double HitTime);
 
     map<int, Particle> GetInfo();
     void Parse();

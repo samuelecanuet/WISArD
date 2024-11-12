@@ -42,17 +42,18 @@ protected:
   vector<G4double> py; 
   vector<G4double> pz;
   vector<G4double> Kinetic_Energy;
+  vector<G4double> T0;
   
   // catcher //
   vector<G4double> Catcher_Central_Energy_Deposit, Catcher_Side_Energy_Deposit;
 
-  // plastic scientillator //
-  vector<G4double> PlasticScintillator_Hit_Angle, PlasticScintillator_Energy_Deposit;
+  // plastic scintillator //
+  vector<G4double> PlasticScintillator_Hit_Angle, PlasticScintillator_Energy_Deposit, PlasticScintillator_Hit_Time;
   vector<G4ThreeVector> PlasticScintillator_Hit_Position;
 
   // silicon detectors //
   vector<vector<G4ThreeVector>> Silicon_Detector_Hit_Position;
-  vector<vector<G4double>> Silicon_Detector_Hit_Angle, Silicon_Detector_Energy_Deposit, Silicon_Detector_DL_Energy_Deposit;
+  vector<vector<G4double>> Silicon_Detector_Hit_Angle, Silicon_Detector_Energy_Deposit, Silicon_Detector_DL_Energy_Deposit, Silicon_Detector_HitTime;
   vector<vector<G4int>> Silicon_Detector_Code;
 
   // interstrip //
@@ -61,7 +62,7 @@ protected:
   vector<vector<vector<G4double>>> Silicon_Detector_InterStrip_Energy_Deposit;
   ///////////////////////
 
-  vector<G4double> Silicon_Detector_Energy_Deposit_part, Silicon_Detector_DL_Energy_Deposit_part, Silicon_Detector_Hit_Angle_part;
+  vector<G4double> Silicon_Detector_Energy_Deposit_part, Silicon_Detector_DL_Energy_Deposit_part, Silicon_Detector_Hit_Angle_part, Silicon_Detector_HitTime_part;
   vector<G4ThreeVector> Silicon_Detector_Hit_Position_part;
   vector<G4int> Silicon_Detector_Code_part;
   vector<vector<G4double>> Silicon_Detector_InterStrip_Energy_Deposit_part;

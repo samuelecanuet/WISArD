@@ -120,15 +120,18 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Tree->Branch("px", &px);
     Tree->Branch("py", &py);
     Tree->Branch("pz", &pz);
+    Tree->Branch("T0", &T0);
     Tree->Branch("Kinetic_Energy", &Kinetic_Energy);
     Tree->Branch("Catcher_Central_Energy_Deposit", &Catcher_Central_Energy_Deposit);
     Tree->Branch("Catcher_Side_Energy_Deposit", &Catcher_Side_Energy_Deposit);
     Tree->Branch("PlasticScintillator_Energy_Deposit", &PlasticScintillator_Energy_Deposit);
     Tree->Branch("PlasticScintillator_Hit_Position", &PlasticScintillator_Hit_Position);
     Tree->Branch("PlasticScintillator_Hit_Angle", &PlasticScintillator_Hit_Angle);
+    Tree->Branch("PlasticScintillator_Hit_Time", &PlasticScintillator_Hit_Time);
     Tree->Branch("Silicon_Detector_Energy_Deposit", &Silicon_Detector_Energy_Deposit);
     Tree->Branch("Silicon_Detector_Hit_Position", &Silicon_Detector_Hit_Position);
     Tree->Branch("Silicon_Detector_Hit_Angle", &Silicon_Detector_Hit_Angle);
+    Tree->Branch("Silicon_Detector_HitTime", &Silicon_Detector_HitTime);
     Tree->Branch("Silicon_Detector_Code", &Silicon_Detector_Code);
     Tree->Branch("Silicon_Detector_DL_Energy_Deposit", &Silicon_Detector_DL_Energy_Deposit);
     Tree->Branch("Silicon_Detector_InterStrip_Code", &Silicon_Detector_InterStrip_Code);
@@ -152,6 +155,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     py.push_back(particle.Dir.y());
     pz.push_back(particle.Dir.z());     
     Kinetic_Energy.push_back(particle.E0);
+
 
     // # Catcher Central #//
    G4double catcher_central = 0;
@@ -177,6 +181,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     PlasticScintillator_Energy_Deposit.push_back(particle.Detectors[99].EnergyDeposit);
     PlasticScintillator_Hit_Position.push_back(particle.Detectors[99].HitPosition);
     PlasticScintillator_Hit_Angle.push_back(particle.Detectors[99].HitAngle);
+    PlasticScintillator_Hit_Time.push_back(particle.Detectors[99].HitTime);
 
     // # Silicon Detectors #//
     for (auto Det : particle.Detectors)
@@ -188,6 +193,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
         Silicon_Detector_Energy_Deposit_part.push_back(Det.second.EnergyDeposit);
         Silicon_Detector_Hit_Position_part.push_back(Det.second.HitPosition);
         Silicon_Detector_Hit_Angle_part.push_back(Det.second.HitAngle);
+        Silicon_Detector_HitTime_part.push_back(Det.second.HitTime);
       }
       // DL
       else if (Det.first < 1000 && Det.first > 100)
@@ -209,6 +215,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Silicon_Detector_DL_Energy_Deposit.push_back(Silicon_Detector_DL_Energy_Deposit_part);
     Silicon_Detector_Hit_Position.push_back(Silicon_Detector_Hit_Position_part);
     Silicon_Detector_Hit_Angle.push_back(Silicon_Detector_Hit_Angle_part);
+    Silicon_Detector_HitTime.push_back(Silicon_Detector_HitTime_part);
 
     Silicon_Detector_InterStrip_Code.push_back(Silicon_Detector_InterStrip_Code_part);
     Silicon_Detector_InterStrip_Energy_Deposit.push_back(Silicon_Detector_InterStrip_Energy_Deposit_part);
@@ -219,6 +226,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Silicon_Detector_DL_Energy_Deposit_part.clear();
     Silicon_Detector_Hit_Position_part.clear();
     Silicon_Detector_Hit_Angle_part.clear();
+    Silicon_Detector_HitTime_part.clear();
 
     Silicon_Detector_InterStrip_Code_part.clear();
     Silicon_Detector_InterStrip_Energy_Deposit_part.clear();
@@ -326,12 +334,14 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   Silicon_Detector_DL_Energy_Deposit.clear();
   Silicon_Detector_Hit_Position.clear();
   Silicon_Detector_Hit_Angle.clear();
+  Silicon_Detector_HitTime.clear();
   Silicon_Detector_InterStrip_Code.clear();
   Silicon_Detector_InterStrip_Energy_Deposit.clear();
   Silicon_Detector_InterStrip_Hit_Position.clear();
   PlasticScintillator_Energy_Deposit.clear();
   PlasticScintillator_Hit_Angle.clear();
   PlasticScintillator_Hit_Position.clear();
+  PlasticScintillator_Hit_Time.clear();
   Catcher_Central_Energy_Deposit.clear();
   Catcher_Side_Energy_Deposit.clear();
   ///////////////////////////////////////////////////////////////////

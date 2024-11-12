@@ -19,7 +19,7 @@
 #/Input/Particle e-
 #/Input/Energy 0.5 MeV
 #/Input/Direction 0 0 1
-/Input/CRADLE ../../../../../../../mnt/hgfs/shared-2/207Bi_a1_b0_1.root
+/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/32Ar_CS0_CSP0_CV1_CVP1_1.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters

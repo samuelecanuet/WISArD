@@ -98,6 +98,9 @@ void Wisard_PhysList::ConstructProcess()
   G4EmParameters *emParams = G4EmParameters::Instance();
   emParams->SetNumberOfBinsPerDecade(200);
 
+  G4StepLimiterPhysics *process = new G4StepLimiterPhysics();
+  process->ConstructProcess();
+
 }
 
 //----------------------------------------------------------------------

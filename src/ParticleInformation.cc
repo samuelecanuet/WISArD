@@ -9,7 +9,7 @@ ParticleInformation::~ParticleInformation()
 {
 }
 
-void ParticleInformation::SetParticle(G4int TrackID, G4int Particle_PDG, G4double E0, G4ThreeVector Dir, G4ThreeVector Pos, G4double T0)
+void ParticleInformation::SetParticle(G4int TrackID, G4int Particle_PDG, G4double E0, G4ThreeVector Dir, G4ThreeVector Pos)
 {
     if (Particles.find(TrackID) == Particles.end())
         AddParticle(TrackID);
@@ -18,13 +18,11 @@ void ParticleInformation::SetParticle(G4int TrackID, G4int Particle_PDG, G4doubl
     Particles[TrackID].E0 = E0;
     Particles[TrackID].Dir = Dir;
     Particles[TrackID].Pos = Pos;
-    Particles[TrackID].T0 = T0;
-
 }
 
 void ParticleInformation::AddParticle(G4int TrackID)
 {
-    Particles[TrackID] = Particle{TrackID, 0, 0, G4ThreeVector(0, 0, 0), G4ThreeVector(0, 0, 0), 0, {}, {}};
+    Particles[TrackID] = Particle{TrackID, 0, 0, G4ThreeVector(0, 0, 0), G4ThreeVector(0, 0, 0), {}, {}};
 }
 
 bool ParticleInformation::FirstHit(G4int TrackID, G4int SensorID)
@@ -70,6 +68,11 @@ void ParticleInformation::SetHitPosition(G4int TrackID, G4int SensorID, G4ThreeV
     Particles[TrackID].Detectors[SensorID].HitPosition = HitPosition;
 }
 
+void ParticleInformation::SetHitTime(G4int TrackID, G4int SensorID, G4double HitTime)
+{
+    Particles[TrackID].Detectors[SensorID].HitTime = HitTime;
+}
+
 void ParticleInformation::AddEnergyDeposit(G4int TrackID, G4int SensorID, G4double EnergyDeposit)
 {
     if (SensorID > 1000)
@@ -92,7 +95,6 @@ void ParticleInformation::Parse()
         G4cout << "---- E0 : " << pair.second.E0 << " keV" << G4endl;
         G4cout << "---- Dir : " << pair.second.Dir << G4endl;
         G4cout << "---- Pos : " << pair.second.Pos << G4endl;
-        G4cout << "---- T0 : " << pair.second.T0 << " ns" << G4endl;
         for (auto &pair2 : pair.second.Detectors)
         {
             G4cout << "---- Detector : " << pair2.first << G4endl;
