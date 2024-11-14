@@ -34,7 +34,7 @@ Multith_CRADLE-G4 nucleus=32Ar N=10 n=2 a=1 b=1
 ```bash
 Multith_CRADLE-G4 nucleus=32Ar N=10 n=2 CS=0 CV=1
 ```
-If one parameter is not given it will be set in SM case. Additionaly, *macro_base.txt* will be use as macro sample.
+If one parameter is not given it will be set in SM case. Additionaly, *macro_base.mac* will be use as macro sample.
 
 In this mode you can run CRADLE++ in the same time to generate file for the Geant4 simulation. But if you want to use your own files, you have just to comment the *line 214* in *Multith_CRADLE-G4*. Your file have to be generate by CRADLE++ or with the same architecture.
 You have to take into account that the file are written like :
@@ -122,5 +122,5 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Personnalized messenger for all the classes
 - Adding Killer volume in the geometry for computing time performance *Wisard_Killer*
 - Adding particle and ion gun
-- Adding MaxNumberOfStep = 10000 to avoid infinit simulation
-- Adding StepMaxLength to Silicon Deadlayer and Grid
+- Adding MaxNumberOfStep = 100000 to avoid infinit simulation
+- Adding StepMaxLength to Silicon Deadlayer, Grid and catcher Al complementation side

@@ -319,6 +319,7 @@ inline G4ThreeVector Wisard_Generator::Beam()
     z = Position_catcher_z;
 
     //Adding SRIM 
+    tuple = GetSRIM_data(res.first, res.second);
     x += get<0>(tuple) * angstrom;
     y += get<1>(tuple) * angstrom;
     z += get<2>(tuple) * angstrom;
@@ -352,7 +353,7 @@ inline G4ThreeVector Wisard_Generator::GetDirection(G4ThreeVector dirr)
 {
     if (dirr == G4ThreeVector(0, 0, 0))
     {
-        //RADOM DIRECTION
+        //RANDOM DIRECTION
         G4double phi = G4UniformRand() * 2 * M_PI;
         // G4double costheta = 2 * G4UniformRand() - 1;
         G4double theta = G4UniformRand() * 2 * M_PI;

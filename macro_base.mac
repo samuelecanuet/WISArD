@@ -27,7 +27,7 @@
 /Geometry/Magnetic_Field 4 tesla
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
-/Geometry/Catcher_Position source     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
 /Geometry/Catcher_Thickness_Al1 50 nm
 /Geometry/Catcher_Thickness_Mylar 500 nm
@@ -37,7 +37,7 @@
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 10000
+/run/printProgress 100000
 /Run/File %output
 /run/beamOn %events
 

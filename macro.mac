@@ -38,5 +38,5 @@
 #   Generate Events
 #---------------------------------------------------------------
 /run/printProgress 10000
-/Run/File ../../../../../../mnt/hgfs/shared-2/2024_DATA/Time_test.root
+/Run/File ../../../../../../mnt/hgfs/shared-2/2024_DATA/Time_test_2.root
 /run/beamOn 10000000

@@ -533,6 +533,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                 false,                                                                   // no boolean op.
                                                 0,                                                                       // copy nb.
                                                 false);                                                                  // copy nb.
+  Logic_AlSource1_central->SetUserLimits(myStepLimit);
 
   MylarSource_central = new G4Tubs("MylarSource", 0., SuppCatcher_Catcher_radius_inner, Catcher_Thickness_Mylar / 2, 0., 360. * deg);
   G4LogicalVolume *Logic_MylarSource_central = new G4LogicalVolume(MylarSource_central, Mylar, "LogicMylarSource_central");                               // solid, material, name
@@ -578,6 +579,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                              false,                                                                // no boolean op.
                                              0,                                                                    // copy nb.
                                              false);
+  Logic_AlSource1_side->SetUserLimits(myStepLimit);
 
   MylarSource_side = new G4Tubs("MylarSource", 0., SuppCatcher_Catcher_radius_inner, Catcher_Thickness_Al1 / 2, 0., 360. * deg);
   G4LogicalVolume *Logic_MylarSource_side = new G4LogicalVolume(MylarSource_side, Mylar, "LogicMylarSource_side");                               // solid, material, name

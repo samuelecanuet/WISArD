@@ -55,7 +55,7 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   }
 
   if (DetCode > 1000) // interstrip
-    PartInfo->AddHitPosition(index, DetCode, step->GetPreStepPoint()->GetPosition() / mm);
+    PartInfo->AddHitPosition(index, DetCode, step->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(step->GetPreStepPoint()->GetPosition()) / mm);
 
 
   PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
@@ -80,21 +80,6 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   //   if (edep != Vedep)
   //   {
   //     G4cout << "edep = " << edep << " Vedep = " << Vedep << G4endl;
-  //   }
-  // }
-
-  // ####################################################### ///
-  // !!! KILLING down-positron/electron for performance !!!  ///
-  // ####################################################### ///
-
-  // if (step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo() == 1 && step->GetPostStepPoint()->GetPosition().z() < step->GetTrack()->GetVertexPosition().z())
-  // {
-  //   if (step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "World" || step->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetName() == "logic_mother_catcher")
-  //   {
-  //     if (step->GetTrack()->GetDefinition()->GetPDGEncoding () == -11 || step->GetTrack()->GetDefinition()->GetPDGEncoding () == 11)
-  //     {
-  //       step->GetTrack()->SetTrackStatus(fStopAndKill);
-  //     }
   //   }
   // }
 
