@@ -131,7 +131,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Tree->Branch("Silicon_Detector_Energy_Deposit", &Silicon_Detector_Energy_Deposit);
     Tree->Branch("Silicon_Detector_Hit_Position", &Silicon_Detector_Hit_Position);
     Tree->Branch("Silicon_Detector_Hit_Angle", &Silicon_Detector_Hit_Angle);
-    Tree->Branch("Silicon_Detector_HitTime", &Silicon_Detector_HitTime);
+    Tree->Branch("Silicon_Detector_Hit_Time", &Silicon_Detector_Hit_Time);
     Tree->Branch("Silicon_Detector_Code", &Silicon_Detector_Code);
     Tree->Branch("Silicon_Detector_DL_Energy_Deposit", &Silicon_Detector_DL_Energy_Deposit);
     Tree->Branch("Silicon_Detector_InterStrip_Code", &Silicon_Detector_InterStrip_Code);
@@ -193,7 +193,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
         Silicon_Detector_Energy_Deposit_part.push_back(Det.second.EnergyDeposit);
         Silicon_Detector_Hit_Position_part.push_back(Det.second.HitPosition);
         Silicon_Detector_Hit_Angle_part.push_back(Det.second.HitAngle);
-        Silicon_Detector_HitTime_part.push_back(Det.second.HitTime);
+        Silicon_Detector_Hit_Time_part.push_back(Det.second.HitTime);
       }
       // DL
       else if (Det.first < 1000 && Det.first > 100)
@@ -215,7 +215,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Silicon_Detector_DL_Energy_Deposit.push_back(Silicon_Detector_DL_Energy_Deposit_part);
     Silicon_Detector_Hit_Position.push_back(Silicon_Detector_Hit_Position_part);
     Silicon_Detector_Hit_Angle.push_back(Silicon_Detector_Hit_Angle_part);
-    Silicon_Detector_HitTime.push_back(Silicon_Detector_HitTime_part);
+    Silicon_Detector_Hit_Time.push_back(Silicon_Detector_Hit_Time_part);
 
     Silicon_Detector_InterStrip_Code.push_back(Silicon_Detector_InterStrip_Code_part);
     Silicon_Detector_InterStrip_Energy_Deposit.push_back(Silicon_Detector_InterStrip_Energy_Deposit_part);
@@ -226,7 +226,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Silicon_Detector_DL_Energy_Deposit_part.clear();
     Silicon_Detector_Hit_Position_part.clear();
     Silicon_Detector_Hit_Angle_part.clear();
-    Silicon_Detector_HitTime_part.clear();
+    Silicon_Detector_Hit_Time_part.clear();
 
     Silicon_Detector_InterStrip_Code_part.clear();
     Silicon_Detector_InterStrip_Energy_Deposit_part.clear();
@@ -334,7 +334,7 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   Silicon_Detector_DL_Energy_Deposit.clear();
   Silicon_Detector_Hit_Position.clear();
   Silicon_Detector_Hit_Angle.clear();
-  Silicon_Detector_HitTime.clear();
+  Silicon_Detector_Hit_Time.clear();
   Silicon_Detector_InterStrip_Code.clear();
   Silicon_Detector_InterStrip_Energy_Deposit.clear();
   Silicon_Detector_InterStrip_Hit_Position.clear();
