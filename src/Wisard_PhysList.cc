@@ -90,9 +90,7 @@ void Wisard_PhysList::ConstructProcess()
   // G4VPhysicsConstructor * emPhysicsList = new G4EmPenelopePhysics(0);
   // G4VPhysicsConstructor * emPhysicsList = new G4EmLivermorePhysics();
   // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics(1);
-  // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics_option4(0);
-
-  emPhysicsList = new G4EmStandardPhysicsGS(0);
+  emPhysicsList = new G4EmStandardPhysics_option4(0);
   emPhysicsList->ConstructProcess();
 
   G4EmParameters *emParams = G4EmParameters::Instance();

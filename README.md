@@ -124,3 +124,7 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Adding particle and ion gun
 - Adding MaxNumberOfStep = 100000 to avoid infinit simulation
 - Adding StepMaxLength to Silicon Deadlayer, Grid and catcher Al complementation side
+
+### v4.2
+- Adding part of the mechanical struture to take into account the effect od the entrance collimator
+- Using G4EmStandardPhysics_option4

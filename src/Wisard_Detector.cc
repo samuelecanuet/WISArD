@@ -1003,7 +1003,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4Tubs *fSolid_Killer = new G4Tubs("KillerSolid", 0., fRadius_PlasticScintillator, 0.1*mm, 0., 360 * deg);  
   G4LogicalVolume *fLogic_Killer = new G4LogicalVolume(fSolid_Killer, vide, "Killer");                                                                                         // solid, material, name
   G4PVPlacement *fPhys_Killer = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
-                                                               G4ThreeVector(0., 0., 25*mm-(z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator / 2 + delta)), // position
+                                                               G4ThreeVector(0., 0., -85*mm), // position
                                                                fLogic_Killer, "Killer",                                                                                                                              // its fLogical volume
                                                                fLogicWorld,                                                                                                                                                                    // its mother volume
                                                                false,                                                                                                                                                                          // no boolean op.
@@ -1015,10 +1015,71 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4VisAttributes *Killer_att = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6, 0.6));                                                                                                                                                // red
   Killer_att->SetForceWireframe(false);
   Killer_att->SetForceSolid(true);
-  Killer_att->SetVisibility(false);
+  Killer_att->SetVisibility(true);
   fLogic_Killer->SetVisAttributes(Killer_att);
 
   fLogic_Killer->SetSensitiveDetector(manager_ptr->GetWisardKiller());
+
+
+  /////// SET TUBE ENTRANCE /////////
+  G4double delta_entrance = -62 * mm;
+  G4double Tube_length = 27.5*mm;
+  G4Tubs *fSolid_TubeEntrance = new G4Tubs("TubeEntranceSolid", fRadius_PlasticScintillator, fRadius_PlasticScintillator+6*mm, Tube_length/2, 0., 360 * deg);
+  G4LogicalVolume *fLogic_TubeEntrance = new G4LogicalVolume(fSolid_TubeEntrance, Cu, "TubeEntrance");                                                                                         // solid, material, name
+  G4PVPlacement *fPhys_TubeEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                               G4ThreeVector(0., 0., delta_entrance),
+                                                               fLogic_TubeEntrance, "TubeEntrance",                                                                                                                              // its fLogical volume
+                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                               false,                                                                                                                                                                          // no boolean op.
+                                                               -1);
+
+  if (fPhys_TubeEntrance == NULL)
+  {
+  }
+  fLogic_TubeEntrance->SetVisAttributes(Copper);
+
+  /////// SET PLAT ENTRANCE /////////
+  G4double Plate_tickness = 2.5*mm;
+  G4Tubs *fSolid_PLateEntrance = new G4Tubs("PLateEntranceSolid", fRadius_PlasticScintillator, 60*mm, Plate_tickness/2, 0., 360 * deg);
+  G4LogicalVolume *fLogic_PLateEntrance = new G4LogicalVolume(fSolid_PLateEntrance, Cu, "PLateEntrance");                                                                                         // solid, material, name
+  G4PVPlacement *fPhys_PLateEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                               G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2),
+                                                               fLogic_PLateEntrance, "PLateEntrance",                                                                                                                              // its fLogical volume
+                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                               false,                                                                                                                                                                          // no boolean op.
+                                                               -1); 
+
+  if (fPhys_PLateEntrance == NULL)
+  {
+  }
+
+  G4VisAttributes *PLateEntrance_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));                                                                                                                                                // red
+  PLateEntrance_att->SetForceWireframe(false);
+  PLateEntrance_att->SetForceSolid(true);
+  PLateEntrance_att->SetVisibility(true);
+  fLogic_PLateEntrance->SetVisAttributes(PLateEntrance_att);                            
+
+
+  /////// SET COLLIMATOR ENTRANCE //////
+  G4double Collimator_thickness = 2*mm;
+  G4Tubs *fSolid_CollimatorEntrance = new G4Tubs("CollimatorEntranceSolid", 2.5*mm, 2*fRadius_PlasticScintillator, Collimator_thickness/2, 0., 360 * deg);
+  G4LogicalVolume *fLogic_CollimatorEntrance = new G4LogicalVolume(fSolid_CollimatorEntrance, materialAluminum, "CollimatorEntrance");                                                                                         // solid, material, name
+  G4PVPlacement *fPhys_CollimatorEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                               G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2-Collimator_thickness),
+                                                               fLogic_CollimatorEntrance, "CollimatorEntrance",                                                                                                                              // its fLogical volume
+                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                               false,                                                                                                                                                                          // no boolean op.
+                                                               -1);   
+
+  if (fPhys_CollimatorEntrance == NULL)
+  {
+  }
+
+  G4VisAttributes *Collimator_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));                                                                                                                                                // red
+  Collimator_att->SetForceWireframe(false);
+  Collimator_att->SetForceSolid(true);
+  Collimator_att->SetVisibility(true);
+  fLogic_CollimatorEntrance->SetVisAttributes(Collimator_att);                                                                                                                                                                          // copy nb.
 
   return fPhysiWorld;
 }
