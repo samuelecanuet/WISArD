@@ -173,15 +173,29 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
       dir[1] = **py;
       dir[2] = **pz;
 
-      if (particle_table->FindParticle(**code) != part_proton)
-        continue;
+    //   const G4double c = 299792458;  // speed of light in m/s
+    // const G4double MeV_to_keV = 1000.0;  // conversion factor
+    // const G4double m_p_MeV = 938.272;  // proton mass in MeV/c^2
+    // const G4double m_Cl_MeV = 32.0 * 931.5;  // 32Cl mass in MeV/c^2
+    // const G4double K_Cl_lab_keV = 30.0;  // kinetic energy of 32Cl in lab frame (in keV)
+    // const G4double K_p_rest_keV = **ekin_;  // proton kinetic energy in rest frame (in keV)
 
-      gun.SetParticleDefinition(particle_table->FindParticle(**code));
-      gun.SetParticlePosition(beam);
-      gun.SetParticleMomentumDirection(dir);
-      gun.SetParticleEnergy(**ekin_*keV);
-      gun.GeneratePrimaryVertex(event);
-      gun.SetParticleTime(**time_*ns);
+    //G4double Cl_direction[3] = {0.0, 0.0, -1.0};
+    //G4double gamma_Cl_lab = 1 + K_Cl_lab_keV / (m_Cl_MeV * MeV_to_keV);
+    //G4double beta_Cl_lab = std::sqrt(1.0 - 1.0 / (gamma_Cl_lab * gamma_Cl_lab));
+    //G4double dot_product = Cl_direction[0] * dir[0] + Cl_direction[1] * dir[1] + Cl_direction[2] * dir[2];
+    //G4double magnitude_dir = std::sqrt(dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2]);
+    //G4double cos_theta = dot_product / magnitude_dir;
+    //G4double E_p_rest_MeV = K_p_rest_keV / MeV_to_keV + m_p_MeV;  // total energy in rest frame (MeV)
+    //G4double p_p_rest_MeV = std::sqrt(E_p_rest_MeV * E_p_rest_MeV - m_p_MeV * m_p_MeV);  // momentum in rest frame (MeV/c)
+    //G4double E_p_lab_MeV = gamma_Cl_lab * (E_p_rest_MeV + beta_Cl_lab * p_p_rest_MeV * cos_theta);
+    //G4double ekin_lab_keV = (E_p_lab_MeV - m_p_MeV) * MeV_to_keV;
+
+    gun.SetParticleDefinition(particle_table->FindParticle(**code));
+    gun.SetParticlePosition(beam);
+    gun.SetParticleMomentumDirection(dir);
+    gun.SetParticleEnergy(**ekin_*keV);
+    gun.GeneratePrimaryVertex(event);
 
       // //////FOR TEST/////////
       // G4double a = -4.92 * mm;
