@@ -43,12 +43,12 @@ You have to take into account that the file are written like :
 ```
 *or*
 ```bash
-32Ar_CS=0_CV=1_x.txt or .root
+32Ar_CS0_CV1_x.txt or .root
 ```
 With x the number of the run (x<=N).
 
 ## Result
-You end up (N ROOT files if you are un MultiThreading mode) with simulation informations, a Tree and a histogram of energy deposit for each detector in a ROOT file. The filename is set in the macro file.
+You end up (N ROOT files if you are in MultiThreading mode) with simulation informations, a Tree and a histogram of energy deposit for each detector in a ROOT file. The filename is set in the macro file.
 
 ### Simulation informations
 Located in the *Log* folder with all the simulation variables chosen in the macro file.
@@ -62,7 +62,7 @@ The Tree is update each 10 000 events and contains :
 - Silicon Detectors (deposit energy, hit position, hit angle, detector code, deposit energy in dead layer)
 
 ### Histograms
-There are 2 for each strip, one for the β-p coincidence and an other one for the none-coincidence. The β detection threashold is set in the macro file.
+There are 2 for each strip, one for the β-p coincidence and an other one for the anti-coincidence. The β detection threashold is set in the macro file.
 
 ## Analysis
 A very rapid analysis was made with PyROOT. To use it you have to indicate the filename in the main function.
@@ -124,3 +124,10 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Adding particle and ion gun
 - Adding MaxNumberOfStep = 100000 to avoid infinit simulation
 - Adding StepMaxLength to Silicon Deadlayer, Grid and catcher Al complementation side
+
+### v4.2
+- Adding part of the mechanical struture to take into account the effect od the entrance collimator
+- Using G4EmStandardPhysics_option4
+
+### v4.3
+- Tempory release : 2 versions of geometry (savong before changing all the code to remove the interstrip saving)

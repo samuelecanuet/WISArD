@@ -45,7 +45,6 @@ void Wisard_Tracking::PostUserTrackingAction(const G4Track *track)
             }
         }
         Part_Info->SetParticle(track->GetTrackID(), track->GetDefinition()->GetPDGEncoding(), track->GetVertexKineticEnergy() / keV, track->GetVertexMomentumDirection(), track->GetVertexPosition()/um);
-        cout << track->GetVertexPosition()/um << endl;
     }
     else
     {

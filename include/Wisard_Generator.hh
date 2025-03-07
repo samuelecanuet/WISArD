@@ -106,6 +106,7 @@ private:
     unique_ptr<TTreeReaderValue<double>> px;
     unique_ptr<TTreeReaderValue<double>> py;
     unique_ptr<TTreeReaderValue<double>> pz;
+    unique_ptr<TTreeReaderValue<double>> time_;
 
     TH1D* Energy_Hist;
 
@@ -286,6 +287,7 @@ inline void Wisard_Generator::ChooseGENERATOR()
             px = std::make_unique<TTreeReaderValue<double>>(*Reader, "px");
             py = std::make_unique<TTreeReaderValue<double>>(*Reader, "py");
             pz = std::make_unique<TTreeReaderValue<double>>(*Reader, "pz");
+            time_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "time");
         }
     }
     else

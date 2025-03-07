@@ -55,8 +55,8 @@ int main(int argc, char **argv)
   Wisard_Detector *ptr_det = new Wisard_Detector(&run);
   run.SetUserInitialization(ptr_det);
 
-Wisard_PhysList *ptr_phys = new Wisard_PhysList;
-run.SetUserInitialization(ptr_phys);
+  Wisard_PhysList *ptr_phys = new Wisard_PhysList;
+  run.SetUserInitialization(ptr_phys);
 
   // G4VModularPhysicsList *ptr_phys = new FTFP_BERT();
   // ptr_phys->RemovePhysics(2);
@@ -70,7 +70,8 @@ run.SetUserInitialization(ptr_phys);
 
   Wisard_Tracking *ptr_track = new Wisard_Tracking(particle_info);
   run.SetUserAction(ptr_track);
-
+  
+  
   Wisard_Generator *ptr_gene = new Wisard_Generator(&run);
   run.SetUserAction(ptr_gene);
 

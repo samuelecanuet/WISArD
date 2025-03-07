@@ -21,17 +21,17 @@
 /Beam/X 0. mm
 /Beam/Y 0. mm
 /Beam/Radius 2.5 mm
-/Beam/Sigma_X 0.3 mm
-/Beam/Sigma_Y 0.3 mm
+/Beam/Sigma_X 0.75 mm
+/Beam/Sigma_Y 0.75 mm
 
 /Geometry/Magnetic_Field 4 tesla
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
-/Geometry/Catcher_Thickness_Al1 50 nm
-/Geometry/Catcher_Thickness_Mylar 500 nm
-/Geometry/Catcher_Thickness_Al2 50 nm
+/Geometry/Catcher_Thickness_Al1 85 nm
+/Geometry/Catcher_Thickness_Mylar 525 nm
+/Geometry/Catcher_Thickness_Al2 85 nm
 /run/reinitializeGeometry
 
 #---------------------------------------------------------------

@@ -538,4 +538,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc \
  /softs/geant4.11.1.2/include/Geant4/G4LogicalVolume.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TouchableHandle.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Navigator.hh
+ /softs/geant4.11.1.2/include/Geant4/G4Navigator.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Trap.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GeomTypes.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4CSGSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Trap.icc

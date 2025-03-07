@@ -877,68 +877,38 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                                             0,
                                                                             G4ThreeVector(0., 0., 0.));
 
-  //////////////////////////// Interstrips insultor ////////////////////////////////// 
-  // InterStrip n. 4-5
+  //////////////////////////// Interstrips //////////////////////////////////
+  // Strip n. 5
   G4Trap* SiDet_InterStrip_45 = new G4Trap("SiDet_InterStrip_45",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
+                             (thicknessSiDetector + thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_5 / 2, xHigh_SiDet_Strip_4 / 2, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_5 / 2, xHigh_SiDet_Strip_4 / 2, 0. * degree);
 
-  // InterStrip n. 3-4
+  // Strip n. 4
   G4Trap* SiDet_InterStrip_34 = new G4Trap("SiDet_InterStrip_34",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
+                             (thicknessSiDetector + thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_4 / 2, xHigh_SiDet_Strip_3 / 2, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_4 / 2, xHigh_SiDet_Strip_3 / 2, 0. * degree);
 
-  // InterStrip n. 2-3
+  // Strip n. 3
   G4Trap* SiDet_InterStrip_23 = new G4Trap("SiDet_InterStrip_23",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
+                             (thicknessSiDetector + thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_3 / 2, xHigh_SiDet_Strip_2 / 2, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_3 / 2, xHigh_SiDet_Strip_2 / 2, 0. * degree);
 
-  // InterStrip n. 1-2
+  // Strip n. 2
   G4Trap* SiDet_InterStrip_12 = new G4Trap("SiDet_InterStrip_12",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
+                             (thicknessSiDetector + thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_2 / 2, xHigh_SiDet_Strip_1 / 2, 0. * degree, spazio_tra_Strip / 2,
                              xLow_SiDet_Strip_2 / 2, xHigh_SiDet_Strip_1 / 2, 0. * degree);
 
 
-  //////////////////////////// Strip ////////////////////////////////// 
-  // Strip n. 5 //
-  G4Trap* SiDet_Strip_5_U = new G4Trap("SiDet_InterStrip_5_4side",
-                             (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2,
-                             xHigh_SiDet_Strip_5 / 2, ( xLow_SiDet_Strip_5 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, 0. * degree, y_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2,
-                             xHigh_SiDet_Strip_5 / 2, ( xLow_SiDet_Strip_5 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, 0. * degree);
-  
-  // Strip n. 4 //
-  G4Trap* SiDet_Strip_4_U = new G4Trap("SiDet_InterStrip_4_5side",
-                             (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2,
-                             ( xHigh_SiDet_Strip_4 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, 0. * degree, y_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2,
-                             ( xHigh_SiDet_Strip_4 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, 0. * degree);
-  // Strip n. 3 //
-  G4Trap* SiDet_Strip_3_U = new G4Trap("SiDet_InterStrip_3_4side",
-                             (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2,
-                             ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, 0. * degree, y_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2,
-                             ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, 0. * degree);
-  
-  // Strip n. 2 //
-  G4Trap* SiDet_Strip_2_U = new G4Trap("SiDet_InterStrip_2_3side",
-                             (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2,
-                             ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, 0. * degree, y_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2,
-                             ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, 0. * degree);
-  
-  // Strip n. 1 //
-  G4Trap* SiDet_Strip_1_U = new G4Trap("SiDet_InterStrip_1_2side",
-                             (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_1 / 2 + spazio_tra_Strip / 2,
-                             ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, xLow_SiDet_Strip_1 / 2, 0. * degree, y_SiDet_Strip_1 / 2 +  spazio_tra_Strip / 2,
-                             ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, xLow_SiDet_Strip_1 / 2, 0. * degree);
-                
-  
-  dic_strip[1] = std::make_tuple(SiDet_Strip_1_U, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_1_dl, SiDet_Strip_1_grid);
-  dic_strip[2] = std::make_tuple(SiDet_Strip_2_U, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_2_dl, SiDet_Strip_2_grid);
-  dic_strip[3] = std::make_tuple(SiDet_Strip_3_U, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_3_dl, SiDet_Strip_3_grid);
-  dic_strip[4] = std::make_tuple(SiDet_Strip_4_U, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_4_dl, SiDet_Strip_4_grid);
-  dic_strip[5] = std::make_tuple(SiDet_Strip_5_U, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_5_dl, SiDet_Strip_5_grid);
+
+  dic_strip[1] = std::make_tuple(SiDet_Strip_1, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip + y_SiDet_Strip_1 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_1_dl, SiDet_Strip_1_grid);
+  dic_strip[2] = std::make_tuple(SiDet_Strip_2, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_2_dl, SiDet_Strip_2_grid);
+  dic_strip[3] = std::make_tuple(SiDet_Strip_3, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_3_dl, SiDet_Strip_3_grid);
+  dic_strip[4] = std::make_tuple(SiDet_Strip_4, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_4_dl, SiDet_Strip_4_grid);
+  dic_strip[5] = std::make_tuple(SiDet_Strip_5, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_5_dl, SiDet_Strip_5_grid);
 
   dic_interstrip[12] = std::make_tuple(SiDet_InterStrip_12, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip + y_SiDet_Strip_2 + spazio_tra_Strip / 2, 0));
   dic_interstrip[23] = std::make_tuple(SiDet_InterStrip_23, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + spazio_tra_Strip + y_SiDet_Strip_4 + spazio_tra_Strip + y_SiDet_Strip_3 + spazio_tra_Strip / 2, 0));
@@ -1070,24 +1040,24 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   /////// SET PLAT ENTRANCE /////////
   G4double Plate_tickness = 2.5*mm;
-  G4Tubs *fSolid_PlateEntrance = new G4Tubs("PlateEntranceSolid", fRadius_PlasticScintillator, 60*mm, Plate_tickness/2, 0., 360 * deg);
-  G4LogicalVolume *fLogic_PlateEntrance = new G4LogicalVolume(fSolid_PlateEntrance, Cu, "PlateEntrance");                                                                                         // solid, material, name
-  G4PVPlacement *fPhys_PlateEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+  G4Tubs *fSolid_PLateEntrance = new G4Tubs("PLateEntranceSolid", fRadius_PlasticScintillator, 60*mm, Plate_tickness/2, 0., 360 * deg);
+  G4LogicalVolume *fLogic_PLateEntrance = new G4LogicalVolume(fSolid_PLateEntrance, Cu, "PLateEntrance");                                                                                         // solid, material, name
+  G4PVPlacement *fPhys_PLateEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
                                                                G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2),
-                                                               fLogic_PlateEntrance, "PlateEntrance",                                                                                                                              // its fLogical volume
+                                                               fLogic_PLateEntrance, "PLateEntrance",                                                                                                                              // its fLogical volume
                                                                fLogicWorld,                                                                                                                                                                    // its mother volume
                                                                false,                                                                                                                                                                          // no boolean op.
                                                                -1); 
 
-  if (fPhys_PlateEntrance == NULL)
+  if (fPhys_PLateEntrance == NULL)
   {
   }
 
-  G4VisAttributes *PlateEntrance_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));                                                                                                                                                // red
-  PlateEntrance_att->SetForceWireframe(false);
-  PlateEntrance_att->SetForceSolid(true);
-  PlateEntrance_att->SetVisibility(true);
-  fLogic_PlateEntrance->SetVisAttributes(PlateEntrance_att);                            
+  G4VisAttributes *PLateEntrance_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));                                                                                                                                                // red
+  PLateEntrance_att->SetForceWireframe(false);
+  PLateEntrance_att->SetForceSolid(true);
+  PLateEntrance_att->SetVisibility(true);
+  fLogic_PLateEntrance->SetVisAttributes(PLateEntrance_att);                            
 
 
   /////// SET COLLIMATOR ENTRANCE //////

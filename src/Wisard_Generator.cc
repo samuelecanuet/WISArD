@@ -167,47 +167,35 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
   {
     // if (((**code <= 2212 && **code != 12 ) || **code == 1000020040) && **code != 11) //////GAMMA EXCLUSION BUT TAKING ALPHA 
     // {
-      if (**code < 10000000) //////ION EXCLUSION
+      if (**code < 10000000) ////// ONLY ION EXCLUSION
     {
       dir[0] = **px;
       dir[1] = **py;
       dir[2] = **pz;
 
-    //   const G4double c = 299792458;  // speed of light in m/s
-    // const G4double MeV_to_keV = 1000.0;  // conversion factor
-    // const G4double m_p_MeV = 938.272;  // proton mass in MeV/c^2
-    // const G4double m_Cl_MeV = 32.0 * 931.5;  // 32Cl mass in MeV/c^2
-    // const G4double K_Cl_lab_keV = 30.0;  // kinetic energy of 32Cl in lab frame (in keV)
-    // const G4double K_p_rest_keV = **ekin_;  // proton kinetic energy in rest frame (in keV)
+      if (particle_table->FindParticle(**code) != part_proton)
+        continue;
 
-    //G4double Cl_direction[3] = {0.0, 0.0, -1.0};
-    //G4double gamma_Cl_lab = 1 + K_Cl_lab_keV / (m_Cl_MeV * MeV_to_keV);
-    //G4double beta_Cl_lab = std::sqrt(1.0 - 1.0 / (gamma_Cl_lab * gamma_Cl_lab));
-    //G4double dot_product = Cl_direction[0] * dir[0] + Cl_direction[1] * dir[1] + Cl_direction[2] * dir[2];
-    //G4double magnitude_dir = std::sqrt(dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2]);
-    //G4double cos_theta = dot_product / magnitude_dir;
-    //G4double E_p_rest_MeV = K_p_rest_keV / MeV_to_keV + m_p_MeV;  // total energy in rest frame (MeV)
-    //G4double p_p_rest_MeV = std::sqrt(E_p_rest_MeV * E_p_rest_MeV - m_p_MeV * m_p_MeV);  // momentum in rest frame (MeV/c)
-    //G4double E_p_lab_MeV = gamma_Cl_lab * (E_p_rest_MeV + beta_Cl_lab * p_p_rest_MeV * cos_theta);
-    //G4double ekin_lab_keV = (E_p_lab_MeV - m_p_MeV) * MeV_to_keV;
+      gun.SetParticleDefinition(particle_table->FindParticle(**code));
+      gun.SetParticlePosition(beam);
+      gun.SetParticleMomentumDirection(dir);
+      gun.SetParticleEnergy(**ekin_*keV);
+      gun.GeneratePrimaryVertex(event);
+      gun.SetParticleTime(**time_*ns);
 
-    gun.SetParticleDefinition(particle_table->FindParticle(**code));
-    gun.SetParticlePosition(beam);
-    gun.SetParticleMomentumDirection(dir);
-    gun.SetParticleEnergy(**ekin_*keV);
-    gun.GeneratePrimaryVertex(event);
-
-    // //////FOR TEST/////////
-    //G4double a = -5.65*mm;
-    //    gun.SetParticleDefinition        ( part_gamma);
-    //    gun.SetParticlePosition          ( G4ThreeVector (0, 0, -6*cm)  );
-    //   gun.SetParticlePosition          ( G4ThreeVector (0, a*cos((40.2+90)*degree)*mm, a*cos(40.2*degree)*mm)  );
-    //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 42.7*mm)  ); // measueing space between the strips 1
-    //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 24.1*mm)  ); //measuring space between the strips 5
-    //  gun.SetParticleMomentumDirection ( G4ThreeVector(0.,sin(40.2*degree),cos(40.2*degree)) );
-    // gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
-    //  gun.SetParticleEnergy            ( **ekin_*keV );
-    //  gun.GeneratePrimaryVertex        ( event );
+      // //////FOR TEST/////////
+      // G4double a = -4.92 * mm;
+      // a = -10 * mm;
+      // gun.SetParticleDefinition(part_geantino);
+      // gun.SetParticleDefinition(part_proton);
+      //  gun.SetParticlePosition          ( G4ThreeVector (0, 0, -6*cm)  );
+      // gun.SetParticlePosition(G4ThreeVector(15 * mm, a * cos((49.8) * degree) * mm, a * sin(49.8 * degree) * mm));
+      //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 42.7*mm)  ); // measueing space between the strips 1
+      //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 24.1*mm)  ); //measuring space between the strips 5
+      // gun.SetParticleMomentumDirection(G4ThreeVector(0., cos(49.8 * degree), -sin(49.8 * degree)));
+      // gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
+      // gun.SetParticleEnergy(**ekin_ * keV);
+      // gun.GeneratePrimaryVertex(event);
     }
   }
   (*Reader).SetEntry((*Reader).GetCurrentEntry() - 1);
