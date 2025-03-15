@@ -929,7 +929,9 @@
  /usr/local/root/6.26.10/include/TH2.h \
  /usr/local/root/6.26.10/include/TMatrixFBasefwd.h \
  /usr/local/root/6.26.10/include/TMatrixDBasefwd.h \
- include/Wisard_Tracking.hh \
+ /usr/local/root/6.26.10/include/TH3D.h \
+ /usr/local/root/6.26.10/include/TH3.h \
+ /usr/local/root/6.26.10/include/TAtt3D.h include/Wisard_Tracking.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
  include/ParticleInformation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UImanager.hh \

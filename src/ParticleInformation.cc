@@ -35,10 +35,7 @@ bool ParticleInformation::FirstHit(G4int TrackID, G4int SensorID)
 
     if (Particles[TrackID].Detectors.size() == 0)
     {
-        if (SensorID > 1000)
-            Particles[TrackID].InterStripDetectors[SensorID] = InterStripDetector{{}, {}};
-        else
-            Particles[TrackID].Detectors[SensorID] = Detector{0, 0, G4ThreeVector(0, 0, 0)};
+        Particles[TrackID].Detectors[SensorID] = Detector{0, 0, G4ThreeVector(0, 0, 0)};
         return true;
     }
     else
@@ -50,10 +47,8 @@ bool ParticleInformation::FirstHit(G4int TrackID, G4int SensorID)
                 return false;
             }
         }
-        if (SensorID > 1000)
-            Particles[TrackID].InterStripDetectors[SensorID] = InterStripDetector{{}, {}};
-        else
-            Particles[TrackID].Detectors[SensorID] = Detector{0, 0, G4ThreeVector(0, 0, 0)};
+
+        Particles[TrackID].Detectors[SensorID] = Detector{0, 0, G4ThreeVector(0, 0, 0)};
         return true;
     }
 }
@@ -75,15 +70,7 @@ void ParticleInformation::SetHitTime(G4int TrackID, G4int SensorID, G4double Hit
 
 void ParticleInformation::AddEnergyDeposit(G4int TrackID, G4int SensorID, G4double EnergyDeposit)
 {
-    if (SensorID > 1000)
-        Particles[TrackID].InterStripDetectors[SensorID].EnergyDeposit.push_back(EnergyDeposit);
-    else
-        Particles[TrackID].Detectors[SensorID].EnergyDeposit += EnergyDeposit;
-}
-
-void ParticleInformation::AddHitPosition(G4int TrackID, G4int SensorID, G4ThreeVector HitPosition)
-{
-    Particles[TrackID].InterStripDetectors[SensorID].HitPosition.push_back(HitPosition);
+    Particles[TrackID].Detectors[SensorID].EnergyDeposit += EnergyDeposit;
 }
 
 void ParticleInformation::Parse()

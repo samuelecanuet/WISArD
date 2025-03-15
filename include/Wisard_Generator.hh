@@ -27,6 +27,7 @@
 
 #include "TF2.h"
 #include "TH2D.h"
+#include "TH3D.h"
 
 
 //----------------------------------------------------------------------
@@ -74,6 +75,7 @@ protected:
     G4String particle_string;
     G4String nucleus_string;
     G4String dir_string = "0 0 1";
+    G4String pos_string = "0 0 0";
     G4String InputFileName, SRIMFileName;
     ifstream InputTXT, SRIMTXT;
     TFile *InputROOT;
@@ -83,14 +85,14 @@ protected:
     G4double energy_array[10001];
     G4int event_counter = 0;
     
-    std::tuple<G4double, G4double, G4double> tuple;
     G4double x_SRIM, y_SRIM, z_SRIM;
 
     G4ParticleDefinition *particle;
     G4ThreeVector dir;
+    G4ThreeVector pos;
     G4ParticleGun gun;
 
-    std::pair<std::vector<Histogram>, G4double> res;
+    TH3D *SRIM_HISTOGRAM;   
 
     Long64_t current_entry = 0;
 
@@ -123,8 +125,7 @@ public:
     void ION_GENERATOR(G4Event *event);
     std::function<void(G4Event*)> GENERATOR;
 
-    std::pair<std::vector<Histogram>, G4double>GetSRIM_hist();
-    std::tuple<G4double, G4double, G4double> GetSRIM_data(std::vector<Histogram>, G4double);
+    TH3D* GetSRIM_hist();
 
     void SetCatcherPosition_z(G4double catcher_z);
     void ChooseGENERATOR();
@@ -132,72 +133,21 @@ public:
     G4ThreeVector ConvertStringToG4ThreeVector(G4String);
     G4ThreeVector GetDirection(G4ThreeVector);
     G4ThreeVector Beam();
+    G4ThreeVector Catcher_Implementation();
 
 };
 
-inline std::pair<std::vector<Histogram>, G4double> Wisard_Generator::GetSRIM_hist()
+inline TH3D* Wisard_Generator::GetSRIM_hist()
 {
-    SRIMTXT.open(SRIMFileName.c_str());
-    if (SRIMTXT.fail())
+    TFile *output = new TFile((SRIMFileName).c_str(), "READ");
+    TH3D *histogram = (TH3D *)output->Get("SRIM");
+
+    if (!histogram)
     {
-        G4Exception("Wisard_Generator::GetSRIM_hist", "Impossible to open SRIM File", JustWarning, "");
+        G4Exception("Wisard_Generator::GetSRIM_hist", "Impossible to open SRIM Histogram", JustWarning, "");
     }
 
-    std::unordered_map<std::tuple<int, int, int>, int, TupleHash> value_counts;
-    G4double sum = 0;
-    
-    
-    std::string ligne;
-    while (std::getline(SRIMTXT, ligne)) {
-        
-        std::istringstream iss(ligne);
-        std::string x_str, y_str, z_str;
-       G4double num;
-        
-        if (iss >> num >> z_str >> y_str >> x_str) {
-            
-           G4double x = std::stod(x_str.replace(x_str.find(','), 1, ".")); 
-           G4double y = std::stod(y_str.replace(y_str.find(','), 1, "."));
-           G4double z = std::stod(z_str.replace(z_str.find(','), 1, "."));
-        
-            int rounded_x = static_cast<int>(std::round(x));
-            int rounded_y = static_cast<int>(std::round(y));
-            int rounded_z = static_cast<int>(std::round(z));
-            
-            std::tuple<int, int, int> key(rounded_x, rounded_y, rounded_z);
-            value_counts[key]++;
-        }
-    }
-    std::vector<Histogram> histogram_vector;
-    
-    for (const auto& pair : value_counts) {
-        Histogram histogram;
-        histogram.value_x = static_cast<G4double>(std::get<0>(pair.first));
-        histogram.value_y = static_cast<G4double>(std::get<1>(pair.first));
-        histogram.value_z = static_cast<G4double>(std::get<2>(pair.first));
-        histogram.count = pair.second;
-        sum += pair.second;
-        
-        
-        histogram_vector.push_back(histogram);
-    }
-
-    return std::make_pair(histogram_vector, sum);
-}
-
-inline std::tuple<G4double, G4double, G4double> Wisard_Generator::GetSRIM_data(std::vector<Histogram> histogram,G4double totalWeight)
-{
-    G4double randomValue = G4RandFlat::shoot(0.0, totalWeight);
-    G4double cumulativeWeight = 0.0;
-    for (const Histogram &bin : histogram)
-    {
-        cumulativeWeight += bin.count;
-        if (randomValue <= cumulativeWeight)
-        {
-            return std::make_tuple(bin.value_x, bin.value_y, bin.value_z);
-        }
-    }
-    return std::make_tuple(0.0, 0.0, 0.0);
+    return histogram;
 }
 
 inline void Wisard_Generator::SetCatcherPosition_z(G4double catcher_z)
@@ -222,7 +172,7 @@ inline void Wisard_Generator::ChooseGENERATOR()
             G4ParticleDefinition *ion = ionTable->GetIon(i, A, 0);
             if (ion->GetParticleName().substr(0, ion->GetParticleName().find_first_of("0123456789")) == symbol)
             {
-                // Z = ion->GetAtomicNumber();
+                Z = ion->GetAtomicNumber();
                 Gun_Particle = ion;
                 break;
             }
@@ -234,7 +184,7 @@ inline void Wisard_Generator::ChooseGENERATOR()
 
 
         dir = ConvertStringToG4ThreeVector(dir_string);
-        
+        pos = ConvertStringToG4ThreeVector(pos_string);
         GENERATOR = std::bind(&Wisard_Generator::ION_GENERATOR, this, std::placeholders::_1);
     }
     else if (particle_string != "")
@@ -248,6 +198,7 @@ inline void Wisard_Generator::ChooseGENERATOR()
         {
             Gun_Particle = particlee;
             dir = ConvertStringToG4ThreeVector(dir_string);
+            pos = ConvertStringToG4ThreeVector(pos_string);
             GENERATOR = std::bind(&Wisard_Generator::ION_GENERATOR, this, std::placeholders::_1);
         }
     }
@@ -307,7 +258,7 @@ inline void Wisard_Generator::InitBeam()
 
 inline G4ThreeVector Wisard_Generator::Beam()
 {
-    G4double x, y, z;
+    G4double x, y;
     x = 0;
     y = 0;
 
@@ -318,15 +269,16 @@ inline G4ThreeVector Wisard_Generator::Beam()
         HGauss2D->GetRandom2(x, y);
     }
     
-    z = Position_catcher_z;
+    return G4ThreeVector(x, y, 0);
+}
 
+inline G4ThreeVector Wisard_Generator::Catcher_Implementation()
+{
     //Adding SRIM 
-    tuple = GetSRIM_data(res.first, res.second);
-    x += get<0>(tuple) * angstrom;
-    y += get<1>(tuple) * angstrom;
-    z += get<2>(tuple) * angstrom;
+    double x, y, z;
+    SRIM_HISTOGRAM->GetRandom3(x, y, z);
 
-    return G4ThreeVector(X+x, Y+y, z);
+    return G4ThreeVector(x, y, z);
 }
 
 inline G4ThreeVector Wisard_Generator::ConvertStringToG4ThreeVector(G4String str)
@@ -357,8 +309,9 @@ inline G4ThreeVector Wisard_Generator::GetDirection(G4ThreeVector dirr)
     {
         //RANDOM DIRECTION
         G4double phi = G4UniformRand() * 2 * M_PI;
-        // G4double costheta = 2 * G4UniformRand() - 1;
-        G4double theta = G4UniformRand() * 2 * M_PI;
+        G4double costheta = 2 * G4UniformRand() - 1;
+        G4double theta = acos(costheta);
+        // G4double theta = G4UniformRand() * 2 * M_PI;
         return G4ThreeVector(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
     }
     else

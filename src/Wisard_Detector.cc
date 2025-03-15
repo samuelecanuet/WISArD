@@ -606,7 +606,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4double thicknessSource = 0.1 * mm;
   Source_Position = Support_Position + Source_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness);
 
-  Source = new G4Tubs("Source", 0., SuppCatcher_Source_radius_outer, thicknessSource / 2, 0., 360. * deg);
+  Source = new G4Tubs("Source", 0., SuppCatcher_Source_radius_inner, thicknessSource / 2, 0., 360. * deg);
   G4LogicalVolume *Logic_Source = new G4LogicalVolume(Source, vide, "Logic_Source");               // solid, material, name
   Physics_Source = new G4PVPlacement(0,                                                            // no rotation
                                      Source_Position + G4ThreeVector(0., 0., thicknessSource / 2), // position
@@ -767,33 +767,32 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // Strip n. 5
   SiDet_Strip_5_dl = new G4Trap("SiDet_Strip_5_dl",
-                                thicknessSiDetectorDeadLayer / 2, 0. * degree, 0. * degree, y_SiDet_Strip_5 / 2,
-                                xHigh_SiDet_Strip_5 / 2, xLow_SiDet_Strip_5 / 2, 0. * degree, y_SiDet_Strip_5 / 2,
-                                xHigh_SiDet_Strip_5 / 2, xLow_SiDet_Strip_5 / 2, 0. * degree);
-
-  // Strip n. 4
+                             (thicknessSiDetectorDeadLayer) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2,
+                             xHigh_SiDet_Strip_5 / 2, ( xLow_SiDet_Strip_5 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, 0. * degree, y_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2,
+                             xHigh_SiDet_Strip_5 / 2, ( xLow_SiDet_Strip_5 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, 0. * degree);
+  
+  // Strip n. 4 //
   SiDet_Strip_4_dl = new G4Trap("SiDet_Strip_4_dl",
-                                thicknessSiDetectorDeadLayer / 2, 0. * degree, 0. * degree, y_SiDet_Strip_4 / 2,
-                                xHigh_SiDet_Strip_4 / 2, xLow_SiDet_Strip_4 / 2, 0. * degree, y_SiDet_Strip_4 / 2,
-                                xHigh_SiDet_Strip_4 / 2, xLow_SiDet_Strip_4 / 2, 0. * degree);
-
-  // Strip n. 3
+                             (thicknessSiDetectorDeadLayer) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2,
+                             ( xHigh_SiDet_Strip_4 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, 0. * degree, y_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2,
+                             ( xHigh_SiDet_Strip_4 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, 0. * degree);
+  // Strip n. 3 //
   SiDet_Strip_3_dl = new G4Trap("SiDet_Strip_3_dl",
-                                thicknessSiDetectorDeadLayer / 2, 0. * degree, 0. * degree, y_SiDet_Strip_3 / 2,
-                                xHigh_SiDet_Strip_3 / 2, xLow_SiDet_Strip_3 / 2, 0. * degree, y_SiDet_Strip_3 / 2,
-                                xHigh_SiDet_Strip_3 / 2, xLow_SiDet_Strip_3 / 2, 0. * degree);
-
-  // Strip n. 2
+                             (thicknessSiDetectorDeadLayer) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2,
+                             ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, 0. * degree, y_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2,
+                             ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, 0. * degree);
+  
+  // Strip n. 2 //
   SiDet_Strip_2_dl = new G4Trap("SiDet_Strip_2_dl",
-                                thicknessSiDetectorDeadLayer / 2, 0. * degree, 0. * degree, y_SiDet_Strip_2 / 2,
-                                xHigh_SiDet_Strip_2 / 2, xLow_SiDet_Strip_2 / 2, 0. * degree, y_SiDet_Strip_2 / 2,
-                                xHigh_SiDet_Strip_2 / 2, xLow_SiDet_Strip_2 / 2, 0. * degree);
-
-  // Strip n. 1
+                             (thicknessSiDetectorDeadLayer) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2,
+                             ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, 0. * degree, y_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2,
+                             ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, 0. * degree);
+  
+  // Strip n. 1 //
   SiDet_Strip_1_dl = new G4Trap("SiDet_Strip_1_dl",
-                                thicknessSiDetectorDeadLayer / 2, 0. * degree, 0. * degree, y_SiDet_Strip_1 / 2,
-                                xHigh_SiDet_Strip_1 / 2, xLow_SiDet_Strip_1 / 2, 0. * degree, y_SiDet_Strip_1 / 2,
-                                xHigh_SiDet_Strip_1 / 2, xLow_SiDet_Strip_1 / 2, 0. * degree);
+                             (thicknessSiDetectorDeadLayer) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_1 / 2 + spazio_tra_Strip / 2,
+                             ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, xLow_SiDet_Strip_1 / 2, 0. * degree, y_SiDet_Strip_1 / 2 +  spazio_tra_Strip / 2,
+                             ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, xLow_SiDet_Strip_1 / 2, 0. * degree);
 
   //////////////////////////// Al Grid //////////////////////////////////
 
@@ -1049,6 +1048,67 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   fLogic_Killer->SetVisAttributes(Killer_att);
 
   fLogic_Killer->SetSensitiveDetector(manager_ptr->GetWisardKiller());
+
+
+    /////// SET TUBE ENTRANCE /////////
+  G4double delta_entrance = -62 * mm;
+  G4double Tube_length = 27.5*mm;
+  G4Tubs *fSolid_TubeEntrance = new G4Tubs("TubeEntranceSolid", fRadius_PlasticScintillator, fRadius_PlasticScintillator+6*mm, Tube_length/2, 0., 360 * deg);
+  G4LogicalVolume *fLogic_TubeEntrance = new G4LogicalVolume(fSolid_TubeEntrance, Cu, "TubeEntrance");                                                                                         // solid, material, name
+  G4PVPlacement *fPhys_TubeEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                               G4ThreeVector(0., 0., delta_entrance),
+                                                               fLogic_TubeEntrance, "TubeEntrance",                                                                                                                              // its fLogical volume
+                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                               false,                                                                                                                                                                          // no boolean op.
+                                                               -1);
+
+  if (fPhys_TubeEntrance == NULL)
+  {
+  }
+  fLogic_TubeEntrance->SetVisAttributes(Copper);
+
+  /////// SET PLAT ENTRANCE /////////
+  G4double Plate_tickness = 2.5*mm;
+  G4Tubs *fSolid_PlateEntrance = new G4Tubs("PlateEntranceSolid", fRadius_PlasticScintillator, 60*mm, Plate_tickness/2, 0., 360 * deg);
+  G4LogicalVolume *fLogic_PlateEntrance = new G4LogicalVolume(fSolid_PlateEntrance, Cu, "PlateEntrance");                                                                                         // solid, material, name
+  G4PVPlacement *fPhys_PlateEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                               G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2),
+                                                               fLogic_PlateEntrance, "PlateEntrance",                                                                                                                              // its fLogical volume
+                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                               false,                                                                                                                                                                          // no boolean op.
+                                                               -1); 
+
+  if (fPhys_PlateEntrance == NULL)
+  {
+  }
+
+  G4VisAttributes *PlateEntrance_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));                                                                                                                                                // red
+  PlateEntrance_att->SetForceWireframe(false);
+  PlateEntrance_att->SetForceSolid(true);
+  PlateEntrance_att->SetVisibility(true);
+  fLogic_PlateEntrance->SetVisAttributes(PlateEntrance_att);                            
+
+
+  /////// SET COLLIMATOR ENTRANCE //////
+  G4double Collimator_thickness = 2*mm;
+  G4Tubs *fSolid_CollimatorEntrance = new G4Tubs("CollimatorEntranceSolid", 2.5*mm, 2*fRadius_PlasticScintillator, Collimator_thickness/2, 0., 360 * deg);
+  G4LogicalVolume *fLogic_CollimatorEntrance = new G4LogicalVolume(fSolid_CollimatorEntrance, materialAluminum, "CollimatorEntrance");                                                                                         // solid, material, name
+  G4PVPlacement *fPhys_CollimatorEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                               G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2-Collimator_thickness),
+                                                               fLogic_CollimatorEntrance, "CollimatorEntrance",                                                                                                                              // its fLogical volume
+                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                               false,                                                                                                                                                                          // no boolean op.
+                                                               -1);   
+
+  if (fPhys_CollimatorEntrance == NULL)
+  {
+  }
+
+  G4VisAttributes *Collimator_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));                                                                                                                                                // red
+  Collimator_att->SetForceWireframe(false);
+  Collimator_att->SetForceSolid(true);
+  Collimator_att->SetVisibility(true);
+  fLogic_CollimatorEntrance->SetVisAttributes(Collimator_att);                                                                                                                                                                          // copy nb.
 
   return fPhysiWorld;
 }

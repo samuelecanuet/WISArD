@@ -10,7 +10,7 @@
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-/Input/SRIM SRIM_data/AlMylar_2021_32Ar.txt
+/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
 /Input/CRADLE %inputCRADLE
 
 #---------------------------------------------------------------

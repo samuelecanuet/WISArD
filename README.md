@@ -124,3 +124,12 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Adding particle and ion gun
 - Adding MaxNumberOfStep = 100000 to avoid infinit simulation
 - Adding StepMaxLength to Silicon Deadlayer, Grid and catcher Al complementation side
+
+### v4.2
+- Geometry modification for strips
+- Using ROOT file as input for SRIM implementation
+- Removing stepping information saved in interstrip (implemented in v3.0)
+- Adding IC for 207Bi decay in PhysicList::ConstructParticle
+- Adding the collimator in geometry
+
+

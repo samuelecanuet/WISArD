@@ -9,9 +9,9 @@
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
-/Input/SRIM SRIM_data/AlMylar_2021_32Ar.txt
+/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
 #/Input/Ion 207Bi
-/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/32Ar_CS0_CSP0_CV1_CVP1_1.root
+/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/files/32Ar_a1_b0_1.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -37,6 +37,6 @@
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 10000
+/run/printProgress 1000
 /Run/File ../../../../../../mnt/hgfs/shared-2/2024_DATA/Time_test_2.root
-/run/beamOn 10000000
+/run/beamOn 1000000

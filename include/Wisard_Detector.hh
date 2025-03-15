@@ -110,7 +110,7 @@ public:
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeStrip(int strip, int num, G4LogicalVolume *mother, G4VisAttributes *strip_att, G4Material *strip_mat);
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeDL(int strip, int num, G4LogicalVolume *mother, G4VisAttributes *strip_att, G4Material *strip_mat);
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeStripGrid(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *grid_att, G4Material *grid_mat);
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeInterStrip(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *strip_att, G4Material *strip_mat);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeInterStrip(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *strip_att);
   std::unordered_map<int, std::tuple<G4Trap* , G4ThreeVector, G4Trap *, G4VSolid*>> dic_strip;
   std::unordered_map<int, std::tuple<G4Trap *, G4ThreeVector>> dic_interstrip;
   std::unordered_map<std::string, G4ThreeVector> dic_position;
@@ -291,15 +291,15 @@ Wisard_Detector::Make_Sidet(int num, G4VisAttributes *strip_att, G4VisAttributes
     Strips[i + 9] = MakeStripGrid(i, num, Vide.first, Al, strip_mat);
     if (i != 5)
     {
-      Strips[i + 14] = MakeInterStrip(i, num, Vide.first, visAtt_PEEK, strip_mat);
+      Strips[i + 14] = MakeInterStrip(i, num, Vide.first, visAtt_PEEK);
     }
 
     Strips[i - 1].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector( ("D"+ to_string(num) + "." + to_string(i))) );
     Strips[i + 4].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector( ("D"+ to_string(num) + "." + to_string(i) + "dl") ) );
-    if (i != 5)
-    {
-      Strips[i + 14].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector( ("D"+ to_string(num) + "." + to_string(i) + to_string(i+1) + "interstrip") ) );
-    }
+    // if (i != 5)
+    // {
+    //   Strips[i + 14].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector( ("D"+ to_string(num) + "." + to_string(i) + to_string(i+1) + "interstrip") ) );
+    // }
   }
 
   return std::make_tuple(Support, Vide, Strips[0], Strips[1], Strips[2], Strips[3], Strips[4], Strips[5], Strips[6], Strips[7], Strips[8], Strips[9], Strips[10], Strips[11], Strips[12], Strips[13], Strips[14], Strips[15], Strips[16], Strips[17], Strips[18]);
@@ -446,7 +446,7 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeSt
   return std::make_pair(logicSiDet, physSiDet);
 }
 
-inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeInterStrip(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *strip_att, G4Material *strip_mat)
+inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeInterStrip(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *strip_att)
 {
   G4ThreeVector position = get<1>(dic_interstrip[strip*10+strip+1]);
   position.setZ(position.z() + thicknessSiDetector / 2);

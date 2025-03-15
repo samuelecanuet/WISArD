@@ -50,7 +50,7 @@ Wisard_Generator::Wisard_Generator(Wisard_RunManager *mgr)
   InputMessenger->DeclareProperty("SRIM", SRIMFileName)
       .SetGuidance("Set SRIM input file.")
       .SetParameterName("SRIM", false)
-      .SetDefaultValue("SRIM_data/AlMylar_2021_32Ar.txt");
+      .SetDefaultValue("SRIM_data/AlMylar_2021_32Ar.root");
 
   InputMessenger->DeclareProperty("Ion", nucleus_string)
       .SetGuidance("Set Ion.")
@@ -70,11 +70,16 @@ Wisard_Generator::Wisard_Generator(Wisard_RunManager *mgr)
   InputMessenger->DeclareProperty("Direction", dir_string)
       .SetGuidance("Set Direction.")
       .SetDefaultValue("0 0 1");
+
+  InputMessenger->DeclareProperty("Position", pos_string)
+      .SetGuidance("Set Position.")
+      .SetDefaultValue("0 0 0");
   
 }
 
 Wisard_Generator::~Wisard_Generator()
 {
+  
   delete BeamMessenger;
   delete InputMessenger;
  G4cout << "\033[31m" << "Destructor Wisard_Generator"  << "\033[0m" << G4endl;
@@ -86,7 +91,7 @@ void Wisard_Generator::GeneratePrimaries(G4Event *event)
 {
   if (event->GetEventID() == 0)
   {
-    res = Wisard_Generator::GetSRIM_hist();
+    SRIM_HISTOGRAM = Wisard_Generator::GetSRIM_hist();
     InitBeam();
     ChooseGENERATOR();
   }
@@ -161,7 +166,7 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
 {
 
   G4ThreeVector beam = Beam();
-
+  G4ThreeVector catcher_implementation = Catcher_Implementation();
 
   while (Reader->Next() && **eventid == event->GetEventID())
   {
@@ -191,10 +196,13 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
     //G4double E_p_lab_MeV = gamma_Cl_lab * (E_p_rest_MeV + beta_Cl_lab * p_p_rest_MeV * cos_theta);
     //G4double ekin_lab_keV = (E_p_lab_MeV - m_p_MeV) * MeV_to_keV;
 
+    if (particle_table->FindParticle(**code) != part_proton)
+      continue;
     gun.SetParticleDefinition(particle_table->FindParticle(**code));
-    gun.SetParticlePosition(beam);
+    gun.SetParticlePosition(beam+catcher_implementation);
     gun.SetParticleMomentumDirection(dir);
     gun.SetParticleEnergy(**ekin_*keV);
+    gun.SetParticleTime(**time_ * ns);
     gun.GeneratePrimaryVertex(event);
 
       // //////FOR TEST/////////
@@ -249,7 +257,7 @@ void Wisard_Generator::ION_GENERATOR(G4Event *event)
 {
   G4ThreeVector beam = Beam();
 
-  gun.SetParticlePosition(beam);
+  gun.SetParticlePosition(pos+beam);
   gun.SetParticleDefinition(Gun_Particle);
   gun.SetParticleCharge(0);
   gun.SetParticleEnergy(energy);

@@ -56,12 +56,7 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     }
   }
 
-  if (DetCode > 1000) // interstrip
-    PartInfo->AddHitPosition(index, DetCode, step->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(step->GetPreStepPoint()->GetPosition()) / mm);
-
-  
-
-  if (DetCode >= 11 || DetCode <= 85)
+  if (DetCode >= 11 && DetCode <= 85)
   {
   G4StepPoint *preStepPoint = step->GetPreStepPoint();
   G4ThreeVector globalPos = preStepPoint->GetPosition();
@@ -111,12 +106,12 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
       miny = distanceToExit4;
     }
 
-    G4double std = 0.1 * mm;
-    G4double offsetfrom_boundary = 0.5 * mm;
+    G4double std = 0.025 * mm;
+    // G4double offsetfrom_boundary = 0.5 * mm;
 
     // weigting with erf
-    G4double weightingx = 0.5*(1+std::erf((minx) / (std)));
-    G4double weightingy = 0.5*(1+std::erf((miny) / (std)));
+    G4double weightingx = 0.5*(1+std::erf((minx+std) / (std)));
+    G4double weightingy = 0.5*(1+std::erf((miny+std) / (std)));
 
     PartInfo->AddEnergyDeposit(index, DetCode, weightingx*weightingy*step->GetTotalEnergyDeposit() / keV);
   }

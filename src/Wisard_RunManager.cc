@@ -22,10 +22,7 @@ Wisard_RunManager::Wisard_RunManager(ParticleInformation* PartInfos) : PartInfo(
   {
     dic_detector[Detector_Code[i]] = std::make_pair(new Wisard_Sensor(PartInfo, Detector_Code[i]), new Wisard_Sensor(PartInfo, Detector_Code[i]*10));
   }
-  for (int i : InterDetector_Code)
-  {
-    dic_interdetector[i] = new Wisard_Sensor(PartInfo, i);
-  }
+
   wisard_sensor_CatcherMylar_central = new Wisard_Sensor(PartInfo, 1);
   wisard_sensor_CatcherAl1_central = new Wisard_Sensor(PartInfo, 2);
   wisard_sensor_CatcherAl2_central = new Wisard_Sensor(PartInfo, 3);
@@ -75,10 +72,6 @@ Wisard_RunManager::~Wisard_RunManager()
   {
     delete dic_detector[Detector_Code[i]].first;
     delete dic_detector[Detector_Code[i]].second;
-  }
-  for (int i : InterDetector_Code)
-  {
-    delete dic_interdetector[i];
   }
   delete wisard_sensor_CatcherMylar_central;
   delete wisard_sensor_CatcherAl1_central;
@@ -134,9 +127,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Tree->Branch("Silicon_Detector_Hit_Time", &Silicon_Detector_Hit_Time);
     Tree->Branch("Silicon_Detector_Code", &Silicon_Detector_Code);
     Tree->Branch("Silicon_Detector_DL_Energy_Deposit", &Silicon_Detector_DL_Energy_Deposit);
-    Tree->Branch("Silicon_Detector_InterStrip_Code", &Silicon_Detector_InterStrip_Code);
-    Tree->Branch("Silicon_Detector_InterStrip_Energy_Deposit", &Silicon_Detector_InterStrip_Energy_Deposit);
-    Tree->Branch("Silicon_Detector_InterStrip_Hit_Position", &Silicon_Detector_InterStrip_Hit_Position);
     ///////////////////////////////////////////////////////////////////
   }
 
@@ -202,13 +192,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
         Silicon_Detector_DL_Energy_Deposit_part.push_back(Det.second.EnergyDeposit);
       }
     }
-    // InterStrip
-    for (auto interDet : particle.InterStripDetectors)
-    {
-      Silicon_Detector_InterStrip_Code_part.push_back(interDet.first);
-      Silicon_Detector_InterStrip_Energy_Deposit_part.push_back(interDet.second.EnergyDeposit);
-      Silicon_Detector_InterStrip_Hit_Position_part.push_back(interDet.second.HitPosition);
-    }
 
     Silicon_Detector_Code.push_back(Silicon_Detector_Code_part);
     Silicon_Detector_Energy_Deposit.push_back(Silicon_Detector_Energy_Deposit_part);
@@ -217,10 +200,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Silicon_Detector_Hit_Angle.push_back(Silicon_Detector_Hit_Angle_part);
     Silicon_Detector_Hit_Time.push_back(Silicon_Detector_Hit_Time_part);
 
-    Silicon_Detector_InterStrip_Code.push_back(Silicon_Detector_InterStrip_Code_part);
-    Silicon_Detector_InterStrip_Energy_Deposit.push_back(Silicon_Detector_InterStrip_Energy_Deposit_part);
-    Silicon_Detector_InterStrip_Hit_Position.push_back(Silicon_Detector_InterStrip_Hit_Position_part);
-
     Silicon_Detector_Code_part.clear();
     Silicon_Detector_Energy_Deposit_part.clear();
     Silicon_Detector_DL_Energy_Deposit_part.clear();
@@ -228,9 +207,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
     Silicon_Detector_Hit_Angle_part.clear();
     Silicon_Detector_Hit_Time_part.clear();
 
-    Silicon_Detector_InterStrip_Code_part.clear();
-    Silicon_Detector_InterStrip_Energy_Deposit_part.clear();
-    Silicon_Detector_InterStrip_Hit_Position_part.clear();
   }
   Tree->Fill();
   // PartInfo->Parse();
@@ -277,8 +253,8 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   }
 
 
-  if (proton_index != -1 && positron_index != -1)
-  {
+  // if (proton_index != -1 && positron_index != -1)
+  // {
     for (int i = 0; i < nb_det; i++)
     {
       Detector Det = (PartInfo->GetInfo()[proton_index]).Detectors[Detector_Code[i]];
@@ -296,9 +272,9 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
       }
       silicon_single[i]->Fill(Det.EnergyDeposit);
     }
-  }
+  // }
 
-  int divi = 10000;
+  int divi = 1000;
 
   ///// Writing in file ///////////////////////////////////////////
   if (event->GetEventID() % divi == 0)
@@ -335,9 +311,6 @@ void Wisard_RunManager::AnalyzeEvent(G4Event *event)
   Silicon_Detector_Hit_Position.clear();
   Silicon_Detector_Hit_Angle.clear();
   Silicon_Detector_Hit_Time.clear();
-  Silicon_Detector_InterStrip_Code.clear();
-  Silicon_Detector_InterStrip_Energy_Deposit.clear();
-  Silicon_Detector_InterStrip_Hit_Position.clear();
   PlasticScintillator_Energy_Deposit.clear();
   PlasticScintillator_Hit_Angle.clear();
   PlasticScintillator_Hit_Position.clear();

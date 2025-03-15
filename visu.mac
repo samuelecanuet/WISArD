@@ -15,11 +15,17 @@
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-/Input/SRIM SRIM_data/AlMylar_2021_32Ar.txt
-#/Input/Ion 207Bi
-#/Input/Energy 0.5 MeV
-#/Input/Direction 0 0 1
-/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/32Ar_CS0_CSP0_CV1_CVP1_1.root
+/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
+
+
+/Input/Ion 207Bi
+/Input/Energy 0 keV
+/Input/Direction 0 0 1
+/Input/Position 0 0 0
+#/process/had/rdm/nucleusLimits 244 244 96 96
+
+
+#/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/32Ar_CS0_CSP0_CV1_CVP1_1.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -147,7 +153,7 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 2
+/run/beamOn 20
 
 #
 #

@@ -101,7 +101,7 @@ int main(int argc, char **argv)
     G4cout << G4endl;
     while (std::getline(file, line))
     {
-      if (line.find("/Input/CRADLE") != std::string::npos || line.find("/Input/Ion") != std::string::npos)
+      if (line.find("/Input/CRADLE") != std::string::npos || line.find("/Input/Ion") != std::string::npos || line.find("/Input/Particle") != std::string::npos)
       {
         if (line.find("#") == std::string::npos)
         {

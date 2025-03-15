@@ -55,19 +55,11 @@ protected:
   vector<vector<G4ThreeVector>> Silicon_Detector_Hit_Position;
   vector<vector<G4double>> Silicon_Detector_Hit_Angle, Silicon_Detector_Energy_Deposit, Silicon_Detector_DL_Energy_Deposit, Silicon_Detector_Hit_Time;
   vector<vector<G4int>> Silicon_Detector_Code;
-
-  // interstrip //
-  vector<vector<G4int>> Silicon_Detector_InterStrip_Code;
-  vector<vector<vector<G4ThreeVector>>> Silicon_Detector_InterStrip_Hit_Position;
-  vector<vector<vector<G4double>>> Silicon_Detector_InterStrip_Energy_Deposit;
   ///////////////////////
 
   vector<G4double> Silicon_Detector_Energy_Deposit_part, Silicon_Detector_DL_Energy_Deposit_part, Silicon_Detector_Hit_Angle_part, Silicon_Detector_Hit_Time_part;
   vector<G4ThreeVector> Silicon_Detector_Hit_Position_part;
   vector<G4int> Silicon_Detector_Code_part;
-  vector<vector<G4double>> Silicon_Detector_InterStrip_Energy_Deposit_part;
-  vector<vector<G4ThreeVector>> Silicon_Detector_InterStrip_Hit_Position_part;
-  vector<G4int> Silicon_Detector_InterStrip_Code_part;
 
   G4int count = 0;
 
@@ -118,20 +110,9 @@ public:
       61, 62, 63, 64, 65,
       71, 72, 73, 74, 75,
       81, 82, 83, 84, 85};
-  
-  int InterDetector_Code[32] = { 
-      1150, 1250, 1350, 1450,
-      2150, 2250, 2350, 2450,
-      3150, 3250, 3350, 3450,
-      4150, 4250, 4350, 4450,
-      5150, 5250, 5350, 5450,
-      6150, 6250, 6350, 6450,
-      7150, 7250, 7350, 7450,
-      8150, 8250, 8350, 8450};
 
       
   std::unordered_map<int, std::pair<Wisard_Sensor *, Wisard_Sensor *>> dic_detector;
-  std::unordered_map<int, Wisard_Sensor *> dic_interdetector;
 
   Wisard_Sensor *GetWisardSensor_PlasticScintillator();
   Wisard_Sensor *GetWisardSensor_Detector(string name);
@@ -195,19 +176,10 @@ inline Wisard_Sensor *Wisard_RunManager::GetWisardSensor_Detector(string name)
       return nullptr;
     }
   }
-
-  else 
+  else
   {
-    code = stoi ( name.substr(1, 1) ) * 1000 + (stoi( name.substr(3, 1) ) + stoi( name.substr(4, 1) )) * 100 / 2;
-    if (dic_interdetector.find( code ) != dic_interdetector.end())
-    {
-      return (dic_interdetector[ code ]);
-    }
-    else
-    {
-      G4Exception("GetWisard_Sensor_GetDetector", ("Detector Name not found : " + name).c_str(), JustWarning, "");
-      return nullptr;
-    }
+    G4Exception("GetWisard_Sensor_GetDetector", ("Detector Name not found : " + name).c_str(), JustWarning, "");
+    return nullptr;
   }
 }
 

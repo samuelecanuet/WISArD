@@ -715,5 +715,8 @@
  /usr/local/root/6.26.10/include/TH2.h \
  /usr/local/root/6.26.10/include/TMatrixFBasefwd.h \
  /usr/local/root/6.26.10/include/TMatrixDBasefwd.h \
+ /usr/local/root/6.26.10/include/TH3D.h \
+ /usr/local/root/6.26.10/include/TH3.h \
+ /usr/local/root/6.26.10/include/TAtt3D.h \
  /softs/geant4.11.1.2/include/Geant4/G4ParticlePropertyData.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticlePropertyData.icc

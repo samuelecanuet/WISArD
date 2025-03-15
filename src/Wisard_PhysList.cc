@@ -33,6 +33,12 @@ Wisard_PhysList::~Wisard_PhysList()
 // Register the particles that will be handled in the simulation
 void Wisard_PhysList::ConstructParticle()
 {
+   G4DeexPrecoParameters* deex = 
+    G4NuclearLevelData::GetInstance()->GetParameters();
+  deex->SetStoreAllLevels(true);
+  deex->SetStoreICLevelData (true);
+  deex->SetInternalConversionFlag (true);
+
   // pseudo-particles
   G4Geantino::GeantinoDefinition();
   G4ChargedGeantino::ChargedGeantinoDefinition();
@@ -99,8 +105,10 @@ void Wisard_PhysList::ConstructProcess()
   G4StepLimiterPhysics *process = new G4StepLimiterPhysics();
   process->ConstructProcess();
 
-  // G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics();
-  // radioactiveDecay->ConstructProcess();
+  G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics();
+  radioactiveDecay->ConstructProcess();
+
+ 
 
 }
 
@@ -134,8 +142,6 @@ void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
 {
   if (step_max == NULL)
   {
-   G4cout<< "<I> Adding a StepMax process " <<G4endl;
-
     // Step limitation seen as a process
     step_max = new StepMax;
 
@@ -195,8 +201,8 @@ void Wisard_PhysList::SetStepMax(G4double step)
   if (step_max == NULL)
     AddStepMax();
 
- G4cout<< "<I> Setting StepMax to "
-       << G4String(G4BestUnit(step, "Length")) <<G4endl;
+ G4cout << "\033[34m" << "StepMax = "
+       << G4String(G4BestUnit(step, "Length")) << "\033[0m" << G4endl;
 
   step_max->SetMaxStep(step);
 }
