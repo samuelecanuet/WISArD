@@ -20,24 +20,24 @@
 Wisard_PhysList::Wisard_PhysList()
 {
   step_max = NULL;
- G4cout << "\033[32m" << "Constructor Wisard_PhysList"  << "\033[0m" << G4endl;
-  defaultCutValue = 0.001 * um;
+  G4cout << "\033[32m" << "Constructor Wisard_PhysList" << "\033[0m" << G4endl;
+  // defaultCutValue = 0.001 * um;
 }
 
 Wisard_PhysList::~Wisard_PhysList()
 {
- G4cout << "\033[31m" << "Destructor Wisard_PhysicList"  << "\033[0m" << G4endl;
+  G4cout << "\033[31m" << "Destructor Wisard_PhysicList" << "\033[0m" << G4endl;
 }
 
 //----------------------------------------------------------------------
 // Register the particles that will be handled in the simulation
 void Wisard_PhysList::ConstructParticle()
 {
-   G4DeexPrecoParameters* deex = 
-    G4NuclearLevelData::GetInstance()->GetParameters();
+  G4DeexPrecoParameters *deex =
+      G4NuclearLevelData::GetInstance()->GetParameters();
   deex->SetStoreAllLevels(true);
-  deex->SetStoreICLevelData (true);
-  deex->SetInternalConversionFlag (true);
+  deex->SetStoreICLevelData(true);
+  deex->SetInternalConversionFlag(true);
 
   // pseudo-particles
   G4Geantino::GeantinoDefinition();
@@ -64,14 +64,11 @@ void Wisard_PhysList::ConstructParticle()
   G4PionPlus::PionPlusDefinition();
   G4PionMinus::PionMinusDefinition();
   G4PionZero::PionZeroDefinition();
-  G4Eta::EtaDefinition();
-  G4EtaPrime::EtaPrimeDefinition();
   G4KaonPlus::KaonPlusDefinition();
   G4KaonMinus::KaonMinusDefinition();
-  G4KaonZero::KaonZeroDefinition();
-  G4AntiKaonZero::AntiKaonZeroDefinition();
-  G4KaonZeroLong::KaonZeroLongDefinition();
-  G4KaonZeroShort::KaonZeroShortDefinition();
+  G4Lambda::LambdaDefinition();
+  G4AntiLambda::AntiLambdaDefinition();
+
 
   // barions
   G4Proton::ProtonDefinition();
@@ -83,7 +80,8 @@ void Wisard_PhysList::ConstructParticle()
   G4Deuteron::DeuteronDefinition();
   G4Triton::TritonDefinition();
   G4Alpha::AlphaDefinition();
-  G4GenericIon::GenericIonDefinition();  
+  G4GenericIon::GenericIonDefinition();
+  // AddStepMax(1 * mm, 0x2);
 }
 
 //----------------------------------------------------------------------
@@ -107,9 +105,6 @@ void Wisard_PhysList::ConstructProcess()
 
   G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics();
   radioactiveDecay->ConstructProcess();
-
- 
-
 }
 
 //----------------------------------------------------------------------
@@ -121,11 +116,11 @@ void Wisard_PhysList::SetCuts()
   //   the default cut value for all particle types
   SetCutsWithDefault();
 
-  SetCutValue(0.001 * um, "gamma");
-  SetCutValue(0.001 * um, "proton");
-  SetCutValue(0.001 * um, "e-");
-  SetCutValue(0.001 * um, "e+");
-  defaultCutValue = 0.001 * um;
+  // SetCutValue(0.001 * um, "gamma");
+  // SetCutValue(0.001 * um, "proton");
+  // SetCutValue(0.001 * um, "e-");
+  // SetCutValue(0.001 * um, "e+");
+  // defaultCutValue = 0.001 * um;
 }
 
 //----------------------------------------------------------------------
@@ -158,7 +153,7 @@ void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
       if (step_max->IsApplicable(*particle) && (pmanager != NULL))
       {
         bool apply = false;
-       G4double qtest = fabs(0.01 * electron_charge);
+        G4double qtest = fabs(0.01 * electron_charge);
 
         if (particle->GetPDGCharge() > qtest) // Q > 0
         {
@@ -178,7 +173,7 @@ void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
 
         if (apply)
         {
-          //G4cout<< "- step max for " << particle->GetParticleName() <<G4endl;
+          // G4cout<< "- step max for " << particle->GetParticleName() <<G4endl;
           pmanager->AddDiscreteProcess(step_max);
         }
       }
@@ -189,7 +184,7 @@ void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
   }
   else
   {
-    cerr << "<W> Wisard_PhysList::AddStepMax(): StepMax process already defined" <<G4endl;
+    cerr << "<W> Wisard_PhysList::AddStepMax(): StepMax process already defined" << G4endl;
   }
 }
 
@@ -201,8 +196,8 @@ void Wisard_PhysList::SetStepMax(G4double step)
   if (step_max == NULL)
     AddStepMax();
 
- G4cout << "\033[34m" << "StepMax = "
-       << G4String(G4BestUnit(step, "Length")) << "\033[0m" << G4endl;
+  G4cout << "\033[34m" << "StepMax = "
+         << G4String(G4BestUnit(step, "Length")) << "\033[0m" << G4endl;
 
   step_max->SetMaxStep(step);
 }

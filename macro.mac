@@ -10,13 +10,14 @@
 #   Input Files
 #---------------------------------------------------------------
 /Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
-#/Input/Ion 207Bi
-/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/files/32Ar_a1_b0_1.root
+/Input/Ion 207Bi
+#/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/files/32Ar_a1_b0_1.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
+/Run/Threads 4
 
 /Beam/X 0. mm
 /Beam/Y 0. mm
@@ -38,5 +39,5 @@
 #   Generate Events
 #---------------------------------------------------------------
 /run/printProgress 1000
-/Run/File ../../../../../../mnt/hgfs/shared-2/2024_DATA/Time_test_2.root
-/run/beamOn 1000000
+/Run/File test.root
+/run/beamOn 1000

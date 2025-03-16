@@ -1,6 +1,6 @@
 #include "ParticleInformation.hh"
 #include "G4TrackingManager.hh"
-#include "G4RunManager.hh"
+
 ParticleInformation::ParticleInformation()
 {
 }
@@ -9,7 +9,7 @@ ParticleInformation::~ParticleInformation()
 {
 }
 
-void ParticleInformation::SetParticle(G4int TrackID, G4int Particle_PDG, G4double E0, G4ThreeVector Dir, G4ThreeVector Pos)
+void ParticleInformation::SetParticle(G4int TrackID, G4int Particle_PDG, G4double E0, G4ThreeVector Dir, G4ThreeVector Pos, G4double Time)
 {
     if (Particles.find(TrackID) == Particles.end())
         AddParticle(TrackID);
@@ -18,6 +18,7 @@ void ParticleInformation::SetParticle(G4int TrackID, G4int Particle_PDG, G4doubl
     Particles[TrackID].E0 = E0;
     Particles[TrackID].Dir = Dir;
     Particles[TrackID].Pos = Pos;
+    Particles[TrackID].Time = Time;
 }
 
 void ParticleInformation::AddParticle(G4int TrackID)

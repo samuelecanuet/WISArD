@@ -11,10 +11,15 @@
 
 #include "G4Trap.hh"
 
+#include "Wisard_EventAction.hh"
+#include "G4Track.hh"
 
 
-Wisard_Sensor::Wisard_Sensor( ParticleInformation* PartInfos, G4int code) : G4VSensitiveDetector("WisardSensor"), PartInfo(PartInfos), DetCode(code)
+Wisard_Sensor::Wisard_Sensor(G4int code, G4String DetName = "Sensor") : G4VSensitiveDetector(DetName), DetCode(code)
 {
+
+  
+  
 }
 
 // destructor
@@ -24,17 +29,24 @@ Wisard_Sensor::~Wisard_Sensor()
 
 void Wisard_Sensor::Initialize(G4HCofThisEvent *)
 {
-  ResetDictionnary();
 }
 
 G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
 {
-  G4Track *track = step->GetTrack();
+  // G4cout << "ProcessHits" << G4endl;
 
-  //Getting the primary track id
+  G4EventManager *evtman = G4EventManager::GetEventManager();
+  Wisard_EventAction *evtac = (Wisard_EventAction *)evtman->GetUserEventAction();
+  ParticleInformation* PartInfo = (ParticleInformation *)evtac->GetParticleInformation();
+
+
+  G4Track *track = step->GetTrack();
+  G4int index;
+
+  // //Getting the primary track id
   if (track->GetParentID() == 0)
   {
-    index = track->GetTrackID();
+    index =track->GetTrackID();
   }
   else
   {
@@ -56,71 +68,8 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     }
   }
 
-  if (DetCode >= 11 && DetCode <= 85)
-  {
-  G4StepPoint *preStepPoint = step->GetPreStepPoint();
-  G4ThreeVector globalPos = preStepPoint->GetPosition();
-
-  // Get the local coordinates
-  G4TouchableHandle touchable = preStepPoint->GetTouchableHandle();
-  G4ThreeVector localPos = touchable->GetHistory()->GetTopTransform().TransformPoint(globalPos);
-  G4ThreeVector localDir1 = G4ThreeVector(1, 0, 0);
-  G4ThreeVector localDir2 = G4ThreeVector(-1, 0, 0);
-  G4ThreeVector localDir3 = G4ThreeVector(0, 1, 0);
-  G4ThreeVector localDir4 = G4ThreeVector(0, -1, 0);
-
-  const G4VPhysicalVolume* physVol = touchable->GetVolume();
-  const G4VSolid *solid = physVol->GetLogicalVolume()->GetSolid();
-  if (auto trap = dynamic_cast<const G4Trap *>(solid))
-  {
-    G4bool validNorm;
-    G4ThreeVector normal;
-
-    G4double distanceToExit1 = trap->DistanceToOut(localPos, localDir1, true, &validNorm, &normal);
-    // G4cout << "Distance to exit1: " << distanceToExit1 / mm << " mm" << G4endl;
-    G4double distanceToExit2 = trap->DistanceToOut(localPos, localDir2, true, &validNorm, &normal);
-    // G4cout << "Distance to exit2: " << distanceToExit2 / mm << " mm" << G4endl;
-    G4double distanceToExit3 = trap->DistanceToOut(localPos, localDir3, true, &validNorm, &normal);
-    // G4cout << "Distance to exit3: " << distanceToExit3 / mm << " mm" << G4endl;
-    G4double distanceToExit4 = trap->DistanceToOut(localPos, localDir4, true, &validNorm, &normal);
-    // G4cout << "Distance to exit4: " << distanceToExit4 / mm << " mm" << G4endl;
-
-
-    G4double minx;
-    if (distanceToExit1 < distanceToExit2)
-    {
-      minx = distanceToExit1;
-    }
-    else
-    {
-      minx = distanceToExit2;
-    }
-
-    G4double miny;
-    if (distanceToExit3 < distanceToExit4)
-    {
-      miny = distanceToExit3;
-    }
-    else
-    {
-      miny = distanceToExit4;
-    }
-
-    G4double std = 0.025 * mm;
-    // G4double offsetfrom_boundary = 0.5 * mm;
-
-    // weigting with erf
-    G4double weightingx = 0.5*(1+std::erf((minx+std) / (std)));
-    G4double weightingy = 0.5*(1+std::erf((miny+std) / (std)));
-
-    PartInfo->AddEnergyDeposit(index, DetCode, weightingx*weightingy*step->GetTotalEnergyDeposit() / keV);
-  }
-
-  }
-  else
-  {
-    PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
-  }
+  PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
+  
 
   // TODO : Add Birks law for scintillator
   // if (DetCode == 99)

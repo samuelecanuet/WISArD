@@ -213,6 +213,13 @@
  /softs/geant4.11.1.2/include/Geant4/G4ParticleDefinition.icc \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleTableIterator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StackManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserStackingAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ClassificationOfNewTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4StackedTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackStack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SmartTrackStack.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Track.hh \
  /softs/geant4.11.1.2/include/Geant4/trkdefs.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ThreeVector.hh \
@@ -302,8 +309,12 @@
  /softs/geant4.11.1.2/include/Geant4/G4StepPoint.icc \
  /softs/geant4.11.1.2/include/Geant4/G4TrackVector.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Step.icc \
- /softs/geant4.11.1.2/include/Geant4/G4Track.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrackVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrajectoryContainer.hh \
+ /softs/geant4.11.1.2/include/Geant4/evtdefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PrimaryTransformer.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PrimaryParticle.hh \
  /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
  /softs/geant4.11.1.2/include/Geant4/G4SteppingManager.hh \
  /softs/geant4.11.1.2/include/Geant4/Randomize.hh \
@@ -445,13 +456,220 @@
  /softs/geant4.11.1.2/include/Geant4/G4UItokenNum.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ApplicationState.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh \
+ include/Wisard_EventAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserEventAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Event.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PrimaryVertex.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4HCofThisEvent.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VHitsCollection.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DCofThisEvent.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VDigiCollection.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VUserEventInformation.hh \
+ include/Wisard_RunAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UserRunAction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GenericMessenger.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyType.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4AnyMethod.hh \
+ /usr/local/root/6.26.10/include/TFile.h \
+ /usr/local/root/6.26.10/include/Compression.h \
+ /usr/local/root/6.26.10/include/RtypesCore.h \
+ /usr/local/root/6.26.10/include/ROOT/RConfig.hxx \
+ /usr/local/root/6.26.10/include/ROOT/../RVersion.h \
+ /usr/local/root/6.26.10/include/RConfigure.h \
+ /usr/local/root/6.26.10/include/DllImport.h \
+ /usr/local/root/6.26.10/include/TDirectoryFile.h \
+ /usr/local/root/6.26.10/include/TDirectory.h \
+ /usr/local/root/6.26.10/include/TNamed.h \
+ /usr/local/root/6.26.10/include/TObject.h \
+ /usr/local/root/6.26.10/include/Rtypes.h \
+ /usr/local/root/6.26.10/include/strtok.h \
+ /usr/local/root/6.26.10/include/strlcpy.h /usr/include/unistd.h \
+ /usr/include/bits/posix_opt.h /usr/include/bits/environments.h \
+ /usr/include/bits/confname.h /usr/include/bits/getopt_posix.h \
+ /usr/include/bits/getopt_core.h \
+ /usr/local/root/6.26.10/include/snprintf.h \
+ /usr/local/root/6.26.10/include/TGenericClassInfo.h \
+ /usr/local/root/6.26.10/include/TSchemaHelper.h \
+ /usr/local/root/6.26.10/include/TIsAProxy.h \
+ /usr/local/root/6.26.10/include/TVirtualIsAProxy.h \
+ /usr/local/root/6.26.10/include/TStorage.h \
+ /usr/local/root/6.26.10/include/TVersionCheck.h \
+ /usr/local/root/6.26.10/include/RVersion.h \
+ /usr/local/root/6.26.10/include/TString.h \
+ /usr/local/root/6.26.10/include/TMathBase.h \
+ /usr/local/root/6.26.10/include/ROOT/RStringView.hxx \
+ /usr/local/root/6.26.10/include/ROOT/TypeTraits.hxx \
+ /usr/include/c++/8/cstdarg /usr/local/root/6.26.10/include/TClass.h \
+ /usr/local/root/6.26.10/include/TDictionary.h \
+ /usr/local/root/6.26.10/include/ESTLType.h \
+ /usr/local/root/6.26.10/include/TObjArray.h \
+ /usr/local/root/6.26.10/include/TSeqCollection.h \
+ /usr/local/root/6.26.10/include/TCollection.h \
+ /usr/local/root/6.26.10/include/TIterator.h \
+ /usr/local/root/6.26.10/include/TVirtualRWMutex.h \
+ /usr/local/root/6.26.10/include/TVirtualMutex.h \
+ /usr/local/root/6.26.10/include/ROOT/RRangeCast.hxx \
+ /usr/local/root/6.26.10/include/ROOT/RSpan.hxx \
+ /usr/local/root/6.26.10/include/ROOT/span.hxx \
+ /usr/include/c++/8/iterator /usr/include/c++/8/bits/stream_iterator.h \
+ /usr/include/c++/8/cassert /usr/include/c++/8/unordered_set \
+ /usr/include/c++/8/bits/unordered_set.h \
+ /usr/local/root/6.26.10/include/TUUID.h \
+ /usr/local/root/6.26.10/include/TList.h \
+ /usr/local/root/6.26.10/include/TBuffer.h \
+ /usr/local/root/6.26.10/include/TDataType.h \
+ /usr/local/root/6.26.10/include/Bytes.h \
+ /usr/local/root/6.26.10/include/Byteswap.h \
+ /usr/local/root/6.26.10/include/TDatime.h \
+ /usr/local/root/6.26.10/include/TUrl.h \
+ /usr/local/root/6.26.10/include/ROOT/RConcurrentHashColl.hxx \
+ /usr/local/root/6.26.10/include/Rtypes.h \
+ /usr/local/root/6.26.10/include/ROOT/TRWSpinLock.hxx \
+ /usr/local/root/6.26.10/include/ROOT/TSpinMutex.hxx \
+ /usr/local/root/6.26.10/include/TTree.h \
+ /usr/local/root/6.26.10/include/ROOT/TIOFeatures.hxx \
+ /usr/local/root/6.26.10/include/TArrayD.h \
+ /usr/local/root/6.26.10/include/TArray.h \
+ /usr/local/root/6.26.10/include/TArrayI.h \
+ /usr/local/root/6.26.10/include/TAttFill.h \
+ /usr/local/root/6.26.10/include/TAttLine.h \
+ /usr/local/root/6.26.10/include/TAttMarker.h \
+ /usr/local/root/6.26.10/include/TVirtualTreePlayer.h \
+ /usr/local/root/6.26.10/include/TBranch.h \
+ /usr/local/root/6.26.10/include/TBranchCacheInfo.h \
+ /usr/local/root/6.26.10/include/TBits.h \
+ /usr/local/root/6.26.10/include/TH1D.h \
+ /usr/local/root/6.26.10/include/TH1.h \
+ /usr/local/root/6.26.10/include/TAxis.h \
+ /usr/local/root/6.26.10/include/TAttAxis.h \
+ /usr/local/root/6.26.10/include/TArrayC.h \
+ /usr/local/root/6.26.10/include/TArrayS.h \
+ /usr/local/root/6.26.10/include/TArrayF.h \
+ /usr/local/root/6.26.10/include/Foption.h \
+ /usr/local/root/6.26.10/include/ROOT/EExecutionPolicy.hxx \
+ /usr/local/root/6.26.10/include/TVectorFfwd.h \
+ /usr/local/root/6.26.10/include/TVectorDfwd.h \
+ /usr/local/root/6.26.10/include/TFitResultPtr.h \
+ /usr/include/c++/8/cfloat \
+ /usr/lib/gcc/x86_64-redhat-linux/8/include/float.h \
+ /usr/local/root/6.26.10/include/TObjString.h \
+ /usr/local/root/6.26.10/include/TTreeReader.h \
+ /usr/local/root/6.26.10/include/TTree.h \
+ /usr/local/root/6.26.10/include/TTreeReaderUtils.h \
+ /usr/local/root/6.26.10/include/TBranchProxyDirector.h \
+ /usr/include/c++/8/list /usr/include/c++/8/bits/stl_list.h \
+ /usr/include/c++/8/bits/list.tcc \
+ /usr/local/root/6.26.10/include/TBranchProxy.h \
+ /usr/local/root/6.26.10/include/TLeaf.h \
+ /usr/local/root/6.26.10/include/TClonesArray.h \
+ /usr/local/root/6.26.10/include/TError.h \
+ /usr/local/root/6.26.10/include/DllImport.h \
+ /usr/local/root/6.26.10/include/TVirtualCollectionProxy.h \
+ /usr/local/root/6.26.10/include/TClassRef.h \
+ /usr/local/root/6.26.10/include/TNotifyLink.h \
+ /usr/local/root/6.26.10/include/TObject.h \
+ /usr/local/root/6.26.10/include/TError.h \
+ /usr/local/root/6.26.10/include/TTreeReaderValue.h \
+ /usr/include/c++/8/deque /usr/include/c++/8/bits/stl_deque.h \
+ /usr/include/c++/8/bits/deque.tcc \
+ /usr/local/root/6.26.10/include/TDirectory.h \
+ /softs/geant4.11.1.2/include/Geant4/G4UImanager.hh \
+ /softs/geant4.11.1.2/include/Geant4/icomsdefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VStateDependent.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UIcommandStatus.hh \
+ include/Wisard_Detector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VUserDetectorConstruction.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UnionSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4BooleanSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4DisplacedSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4BooleanSolid.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4GeometryManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SmartVoxelStat.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PhysicalVolumeStore.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VStoreNotifier.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VNotifier.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4LogicalVolumeStore.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SolidStore.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SubtractionSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ExtrudedSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4GeomTypes.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TwoVector.hh \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.h \
+ /softs/clhep/2.4.6.2/include/CLHEP/Vector/TwoVector.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4TessellatedSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Voxelizer.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SurfBits.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Box.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4CSGSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Polyhedron.hh \
+ /softs/geant4.11.1.2/include/Geant4/HepPolyhedron.h \
+ /softs/geant4.11.1.2/include/Geant4/G4Point3D.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Normal3D.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Visible.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Visible.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Box.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4VFacet.hh \
+ /softs/geant4.11.1.2/include/Geant4/windefs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Voxelizer.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ExtrudedSolid.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4MultiUnion.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Vector3D.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VisAttributes.hh \
+ /softs/geant4.11.1.2/include/Geant4/graphics_reps_defs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Colour.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Color.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VisAttributes.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Box.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Tubs.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Tubs.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4LogicalVolume.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4PVPlacement.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Material.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NistManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NistElementBuilder.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4NistMaterialBuilder.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ICRU90StoppingData.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Pow.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Exp.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SafetyHelper.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TransportationManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VIntegrationDriver.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4ChargeState.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldTrack.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Field.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4EquationOfMotion.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4MagIntegratorStepper.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4ChordFinder.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4FieldManager.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Trap.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4Trap.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4VSolid.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4UniformMagField.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4MagneticField.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SDManager.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SDStructure.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSensitiveDetector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VHit.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VReadOutGeometry.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4SensitiveVolumeList.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4CollectionNameVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VSDFilter.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4HCtable.hh \
  include/Wisard_Global.hh /softs/geant4.11.1.2/include/Geant4/globals.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ios.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Colour.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UnitsTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UnitsTable.icc \
+ /softs/geant4.11.1.2/include/Geant4/G4Track.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackVector.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
+ include/Wisard_Global.hh \
  /softs/geant4.11.1.2/include/Geant4/G4IonTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Ions.hh \
  /softs/geant4.11.1.2/include/Geant4/G4DynamicParticle.hh

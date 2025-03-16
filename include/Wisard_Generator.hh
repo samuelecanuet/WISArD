@@ -3,7 +3,6 @@
 
 #include "Wisard_Global.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "Wisard_RunManager.hh"
 
 #include "G4ParticleGun.hh"
 
@@ -24,37 +23,26 @@
 #include "G4IonTable.hh"
 #include "G4ParticleTable.hh"
 #include "G4Element.hh"
+#include "G4Event.hh"
 
+#include "TFile.h"
+#include "TTreeReader.h"
+#include "TTreeReaderValue.h"
+#include "TTreeReaderArray.h"
 #include "TF2.h"
 #include "TH2D.h"
 #include "TH3D.h"
 
-
-//----------------------------------------------------------------------
-struct Histogram
-{
-    G4double value_x;
-    G4double value_y;
-    G4double value_z;
-    G4int count;
-};
-
-struct TupleHash {
-    template <class T1, class T2, class T3>
-    std::size_t operator () (const std::tuple<T1, T2, T3>& t) const {
-        auto h1 = std::hash<T1>{}(std::get<0>(t));
-        auto h2 = std::hash<T2>{}(std::get<1>(t));
-        auto h3 = std::hash<T3>{}(std::get<2>(t));
-        return h1 ^ h2 ^ h3;
-    }
-};
+#include "G4AutoLock.hh"
+#include <mutex>
+#include <condition_variable>
+#include <thread>
 
 class Wisard_Generator : public G4VUserPrimaryGeneratorAction
 {
     //------------------------------------------------------------
     // internal variables definition
 protected:
-    Wisard_RunManager *manager_ptr;
     int ievent, iev_len = 0, isubevent, isubev_len = 0;
 
     G4ParticleTable *particle_table = G4ParticleTable::GetParticleTable();
@@ -67,8 +55,8 @@ protected:
     G4ParticleDefinition *part_geantino;
     G4ParticleDefinition *Gun_Particle;
 
-    G4GenericMessenger* BeamMessenger;
-    G4GenericMessenger* InputMessenger;
+    G4GenericMessenger *BeamMessenger;
+    G4GenericMessenger *InputMessenger;
     G4double X, Y, Sigma_X, Sigma_Y, Q, Position_catcher_z, Radius;
     G4int Z, A;
     G4double energy = 0;
@@ -84,7 +72,7 @@ protected:
     G4ThreeVector direction_array[10001];
     G4double energy_array[10001];
     G4int event_counter = 0;
-    
+
     G4double x_SRIM, y_SRIM, z_SRIM;
 
     G4ParticleDefinition *particle;
@@ -92,30 +80,32 @@ protected:
     G4ThreeVector pos;
     G4ParticleGun gun;
 
-    TH3D *SRIM_HISTOGRAM;   
+    TH3D *SRIM_HISTOGRAM;
 
     Long64_t current_entry = 0;
 
     //------------------------------------------------------------
     // class functions definition
 private:
-    TFile* root_file;
+    bool INIT = false;
+
+    TFile *root_file;
     unique_ptr<TTreeReader> Reader;
 
-    unique_ptr<TTreeReaderValue<Int_t>> code;
-    unique_ptr<TTreeReaderValue<Int_t>> eventid;
-    unique_ptr<TTreeReaderValue<double>> ekin_;
-    unique_ptr<TTreeReaderValue<double>> px;
-    unique_ptr<TTreeReaderValue<double>> py;
-    unique_ptr<TTreeReaderValue<double>> pz;
-    unique_ptr<TTreeReaderValue<double>> time_;
+    unique_ptr<TTreeReaderArray<Int_t>> code;
+    unique_ptr<TTreeReaderArray<double>> ekin_;
+    unique_ptr<TTreeReaderArray<double>> px;
+    unique_ptr<TTreeReaderArray<double>> py;
+    unique_ptr<TTreeReaderArray<double>> pz;
+    unique_ptr<TTreeReaderArray<double>> time_;
 
-    TH1D* Energy_Hist;
+    TH1D *Energy_Hist;
 
     TF2 *Gauss2D;
-    TH2D* HGauss2D;
+    TH2D *HGauss2D;
+
 public:
-    Wisard_Generator(Wisard_RunManager *mgr);
+    Wisard_Generator();
     ~Wisard_Generator();
 
     void GeneratePrimaries(G4Event *event);
@@ -123,9 +113,9 @@ public:
     void ROOT_GENERATOR(G4Event *event);
     void ROOT_DISTRIBUTION_GENERATOR(G4Event *event);
     void ION_GENERATOR(G4Event *event);
-    std::function<void(G4Event*)> GENERATOR;
+    std::function<void(G4Event *)> GENERATOR;
 
-    TH3D* GetSRIM_hist();
+    TH3D *GetSRIM_hist();
 
     void SetCatcherPosition_z(G4double catcher_z);
     void ChooseGENERATOR();
@@ -134,17 +124,25 @@ public:
     G4ThreeVector GetDirection(G4ThreeVector);
     G4ThreeVector Beam();
     G4ThreeVector Catcher_Implementation();
-
 };
 
-inline TH3D* Wisard_Generator::GetSRIM_hist()
+inline TH3D *Wisard_Generator::GetSRIM_hist()
 {
+
     TFile *output = new TFile((SRIMFileName).c_str(), "READ");
+
+    if (!output || output->IsZombie())
+    {
+        G4Exception("Wisard_Generator::GetSRIM_hist", "Unable to open SRIM file", JustWarning, "");
+        return nullptr;
+    }
+
     TH3D *histogram = (TH3D *)output->Get("SRIM");
 
     if (!histogram)
     {
         G4Exception("Wisard_Generator::GetSRIM_hist", "Impossible to open SRIM Histogram", JustWarning, "");
+        return nullptr;
     }
 
     return histogram;
@@ -159,15 +157,17 @@ inline void Wisard_Generator::ChooseGENERATOR()
 {
     if (nucleus_string != "" && InputFileName != "" && particle_string != "")
     {
+        // G4cout << "Both Nucleus and InputFile set in the macro" << G4endl;
         G4Exception("Wisard_Generator::ChooseGENERATOR", "Both Nucleus and InputFile set in the macro", JustWarning, "");
     }
     else if (nucleus_string != "")
     {
+        // G4cout << "Nucleus GENERATOR" << G4endl;
         A = stoi(nucleus_string.substr(0, nucleus_string.find_first_not_of("0123456789")));
         G4String symbol = nucleus_string.substr(nucleus_string.find_first_not_of("0123456789"));
         G4IonTable *ionTable = G4IonTable::GetIonTable();
         Z = -1;
-        for (int i = 1 ; i < A ; i++)
+        for (int i = 1; i < A; i++)
         {
             G4ParticleDefinition *ion = ionTable->GetIon(i, A, 0);
             if (ion->GetParticleName().substr(0, ion->GetParticleName().find_first_of("0123456789")) == symbol)
@@ -182,14 +182,14 @@ inline void Wisard_Generator::ChooseGENERATOR()
             G4Exception("Wisard_Generator::ChooseGENERATOR", "Nucleus not found", JustWarning, "");
         }
 
-
         dir = ConvertStringToG4ThreeVector(dir_string);
         pos = ConvertStringToG4ThreeVector(pos_string);
         GENERATOR = std::bind(&Wisard_Generator::ION_GENERATOR, this, std::placeholders::_1);
     }
     else if (particle_string != "")
     {
-        G4ParticleDefinition* particlee = G4ParticleTable::GetParticleTable()->FindParticle(particle_string);
+        // G4cout << "Particle GENERATOR" << G4endl;
+        G4ParticleDefinition *particlee = G4ParticleTable::GetParticleTable()->FindParticle(particle_string);
         if (!particlee)
         {
             G4Exception("Wisard_Generator::ChooseGENERATOR", "Particle not found", JustWarning, "");
@@ -204,6 +204,7 @@ inline void Wisard_Generator::ChooseGENERATOR()
     }
     else if (InputFileName.find(".txt") != std::string::npos)
     {
+        // G4cout << "TXT GENERATOR" << G4endl;
         InputTXT.open(InputFileName.c_str());
         if (InputTXT.fail())
         {
@@ -213,6 +214,7 @@ inline void Wisard_Generator::ChooseGENERATOR()
     }
     else if (InputFileName.find(".root") != std::string::npos)
     {
+        // G4cout << "ROOT GENERATOR" << G4endl;
         InputROOT = new TFile(InputFileName.c_str(), "READ");
         if (InputROOT->IsZombie())
         {
@@ -224,7 +226,7 @@ inline void Wisard_Generator::ChooseGENERATOR()
                 particle = part_alpha;
             else
                 particle = part_proton;
-            
+
             GENERATOR = std::bind(&Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR, this, std::placeholders::_1);
             Energy_Hist = (TH1D *)root_file->Get("histogram");
         }
@@ -232,13 +234,20 @@ inline void Wisard_Generator::ChooseGENERATOR()
         {
             GENERATOR = std::bind(&Wisard_Generator::ROOT_GENERATOR, this, std::placeholders::_1);
             Reader = std::make_unique<TTreeReader>("ParticleTree", InputROOT);
-            code = std::make_unique<TTreeReaderValue<int>>(*Reader, "code");
-            eventid = std::make_unique<TTreeReaderValue<int>>(*Reader, "event");
-            ekin_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "energy");
-            px = std::make_unique<TTreeReaderValue<double>>(*Reader, "px");
-            py = std::make_unique<TTreeReaderValue<double>>(*Reader, "py");
-            pz = std::make_unique<TTreeReaderValue<double>>(*Reader, "pz");
-            time_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "time");
+            // code = std::make_unique<TTreeReaderValue<int>>(*Reader, "code");
+            // eventid = std::make_unique<TTreeReaderValue<int>>(*Reader, "event");
+            // ekin_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "energy");
+            // px = std::make_unique<TTreeReaderValue<double>>(*Reader, "px");
+            // py = std::make_unique<TTreeReaderValue<double>>(*Reader, "py");
+            // pz = std::make_unique<TTreeReaderValue<double>>(*Reader, "pz");
+            // time_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "time");
+
+            code = std::make_unique<TTreeReaderArray<int>>(*Reader, "code");
+            ekin_ = std::make_unique<TTreeReaderArray<double>>(*Reader, "energy");
+            px = std::make_unique<TTreeReaderArray<double>>(*Reader, "px");
+            py = std::make_unique<TTreeReaderArray<double>>(*Reader, "py");
+            pz = std::make_unique<TTreeReaderArray<double>>(*Reader, "pz");
+            time_ = std::make_unique<TTreeReaderArray<double>>(*Reader, "time");
         }
     }
     else
@@ -253,7 +262,7 @@ inline void Wisard_Generator::InitBeam()
     Gauss2D->SetParameters(0, Sigma_X, 0, Sigma_Y);
     Gauss2D->SetNpx(10000);
     Gauss2D->SetNpy(10000);
-    HGauss2D = (TH2D*)Gauss2D->GetHistogram();
+    HGauss2D = (TH2D *)Gauss2D->GetHistogram();
 }
 
 inline G4ThreeVector Wisard_Generator::Beam()
@@ -262,23 +271,23 @@ inline G4ThreeVector Wisard_Generator::Beam()
     x = 0;
     y = 0;
 
-    //Shoot in Beam profile
+    // Shoot in Beam profile
     HGauss2D->GetRandom2(x, y);
     while (sqrt(x * x + y * y) > Radius)
     {
         HGauss2D->GetRandom2(x, y);
     }
-    
+
     return G4ThreeVector(x, y, 0);
 }
 
 inline G4ThreeVector Wisard_Generator::Catcher_Implementation()
 {
-    //Adding SRIM 
+    // Adding SRIM
     double x, y, z;
     SRIM_HISTOGRAM->GetRandom3(x, y, z);
 
-    return G4ThreeVector(x, y, z);
+    return G4ThreeVector(x * nm, y * nm, z * nm);
 }
 
 inline G4ThreeVector Wisard_Generator::ConvertStringToG4ThreeVector(G4String str)
@@ -299,7 +308,7 @@ inline G4ThreeVector Wisard_Generator::ConvertStringToG4ThreeVector(G4String str
     }
     else
     {
-        return G4ThreeVector(0,0,0);
+        return G4ThreeVector(0, 0, 0);
     }
 }
 
@@ -307,7 +316,7 @@ inline G4ThreeVector Wisard_Generator::GetDirection(G4ThreeVector dirr)
 {
     if (dirr == G4ThreeVector(0, 0, 0))
     {
-        //RANDOM DIRECTION
+        // RANDOM DIRECTION
         G4double phi = G4UniformRand() * 2 * M_PI;
         G4double costheta = 2 * G4UniformRand() - 1;
         G4double theta = acos(costheta);

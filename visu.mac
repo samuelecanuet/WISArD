@@ -9,7 +9,7 @@
 #/run/initialize
 /run/verbose      0
 /event/verbose    0
-/tracking/verbose 1
+/tracking/verbose 
 
 #---------------------------------------------------------------
 #   Input Files
@@ -25,12 +25,13 @@
 #/process/had/rdm/nucleusLimits 244 244 96 96
 
 
-#/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/32Ar_CS0_CSP0_CV1_CVP1_1.root
+#/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/test.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
+/Run/Threads 5
 
 /Beam/X 0. mm
 /Beam/Y 0. mm
@@ -38,7 +39,7 @@
 /Beam/Sigma_X 0.3 mm
 /Beam/Sigma_Y 0.3 mm
 
-/Geometry/Magnetic_Field 0 tesla
+/Geometry/Magnetic_Field 4 tesla
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
@@ -153,7 +154,7 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 20
+/run/beamOn 100
 
 #
 #

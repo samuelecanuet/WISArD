@@ -132,4 +132,5 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Adding IC for 207Bi decay in PhysicList::ConstructParticle
 - Adding the collimator in geometry
 
-
+### v4.3 
+- MT implementation

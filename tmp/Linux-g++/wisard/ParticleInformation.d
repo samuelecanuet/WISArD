@@ -441,29 +441,4 @@
  /softs/geant4.11.1.2/include/Geant4/G4UItokenNum.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ApplicationState.hh \
  /softs/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RunManager.hh \
- /usr/include/c++/8/list /usr/include/c++/8/bits/stl_list.h \
- /usr/include/c++/8/bits/list.tcc \
- /softs/geant4.11.1.2/include/Geant4/rundefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4Event.hh \
- /softs/geant4.11.1.2/include/Geant4/evtdefs.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PrimaryVertex.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PrimaryParticle.hh \
- /softs/geant4.11.1.2/include/Geant4/G4HCofThisEvent.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VHitsCollection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4DCofThisEvent.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VDigiCollection.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrajectoryContainer.hh \
- /softs/geant4.11.1.2/include/Geant4/G4VUserEventInformation.hh \
- /softs/geant4.11.1.2/include/Geant4/G4EventManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StackManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4UserStackingAction.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ClassificationOfNewTrack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4StackedTrack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrackStack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4SmartTrackStack.hh \
- /softs/geant4.11.1.2/include/Geant4/G4PrimaryTransformer.hh \
- /softs/geant4.11.1.2/include/Geant4/G4ParticleTable.hh \
- /softs/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
- /softs/geant4.11.1.2/include/Geant4/G4RunManagerKernel.hh
+ /softs/geant4.11.1.2/include/Geant4/G4VTrajectory.hh

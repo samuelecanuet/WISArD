@@ -17,6 +17,7 @@
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
+/Run/Threads %threads
 
 /Beam/X 0. mm
 /Beam/Y 0. mm

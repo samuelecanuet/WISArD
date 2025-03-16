@@ -5,14 +5,15 @@
 #include "Wisard_MagnetField.hh"
 #include "G4UserLimits.hh"
 
+#include "Wisard_Sensor.hh"
+#include "Wisard_Killer.hh"
+
 //----------------------------------------------------------------------
 
-Wisard_Detector::Wisard_Detector(Wisard_RunManager *mgr)
+Wisard_Detector::Wisard_Detector()
 {
  G4cout << "\033[32m" << "Constructor Wisard_Detectors" << "\033[0m" << G4endl;
  
-  manager_ptr = mgr;
-
   pDz = 1.5 * mm; 
   pDy1 = 34.12 * mm; 
 
@@ -147,15 +148,9 @@ Wisard_Detector::~Wisard_Detector()
  G4cout << "\033[31m" << "Destructor Wisard_Detector"  << "\033[0m" << G4endl;
 }
 
-//----------------------------------------------------------------------
 
-G4VPhysicalVolume *Wisard_Detector::Construct()
+void Wisard_Detector::ConstructSDandField()
 {
-  G4GeometryManager::GetInstance()->OpenGeometry();
-  G4PhysicalVolumeStore::GetInstance()->Clean();
-  G4LogicalVolumeStore::GetInstance()->Clean();
-  G4SolidStore::GetInstance()->Clean();
- 
   G4FieldManager *pFieldMgr;
   // G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
 
@@ -165,6 +160,59 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   pChordFinder->SetDeltaChord(0.01 * mm);
   pFieldMgr->SetChordFinder(pChordFinder);
   pFieldMgr->SetDetectorField(WisardMagField);
+
+  auto wisard_sensor_PlasticScintillator = new Wisard_Sensor(99, "PlasticScintillator");
+  SetSensitiveDetector(fLogic_PlasticScintillator, wisard_sensor_PlasticScintillator);
+
+  for (int i = 1; i <= 8; i++)
+  {
+    for (int j = 1; j <= 5; j++)
+    {
+      G4int detcode = i * 10 + j;
+      for (int k = 0; k < nb_det; k++)
+      {
+        if (Detector_Code[k] == detcode)
+        {
+          auto wisard_sensor_SiliconDetector = new Wisard_Sensor(detcode, Detector_Name[k]);
+          SetSensitiveDetector(tab[i-1][1+j].first, wisard_sensor_SiliconDetector);
+
+          auto wisard_sensor_SiliconDetectordl = new Wisard_Sensor(detcode, Detector_Name[k] + "_DL");
+          SetSensitiveDetector(tab[i-1][6+j].first, wisard_sensor_SiliconDetectordl);
+          break;
+        }
+      }
+    }
+  }
+
+  auto wisard_sensor_CatcherMylar_central = new Wisard_Sensor(1, "CatcherMylar_central");
+  SetSensitiveDetector(fLogic_MylarSource_central, wisard_sensor_CatcherMylar_central);
+  auto wisard_sensor_CatcherAl1_central = new Wisard_Sensor(2, "CatcherAl1_central");
+  SetSensitiveDetector(fLogic_AlSource1_central, wisard_sensor_CatcherAl1_central);
+  auto wisard_sensor_CatcherAl2_central = new Wisard_Sensor(3, "CatcherAl2_central");
+  SetSensitiveDetector(fLogic_AlSource2_central, wisard_sensor_CatcherAl2_central);
+  auto wisard_sensor_CatcherMylar_side = new Wisard_Sensor(4, "CatcherMylar_side");
+  SetSensitiveDetector(fLogic_MylarSource_side, wisard_sensor_CatcherMylar_side);
+  auto wisard_sensor_CatcherAl1_side = new Wisard_Sensor(5, "CatcherAl1_side");
+  SetSensitiveDetector(fLogic_AlSource1_side, wisard_sensor_CatcherAl1_side);
+  auto wisard_sensor_CatcherAl2_side = new Wisard_Sensor(6, "CatcherAl2_side");
+  SetSensitiveDetector(fLogic_AlSource2_side, wisard_sensor_CatcherAl2_side);
+
+
+  auto wisard_killer = new Wisard_Killer();
+  SetSensitiveDetector(fLogic_Killer, wisard_killer);
+  
+
+}
+//----------------------------------------------------------------------
+
+G4VPhysicalVolume *Wisard_Detector::Construct()
+{
+  G4GeometryManager::GetInstance()->OpenGeometry();
+  G4PhysicalVolumeStore::GetInstance()->Clean();
+  G4LogicalVolumeStore::GetInstance()->Clean();
+  G4SolidStore::GetInstance()->Clean();
+ 
+  
 
   
 
@@ -525,31 +573,31 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4Material *Mylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
 
   AlSource1 = new G4Tubs("AlSource1_central", 0., SuppCatcher_Catcher_radius_inner, Catcher_Thickness_Al1 / 2, 0., 360. * deg);
-  G4LogicalVolume *Logic_AlSource1_central = new G4LogicalVolume(AlSource1, Al, "LogicAlSource1_central");               // solid, material, name
+  fLogic_AlSource1_central = new G4LogicalVolume(AlSource1, Al, "LogicAlSource1_central");               // solid, material, name
   Physics_AlSource1_central = new G4PVPlacement(0,                                                                       // no rotation
                                                 Catcher_central_Position + G4ThreeVector(0., 0., Catcher_Thickness_Al1 / 2), // position
-                                                Logic_AlSource1_central, "LogicAlSource1_central",                       // its fLogical volume
+                                                fLogic_AlSource1_central, "LogicAlSource1_central",                       // its fLogical volume
                                                 logic_mother_catcher,                                                    // its mother volume
                                                 false,                                                                   // no boolean op.
                                                 0,                                                                       // copy nb.
                                                 false);                                                                  // copy nb.
-  Logic_AlSource1_central->SetUserLimits(myStepLimit);
+  fLogic_AlSource1_central->SetUserLimits(myStepLimit);
 
   MylarSource_central = new G4Tubs("MylarSource", 0., SuppCatcher_Catcher_radius_inner, Catcher_Thickness_Mylar / 2, 0., 360. * deg);
-  G4LogicalVolume *Logic_MylarSource_central = new G4LogicalVolume(MylarSource_central, Mylar, "LogicMylarSource_central");                               // solid, material, name
+  fLogic_MylarSource_central = new G4LogicalVolume(MylarSource_central, Mylar, "LogicMylarSource_central");                               // solid, material, name
   Physics_MylarSource_central = new G4PVPlacement(0,                                                                                                      // no rotation
                                                   Catcher_central_Position + G4ThreeVector(0., 0., Catcher_Thickness_Mylar / 2 + Catcher_Thickness_Al1), // position
-                                                  Logic_MylarSource_central, "Logic_MylarSource_central",                                                 // its fLogical volume
+                                                  fLogic_MylarSource_central, "Logic_MylarSource_central",                                                 // its fLogical volume
                                                   logic_mother_catcher,                                                                                   // its mother volume
                                                   false,                                                                                                  // no boolean op.
                                                   0,                                                                                                      // copy nb.
                                                   false);                                                                                                 // copy nb.
 
   AlSource2 = new G4Tubs("AlSource2_central", 0., SuppCatcher_Catcher_radius_inner, Catcher_Thickness_Al2 / 2, 0., 360. * deg);
-  G4LogicalVolume *Logic_AlSource2_central = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2_central");                                                                  // solid, material, name
+  fLogic_AlSource2_central = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2_central");                                                                  // solid, material, name
   Physics_AlSource2_central = new G4PVPlacement(0,                                                                                                                          // no rotation
                                                 Catcher_central_Position + G4ThreeVector(0., 0., Catcher_Thickness_Al1 / 2 + Catcher_Thickness_Mylar + Catcher_Thickness_Al2), // position
-                                                Logic_AlSource2_central, "LogicAlSource2_central",                                                                          // its fLogical volume
+                                                fLogic_AlSource2_central, "LogicAlSource2_central",                                                                          // its fLogical volume
                                                 logic_mother_catcher,                                                                                                       // its mother volume
                                                 false,                                                                                                                      // no boolean op.
                                                 0,                                                                                                                          // copy nb.
@@ -559,48 +607,48 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   MylarSource_att->SetVisibility(true);
   MylarSource_att->SetForceWireframe(false);
   MylarSource_att->SetForceSolid(true);
-  Logic_MylarSource_central->SetVisAttributes(MylarSource_att);
+  fLogic_MylarSource_central->SetVisAttributes(MylarSource_att);
 
   G4VisAttributes *AlSource_att = new G4VisAttributes(G4Colour(0.94, 0.2, 0.5)); // pink
   AlSource_att->SetVisibility(true);
   AlSource_att->SetForceWireframe(false);
   AlSource_att->SetForceSolid(true);
-  Logic_AlSource1_central->SetVisAttributes(AlSource_att);
-  Logic_AlSource2_central->SetVisAttributes(AlSource_att);
+  fLogic_AlSource1_central->SetVisAttributes(AlSource_att);
+  fLogic_AlSource2_central->SetVisAttributes(AlSource_att);
 
   /// SIDE
   Catcher_side_Position = Support_Position + Side_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2);
 
-  G4LogicalVolume *Logic_AlSource1_side = new G4LogicalVolume(AlSource1, Al, "LogicAlSource1_side");               // solid, material, name
+  fLogic_AlSource1_side = new G4LogicalVolume(AlSource1, Al, "LogicAlSource1_side");               // solid, material, name
   Physics_AlSource1_side = new G4PVPlacement(0,                                                                    // no rotation
                                              Catcher_side_Position + G4ThreeVector(0., 0., Catcher_Thickness_Al1 / 2), // position
-                                             Logic_AlSource1_side, "LogicAlSource1_side",                          // its fLogical volume
+                                             fLogic_AlSource1_side, "LogicAlSource1_side",                          // its fLogical volume
                                              logic_mother_catcher,                                                 // its mother volume
                                              false,                                                                // no boolean op.
                                              0,                                                                    // copy nb.
                                              false);
-  Logic_AlSource1_side->SetUserLimits(myStepLimit);
+  fLogic_AlSource1_side->SetUserLimits(myStepLimit);
 
   MylarSource_side = new G4Tubs("MylarSource", 0., SuppCatcher_Catcher_radius_inner, Catcher_Thickness_Al1 / 2, 0., 360. * deg);
-  G4LogicalVolume *Logic_MylarSource_side = new G4LogicalVolume(MylarSource_side, Mylar, "LogicMylarSource_side");                               // solid, material, name
+  fLogic_MylarSource_side = new G4LogicalVolume(MylarSource_side, Mylar, "LogicMylarSource_side");                               // solid, material, name
   Physics_MylarSource_side = new G4PVPlacement(0,                                                                                                // no rotation
                                                Catcher_side_Position + G4ThreeVector(0., 0., Catcher_Thickness_Al1 / 2 + Catcher_Thickness_Al1), // position
-                                               Logic_MylarSource_side, "Logic_MylarSource_side",                                                 // its fLogical volume
+                                               fLogic_MylarSource_side, "Logic_MylarSource_side",                                                 // its fLogical volume
                                                logic_mother_catcher,                                                                             // its mother volume
                                                false,                                                                                            // no boolean op.
                                                0,                                                                                                // copy nb.
                                                false);
-  G4LogicalVolume *Logic_AlSource2_side = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2_side");                                                               // solid, material, name
+  fLogic_AlSource2_side = new G4LogicalVolume(AlSource2, Al, "LogicAlSource2_side");                                                               // solid, material, name
   Physics_AlSource2_side = new G4PVPlacement(0,                                                                                                                    // no rotation
                                              Catcher_side_Position + G4ThreeVector(0., 0., Catcher_Thickness_Al1 / 2 + Catcher_Thickness_Al1 + Catcher_Thickness_Al2), // position
-                                             Logic_AlSource2_side, "LogicAlSource2_side",                                                                          // its fLogical volume
+                                             fLogic_AlSource2_side, "LogicAlSource2_side",                                                                          // its fLogical volume
                                              logic_mother_catcher,                                                                                                 // its mother volume
                                              false,                                                                                                                // no boolean op.
                                              0,                                                                                                                    // copy nb.
                                              false);
-  Logic_MylarSource_side->SetVisAttributes(MylarSource_att);
-  Logic_AlSource1_side->SetVisAttributes(AlSource_att);
-  Logic_AlSource2_side->SetVisAttributes(AlSource_att);
+  fLogic_MylarSource_side->SetVisAttributes(MylarSource_att);
+  fLogic_AlSource1_side->SetVisAttributes(AlSource_att);
+  fLogic_AlSource2_side->SetVisAttributes(AlSource_att);
 
   /// SOURCE
   G4double thicknessSource = 0.1 * mm;
@@ -653,12 +701,12 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
     Logic_Garage2->SetVisAttributes(visAtt_Supp_catcher);
     Logic_Garage1->SetVisAttributes(visAtt_Supp_catcher);
 
-    Logic_MylarSource_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherMylar_central());
-    Logic_AlSource1_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl1_central());
-    Logic_AlSource2_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl2_central());
-    Logic_MylarSource_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherMylar_side());
-    Logic_AlSource1_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl1_side());
-    Logic_AlSource2_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl2_side());
+    // Logic_MylarSource_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherMylar_central());
+    // Logic_AlSource1_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl1_central());
+    // Logic_AlSource2_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl2_central());
+    // Logic_MylarSource_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherMylar_side());
+    // Logic_AlSource1_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl1_side());
+    // Logic_AlSource2_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl2_side());
 
   //=========================================================================================================================
   //========================================== SILICON DETECTORS _ COMMON PARAMETERS ========================================
@@ -965,7 +1013,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   // fMaterial_PlasticScintillator->GetIonisation()->SetBirksConstant(0.126 * mm / MeV); 
 
   G4Tubs *fSolid_PlasticScintillator = new G4Tubs("PlasticScintillator", 0., fRadius_PlasticScintillator, 0.5 * fLength_PlasticScintillator, 0., 360 * deg);                                                                                   // name, r : 0->1cm, L : 5cm, phi : 0->2pi
-  G4LogicalVolume *fLogic_PlasticScintillator = new G4LogicalVolume(fSolid_PlasticScintillator, fMaterial_PlasticScintillator, "PlasticScintillator");                                                                                         // solid, material, name
+  fLogic_PlasticScintillator = new G4LogicalVolume(fSolid_PlasticScintillator, fMaterial_PlasticScintillator, "PlasticScintillator");                                                                                         // solid, material, name
   G4PVPlacement *fPhys_PlasticScintillator = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
                                                                G4ThreeVector(0., 0., z_height_Source_biggerBaseSiDet_inVerticale + distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector + fLength_PlasticScintillator / 2 + delta), // position
                                                                fLogic_PlasticScintillator, "PlasticScintillator",                                                                                                                              // its fLogical volume
@@ -1025,12 +1073,12 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   }
 
   //////// SET SENSITIVE DETECTOR OTHER THAN SiDet and Catcher /////////
-  fLogic_PlasticScintillator->SetSensitiveDetector(manager_ptr->GetWisardSensor_PlasticScintillator());
+  // fLogic_PlasticScintillator->SetSensitiveDetector(manager_ptr->GetWisardSensor_PlasticScintillator());
 
 
   /////// SET SENSITUVE DETECOR FOR KILLER //////
   G4Tubs *fSolid_Killer = new G4Tubs("KillerSolid", 0., fRadius_PlasticScintillator, 0.1*mm, 0., 360 * deg);  
-  G4LogicalVolume *fLogic_Killer = new G4LogicalVolume(fSolid_Killer, vide, "Killer");                                                                                         // solid, material, name
+  fLogic_Killer = new G4LogicalVolume(fSolid_Killer, vide, "Killer");                                                                                         // solid, material, name
   G4PVPlacement *fPhys_Killer = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
                                                                G4ThreeVector(0., 0., -85*mm), // position
                                                                fLogic_Killer, "Killer",                                                                                                                              // its fLogical volume
@@ -1047,7 +1095,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   Killer_att->SetVisibility(true);
   fLogic_Killer->SetVisAttributes(Killer_att);
 
-  fLogic_Killer->SetSensitiveDetector(manager_ptr->GetWisardKiller());
+  // fLogic_Killer->SetSensitiveDetector(manager_ptr->GetWisardKiller());
 
 
     /////// SET TUBE ENTRANCE /////////

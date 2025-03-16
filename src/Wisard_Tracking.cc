@@ -12,9 +12,10 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-Wisard_Tracking::Wisard_Tracking(ParticleInformation *Part_Infos) : G4UserTrackingAction(), Part_Info(Part_Infos)
+Wisard_Tracking::Wisard_Tracking() : G4UserTrackingAction()
 {
     G4cout << "\033[32m" << "Constructor Wisard_Tracking"  << "\033[0m" << G4endl;
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
@@ -28,11 +29,12 @@ Wisard_Tracking::~Wisard_Tracking()
 
 void Wisard_Tracking::PreUserTrackingAction(const G4Track *)
 {
+    // G4cout << "PreUserTrackingAction" << G4endl;
 }
 
 void Wisard_Tracking::PostUserTrackingAction(const G4Track *track)
 {
-
+    // G4cout << "PostUserTrackingAction" << G4endl;
     G4TrackVector *childrens = fpTrackingManager->GimmeSecondaries();
     if (track->GetParentID() == 0)
     {
@@ -44,7 +46,10 @@ void Wisard_Tracking::PostUserTrackingAction(const G4Track *track)
                 tr->SetParentID(tr->GetTrackID());
             }
         }
-        Part_Info->SetParticle(track->GetTrackID(), track->GetDefinition()->GetPDGEncoding(), track->GetVertexKineticEnergy() / keV, track->GetVertexMomentumDirection(), track->GetVertexPosition()/um);
+        G4EventManager *evtman = G4EventManager::GetEventManager();
+        Wisard_EventAction *evtac = (Wisard_EventAction *)evtman->GetUserEventAction();
+        ParticleInformation *PartInfo = (ParticleInformation *)evtac->GetParticleInformation();
+        PartInfo->SetParticle(track->GetTrackID(), track->GetDefinition()->GetPDGEncoding(), track->GetVertexKineticEnergy() / keV, track->GetVertexMomentumDirection(), track->GetVertexPosition()/um, track->GetGlobalTime()/ns);
     }
     else
     {
