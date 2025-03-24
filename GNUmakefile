@@ -1,8 +1,3 @@
-# $Id: GNUmakefile,v 1.12 2010/09/17 18:45:43 maire Exp $
-# --------------------------------------------------------------
-# GNUmakefile for examples module.  Gabriele Cosmo, 06/04/98.
-# --------------------------------------------------------------
-
 name := wisard
 G4TARGET := $(name)
 G4EXLIB := true
@@ -33,11 +28,5 @@ include $(G4INSTALL)/config/binmake.gmk
 clean_all:	clean
 		@echo "Cleaning files"
 		@\rm -Rfv bin tmp *.bck */*.bck vrmlfiles/*.wrl
-
-
-
-
-
-
-
-
+		
+		

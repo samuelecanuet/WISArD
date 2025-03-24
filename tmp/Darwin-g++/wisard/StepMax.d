@@ -1,4 +1,4 @@
-./tmp/Darwin-g++/wisard/StepMax.o tmp/Darwin-g++/wisard/StepMax.d: src/StepMax.cc include/StepMax.hh include/../Wisard_Global.hh \
+./tmp/Darwin-g++/wisard/StepMax.o tmp/Darwin-g++/wisard/StepMax.d: src/StepMax.cc include/StepMax.hh include/Wisard_Global.hh \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/pthread.h \

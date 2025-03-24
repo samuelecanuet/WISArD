@@ -1,6 +1,6 @@
 #include "Wisard_MagnetField.hh"
 
-WisardMagnetField::WisardMagnetField(const string filename, G4double value)
+WisardMagnetField::WisardMagnetField(const G4String filename, G4double value)
 {
   ifstream file(filename); // Open the file for reading.
 
@@ -14,7 +14,7 @@ WisardMagnetField::WisardMagnetField(const string filename, G4double value)
   file.getline(buffer, 256);
 
   // Read in the data
-  double z, bx, by, bz;
+ G4double z, bx, by, bz;
   for (int iz = 0; iz < nz; iz++)
   {
     file >> z >> bz >> by >> bx;
@@ -26,16 +26,16 @@ WisardMagnetField::WisardMagnetField(const string filename, G4double value)
   file.close();
 
   // for (int iz=0; iz<nz; iz++) {
-  //     G4cout << xField[iz] << " "  << yField[iz] << " "  << zField[iz] << endl;
+  //     G4cout << xField[iz] << " "  << yField[iz] << " "  << zField[iz] <<G4endl;
   //}
 }
 
-void WisardMagnetField::GetFieldValue(const double point[4],
-                                      double *Bfield) const
+void WisardMagnetField::GetFieldValue(const G4double point[4],
+                                     G4double *Bfield) const
 {
-  //  double x = point[0];
-  //  double y = point[1];
-  double z = point[2];
+  // G4double x = point[0];
+  // G4double y = point[1];
+ G4double z = point[2];
 
   // Check that the point is within the defined region
   if (z < min)

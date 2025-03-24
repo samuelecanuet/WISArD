@@ -1,5 +1,5 @@
 #include "globals.hh"
-#include "../Wisard_Global.hh"
+#include "Wisard_Global.hh"
 #include "G4MagneticField.hh"
 #include "G4ios.hh"
 
@@ -16,12 +16,12 @@ class WisardMagnetField
 {
 
   int nz;
-  double max, min;
-  double xField[1001], yField[1001], zField[1001], zval[1001];
+ G4double max, min;
+ G4double xField[1001], yField[1001], zField[1001], zval[1001];
 
 public:
-  WisardMagnetField(const string filename, G4double value);
+  WisardMagnetField(const G4String filename, G4double value);
 
-  void GetFieldValue(const double Point[3],
-                     double *Bfield) const;
+  void GetFieldValue(const G4double Point[3],
+                    G4double *Bfield) const;
 };

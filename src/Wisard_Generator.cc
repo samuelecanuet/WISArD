@@ -1,109 +1,137 @@
 #include "Wisard_Generator.hh"
 #include "G4ParticleTable.hh"
+#include "G4IonTable.hh"
 #include "Randomize.hh"
+#include "G4AutoLock.hh"
+#include "TROOT.h"
 
-//----------------------------------------------------------------------
+thread_local bool INIT = false;
 
-// Constructor
-////--------------------------------------------------
-////  Added pointer to RunManager in constructor
-Wisard_Generator::Wisard_Generator(Wisard_RunManager *mgr)
+Wisard_Generator::Wisard_Generator()
 {
-  cout << "Constructor Wisard_Generator" << endl;
+      
 
-  manager_ptr = mgr;
+ G4cout << "\033[32m" << "Constructor Wisard_Generator"  << "\033[0m" << G4endl;
+ ROOT::EnableThreadSafety();
 
-  ////--------------------------------------------------
-  ////  Memorize particle definitions
-
-  part_gamma = particle_table->FindParticle("gamma");
-  part_electron = particle_table->FindParticle("e-");
-  part_positron = particle_table->FindParticle("e+");
   part_proton = particle_table->FindParticle("proton");
   part_alpha = particle_table->FindParticle("alpha");
   part_geantino = particle_table->FindParticle("geantino");
+  part_positron = particle_table->FindParticle("e+");
+
+  BeamMessenger = new G4GenericMessenger(this, "/Beam/", "All Beam Settings");
+  InputMessenger = new G4GenericMessenger(this, "/Input/", "All Input Settings");
+
+  BeamMessenger->DeclarePropertyWithUnit("X", "mm", X)
+      .SetGuidance("Set Beam X offset.")
+      .SetParameterName("X", false)
+      .SetDefaultValue("0.0 mm");
+
+  BeamMessenger->DeclarePropertyWithUnit("Y", "mm", Y)
+      .SetGuidance("Set Beam Y offset.")
+      .SetParameterName("Y", false)
+      .SetDefaultValue("0.0 mm");
+
+  BeamMessenger->DeclarePropertyWithUnit("Radius", "mm", Radius)
+      .SetGuidance("Set Beam Radius.")
+      .SetParameterName("Radius", false)
+      .SetDefaultValue("2 mm");
+
+  BeamMessenger->DeclarePropertyWithUnit("Sigma_X", "mm", Sigma_X)
+      .SetGuidance("Set Beam Sigma_X offset.")
+      .SetParameterName("Sigma_X", false)
+      .SetDefaultValue("0.3 mm");
+
+  BeamMessenger->DeclarePropertyWithUnit("Sigma_Y", "mm", Sigma_Y)
+      .SetGuidance("Set Beam Sigma_Y offset.")
+      .SetParameterName("Sigma_Y", false)
+      .SetDefaultValue("0.3 mm");
+
+  InputMessenger->DeclareProperty("CRADLE", InputFileName)
+      .SetGuidance("Set CRADLE input file.")
+      .SetParameterName("CRADLE", false)
+      .SetDefaultValue("");
+
+  InputMessenger->DeclareProperty("SRIM", SRIMFileName)
+      .SetGuidance("Set SRIM input file.")
+      .SetParameterName("SRIM", false)
+      .SetDefaultValue("SRIM_data/AlMylar_2021_32Ar.root");
+
+  InputMessenger->DeclareProperty("Ion", nucleus_string)
+      .SetGuidance("Set Ion.")
+      .SetParameterName("Ion", false)
+      .SetDefaultValue("");
+    
+  InputMessenger->DeclareProperty("Particle", particle_string)
+      .SetGuidance("Set particle.")
+      .SetParameterName("Particle", false)
+      .SetDefaultValue("");
+
+  InputMessenger->DeclarePropertyWithUnit("Energy", "keV", energy)
+      .SetGuidance("Set Energy.")
+      .SetParameterName("Energy", false)
+      .SetDefaultValue("0.0 keV");
+
+  InputMessenger->DeclareProperty("Direction", dir_string)
+      .SetGuidance("Set Direction.")
+      .SetDefaultValue("0 0 1");
+
+  InputMessenger->DeclareProperty("Position", pos_string)
+      .SetGuidance("Set Position.")
+      .SetDefaultValue("0 0 0");
+  
 }
 
-// Destructor
 Wisard_Generator::~Wisard_Generator()
 {
-  cout << "Destructor Wisard_Generator" << endl;
+  
+  delete BeamMessenger;
+  delete InputMessenger;
+ G4cout << "\033[31m" << "Destructor Wisard_Generator"  << "\033[0m" << G4endl;
 }
 
 //----------------------------------------------------------------------
-// This function creates the primary particles for events
-// It is called by run manager the event loop
+
 void Wisard_Generator::GeneratePrimaries(G4Event *event)
 {
-  // Ouverture du fichier
-  if (event->GetEventID() == 0)
-  {
-    res = Wisard_Generator::GetSRIM_hist();
+    // G4cout << "GeneratePrimaries on Thread " << G4Threading::G4GetThreadId() << G4endl;
+    
+    if (!INIT)
+    {
+        // delclare mutex
+        SRIM_HISTOGRAM = Wisard_Generator::GetSRIM_hist();
+        InitBeam();
+        ChooseGENERATOR();
+        INIT = true;
+    }
 
-    if (manager_ptr->GetInputName().find(".txt") != std::string::npos)
-    {
-      GENERATOR = std::bind(&Wisard_Generator::TXT_GENERATOR, this, std::placeholders::_1);
-    }
-    else if (manager_ptr->GetInputName().find(".root") != std::string::npos)
-    {
-      root_file = new TFile(manager_ptr->GetInputName().c_str(), "READ");
-      GENERATOR = std::bind(&Wisard_Generator::ROOT_GENERATOR, this, std::placeholders::_1);
-      Reader = std::make_unique<TTreeReader>("ParticleTree", root_file);
-      code = std::make_unique<TTreeReaderValue<int>>(*Reader, "code");
-      eventid = std::make_unique<TTreeReaderValue<int>>(*Reader, "event");
-      ekin_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "energy");
-      px = std::make_unique<TTreeReaderValue<double>>(*Reader, "px");
-      py = std::make_unique<TTreeReaderValue<double>>(*Reader, "py");
-      pz = std::make_unique<TTreeReaderValue<double>>(*Reader, "pz");
-    }
-    else
-    {
-      G4Exception("Wisard_Generator::GeneratePrimaries", "CRADLE file wrong type (.root or .txt only)", JustWarning, "");
-    }
-  }
-
-  GENERATOR(event);
+    GENERATOR(event);
 }
 
 void Wisard_Generator::TXT_GENERATOR(G4Event *event)
 {
+  if (G4Threading::IsMasterThread())
+    G4Exception("Wisard_Generator::TXT_GENERATOR", "Not implemented in MT mode", FatalException, "");  
+
   int eventNr, totpartNr, currentsubevent, subeventNr;
   int currentpartNr = 0;
 
-  manager_ptr->GetInput_TXT() >> eventNr >> totpartNr;
-  //cout << eventNr << "\t" << totpartNr << endl;
+  InputTXT >> eventNr >> totpartNr;
+  //cout << eventNr << "\t" << totpartNr <<G4endl;
 
-  double x = 10 * mm;
-  double y = 10 * mm;
-  double z;
-
-  tuple = GetSRIM_data(res.first, res.second);
-
-  while (x >= x_beam + radius || x <= x_beam - radius)
-  {
-    x = G4RandGauss::shoot(x_beam, radius_std);
-  }
-  x += get<0>(tuple) * angstrom;
-
-  while (y >= y_beam + radius || y <= y_beam - radius)
-  {
-    y = G4RandGauss::shoot(y_beam, radius_std);
-  }
-  y += get<1>(tuple) * angstrom;
-
-  z = position_catcher_z + get<2>(tuple) * angstrom;
+  G4ThreeVector beam = Beam();
 
   while (currentpartNr < totpartNr)
   {
-    manager_ptr->GetInput_TXT() >> eventNr >> currentsubevent >> subeventNr;
-    //cout << eventNr << "\t" << currentsubevent << "\t" << subeventNr << endl;
+    InputTXT >> eventNr >> currentsubevent >> subeventNr;
+    //cout << eventNr << "\t" << currentsubevent << "\t" << subeventNr <<G4endl;
 
     for (int subindex = 0; subindex < subeventNr; subindex++)
     {
-      string name;
-      double ekin, exc, mom[4], time;
-      manager_ptr->GetInput_TXT() >> ievent >> time >> name >> exc >> ekin >> mom[0] >> dir[0] >> dir[1] >> dir[2];
-      //cout << "\t" << ievent << "\t" << time << "\t" << name << "\t" << exc << "\t" << ekin << "\t" <<  mom[0] << "\t" <<  mom[1] << "\t" <<  mom[2] << "\t" <<  mom[3] << endl;
+      G4String name;
+     G4double ekin, exc, mom[4], time;
+      InputTXT >> ievent >> time >> name >> exc >> ekin >> mom[0] >> dir[0] >> dir[1] >> dir[2];
+      //cout << "\t" << ievent << "\t" << time << "\t" << name << "\t" << exc << "\t" << ekin << "\t" <<  mom[0] << "\t" <<  mom[1] << "\t" <<  mom[2] << "\t" <<  mom[3] <<G4endl;
       currentpartNr++;
 
       if (name.compare(0, 2, "e-") == 0)
@@ -129,9 +157,8 @@ void Wisard_Generator::TXT_GENERATOR(G4Event *event)
         continue;
       }
 
-        //cout<<particle->GetParticleName()<<endl;
         gun.SetParticleDefinition(particle);
-        gun.SetParticlePosition(G4ThreeVector(x, y, z));
+        gun.SetParticlePosition(beam);
         gun.SetParticleMomentumDirection(dir);
         gun.SetParticleEnergy(ekin*keV);
         gun.GeneratePrimaryVertex(event);
@@ -149,38 +176,80 @@ void Wisard_Generator::TXT_GENERATOR(G4Event *event)
 
 void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
 {
-  double x = 10 * mm;
-  double y = 10 * mm;
-  double z;
+  // G4cout << "ROOT GENERATOR" << G4endl;
+  G4ThreeVector beam = Beam();
+  G4ThreeVector catcher_implementation = Catcher_Implementation();
 
-  tuple = GetSRIM_data(res.first, res.second);
+  Reader->SetEntry(event->GetEventID());
 
-  while (x >= x_beam + radius || x <= x_beam - radius)
+  for (long unsigned int ipar = 0; ipar < (*code).GetSize(); ipar++)
+  {  
+    if (particle_table->FindParticle((*code)[ipar]) != part_proton) 
+      continue;
+
+    dir = G4ThreeVector((*px)[ipar], (*py)[ipar], (*pz)[ipar]);
+    gun.SetParticleDefinition(particle_table->FindParticle((*code)[ipar]));
+    gun.SetParticlePosition(beam+catcher_implementation);
+    gun.SetParticleMomentumDirection(dir);
+    gun.SetParticleEnergy((*ekin_)[ipar] * keV);
+    gun.SetParticleTime((*time_)[ipar] * ns);
+    gun.GeneratePrimaryVertex(event);
+
+      // //////FOR TEST/////////
+      // G4double a = -4.92 * mm;
+      // a = -10 * mm;
+      // gun.SetParticleDefinition(part_geantino);
+      // gun.SetParticleDefinition(part_proton);
+      //  gun.SetParticlePosition          ( G4ThreeVector (0, 0, -6*cm)  );
+      // gun.SetParticlePosition(G4ThreeVector(15 * mm, a * cos((49.8) * degree) * mm, a * sin(49.8 * degree) * mm));
+      //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 42.7*mm)  ); // measueing space between the strips 1
+      //  gun.SetParticlePosition          ( G4ThreeVector (0, -55*mm, 24.1*mm)  ); //measuring space between the strips 5
+      // gun.SetParticleMomentumDirection(G4ThreeVector(0., cos(49.8 * degree), -sin(49.8 * degree)));
+      // gun.SetParticleMomentumDirection ( G4ThreeVector(0.,0.,1.) );
+      // gun.SetParticleEnergy(**ekin_ * keV);
+      // gun.GeneratePrimaryVertex(event);
+  }    
+}
+
+void Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR(G4Event *event)
+{
+  if (event_counter % 10000 == 0)
   {
-    x = G4RandGauss::shoot(x_beam, radius_std);
+    event_counter = 0;
+    for (int i = 0; i < 10000; i++)
+    {
+      G4ThreeVector beam = Beam();
+
+      // shoot isotropicaly in the sphere
+     G4double phi = G4UniformRand() * 2 * M_PI;
+     G4double costheta = 2 * G4UniformRand() - 1;
+     G4double theta = acos(costheta);
+      dir = G4ThreeVector(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+
+      position_array[i] = beam;
+      direction_array[i] = dir;
+      energy_array[i] = Energy_Hist->GetRandom() * keV;
+    }
   }
-  x += get<0>(tuple) * angstrom;
 
-  while (y >= y_beam + radius || y <= y_beam - radius)
-  {
-    y = G4RandGauss::shoot(y_beam, radius_std);
-  }
-  y += get<1>(tuple) * angstrom;
+  gun.SetParticleDefinition(particle);
+  gun.SetParticlePosition(position_array[event_counter]);
+  gun.SetParticleMomentumDirection(direction_array[event_counter]);
+  gun.SetParticleEnergy(energy_array[event_counter]);
+  gun.GeneratePrimaryVertex(event);
 
-  z = position_catcher_z + get<2>(tuple) * angstrom;
+  event_counter++;
+}
 
-  while (Reader->Next() && **eventid == event->GetEventID())
-  {
-    if (**code <= 2212 && **code != 12){
-      dir[0] = **px;
-      dir[1] = **py;
-      dir[2] = **pz;
+void Wisard_Generator::ION_GENERATOR(G4Event *event)
+{
+  // G4cout << "ION GENERATOR" << G4endl;
+  G4ThreeVector beam = Beam();
 
-      gun.SetParticleDefinition(particle_table->FindParticle(**code));
-      gun.SetParticlePosition(G4ThreeVector(x, y, z));
-      gun.SetParticleMomentumDirection(dir);
-      gun.SetParticleEnergy(**ekin_*keV);
-      gun.GeneratePrimaryVertex(event);
-  }}
-  (*Reader).SetEntry((*Reader).GetCurrentEntry()-1);
+  gun.SetParticlePosition(pos+beam);
+  gun.SetParticleDefinition(Gun_Particle);
+  gun.SetParticleCharge(0);
+  gun.SetParticleEnergy(energy);
+  gun.SetParticleMomentumDirection(GetDirection(dir));
+  gun.GeneratePrimaryVertex(event);
 }

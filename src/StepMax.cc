@@ -26,7 +26,7 @@ StepMax::StepMax(const G4double step,
 StepMax::StepMax(const StepMax &original)
     : G4VDiscreteProcess((StepMax &)original)
 {
-  cerr << "<W> StepMax: copy constructor should not be used" << endl;
+  cerr << "<W> StepMax: copy constructor should not be used" << G4endl;
 }
 
 /*! Destructor of the process.*/
@@ -78,8 +78,12 @@ G4double StepMax::PostStepGetPhysicalInteractionLength(
 /*! Apply the process at post-step.
  *  \param  track     (not documented in Geant4)
  */
-G4VParticleChange *StepMax::PostStepDoIt(const G4Track &track, const G4Step &)
+G4VParticleChange *StepMax::PostStepDoIt(const G4Track &track, const G4Step &step)
 {
+  if (track.GetCurrentStepNumber() > 100000)
+  {
+    step.GetTrack()->SetTrackStatus(fStopAndKill);
+  }
   // do nothing
   aParticleChange.Initialize(track);
   return (&aParticleChange);

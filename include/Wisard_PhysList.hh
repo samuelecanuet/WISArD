@@ -1,28 +1,43 @@
-#include "../Wisard_Global.hh"
+#include "G4VModularPhysicsList.hh"
 #include "G4VUserPhysicsList.hh"
+#include "G4ProcessManager.hh"  
+#include "G4ParticleTypes.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4EmStandardPhysics.hh"
+#include "G4EmStandardPhysics_option4.hh"
+#include "G4EmLivermorePhysics.hh"
+#include "G4EmPenelopePhysics.hh"
+#include "G4EmStandardPhysicsGS.hh"
+#include "G4EmStandardPhysics.hh"
+#include "G4DecayPhysics.hh"
+#include "G4OpticalPhysics.hh"
+#include "G4RadioactiveDecayPhysics.hh"
+#include "G4TransportationManager.hh"
+
+#include "Wisard_Global.hh"
 #include "StepMax.hh"
+
+#include "G4LossTableManager.hh"
+#include "G4UAtomicDeexcitation.hh"
+#include "G4EmParameters.hh"
 
 //----------------------------------------------------------------------
 
 class Wisard_PhysList: public G4VUserPhysicsList
 {
-
-  //------------------------------------------------------------
-  // internal variables definition
   protected:
-    // no variable defined
+    StepMax  * step_max;
 
-    StepMax  * step_max;     ///< Step max process (if defined)
-
-  //------------------------------------------------------------
-  // class functions definition
   public:
-    // constructor and destructor
     Wisard_PhysList();
     ~Wisard_PhysList();
 
+
+    G4VPhysicsConstructor *emPhysicsList;
+    G4VPhysicsConstructor *decayPhysicList;
+    G4VPhysicsConstructor *decayPhysicList1;
+
   protected:
-    // construct particle and associated physics process
     void ConstructParticle();
     void ConstructProcess();
     void SetCuts();

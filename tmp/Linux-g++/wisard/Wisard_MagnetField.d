@@ -173,7 +173,7 @@
  /usr/include/c++/8/bits/stl_map.h /usr/include/c++/8/bits/stl_multimap.h \
  /usr/include/c++/8/mutex /usr/include/c++/8/chrono \
  /usr/include/c++/8/ratio /usr/include/c++/8/bits/parse_numbers.h \
- /usr/include/c++/8/bits/std_mutex.h include/../Wisard_Global.hh \
+ /usr/include/c++/8/bits/std_mutex.h include/Wisard_Global.hh \
  /usr/include/c++/8/stdlib.h /softs/geant4.11.1.2/include/Geant4/G4ios.hh \
  /softs/geant4.11.1.2/include/Geant4/G4Colour.hh \
  /softs/geant4.11.1.2/include/Geant4/globals.hh \

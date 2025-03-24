@@ -1,5 +1,5 @@
 ./tmp/Darwin-g++/wisard/Wisard_Messenger.o tmp/Darwin-g++/wisard/Wisard_Messenger.d: src/Wisard_Messenger.cc include/Wisard_Messenger.hh \
-  include/../Wisard_Global.hh \
+  include/Wisard_Global.hh \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/pthread.h \

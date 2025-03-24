@@ -1,7 +1,7 @@
 #---------------------------------------------------------------
 #   Verbosity
 #---------------------------------------------------------------
-/run/initialize
+#/run/initialize
 /run/verbose      0
 /event/verbose    0
 /tracking/verbose 0
@@ -9,30 +9,36 @@
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
-#/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-/input/Open_SRIM SRIM_data/32Ar.txt
-/input/Open_CRADLE CRADLE_data/SAMPLE.root
+/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
+/Input/Ion 207Bi
+#/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/files/32Ar_a1_b0_1.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
-/Magnetic_Field 4 T
-/Threshoold_PlasticScintillator 100 keV
-#/Delta_Position_PlasticScintillator
+/Run/Threshold_PlasticScintillator 100 keV
+/Run/Threads 4
 
-#---------------------------------------------------------------
-#   Systematic Variables
-#---------------------------------------------------------------
-/SiDeadLayer_Thickness 100 nm
-/Beam_Size 2 mm 300 um
-/Beam_Position 0 cm 0 cm
-/Catcher_Position_z 0 mm
-/Catcher_Position catcher2 0 deg     position:[source / catcher2 / catcher1] #delta angle(degree)
-/Catcher_MylarDeltaThickness 0 um
+/Beam/X 0. mm
+/Beam/Y 0. mm
+/Beam/Radius 2.5 mm
+/Beam/Sigma_X 0.75 mm
+/Beam/Sigma_Y 0.75 mm
+
+/Geometry/Collimator true
+/Geometry/Magnetic_Field 4 tesla
+/Geometry/SiDeadLayer_Thickness 100 nm
+/Geometry/Catcher_Position_z 0 mm
+/Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Angle 0 deg
+/Geometry/Catcher_Thickness_Al1 85 nm
+/Geometry/Catcher_Thickness_Mylar 525 nm
+/Geometry/Catcher_Thickness_Al2 85 nm
+/run/reinitializeGeometry
 
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 10000
-/output SAMPLE.root
-/run/beamOn 20000
+/run/printProgress 1000
+/Run/File test.root
+/run/beamOn 1000

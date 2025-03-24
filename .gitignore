@@ -1,0 +1,5 @@
+*.wrl
+*.root
+tempory/*
+analyze
+AutoDict*

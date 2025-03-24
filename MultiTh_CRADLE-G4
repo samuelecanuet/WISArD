@@ -1,10 +1,12 @@
 #!/bin/bash
 
-rootCRADLEfile=../../../data333/lecanuet/data/
+rootCRADLEfile=../../../../data333/lecanuet/data/
 rootGeant4file=../../../data333/lecanuet/Result/
 
-rootCRADLEfile=../../../../../../mnt/hgfs/shared-2/data/
-rootGeant4file=../../../../../../mnt/hgfs/shared-2/
+rootCRADLEfile=../../../../../../mnt/hgfs/shared-2/
+rootGeant4file=../../../../../../mnt/hgfs/shared-2/2024_DATA/
+
+suffixe=""
 
 rm -rf tempory/*
 
@@ -143,7 +145,7 @@ RunEnd=${N:-$DEFAULT_N}
 events=${events:-$DEFAULT_events}
 
 
-if $a_change || $b_change; then
+if [ "$a_change" == true ] || [ "$b_change" == true ]; then
   constants="a${a}_b${b}"
   replace="s/%CS/${CS}/g; s/%CPS/${CSP}/g; s/%CV/${CV}/g; s/%CPV/${CVP}/g; s/%CA/${CA}/g; s/%CPA/${CAP}/g; s/%CT/${CT}/g; s/%CPT/${CTP}/g; s/%a/${a}/g; s/%b/${b}/g"
 else
@@ -189,6 +191,7 @@ TimeCheck=10 # in seconds
 Saver=$RunStart
 i=0
 
+
 while [ $Saver -le $RunEnd ]; do
     th=${TH[i]}
     run=${THRun[i]}
@@ -207,22 +210,25 @@ while [ $Saver -le $RunEnd ]; do
             echo "Duree Run $RunKilled : ${JourCurrent}j:${HeureCurrent}h:${MinuteCurrent}m:${SecondCurrent}s" >> "LOG/During_$Nuclei.txt"
         fi
 
-	      cd ../CRADLE-master/build
-        cp ../config/config_base.txt config_${constants}_bis.txt
-        sed -e "$replace" config_${constants}_bis.txt > ../config/config_${constants}.txt
-        rm config_${constants}_bis.txt
-        ./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.txt
-        cd -
 
-        cp macro_base.mac tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        sed -e "s|%inputCRADLE|../${rootCRADLEfile}${Nuclei}_${constants}_${Saver}.txt|g; s/%inputSRIM/${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}_${constants}_${Saver}.root|g; s/%events/${events}/g" tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}_${constants}.mac
-        rm tempory/macro_${Saver}_${Nuclei}_${constants}_bis.mac
-        wisard tempory/macro_${Saver}_${Nuclei}_${constants}.mac &
-        echo -e "$GREEN wisard tempory/macro_${Saver}_${Nuclei}_${constants}.mac $COLOR"
+        cd ../CRADLE/build &&
+        cp ../config/config_base.txt config_${constants}_bis_${Saver}.txt &&
+        sed -e "$replace" config_${constants}_bis_${Saver}.txt > ../config/config_${constants}_${Saver}.txt &&
+        rm config_${constants}_bis_${Saver}.txt &&
+        ./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}_${Saver}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}${suffixe}_${constants}_${Saver}.root && 
+        cd - && 
 
-        TH[$i]=${!}
-        THRun[$i]=$Saver
-        Saver=$(($Saver+1))
+        cp macro_base.mac tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac && 
+        sed -e "s|%inputCRADLE|../${rootCRADLEfile}${Nuclei}${suffixe}_${constants}_${Saver}.root|g; s/%inputSRIM/AlMylar_2021_${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}${suffixe}_${constants}_${Saver}.root|g; s/%events/${events}/g" tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}.mac && rm tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac && 
+        #sed -e "s|%inputCRADLE|../../../../../../../mnt/hgfs/shared-2/2024_DATA/R-MATRIX/18N_RMATRIX.root|g; s/%inputSRIM/AlMylar_2021_${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}${suffixe}_${constants}_${Saver}.root|g; s/%events/${events}/g" tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac > tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}.mac && rm tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}_bis.mac && 
+        wisard tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}.mac &
+        echo -e "$GREEN wisard tempory/macro_${Saver}_${Nuclei}${suffixe}_${constants}.mac $COLOR"
+
+        sleep 5
+
+            TH[$i]=${!}
+            THRun[$i]=$Saver
+            Saver=$(($Saver+1))
     fi
     i=$(($i+1))
     if [ $i -eq $nProcess ]; then
