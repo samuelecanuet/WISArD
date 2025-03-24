@@ -39,6 +39,7 @@
 /Beam/Sigma_X 0.3 mm
 /Beam/Sigma_Y 0.3 mm
 
+/Geometry/Collimator false
 /Geometry/Magnetic_Field 4 tesla
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
@@ -154,7 +155,7 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 100
+/run/beamOn 10
 
 #
 #

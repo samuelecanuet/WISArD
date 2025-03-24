@@ -25,6 +25,7 @@
 /Beam/Sigma_X 0.75 mm
 /Beam/Sigma_Y 0.75 mm
 
+/Geometry/Collimator true
 /Geometry/Magnetic_Field 4 tesla
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm

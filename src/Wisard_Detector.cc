@@ -108,6 +108,11 @@ Wisard_Detector::Wisard_Detector()
       .SetParameterName("Magnetic_Field", false)
       .SetDefaultValue("4 tesla");
   
+  GeometryMessenger->DeclareProperty("Collimator", Collimator_flag)
+      .SetGuidance("Set Collimator.")
+      .SetParameterName("Collimator_flag", false)
+      .SetDefaultValue("true");
+  
   GeometryMessenger->DeclarePropertyWithUnit("Catcher_Position_z", "mm", Catcher_Position_z)
       .SetGuidance("Set Catcher Position z.")
       .SetParameterName("Catcher_Position_z", false)
@@ -1138,25 +1143,28 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
 
   /////// SET COLLIMATOR ENTRANCE //////
-  G4double Collimator_thickness = 2*mm;
-  G4Tubs *fSolid_CollimatorEntrance = new G4Tubs("CollimatorEntranceSolid", 2.5*mm, 2*fRadius_PlasticScintillator, Collimator_thickness/2, 0., 360 * deg);
-  G4LogicalVolume *fLogic_CollimatorEntrance = new G4LogicalVolume(fSolid_CollimatorEntrance, materialAluminum, "CollimatorEntrance");                                                                                         // solid, material, name
-  G4PVPlacement *fPhys_CollimatorEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
-                                                               G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2-Collimator_thickness),
-                                                               fLogic_CollimatorEntrance, "CollimatorEntrance",                                                                                                                              // its fLogical volume
-                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
-                                                               false,                                                                                                                                                                          // no boolean op.
-                                                               -1);   
-
-  if (fPhys_CollimatorEntrance == NULL)
+  if (Collimator_flag)
   {
-  }
+    G4double Collimator_thickness = 2*mm;
+    G4Tubs *fSolid_CollimatorEntrance = new G4Tubs("CollimatorEntranceSolid", 2.5*mm, 2*fRadius_PlasticScintillator, Collimator_thickness/2, 0., 360 * deg);
+    G4LogicalVolume *fLogic_CollimatorEntrance = new G4LogicalVolume(fSolid_CollimatorEntrance, materialAluminum, "CollimatorEntrance");                                                                                         // solid, material, name
+    G4PVPlacement *fPhys_CollimatorEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                                G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2-Collimator_thickness),
+                                                                fLogic_CollimatorEntrance, "CollimatorEntrance",                                                                                                                              // its fLogical volume
+                                                                fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                                false,                                                                                                                                                                          // no boolean op.
+                                                                -1);   
 
-  G4VisAttributes *Collimator_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));                                                                                                                                                // red
-  Collimator_att->SetForceWireframe(false);
-  Collimator_att->SetForceSolid(true);
-  Collimator_att->SetVisibility(true);
-  fLogic_CollimatorEntrance->SetVisAttributes(Collimator_att);                                                                                                                                                                          // copy nb.
+    if (fPhys_CollimatorEntrance == NULL)
+    {
+    }
+
+    G4VisAttributes *Collimator_att = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));                                                                                                                                                // red
+    Collimator_att->SetForceWireframe(false);
+    Collimator_att->SetForceSolid(true);
+    Collimator_att->SetVisibility(true);
+    fLogic_CollimatorEntrance->SetVisAttributes(Collimator_att);  
+  }                                                                                                                                                                        // copy nb.
 
   return fPhysiWorld;
 }
