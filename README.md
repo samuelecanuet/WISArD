@@ -4,6 +4,7 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 
 ## Prerequisites
 - **Geant4 11.1.2**
+- **CLHELP**
 - **ROOT** 
 - **PyROOT** (only for *Analyze.py*)
 - **Environement variables :**

@@ -77,6 +77,7 @@
         "plot.C": "cpp",
         "Fitting_B.C": "cpp",
         "script.C": "cpp",
-        "test.C": "cpp"
+        "test.C": "cpp",
+        "Resolution_Alpha.C": "cpp"
     }
 }

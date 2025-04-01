@@ -164,6 +164,8 @@ void Wisard_Detector::ConstructSDandField()
   G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
   pChordFinder->SetDeltaChord(0.01 * mm);
   pFieldMgr->SetChordFinder(pChordFinder);
+  pFieldMgr->SetMinimumEpsilonStep(1e-5);
+  pFieldMgr->SetMaximumEpsilonStep(1e-5);
   pFieldMgr->SetDetectorField(WisardMagField);
 
   auto wisard_sensor_PlasticScintillator = new Wisard_Sensor(99, "PlasticScintillator");

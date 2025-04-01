@@ -94,11 +94,9 @@ Wisard_Generator::~Wisard_Generator()
 
 void Wisard_Generator::GeneratePrimaries(G4Event *event)
 {
-    // G4cout << "GeneratePrimaries on Thread " << G4Threading::G4GetThreadId() << G4endl;
     
     if (!INIT)
     {
-        // delclare mutex
         SRIM_HISTOGRAM = Wisard_Generator::GetSRIM_hist();
         InitBeam();
         ChooseGENERATOR();
@@ -184,9 +182,6 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
 
   for (long unsigned int ipar = 0; ipar < (*code).GetSize(); ipar++)
   {  
-    if (particle_table->FindParticle((*code)[ipar]) != part_proton) 
-      continue;
-
     dir = G4ThreeVector((*px)[ipar], (*py)[ipar], (*pz)[ipar]);
     gun.SetParticleDefinition(particle_table->FindParticle((*code)[ipar]));
     gun.SetParticlePosition(beam+catcher_implementation);
@@ -219,14 +214,15 @@ void Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR(G4Event *event)
     for (int i = 0; i < 10000; i++)
     {
       G4ThreeVector beam = Beam();
+      G4ThreeVector catcher_implentation = Catcher_Implementation();
 
       // shoot isotropicaly in the sphere
-     G4double phi = G4UniformRand() * 2 * M_PI;
-     G4double costheta = 2 * G4UniformRand() - 1;
-     G4double theta = acos(costheta);
+      G4double phi = G4UniformRand() * 2 * M_PI;
+      G4double costheta = 2 * G4UniformRand() - 1;
+      G4double theta = acos(costheta);
       dir = G4ThreeVector(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
 
-      position_array[i] = beam;
+      position_array[i] = beam+catcher_implentation;
       direction_array[i] = dir;
       energy_array[i] = Energy_Hist->GetRandom() * keV;
     }

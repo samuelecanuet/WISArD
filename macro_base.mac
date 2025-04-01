@@ -10,8 +10,10 @@
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
-/Input/CRADLE %inputCRADLE
+#/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
+/Input/SRIM SRIM_data/AlMylar_20Mg.root
+#/Input/CRADLE %inputCRADLE
+/Input/CRADLE CRADLE_data/18N_RMATRIX.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters

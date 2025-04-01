@@ -174,7 +174,7 @@ cd ../CRADLE/build &&
 cp ../config/config_base.txt config_${constants}_bis.txt &&
 sed -e "$replace" config_${constants}_bis.txt > ../config/config_${constants}.txt &&
 rm config_${constants}_bis.txt &&
-./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}${suffixe}_${constants}.root && 
+./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}${suffixe}_${constants}.root -t ${N} && 
 cd - && 
 
 cp macro_base.mac tempory/macro_${Nuclei}${suffixe}_${constants}_bis.mac && 

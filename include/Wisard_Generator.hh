@@ -89,7 +89,6 @@ protected:
 private:
     bool INIT = false;
 
-    TFile *root_file;
     unique_ptr<TTreeReader> Reader;
 
     unique_ptr<TTreeReaderArray<Int_t>> code;
@@ -220,28 +219,28 @@ inline void Wisard_Generator::ChooseGENERATOR()
         {
             G4Exception("Wisard_Generator::ChooseGENERATOR", "Impossible to open input ROOT file", JustWarning, "");
         }
-        if (InputFileName.find("RMATRIX") != std::string::npos)
+
+        // prijnt all the object of the tfile 
+        for (auto key : *InputROOT->GetListOfKeys())
+        {
+            cout << key->GetName() << endl;
+        }
+
+
+        Energy_Hist = (TH1D *)InputROOT->Get("histogram");
+        if (Energy_Hist != NULL)
         {
             if (InputFileName.find("32Ar") == std::string::npos && InputFileName.find("33Ar") == std::string::npos)
                 particle = part_alpha;
             else
                 particle = part_proton;
-
+            
             GENERATOR = std::bind(&Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR, this, std::placeholders::_1);
-            Energy_Hist = (TH1D *)root_file->Get("histogram");
         }
         else
         {
             GENERATOR = std::bind(&Wisard_Generator::ROOT_GENERATOR, this, std::placeholders::_1);
             Reader = std::make_unique<TTreeReader>("ParticleTree", InputROOT);
-            // code = std::make_unique<TTreeReaderValue<int>>(*Reader, "code");
-            // eventid = std::make_unique<TTreeReaderValue<int>>(*Reader, "event");
-            // ekin_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "energy");
-            // px = std::make_unique<TTreeReaderValue<double>>(*Reader, "px");
-            // py = std::make_unique<TTreeReaderValue<double>>(*Reader, "py");
-            // pz = std::make_unique<TTreeReaderValue<double>>(*Reader, "pz");
-            // time_ = std::make_unique<TTreeReaderValue<double>>(*Reader, "time");
-
             code = std::make_unique<TTreeReaderArray<int>>(*Reader, "code");
             ekin_ = std::make_unique<TTreeReaderArray<double>>(*Reader, "energy");
             px = std::make_unique<TTreeReaderArray<double>>(*Reader, "px");

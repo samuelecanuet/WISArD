@@ -193,6 +193,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info)
 
   /// HISTOGRAMS ///
   //  Init
+  /*
   for (auto &pair : Part_Info->GetInfo())
   {
     Particle particle = pair.second;
@@ -252,10 +253,11 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info)
     silicon_single[i]->Fill(Det.EnergyDeposit);
   }
   // }
+  */
 
-  G4int divi = 1000;
+  G4int divi = 10000;
   G4int EventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
-  if (EventID % divi == 0 || Forced)
+  if (EventID % divi == 0)
   {
     WrittingTree();
   }
