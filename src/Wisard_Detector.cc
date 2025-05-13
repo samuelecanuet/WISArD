@@ -21,7 +21,7 @@ Wisard_Detector::Wisard_Detector()
   thicknessSiDetectorGrid = 700. * nm;
   WidthSiDetectorGrid = 30 * um;
   spazio_tra_Bordo_e_strip5 = 1.29 * mm + 0.225 * mm; 
-  spazio_tra_Strip = 0.07 * mm;                    
+  spazio_tra_Strip = 70 * um;                    
   thetaInclinazione_SiDetector = 52.64 * degree;
   G4double spazio_tra_Scintillatore_e_BordoSiDetector = 3.745 * mm;
 
@@ -103,16 +103,21 @@ Wisard_Detector::Wisard_Detector()
       .SetParameterName("SiDeadLayer_Thickness", false)
       .SetDefaultValue("100 nm");
 
-  GeometryMessenger->DeclarePropertyWithUnit("Magnetic_Field", "tesla", Magnetic_Field)
+  GeometryMessenger->DeclarePropertyWithUnit("Magnetic_Field_Value", "tesla", Magnetic_Field)
       .SetGuidance("Set Magnetic Field.")
-      .SetParameterName("Magnetic_Field", false)
+      .SetParameterName("Magnetic_Field value", false)
       .SetDefaultValue("4 tesla");
-  
+
+  GeometryMessenger->DeclareProperty("Magnetic_Field_Mapping", Magnetic_Field_Mapping_flag)
+      .SetGuidance("Set Magnetic Field map.")
+      .SetParameterName("Magnetic_Field", false)
+      .SetDefaultValue("false");
+
   GeometryMessenger->DeclareProperty("Collimator", Collimator_flag)
       .SetGuidance("Set Collimator.")
       .SetParameterName("Collimator_flag", false)
       .SetDefaultValue("true");
-  
+
   GeometryMessenger->DeclarePropertyWithUnit("Catcher_Position_z", "mm", Catcher_Position_z)
       .SetGuidance("Set Catcher Position z.")
       .SetParameterName("Catcher_Position_z", false)
@@ -157,9 +162,12 @@ Wisard_Detector::~Wisard_Detector()
 void Wisard_Detector::ConstructSDandField()
 {
   G4FieldManager *pFieldMgr;
-  // G4MagneticField *WisardMagField = new WisardMagnetField("MAGNETIC_FIELD_data/wisard_field_complete.txt", 0.004); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
+  G4MagneticField *WisardMagField = nullptr;
+  if (Magnetic_Field_Mapping_flag)
+    WisardMagField = new WisardMagnetField(Magnetic_Field); /// NON UNIFORM MAG FIELD GETFIELDVALUE method
+  else
+    WisardMagField = new G4UniformMagField(G4ThreeVector(0., 0., Magnetic_Field));
 
-  G4MagneticField *WisardMagField = new G4UniformMagField(G4ThreeVector(0., 0., Magnetic_Field));
   pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
   G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
   pChordFinder->SetDeltaChord(0.01 * mm);
@@ -204,11 +212,11 @@ void Wisard_Detector::ConstructSDandField()
   auto wisard_sensor_CatcherAl2_side = new Wisard_Sensor(6, "CatcherAl2_side");
   SetSensitiveDetector(fLogic_AlSource2_side, wisard_sensor_CatcherAl2_side);
 
-
-  auto wisard_killer = new Wisard_Killer();
-  SetSensitiveDetector(fLogic_Killer, wisard_killer);
-  
-
+  if (!Magnetic_Field_Mapping_flag)
+  {
+    auto wisard_killer = new Wisard_Killer();
+    SetSensitiveDetector(fLogic_Killer, wisard_killer);
+  }
 }
 //----------------------------------------------------------------------
 
@@ -219,7 +227,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4LogicalVolumeStore::GetInstance()->Clean();
   G4SolidStore::GetInstance()->Clean();
  
-  
+  bool BeamLineVisibility = true;  
 
   
 
@@ -228,7 +236,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //--------------------------------------------------------------------------------------
   G4double innerRadius = 0 * cm;
   G4double outerRadius = 6.5 * cm; // réduit au raypon du Bore pour opti6.5
-  G4double length = 21. * cm;      // réduit pour opti21cm
+  G4double length = 210. * cm;      // réduit pour opti21cm
   G4double theta1 = 90.0 * deg;
   G4double phi = 360.0 * deg;
 
@@ -283,7 +291,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // - make the bore volume "visible"
   G4VisAttributes *visAtt_WISARDMagnet = new G4VisAttributes(G4Colour(0.5, 0.7, 0.7, 0.2));
-  visAtt_WISARDMagnet->SetVisibility(false);
+  visAtt_WISARDMagnet->SetVisibility(BeamLineVisibility);
   visAtt_WISARDMagnet->SetForceWireframe(false);
   visAtt_WISARDMagnet->SetForceSolid(true);
   wisard_logic->SetVisAttributes(visAtt_WISARDMagnet);
@@ -316,7 +324,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // - make the bore volume "visible"
   G4VisAttributes *visAttr_Bore = new G4VisAttributes(G4Colour(0.4, 0.4, 0.4, 0.2));
-  visAttr_Bore->SetVisibility(false);
+  visAttr_Bore->SetVisibility(BeamLineVisibility);
   visAttr_Bore->SetForceWireframe(false);
   visAttr_Bore->SetForceSolid(true);
   bore_logic->SetVisAttributes(visAttr_Bore);
@@ -351,7 +359,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                           false); // copy number
 
   G4VisAttributes *visAtt_MYCILINDER = new G4VisAttributes(G4Colour(1, 1, 0)); // white
-  visAtt_MYCILINDER->SetVisibility(false);
+  visAtt_MYCILINDER->SetVisibility(BeamLineVisibility);
   fLogicMYCILINDER->SetVisAttributes(visAtt_MYCILINDER);
 
   if (fPhysiMYCILINDER == NULL)
@@ -381,7 +389,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                              false); // copy number
 
   G4VisAttributes *visAtt_MYCILINDER_B1 = new G4VisAttributes(G4Colour(1, 1, 0)); // white
-  visAtt_MYCILINDER_B1->SetVisibility(false);
+  visAtt_MYCILINDER_B1->SetVisibility(BeamLineVisibility);
   fLogicMYCILINDER_B1->SetVisAttributes(visAtt_MYCILINDER_B1);
 
   if (fPhysiMYCILINDER_B1 == NULL)
@@ -405,7 +413,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                              false); // copy number
 
   G4VisAttributes *visAtt_MYCILINDER_B2 = new G4VisAttributes(G4Colour(1, 1, 0)); // white
-  visAtt_MYCILINDER_B2->SetVisibility(false);
+  visAtt_MYCILINDER_B2->SetVisibility(BeamLineVisibility);
   fLogicMYCILINDER_B2->SetVisAttributes(visAtt_MYCILINDER_B2);
 
   if (fPhysiMYCILINDER_B2 == NULL)
@@ -707,13 +715,6 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
     Logic_Garage2->SetVisAttributes(visAtt_Supp_catcher);
     Logic_Garage1->SetVisAttributes(visAtt_Supp_catcher);
-
-    // Logic_MylarSource_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherMylar_central());
-    // Logic_AlSource1_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl1_central());
-    // Logic_AlSource2_central->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl2_central());
-    // Logic_MylarSource_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherMylar_side());
-    // Logic_AlSource1_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl1_side());
-    // Logic_AlSource2_side->SetSensitiveDetector(manager_ptr->GetWisardSensor_CatcherAl2_side());
 
   //=========================================================================================================================
   //========================================== SILICON DETECTORS _ COMMON PARAMETERS ========================================
@@ -1079,31 +1080,27 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   {
   }
 
-  //////// SET SENSITIVE DETECTOR OTHER THAN SiDet and Catcher /////////
-  // fLogic_PlasticScintillator->SetSensitiveDetector(manager_ptr->GetWisardSensor_PlasticScintillator());
-
-
-  /////// SET SENSITUVE DETECOR FOR KILLER //////
-  G4Tubs *fSolid_Killer = new G4Tubs("KillerSolid", 0., fRadius_PlasticScintillator, 0.1*mm, 0., 360 * deg);  
-  fLogic_Killer = new G4LogicalVolume(fSolid_Killer, vide, "Killer");                                                                                         // solid, material, name
-  G4PVPlacement *fPhys_Killer = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
-                                                               G4ThreeVector(0., 0., -85*mm), // position
-                                                               fLogic_Killer, "Killer",                                                                                                                              // its fLogical volume
-                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
-                                                               false,                                                                                                                                                                          // no boolean op.
-                                                               -1);                                                                                                                                                                             // copy nb.
-
-  if (fPhys_Killer == NULL)
+  /////// SET SENSITIVE DETECOR FOR KILLER //////
+  if (!Magnetic_Field_Mapping_flag)
   {
+    G4Tubs *fSolid_Killer = new G4Tubs("KillerSolid", 0., fRadius_PlasticScintillator, 0.1 * mm, 0., 360 * deg);
+    fLogic_Killer = new G4LogicalVolume(fSolid_Killer, vide, "Killer");              // solid, material, name
+    G4PVPlacement *fPhys_Killer = new G4PVPlacement(0,                               // rotationMatrix
+                                                    G4ThreeVector(0., 0., -85 * mm), // position
+                                                    fLogic_Killer, "Killer",         // its fLogical volume
+                                                    fLogicWorld,                     // its mother volume
+                                                    false,                           // no boolean op.
+                                                    -1);                             // copy nb.
+
+    if (fPhys_Killer == NULL)
+    {
+    }
+    G4VisAttributes *Killer_att = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6, 0.6)); // red
+    Killer_att->SetForceWireframe(false);
+    Killer_att->SetForceSolid(true);
+    Killer_att->SetVisibility(true);
+    fLogic_Killer->SetVisAttributes(Killer_att);
   }
-  G4VisAttributes *Killer_att = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6, 0.6));                                                                                                                                                // red
-  Killer_att->SetForceWireframe(false);
-  Killer_att->SetForceSolid(true);
-  Killer_att->SetVisibility(true);
-  fLogic_Killer->SetVisAttributes(Killer_att);
-
-  // fLogic_Killer->SetSensitiveDetector(manager_ptr->GetWisardKiller());
-
 
     /////// SET TUBE ENTRANCE /////////
   G4double delta_entrance = -62 * mm;
@@ -1167,6 +1164,68 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
     Collimator_att->SetVisibility(true);
     fLogic_CollimatorEntrance->SetVisAttributes(Collimator_att);  
   }                                                                                                                                                                        // copy nb.
+
+  if (Magnetic_Field_Mapping_flag)
+  {
+    //==================================================================================================
+    //========================================  WISArD BEAMLINE =========================================
+    //==================================================================================================
+    G4double radius_beamline = 10 * cm / 2;
+    G4double length_beamline = 22 * cm;
+
+    G4Tubs *wisard_beamline = new G4Tubs("Wisard_beamline",
+                                         radius_beamline,
+                                         radius_beamline + 1 * mm,
+                                         0.5L * (length_beamline),
+                                         0.L, 360.L * deg);
+    G4LogicalVolume *wisard_beamline_logic = new G4LogicalVolume(wisard_beamline, // forme
+                                                                 materialIron,    // matiere
+                                                                 "WisardLogic",   // nom
+                                                                 0, 0, 0);
+    // - physical volume
+    G4VPhysicalVolume *wisard_beamline_phys = new G4PVPlacement(0,
+                                                                G4ThreeVector(0., 0., -40 * cm - length_beamline / 2),
+                                                                wisard_beamline_logic, // ptr sur vol. log.
+                                                                "Wisard",              // nom du volume
+                                                                fLogicWorld,           // volume parent
+                                                                false, false);
+
+    // - make the bore volume "visible"
+    wisard_beamline_logic->SetVisAttributes(visAtt_WISARDMagnet);
+
+    if (wisard_beamline_phys == NULL)
+    {
+    }
+
+    //==================================================================================================
+    //=============================  WISArD BEAMLINE COLLIMATOR ========================================
+    //==================================================================================================
+    G4double radius_beamline_collimator = 10 * mm;
+    G4double length_beamline_collimator = 5 * cm;
+
+    G4Tubs *wisard_beamline_collimator = new G4Tubs("Wisard_beamline",
+                                                    radius_beamline_collimator,
+                                                    radius_beamline,
+                                                    0.5L * (length_beamline_collimator),
+                                                    0.L, 360.L * deg);
+    G4LogicalVolume *wisard_beamline_collimator_logic = new G4LogicalVolume(wisard_beamline_collimator, // forme
+                                                                            materialIron,               // matiere
+                                                                            "WisardLogic",              // nom
+                                                                            0, 0, 0);
+    // - physical volume
+    G4VPhysicalVolume *wisard_beamline_collimator_phys = new G4PVPlacement(0,
+                                                                           G4ThreeVector(0., 0., -40 * cm - length_beamline - length_beamline_collimator / 2),
+                                                                           wisard_beamline_collimator_logic, // ptr sur vol. log.
+                                                                           "Wisard",                         // nom du
+                                                                           fLogicWorld,                      // volume parent
+                                                                           false, false);
+
+    // - make the bore volume "visible"
+    wisard_beamline_collimator_logic->SetVisAttributes(PlateEntrance_att);
+    if (wisard_beamline_collimator_phys == NULL)
+    {
+    }
+  }
 
   return fPhysiWorld;
 }

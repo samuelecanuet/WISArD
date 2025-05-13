@@ -12,12 +12,14 @@ Wisard_Generator::Wisard_Generator()
       
 
  G4cout << "\033[32m" << "Constructor Wisard_Generator"  << "\033[0m" << G4endl;
- ROOT::EnableThreadSafety();
 
   part_proton = particle_table->FindParticle("proton");
   part_alpha = particle_table->FindParticle("alpha");
   part_geantino = particle_table->FindParticle("geantino");
   part_positron = particle_table->FindParticle("e+");
+  part_electron = particle_table->FindParticle("e-");
+  part_charged_geantino = particle_table->FindParticle("chargedgeantino");
+
 
   BeamMessenger = new G4GenericMessenger(this, "/Beam/", "All Beam Settings");
   InputMessenger = new G4GenericMessenger(this, "/Input/", "All Input Settings");
@@ -220,11 +222,11 @@ void Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR(G4Event *event)
       G4double phi = G4UniformRand() * 2 * M_PI;
       G4double costheta = 2 * G4UniformRand() - 1;
       G4double theta = acos(costheta);
-      dir = G4ThreeVector(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+      dir = G4ThreeVector(sin(theta) * cos(phi), sin(theta) * sin(phi), -abs(cos(theta)));
 
       position_array[i] = beam+catcher_implentation;
       direction_array[i] = dir;
-      energy_array[i] = Energy_Hist->GetRandom() * keV;
+      // energy_array[i] = 200*keV;
     }
   }
 

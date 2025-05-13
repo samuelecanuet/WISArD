@@ -15,10 +15,8 @@
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-#/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
-/Input/SRIM SRIM_data/AlMylar_20Mg.root
-#/Input/CRADLE %inputCRADLE
-/Input/CRADLE CRADLE_data/18N_RMATRIX.root
+/Input/SRIM SRIM_data/AlMylar_32Ar.root
+/Input/CRADLE CRADLE_data/SAMPLE.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -33,7 +31,8 @@
 /Beam/Sigma_Y 0.3 mm
 
 /Geometry/Collimator true
-/Geometry/Magnetic_Field 4 tesla
+/Geometry/Magnetic_Field_Value 4 tesla
+/Geometry/Magnetic_Field_Mapping false
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
@@ -148,6 +147,6 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 10
+/run/beamOn 100
 #
 #

@@ -81,7 +81,7 @@ void Wisard_PhysList::ConstructParticle()
   G4Triton::TritonDefinition();
   G4Alpha::AlphaDefinition();
   G4GenericIon::GenericIonDefinition();
-  // AddStepMax(1 * mm, 0x2);
+  AddStepMax(1 * cm, 0x2);
 }
 
 //----------------------------------------------------------------------
@@ -116,11 +116,11 @@ void Wisard_PhysList::SetCuts()
   //   the default cut value for all particle types
   SetCutsWithDefault();
 
-  // SetCutValue(0.001 * um, "gamma");
-  // SetCutValue(0.001 * um, "proton");
-  // SetCutValue(0.001 * um, "e-");
-  // SetCutValue(0.001 * um, "e+");
-  // defaultCutValue = 0.001 * um;
+  SetCutValue(0.001 * um, "gamma");
+  SetCutValue(0.001 * um, "proton");
+  SetCutValue(0.001 * um, "e-");
+  SetCutValue(0.001 * um, "e+");
+  defaultCutValue = 0.001 * um;
 }
 
 //----------------------------------------------------------------------

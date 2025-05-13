@@ -131,3 +131,5 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 ### v4.3
 - MT implementation
 - Collimator option in the macro
+- Geometry of 2025 added (beamline + collimator)
+- Full Magnetic field implementation as option in the macro

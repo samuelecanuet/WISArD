@@ -54,6 +54,7 @@ public:
 
   G4double thicknessSiDetectorDeadLayer = 100*nm;
   G4double Magnetic_Field = 4*tesla;
+  G4bool Magnetic_Field_Mapping_flag = false;
   G4bool Collimator_flag = true;
   G4double Catcher_Position_z = 0.*mm;
   G4String Catcher_Position = "catcher1";

@@ -1,44 +1,42 @@
 
 
-double function1D_Bz(double *x,G4double *par)
+double function1D_Bz(double *x, double *par)
 {
     // gate convoluted with gaussian
-   G4double A  = par[0];
-   G4double mu = par[1];
-   G4double sigma = par[2];
-   G4double l = par[3];
-   G4double a = par[4];
-   G4double b = par[5];
-
+    double A = par[0];
+    double mu = par[1];
+    double sigma = par[2];
+    double l = par[3];
+    double a = par[4];
+    double b = par[5];
 
     if (x[0] > 350 || x[0] < -350)
     {
-        return a / (1 + pow(-abs(x[0]), 5)/b);
+        return a / (1 + pow(-abs(x[0]), 5) / b);
     }
 
-    return A * (erf((x[0] - mu + l) / (sqrt(2) * sigma)) - erf((x[0] - mu - l ) / (sqrt(2) * sigma)));
+    return A * (erf((x[0] - mu + l) / (sqrt(2) * sigma)) - erf((x[0] - mu - l) / (sqrt(2) * sigma)));
 }
 
-double function1D_Br(double *x,G4double *p)
+double function1D_Br(double *x, double *p)
 {
-   G4double A = p[0];
-   G4double mu = p[1];
-   G4double sigma = p[2]; 
-   G4double A1 = p[3];
-   G4double mu1 = p[4];
-   G4double sigma1 = p[5];
+    double A = p[0];
+    double mu = p[1];
+    double sigma = p[2];
+    double A1 = p[3];
+    double mu1 = p[4];
+    double sigma1 = p[5];
+    double l = p[6];
 
-   G4double first = A * exp(-pow((x[0] - mu), 2) / (2 * pow(sigma, 2)));
-   G4double second = 0;
+    double first = A * exp(-pow((x[0] - mu), 2) / (2 * pow(sigma, 2)));
+    double second = 0;
 
-    if (-400 > x[0])
+    if (-450 > x[0])
     {
         second = A1 * exp(-pow((x[0] - mu1), 2) / (2 * pow(sigma1, 2)));
     }
 
-    
-
-    return (first+second);
+    return (first + second);
 }
 
 void Fitting_B()
@@ -48,17 +46,26 @@ void Fitting_B()
     std::string line;
 
     // Create histograms
-    TH2D* hBr = new TH2D("hBr", "Br vs z and r", 2529, -1851, 425, 5, 0, 88);
-    
-    TH2D* hBz = new TH2D("hBz", "Bz vs z and r", 2529, -1851, 425, 5, 0, 88);
-    
+    TH2D *hBr = new TH2D("hBr", "Br vs z and r", 2529, -1851, 425, 5, 0, 88);
 
-    TGraph2D* gBr = new TGraph2D();
-    TGraph2D* gBz = new TGraph2D();
+    TH2D *hBz = new TH2D("hBz", "Bz vs z and r", 2529, -1851, 425, 5, 0, 88);
+
+    TGraph2D *gBr = new TGraph2D();
+    gBr->SetName("gBr");
+    gBr->SetTitle("Br vs z and r");
+    gBr->GetXaxis()->SetTitle("z (mm)");
+    gBr->GetYaxis()->SetTitle("r (mm)");
+    gBr->GetZaxis()->SetTitle("Br (T)");
+    TGraph2D *gBz = new TGraph2D();
+    gBz->SetName("gBz");
+    gBz->SetTitle("Bz vs z and r");
+    gBz->GetXaxis()->SetTitle("z (mm)");
+    gBz->GetYaxis()->SetTitle("r (mm)");
+    gBz->GetZaxis()->SetTitle("Bz (T)");
     TGraph *gBr10 = new TGraph();
     TGraph *gBz10 = new TGraph();
 
-    
+    TFile *fileout = new TFile("Fitting_Br_Bz.root", "RECREATE");
 
     // Skip header line
     std::getline(file, line);
@@ -67,15 +74,16 @@ void Fitting_B()
     int counter_g = 0;
     int counter_g1D = 0;
     // Read data lines
-    while (std::getline(file, line)) {
+    while (std::getline(file, line))
+    {
         if (counter == 0)
         {
-            counter ++;
+            counter++;
             continue;
         }
 
         std::istringstream iss(line);
-       G4double z, Bz10, Br10, Bz28, Br28, Bz48, Br48, Bz68, Br68, Bz88, Br88;
+        double z, Bz10, Br10, Bz28, Br28, Bz48, Br48, Bz68, Br68, Bz88, Br88;
         iss >> z >> Bz10 >> Br10 >> Bz28 >> Br28 >> Bz48 >> Br48 >> Bz68 >> Br68 >> Bz88 >> Br88;
 
         hBr->Fill(z, 10, Br10);
@@ -106,12 +114,10 @@ void Fitting_B()
         gBr10->SetPoint(counter_g1D, z, abs(Br10));
 
         counter_g += 5;
-        counter_g1D ++;
-
-
+        counter_g1D++;
     }
 
-    //Bz
+    // Bz
     TCanvas *c1 = new TCanvas("c1", "c1", 800, 800);
     c1->Divide(2, 1);
     c1->cd(1);
@@ -129,22 +135,22 @@ void Fitting_B()
     f1Dr->SetParameter(4, -400);
     f1Dr->SetParLimits(5, 100, 1000);
     f1Dr->SetParameter(5, 150);
+    // f1Dr->SetParLimits(6, -1000, 1000);
+    // f1Dr->SetParameter(6, -400);
     gBr10->Fit(f1Dr, "R");
 
     // residus
     TGraph *gResidusr = new TGraph();
     for (int i = 0; i < gBr10->GetN(); i++)
     {
-       G4double x, y;
+        double x, y;
         gBr10->GetPoint(i, x, y);
         gResidusr->SetPoint(i, x, y - f1Dr->Eval(x));
     }
 
     c1->cd(2);
     gResidusr->Draw("AP");
-    c1->Draw();
-
-    
+    c1->Write();
 
     // /// Br
     // TCanvas *c2 = new TCanvas("c2", "c2", 800, 800);
@@ -168,7 +174,7 @@ void Fitting_B()
     // TGraph *gResidus = new TGraph();
     // for (int i = 0; i < gBz10->GetN(); i++)
     // {
-    //    G4double x, y;
+    //    double x, y;
     //     gBz10->GetPoint(i, x, y);
     //     gResidus->SetPoint(i, x, y - f1D->Eval(x));
     // }
@@ -177,9 +183,10 @@ void Fitting_B()
     // gResidus->Draw("AP");
     // c2->Draw();
 
+    hBr->Write();
+    hBz->Write();
+    gBr->Write();
+    gBz->Write();
 
-
-
+    fileout->Close();
 }
-
-

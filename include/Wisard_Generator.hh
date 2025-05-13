@@ -53,6 +53,7 @@ protected:
     G4ParticleDefinition *part_enubar;
     G4ParticleDefinition *part_alpha;
     G4ParticleDefinition *part_geantino;
+    G4ParticleDefinition *part_charged_geantino;
     G4ParticleDefinition *Gun_Particle;
 
     G4GenericMessenger *BeamMessenger;
@@ -219,13 +220,6 @@ inline void Wisard_Generator::ChooseGENERATOR()
         {
             G4Exception("Wisard_Generator::ChooseGENERATOR", "Impossible to open input ROOT file", JustWarning, "");
         }
-
-        // prijnt all the object of the tfile 
-        for (auto key : *InputROOT->GetListOfKeys())
-        {
-            cout << key->GetName() << endl;
-        }
-
 
         Energy_Hist = (TH1D *)InputROOT->Get("histogram");
         if (Energy_Hist != NULL)
