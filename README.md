@@ -20,7 +20,7 @@ setenv PATH ${PATH}:$WhereGitIs/WISArD/bin/Linux-g++
 ```bash
 wisard 
 ```
-### To run the simulation in data mode :
+### To run the simulation in test mode :
 ```bash
 wisard macro.mac
 ```
@@ -37,25 +37,21 @@ CRADLE-G4 nucleus=32Ar N=10 CS=0 CV=1
 ```
 If one Standard Model parameter is not given it will be set in SM case. Additionaly, *macro_base.mac* will be use as macro sample.
 
-In this mode you can run CRADLE++ in the same time to generate file for the Geant4 simulation. But if you want to use your own files, you have just to comment the *line 177* in *CRADLE-G4*. Your file have to be generate by CRADLE++ or with the same architecture.
-You have to take into account that the file are written like :
-```bash
-32Ar_a1_b0_x.root
-```
+To generate file for the Geant4 simulationyou can use the *CRADLE-G4* script, This script will automatically create and running the all simulation. See --help option to run it.
 
 ## Result
-You end up a Tree and a histograms of energy deposit for each detector in a ROOT file. The filename is set in the macro file.
+You end up a Tree, detectors histograms and simulation paramater in the ROOT TFile generated.
 
 ### Simulation informations
-Located in the *Log* folder with all the simulation variables chosen in the macro file.
+Located at the beginning of the TFile, you can find all the simulation variables chosen.
 
 ### Tree
 The Tree is update each 10 000 events and contains :
 - Event Number
-- Gun Information (particle PDG, position, direction, energy)
+- Gun Information (particle PDG, position, direction, energy, time)
 - Catchers Energy deposit
-- Plastic Scintillator (deposit energy, hit position, hit angle)
-- Silicon Detectors (deposit energy, hit position, hit angle, detector code)
+- Plastic Scintillator (deposit energy, hit position, hit angle, hit time)
+- Silicon Detectors (deposit energy, hit position, hit angle, hit time, detector code)
 
 ### Histograms
 There are 2 for each strip, one for the β-p coincidence and an other one for the anti-coincidence. The β detection threashold is set in the macro file.
