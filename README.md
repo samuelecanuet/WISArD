@@ -25,7 +25,7 @@ wisard
 wisard macro.mac
 ```
 
-### To run the simulation after genereting CRADLE file :
+### To generate the CRADLE file and run the Geant4 simulation :
 *Exemple for 32Ar with 10 threads in Standard Model case*
 
 ```bash
@@ -33,11 +33,10 @@ CRADLE-G4 nucleus=32Ar N=10 a=1 b=1
 ```
 *or*
 ```bash
-CRADLE-G4 nucleus=32Ar N=10 CS=0 CV=1
+CRADLE-G4 nucleus=32Ar N=10 CS=0 CV=1 events=1000
 ```
 If one Standard Model parameter is not given it will be set in SM case. Additionaly, *macro_base.mac* will be use as macro sample.
-
-To generate file for the Geant4 simulationyou can use the *CRADLE-G4* script, This script will automatically create and running the all simulation. See --help option to run it.
+See --help option to see all the options.
 
 ## Result
 You end up a Tree, detectors histograms and simulation paramater in the ROOT TFile generated.
