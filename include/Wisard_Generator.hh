@@ -251,8 +251,13 @@ inline void Wisard_Generator::ChooseGENERATOR()
 
 inline void Wisard_Generator::InitBeam()
 {
+    if (Sigma_X == 0 || Sigma_Y == 0)
+    {
+        HGauss2D = nullptr;
+        return;
+    }
     Gauss2D = new TF2("Gauss2D", "exp(-0.5*((x-[0])/(sqrt(2)*[1]))**2)*exp(-0.5*((y-[2])/(sqrt(2)*[3]))**2)", -100, 100, -100, 100);
-    Gauss2D->SetParameters(0, Sigma_X, 0, Sigma_Y);
+    Gauss2D->SetParameters(X, Sigma_X, Y, Sigma_Y);
     Gauss2D->SetNpx(10000);
     Gauss2D->SetNpy(10000);
     HGauss2D = (TH2D *)Gauss2D->GetHistogram();
@@ -260,6 +265,12 @@ inline void Wisard_Generator::InitBeam()
 
 inline G4ThreeVector Wisard_Generator::Beam()
 {
+
+    if (HGauss2D == nullptr)
+    {
+        return G4ThreeVector(X, Y, 0);
+    }
+
     G4double x, y;
     x = 0;
     y = 0;

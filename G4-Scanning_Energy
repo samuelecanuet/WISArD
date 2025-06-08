@@ -1,0 +1,109 @@
+#!/bin/bash
+
+
+rootCRADLEfile=../../../../data333/lecanuet/data/
+rootGeant4file=../../../data333/lecanuet/Result/
+
+rootCRADLEfile=../../../../../../mnt/hgfs/shared-2/
+rootGeant4file=../../../../../../mnt/hgfs/shared-2/2024_DATA/
+
+rm -rf tempory/*
+
+usage() {
+  echo "Usage: $0 [OPTIONS]"
+  echo "Options:"
+  echo "  nucleus=        Specify the nucleus (nucleus=32Ar)"
+  echo "  N=              Specify the number of threads"
+  echo "  events=         Specify the number of events"
+  ehco "  x=              Specify the value of x."
+  echo "  y=              Specify the value of y."
+  echo "  z=              Specify the value of z."
+  echo "  theta=          Specify the value of theta."
+  echo "  energy=         Specify the value of energy."
+  echo "  particle=       Specify the particle."
+  echo "  --help          Show this help message."
+  exit 1
+}
+
+RED="\e[1;31m"
+GREEN="\e[1;32m"
+YELLOW="\e[1;33m"
+COLOR="\e[0m"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    nucleus=*)
+      Nuclei="${1#*=}"
+      ;;
+    N=*)
+      N="${1#*=}"
+      ;;
+    events=*)
+      events="${1#*=}"
+      ;;
+    x=*)
+      x="${1#*=}"
+      ;;
+    y=*)
+      y="${1#*=}"
+      ;;
+    z=*)
+      z="${1#*=}"
+      ;;
+    theta=*)
+      theta="${1#*=}"
+      ;;
+    energy=*)
+      energy="${1#*=}"
+      ;;
+    particle=*)
+      particle="${1#*=}"
+      ;;
+    --help)
+      usage
+      ;;
+    *)
+      echo "Argument inconnu : $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+suffixe="${particle}_${energy}MeV"
+
+###default value
+DEFAULT_N=3
+
+DEFAULT_x=0
+DEFAULT_y=0
+DEFAULT_z=0
+DEFAULT_theta=0
+
+DEFAULT_events=1000000
+
+DEFAULT_particle=proton
+DEFAULT_energy=
+
+x=${x:-$DEFAULT_x}
+y=${y:-$DEFAULT_y}
+z=${z:-$DEFAULT_z}
+theta=${theta:-$DEFAULT_theta}
+
+events=${events:-$DEFAULT_events}
+
+particle=${particle:-DEFAULT_particle}
+energy=${energy:-DEFAULT_energy}
+
+cp macro_energy_base.mac tempory/macro_${suffixe}_bis.mac  
+sed -e "s|%Particle|${particle}|g; s|%Energy|${energy}|g; s|%threads|${N}|g; s/%inputSRIM/AlMylar_2021_32Ar.txt/g; s|%output|${rootGeant4file}${suffixe}.root|g; s/%events/${events}/g; s/%x/${x}/; s/%y/${y}/g; s/%z/${z}/g; s/%theta/${theta}/g;  " tempory/macro_${suffixe}_bis.mac > tempory/macro_${suffixe}.mac
+rm tempory/macro_${suffixe}_bis.mac
+wisard tempory/macro_${suffixe}.mac 
+echo -e "$GREEN wisard tempory/macro_${suffixe}.mac $COLOR"
+
+Duree=$(($TimeEnd-$TimeStart))
+Second=$(printf "%02d" "$(($Duree%60))")
+Minute=$(printf "%02d" "$((($Duree/60)%60))")
+Heure=$(printf "%02d" "$((($Duree/3600)%24))")
+Jour=$(printf "%d" "$((($Duree/(3600*24))))")
+echo -e "$RED Duree total : ${Jour}"

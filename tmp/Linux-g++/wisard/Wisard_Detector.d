@@ -615,4 +615,4 @@
  /softs/geant4.11.1.2/include/Geant4/G4EmFluoDirectory.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
- include/Wisard_Killer.hh
+ include/Wisard_Killer.hh include/Wisard_Optimizer.hh

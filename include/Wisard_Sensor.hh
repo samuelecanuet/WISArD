@@ -17,7 +17,7 @@ public:
   Wisard_Sensor(G4int, G4String);
   ~Wisard_Sensor();
 
-  // G4EmSaturation *emSaturation = G4LossTableManager::Instance()->EmSaturation();
+  G4EmSaturation *emSaturation = G4LossTableManager::Instance()->EmSaturation();
 
   G4int DetCode;
 

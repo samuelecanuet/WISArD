@@ -9,9 +9,15 @@
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
-/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
-/Input/Ion 207Bi
+#/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
+#/Input/Ion 207Bi
 #/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/files/32Ar_a1_b0_1.root
+
+
+/Input/Particle e-
+/Input/Energy 1 MeV
+/Input/Direction 0 0 1
+/Input/Position 0 0 1 cm 
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -26,8 +32,25 @@
 /Beam/Sigma_Y 0.75 mm
 
 /Geometry/Collimator true
-/Geometry/Magnetic_Field 4 tesla
+/Geometry/Magnetic_Field_Value 4 tesla
+/Geometry/Magnetic_Field_Mapping false
 /Geometry/SiDeadLayer_Thickness 100 nm
+/Geometry/D1 0 0 0
+/Geometry/D2 0 0 0
+/Geometry/D3 0 0 0
+/Geometry/D4 0 0 0
+/Geometry/D5 0 0 0
+/Geometry/D6 0 0 0
+/Geometry/D7 0 0 0
+/Geometry/D8 0 0 0
+/Geometry/D1_Angle 0 deg
+/Geometry/D2_Angle 0 deg
+/Geometry/D3_Angle 0 deg
+/Geometry/D4_Angle 0 deg
+/Geometry/D5_Angle 0 deg
+/Geometry/D6_Angle 0 deg
+/Geometry/D7_Angle 0 deg
+/Geometry/D8_Angle 0 deg
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
@@ -39,6 +62,6 @@
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 1000
+/run/printProgress 10000
 /Run/File test.root
 /run/beamOn 1000

@@ -25,7 +25,8 @@ include $(G4INSTALL)/config/architecture.gmk
 include $(G4INSTALL)/config/binmake.gmk
 
 # added to clean compilation and backup files
-clean_all:	clean
-		@echo "Cleaning files"
-		@\rm -Rfv bin tmp *.bck */*.bck vrmlfiles/*.wrl
+clean_all: clean
+	@echo "Cleaning files"
+	@rm -Rfv bin tmp *.bck */*.bck vrmlfiles/*.wrl
+	@rm -f AutoDict*
 		

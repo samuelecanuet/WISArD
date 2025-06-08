@@ -621,6 +621,8 @@
  /softs/geant4.11.1.2/include/Geant4/G4AtomicShell.hh \
  /softs/geant4.11.1.2/include/Geant4/G4AtomicShellEnumerator.hh \
  /softs/geant4.11.1.2/include/Geant4/G4EmParameters.hh \
+ include/FastMagneticField.hh \
+ /softs/geant4.11.1.2/include/Geant4/G4VProcess.hh \
  /softs/geant4.11.1.2/include/Geant4/G4RadioactiveDecay.hh \
  /softs/geant4.11.1.2/include/Geant4/G4ParticleChangeForRadDecay.hh \
  /softs/geant4.11.1.2/include/Geant4/G4NucleusLimits.hh \

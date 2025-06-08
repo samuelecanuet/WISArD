@@ -11,9 +11,10 @@
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /Input/SRIM SRIM_data/AlMylar_32Ar.root
-#/Input/SRIM SRIM_data/AlMylar_20Mg.root
-/Input/CRADLE %inputCRADLE
-#/Input/CRADLE CRADLE_data/SAMPLE.root
+
+/Input/Energy %Energy MeV
+/Input/Particle %Particle
+/Input/Direction iso
 
 #---------------------------------------------------------------
 #   Simulation Parameters
