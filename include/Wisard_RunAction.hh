@@ -34,9 +34,9 @@ public:
   TFile *f;
   TTree *Tree;
 
-  TH1D *silicon_coinc[Wisard_Detector::nb_det];
-  TH1D *silicon_nocoinc[Wisard_Detector::nb_det];
-  TH1D *silicon_single[Wisard_Detector::nb_det];
+  map<int, TH1D *>silicon_coinc;
+  map<int, TH1D *>silicon_nocoinc;
+  map<int, TH1D *>silicon_single;
   TH1D *plastic_coinc;
   map<G4int, TH1D*> H_E0 = {};
 

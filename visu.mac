@@ -9,39 +9,65 @@
 #/run/initialize
 /run/verbose      0
 /event/verbose    0
-/tracking/verbose 
+/tracking/verbose 1
 
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
+#/Input/SRIM SRIM_data/AlMylar_32Ar.root
+#/Input/CRADLE CRADLE_data/SAMPLE.root
 
+/Input/Particle proton
+/Input/Energy 500 keV
+/Input/Direction iso 
 
-/Input/Ion 207Bi
-/Input/Energy 0 keV
-/Input/Direction 0 0 1
-/Input/Position 0 0 0
-#/process/had/rdm/nucleusLimits 244 244 96 96
+### MEASURING SPACE BETWEEN DETECTORS IN PYRS ### (base)
+#/Input/Direction 1 0 0
+#/Input/Position -50 0 -46.5
+#################################################
+### MEASURING SPACE BETWEEN DETECTORS IN PYRS ### (top)
+#/Input/Direction 1 0 0
+#/Input/Position -50 0 -23.2
+#################################################
+### MEASURING SPACE BETWEEN PYRS ################ 
+#/Input/Direction 0 0 1
+#/Input/Position 0 42.7 -46.5
+#################################################
 
-
-#/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/fe/test.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
-/Run/Threads 5
+/Run/Threads 1
 
-/Beam/X 0. mm
-/Beam/Y 0. mm
-/Beam/Radius 2.5 mm
-/Beam/Sigma_X 0.3 mm
-/Beam/Sigma_Y 0.3 mm
+#/Beam/X 0. mm
+#/Beam/Y 0. mm
+#/Beam/Radius 2.5 mm
+#/Beam/Sigma_X 0.3 mm
+#/Beam/Sigma_Y 0.3 mm
 
-/Geometry/Collimator false
-/Geometry/Magnetic_Field 4 tesla
+/Geometry/Collimator true
+/Geometry/Magnetic_Field_Value 4 tesla
+/Geometry/Magnetic_Field_Mapping false
 /Geometry/SiDeadLayer_Thickness 100 nm
+/Geometry/D1 0 0 0
+/Geometry/D2 0 0 0
+/Geometry/D3 0 0 0
+/Geometry/D4 0 0 0
+/Geometry/D5 0 0 0
+/Geometry/D6 0 0 0
+/Geometry/D7 0 0 0
+/Geometry/D8 0 0 0
+/Geometry/D1_Angle 0 deg
+/Geometry/D2_Angle 0 deg
+/Geometry/D3_Angle 0 deg
+/Geometry/D4_Angle 0 deg
+/Geometry/D5_Angle 0 deg
+/Geometry/D6_Angle 0 deg
+/Geometry/D7_Angle 0 deg
+/Geometry/D8_Angle 0 deg
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
@@ -156,6 +182,5 @@
 #
 #
 /run/beamOn 10
-
 #
 #

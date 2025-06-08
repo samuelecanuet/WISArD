@@ -79,7 +79,7 @@ void ParticleInformation::Parse()
     // parse all the information from Particles
     for (auto &pair : Particles)
     {
-        G4cout << "Particle : " <<  particleTable->FindParticle(pair.second.Particle_PDG)->GetParticleName() << "\t\t (Track ID : " << pair.second.TrackID << ")" << G4endl;
+        G4cout << "Particle : " <<  particleTable->FindParticle(pair.second.Particle_PDG)->GetParticleName() << "(" << pair.second.Particle_PDG << ")" << "\t\t (Track ID : " << pair.second.TrackID << ")" << G4endl;
         G4cout << "---- E0 : " << pair.second.E0 << " keV" << G4endl;
         G4cout << "---- Dir : " << pair.second.Dir << G4endl;
         G4cout << "---- Pos : " << pair.second.Pos << G4endl;

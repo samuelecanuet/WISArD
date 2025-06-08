@@ -89,8 +89,16 @@ int main(int argc, char **argv)
     }
   }
 
-  G4MTRunManager *ptr_run = new G4MTRunManager();
-  ptr_run->SetNumberOfThreads(THREAD);
+  G4RunManager *ptr_run;
+  if (THREAD == 1)
+  {
+    ptr_run = new G4RunManager();
+  }
+  else
+  {
+    ptr_run = new G4MTRunManager();
+    ptr_run->SetNumberOfThreads(THREAD);
+  }
 
   Wisard_Detector *ptr_det = new Wisard_Detector();
   ptr_run->SetUserInitialization(ptr_det);
@@ -160,7 +168,6 @@ int main(int argc, char **argv)
   // merge the ROOT files
 
   G4String outputFile = ptr_act->GetFileName().substr(0, ptr_act->GetFileName().length() - 5);
-
   TChain chain("Tree");
   map<G4String, TH1D *> H = {};
   map<G4String, TObject *> O = {};

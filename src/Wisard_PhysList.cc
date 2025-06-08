@@ -1,4 +1,5 @@
 #include "Wisard_PhysList.hh"
+
 #include "G4VUserPhysicsList.hh"
 #include "G4RadioactiveDecay.hh"
 #include "G4PhotonEvaporation.hh"
@@ -81,7 +82,7 @@ void Wisard_PhysList::ConstructParticle()
   G4Triton::TritonDefinition();
   G4Alpha::AlphaDefinition();
   G4GenericIon::GenericIonDefinition();
-  // AddStepMax(1 * mm, 0x2);
+  // AddStepMax(1 * cm, 0x2);
 }
 
 //----------------------------------------------------------------------
@@ -105,6 +106,7 @@ void Wisard_PhysList::ConstructProcess()
 
   G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics();
   radioactiveDecay->ConstructProcess();
+
 }
 
 //----------------------------------------------------------------------

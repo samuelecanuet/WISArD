@@ -68,29 +68,24 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     }
   }
 
-  PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
+  // PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
   
 
   // TODO : Add Birks law for scintillator
-  // if (DetCode == 99)
-  // {
-  //   PartInfo->AddEnergyDeposit(index, DetCode, emSaturation->VisibleEnergyDepositionAtAStep(step) / keV);
-  // }
-  // else
-  // {
-  //   PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
-  // }
-
-  // if (DetCode == 99)
-  // {
-  //   double edep = step->GetTotalEnergyDeposit() / keV;
-  //   double Vedep = emSaturation->VisibleEnergyDepositionAtAStep(step) / keV;
-
-  //   if (edep != Vedep)
-  //   {
-  //     G4cout << "edep = " << edep << " Vedep = " << Vedep << G4endl;
-  //   }
-  // }
+  if (DetCode == 99)
+  {
+    PartInfo->AddEnergyDeposit(index, DetCode, emSaturation->VisibleEnergyDepositionAtAStep(step) / keV);
+    // G4cout << "edep = " << step->GetTotalEnergyDeposit() / keV <<G4endl;
+    // G4cout << "Vedep = " << emSaturation->VisibleEnergyDepositionAtAStep(step) / keV << G4endl;
+  }
+  else if (DetCode >= 11 && DetCode <= 85)
+  {
+    PartInfo->AddEnergyDeposit(index, DetCode, (step->GetTotalEnergyDeposit()-step->GetNonIonizingEnergyDeposit()) / keV);
+  }
+  else
+  {
+    PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
+  }
 
   return (true);
 }
