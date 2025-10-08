@@ -3,6 +3,7 @@
 
 #include "G4UserEventAction.hh"
 #include "G4Event.hh"
+#include "G4Run.hh"
 
 #include "ParticleInformation.hh"
 #include "Wisard_RunAction.hh"

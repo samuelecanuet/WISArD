@@ -2,15 +2,19 @@
 #define WISARD_RUN_ACTION_HH
 
 #include "G4UserRunAction.hh"
+#include "G4Run.hh"
 #include "ParticleInformation.hh"
 #include "G4GenericMessenger.hh"
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1D.h"
+#include "TH2D.h"
 #include "TObjString.h"
 #include "TTreeReader.h"
 #include "TDirectory.h"
 #include "G4UImanager.hh"
+
+#include <atomic>
 
 #include "Wisard_Detector.hh"
 
@@ -29,7 +33,9 @@ public:
   G4GenericMessenger *RunMessenger;
   G4double threshold;
   G4String filename;
-  G4String dummy;
+  G4String NumberThreads;
+  G4int NumberThreads_int;
+  G4int NumberEvents_int;
 
   TFile *f;
   TTree *Tree;
@@ -38,9 +44,11 @@ public:
   map<int, TH1D *>silicon_nocoinc;
   map<int, TH1D *>silicon_single;
   TH1D *plastic_coinc;
+  TH2D *H_MCP = nullptr;
   map<G4int, TH1D*> H_E0 = {};
 
   /// TREE VARIABLES ////
+  G4int EventID;
   vector<G4int> Particle_PDG;
   vector<G4double> x;
   vector<G4double> y;
@@ -55,7 +63,7 @@ public:
   vector<G4double> Catcher_Central_Energy_Deposit, Catcher_Side_Energy_Deposit;
 
   // plastic scintillator //
-  vector<G4double> PlasticScintillator_Hit_Angle, PlasticScintillator_Energy_Deposit, PlasticScintillator_Hit_Time;
+  vector<G4double> PlasticScintillator_Hit_Angle, PlasticScintillator_Energy_Deposit, PlasticScintillator_Visible_Energy_Deposit, Energy_Deposit, PlasticScintillator_Hit_Time;
   vector<G4ThreeVector> PlasticScintillator_Hit_Position;
 
   // silicon detectors //
@@ -64,12 +72,21 @@ public:
   vector<vector<G4int>> Silicon_Detector_Code;
   ///////////////////////
 
+  /// MCP TREE VARIABLES ////
+  TTree* Tree_MCP = nullptr;
+  G4double x_MCP, y_MCP;
+  ///////////////////////////
+
   vector<G4double> Silicon_Detector_Energy_Deposit_part, Silicon_Detector_DL_Energy_Deposit_part, Silicon_Detector_Hit_Angle_part, Silicon_Detector_Hit_Time_part;
   vector<G4ThreeVector> Silicon_Detector_Hit_Position_part;
   vector<G4int> Silicon_Detector_Code_part;
 
-  void UpdateTree(ParticleInformation *Part_Info);
+  void UpdateTree(ParticleInformation *Part_Info, G4int Event_ID);
   void WrittingTree();
+  void FillMCP(G4double, G4double);
+
+  G4int GetNumberOfThreads();
+  G4int GetNumberofEvents();
 
 
   std::string Detector_Name[Wisard_Detector::nb_det] = {
@@ -93,6 +110,11 @@ public:
       61, 62, 63, 64, 65,
       71, 72, 73, 74, 75,
       81, 82, 83, 84, 85};
+
+    static atomic<int> fAcceptedEvents;
 };
+
+
+
 
 #endif // WISARD_RUN_ACTION_HH

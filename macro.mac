@@ -14,26 +14,27 @@
 #/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/files/32Ar_a1_b0_1.root
 
 
-/Input/Particle e-
-/Input/Energy 1 MeV
-/Input/Direction 0 0 1
-/Input/Position 0 0 1 cm 
+/process/inactivate ionIoni
+/Input/Ion 32Ar
+/Input/Energy 30 keV
+/Input/Direction 0 0 1 
+/Input/Position 0 0 -800
 
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
-/Run/Threads 4
+/Run/Threads 6
 
 /Beam/X 0. mm
 /Beam/Y 0. mm
-/Beam/Radius 2.5 mm
-/Beam/Sigma_X 0.75 mm
-/Beam/Sigma_Y 0.75 mm
+/Beam/Radius 50 mm
+/Beam/Sigma_X 0.1 mm
+/Beam/Sigma_Y 0.1 mm
 
-/Geometry/Collimator true
+/Geometry/Collimator false
 /Geometry/Magnetic_Field_Value 4 tesla
-/Geometry/Magnetic_Field_Mapping false
+/Geometry/Magnetic_Field_Mapping true
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/D1 0 0 0
 /Geometry/D2 0 0 0
@@ -57,11 +58,15 @@
 /Geometry/Catcher_Thickness_Al1 85 nm
 /Geometry/Catcher_Thickness_Mylar 525 nm
 /Geometry/Catcher_Thickness_Al2 85 nm
+
+/Geometry/MCP true
+/Geometry/MCP_Position 0 0 -90
+
 /run/reinitializeGeometry
 
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 10000
-/Run/File test.root
+/run/printProgress 100
+/Run/File test0T.root
 /run/beamOn 1000

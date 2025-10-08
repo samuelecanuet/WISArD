@@ -35,6 +35,8 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
 {
   // G4cout << "ProcessHits" << G4endl;
 
+  // cout << "ProcessHits in Wisard_Sensor for DetCode = " << DetCode << G4endl;
+
   G4EventManager *evtman = G4EventManager::GetEventManager();
   Wisard_EventAction *evtac = (Wisard_EventAction *)evtman->GetUserEventAction();
   ParticleInformation* PartInfo = (ParticleInformation *)evtac->GetParticleInformation();
@@ -74,9 +76,10 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   // TODO : Add Birks law for scintillator
   if (DetCode == 99)
   {
-    PartInfo->AddEnergyDeposit(index, DetCode, emSaturation->VisibleEnergyDepositionAtAStep(step) / keV);
+    PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);//, emSaturation->VisibleEnergyDepositionAtAStep(step) / keV);
     // G4cout << "edep = " << step->GetTotalEnergyDeposit() / keV <<G4endl;
     // G4cout << "Vedep = " << emSaturation->VisibleEnergyDepositionAtAStep(step) / keV << G4endl;
+    // step->GetTrack()->SetTrackStatus(fStopAndKill);
   }
   else if (DetCode >= 11 && DetCode <= 85)
   {

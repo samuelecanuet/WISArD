@@ -4,8 +4,12 @@
 #include "G4SystemOfUnits.hh"
 #include "G4RunManager.hh"
 
+atomic<int> Wisard_RunAction::fAcceptedEvents{0};
+
 Wisard_RunAction::Wisard_RunAction(G4String macrofilename) : G4UserRunAction(), MacroFileName(macrofilename)
 {
+  G4cout << "\033[32m" << "Constructor Wisard_RunAction" << "\033[0m" << G4endl;
+
   RunMessenger = new G4GenericMessenger(this, "/Run/", "Output Settings");
 
   RunMessenger->DeclareProperty("File", filename)
@@ -13,7 +17,7 @@ Wisard_RunAction::Wisard_RunAction(G4String macrofilename) : G4UserRunAction(), 
       .SetParameterName("Filename", false)
       .SetDefaultValue("output.root");
 
-  RunMessenger->DeclareProperty("Threads", dummy)
+  RunMessenger->DeclareProperty("Threads", NumberThreads)
       .SetGuidance("Taking value to avoid error")
       .SetParameterName("Thread", false)
       .SetDefaultValue("1");
@@ -28,6 +32,9 @@ Wisard_RunAction::~Wisard_RunAction() {}
 void Wisard_RunAction::BeginOfRunAction(const G4Run *)
 {
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+
+  NumberThreads_int = stoi(NumberThreads);
+  NumberEvents_int = G4RunManager::GetRunManager()->GetCurrentRun()->GetNumberOfEventToBeProcessed();
 
   G4String fn = filename.substr(0, filename.length() - 5);
   G4int thread = G4Threading::G4GetThreadId();
@@ -49,6 +56,7 @@ void Wisard_RunAction::BeginOfRunAction(const G4Run *)
 
   ////////////// Construct Tree ///////////////////////////////////
   Tree = new TTree("Tree", "Informations");
+  Tree->Branch("EventID", &EventID, "EventID/I");
   Tree->Branch("Particle_PDG", &Particle_PDG);
   Tree->Branch("x", &x);
   Tree->Branch("y", &y);
@@ -61,6 +69,7 @@ void Wisard_RunAction::BeginOfRunAction(const G4Run *)
   Tree->Branch("Catcher_Central_Energy_Deposit", &Catcher_Central_Energy_Deposit);
   Tree->Branch("Catcher_Side_Energy_Deposit", &Catcher_Side_Energy_Deposit);
   Tree->Branch("PlasticScintillator_Energy_Deposit", &PlasticScintillator_Energy_Deposit);
+  Tree->Branch("PlasticScintillator_Visible_Energy_Deposit", &PlasticScintillator_Visible_Energy_Deposit);
   Tree->Branch("PlasticScintillator_Hit_Position", &PlasticScintillator_Hit_Position);
   Tree->Branch("PlasticScintillator_Hit_Angle", &PlasticScintillator_Hit_Angle);
   Tree->Branch("PlasticScintillator_Hit_Time", &PlasticScintillator_Hit_Time);
@@ -86,12 +95,19 @@ void Wisard_RunAction::BeginOfRunAction(const G4Run *)
 void Wisard_RunAction::EndOfRunAction(const G4Run *)
 {
   WrittingTree();
+  if (Tree_MCP != nullptr)
+  {
+    Tree_MCP->Write();
+    H_MCP->Write();
+  }
   f->Close();
 }
 
-void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info)
+void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id)
 {
   // Part_Info->Parse();
+
+  EventID = event_id;
 
   // TREE VARIABLES //
   for (auto &pair : Part_Info->GetInfo())
@@ -130,6 +146,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info)
 
     // # Plastic Scintillator #//
     PlasticScintillator_Energy_Deposit.push_back(particle.Detectors[99].EnergyDeposit);
+    PlasticScintillator_Visible_Energy_Deposit.push_back(particle.Detectors[99].VisibleEnergyDeposit);
     PlasticScintillator_Hit_Position.push_back(particle.Detectors[99].HitPosition);
     PlasticScintillator_Hit_Angle.push_back(particle.Detectors[99].HitAngle);
     PlasticScintillator_Hit_Time.push_back(particle.Detectors[99].HitTime);
@@ -187,6 +204,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info)
   Silicon_Detector_Hit_Angle.clear();
   Silicon_Detector_Hit_Time.clear();
   PlasticScintillator_Energy_Deposit.clear();
+  PlasticScintillator_Visible_Energy_Deposit.clear();
   PlasticScintillator_Hit_Angle.clear();
   PlasticScintillator_Hit_Position.clear();
   PlasticScintillator_Hit_Time.clear();
@@ -260,8 +278,8 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info)
   */
 
   G4int divi = 100000;
-  G4int EventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
-  if (EventID % divi == 0)
+  G4int EventProcessed = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+  if (EventProcessed % divi == 0)
   {
     WrittingTree();
   }
@@ -271,7 +289,6 @@ void Wisard_RunAction::WrittingTree()
 {
   // G4cout << "Writing Tree" << G4endl; 
   f->cd();
-
 
   Tree->AutoSave("FlushBaskets");
 
@@ -294,4 +311,35 @@ void Wisard_RunAction::WrittingTree()
 G4String Wisard_RunAction::GetFileName()
 {
   return filename;
+}
+
+void Wisard_RunAction::FillMCP(G4double x_tree, G4double y_tree)
+{
+
+  if (Tree_MCP == nullptr)
+  {
+    Tree_MCP = new TTree("Tree_MCP", "MCP Positions");
+    Tree_MCP->Branch("x_MCP", &x_MCP, "x/D");
+    Tree_MCP->Branch("y_MCP", &y_MCP, "y/D");
+
+    H_MCP = new TH2D("H_MCP", "MCP Positions", 1000, -10 * mm, 10 * mm, 1000, -10 * mm, 10 * mm);
+    H_MCP->SetXTitle("x (mm)");
+    H_MCP->SetYTitle("y (mm)");
+  }
+
+  x_MCP = x_tree;
+  y_MCP = y_tree;
+  Tree_MCP->Fill();
+  H_MCP->Fill(x_tree, y_tree);  
+}
+
+
+G4int Wisard_RunAction::GetNumberOfThreads()
+{
+    return NumberThreads_int;
+}
+
+G4int Wisard_RunAction::GetNumberofEvents()
+{
+    return NumberEvents_int;
 }

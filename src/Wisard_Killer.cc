@@ -23,6 +23,5 @@ G4bool Wisard_Killer::ProcessHits(G4Step *step, G4TouchableHistory *)
     // kill the particle
     step->GetTrack()->SetTrackStatus(fStopAndKill);
 
-    
     return (true);
 }

@@ -1,0 +1,68 @@
+#---------------------------------------------------------------
+#   Verbosity
+#---------------------------------------------------------------
+/run/initialize
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+#---------------------------------------------------------------
+#   Input Files
+#---------------------------------------------------------------
+/process/inactivate ionIoni
+/Input/Ion 32Ar
+/Input/Energy 30 keV
+/Input/Direction 0 0 1 
+/Input/Position 0 0 -800
+
+#---------------------------------------------------------------
+#   Simulation Parameters
+#---------------------------------------------------------------
+/Run/Threshold_PlasticScintillator 100 keV
+/Run/Threads %threads
+
+/Beam/X 0. mm
+/Beam/Y 0. mm
+/Beam/Radius 100 mm
+/Beam/Sigma_X 0.0 mm
+/Beam/Sigma_Y 0.0 mm
+
+/Geometry/Collimator false
+/Geometry/Magnetic_Field_Value %B tesla
+/Geometry/Magnetic_Field_Mapping true
+/Geometry/SiDeadLayer_Thickness 100 nm
+/Geometry/D1 0 0 0 
+/Geometry/D2 0 0 0 
+/Geometry/D3 0 0 0 
+/Geometry/D4 0 0 0 
+/Geometry/D5 0 0 0 
+/Geometry/D6 0 0 0 
+/Geometry/D7 0 0 0 
+/Geometry/D8 0 0 0 
+/Geometry/D1_Angle 0 deg
+/Geometry/D2_Angle 0 deg
+/Geometry/D3_Angle 0 deg
+/Geometry/D4_Angle 0 deg
+/Geometry/D5_Angle 0 deg
+/Geometry/D6_Angle 0 deg
+/Geometry/D7_Angle 0 deg
+/Geometry/D8_Angle 0 deg
+/Geometry/Catcher_Position_z 0 mm
+/Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Angle 0 deg
+/Geometry/Catcher_Thickness_Al1 85 nm
+/Geometry/Catcher_Thickness_Mylar 525 nm
+/Geometry/Catcher_Thickness_Al2 85 nm
+
+/Geometry/MCP true
+/Geometry/MCP_Position 0 0 %z
+
+/run/reinitializeGeometry
+
+#---------------------------------------------------------------
+#   Generate Events
+#---------------------------------------------------------------
+/run/printProgress 1000
+/Run/File %output
+/run/beamOn %events
+

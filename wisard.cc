@@ -30,7 +30,7 @@
 int main(int argc, char **argv)
 {
   system("Logo/logo.ans");
-  // G4Random::setTheSeed(123456789);
+  //G4Random::setTheSeed(123456789);
 
   // get run time
   clock_t t1, t2;
@@ -111,6 +111,8 @@ int main(int argc, char **argv)
 
   ptr_run->Initialize();
 
+  ptr_phys->AddStepMax(0.1*mm, 0x2);
+
   //------------------------------------------------------------
 
   G4VisManager *visu_manager = new G4VisExecutive("0");
@@ -169,10 +171,12 @@ int main(int argc, char **argv)
 
   G4String outputFile = ptr_act->GetFileName().substr(0, ptr_act->GetFileName().length() - 5);
   TChain chain("Tree");
+  TTree *Tree_MCP = nullptr;
   map<G4String, TH1D *> H = {};
+  map<G4String, TH2D *> H2 = {};
   map<G4String, TObject *> O = {};
   vector<TFile*> f(THREAD, nullptr);
-  for (int i = 0; i < THREAD; i++)
+  for (int i = -1; i < THREAD; i++)
   {
     G4String filename = outputFile + "_" + to_string(i) + ".root";
     if (!gSystem->AccessPathName(filename))
@@ -181,6 +185,15 @@ int main(int argc, char **argv)
       if (!f[THREAD]->IsZombie())
       {
         chain.Add(filename);
+
+        TTree *Tree = (TTree *)f[THREAD]->Get("Tree_MCP");
+        if (Tree != nullptr)
+        {
+          if (Tree_MCP == nullptr)
+            Tree_MCP = (TTree *)Tree->CloneTree();
+          else
+            Tree_MCP->AddClone(Tree);
+        }
 
         // loop on all the TH1D of the file
         TList *list = f[THREAD]->GetListOfKeys();
@@ -201,6 +214,18 @@ int main(int argc, char **argv)
               H[h->GetName()]->Add(h);
             }
           }
+          if (obj->InheritsFrom("TH2D"))
+          {
+            TH2D *h = (TH2D *)obj;
+            if (H2.find(h->GetName()) == H2.end())
+            {
+              H2[h->GetName()] = (TH2D*)h->Clone();
+            }
+            else
+            {
+              H2[h->GetName()]->Add(h);
+            }
+          }
           if (obj->InheritsFrom("TObjString"))
           {
             O[obj->GetName()] = (TObjString*)obj->Clone();
@@ -210,8 +235,15 @@ int main(int argc, char **argv)
     }
   }
   outputFile = outputFile + ".root";  
-  chain.Merge(outputFile);
+  chain.Merge(outputFile, "fast");
+
   TFile final(outputFile, "UPDATE");
+  if (Tree_MCP != nullptr)
+  {
+    final.cd();
+    Tree_MCP->Write();
+  }
+
   for (auto &o : O)
   {
     o.second->Write();
@@ -220,6 +252,11 @@ int main(int argc, char **argv)
   {
     h.second->Write();
   }
+  for (auto &h2 : H2)
+  {
+    h2.second->Write();
+  }
+
   final.Close();
 
   // Clean up temporary files

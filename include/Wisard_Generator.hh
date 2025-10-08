@@ -133,7 +133,6 @@ inline TH3D *Wisard_Generator::GetSRIM_hist()
 
     if (!output || output->IsZombie())
     {
-        G4Exception("Wisard_Generator::GetSRIM_hist", "Unable to open SRIM file", JustWarning, "");
         return nullptr;
     }
 
@@ -256,7 +255,7 @@ inline void Wisard_Generator::InitBeam()
         HGauss2D = nullptr;
         return;
     }
-    Gauss2D = new TF2("Gauss2D", "exp(-0.5*((x-[0])/(sqrt(2)*[1]))**2)*exp(-0.5*((y-[2])/(sqrt(2)*[3]))**2)", -100, 100, -100, 100);
+    Gauss2D = new TF2("Gauss2D", "exp(-0.5*((x-[0])/[1])**2)*exp(-0.5*((y-[2])/[3])**2)", -10, 10, -10, 10);
     Gauss2D->SetParameters(X, Sigma_X, Y, Sigma_Y);
     Gauss2D->SetNpx(10000);
     Gauss2D->SetNpy(10000);

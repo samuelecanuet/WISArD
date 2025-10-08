@@ -7,6 +7,8 @@
 #include <vector>
 #include <cmath>
 
+#include "TGraph2D.h"
+
 using namespace std;
 
 class WisardMagnetField
@@ -26,6 +28,9 @@ class WisardMagnetField
 
   G4double FIELD_VALUE;
   G4double homogenous_min, homogenous_max;
+
+  TGraph2D *graphBz;
+  TGraph2D *graphBr;
 
 public:
   WisardMagnetField(G4double value);

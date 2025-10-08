@@ -1,0 +1,65 @@
+#---------------------------------------------------------------
+#   Verbosity
+#---------------------------------------------------------------
+/run/initialize
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+#---------------------------------------------------------------
+#   Input Files
+#---------------------------------------------------------------
+#/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
+/Input/SRIM SRIM_data/AlMylar_32Ar.root
+/Input/CRADLE %inputCRADLE
+
+#---------------------------------------------------------------
+#   Simulation Parameters
+#---------------------------------------------------------------
+/Run/Threshold_PlasticScintillator 100 keV
+/Run/Threads %threads
+
+/Beam/X %x mm
+/Beam/Y %y mm
+/Beam/Radius 100 mm
+#/Beam/Sigma_X %sx mm
+#/Beam/Sigma_Y %sy mm
+
+/Geometry/Collimator false
+/Geometry/Magnetic_Field_Value 4 tesla
+/Geometry/Magnetic_Field_Mapping false
+/Geometry/SiDeadLayer_Thickness 100 nm
+/Geometry/D1 0 0 0
+/Geometry/D2 0 0 0
+/Geometry/D3 0 0 0
+/Geometry/D4 0 0 0
+/Geometry/D5 0 0 0
+/Geometry/D6 0 0 0
+/Geometry/D7 0 0 0
+/Geometry/D8 0 0 0
+/Geometry/D1_Angle 0 deg
+/Geometry/D2_Angle 0 deg
+/Geometry/D3_Angle 0 deg
+/Geometry/D4_Angle 0 deg
+/Geometry/D5_Angle 0 deg
+/Geometry/D6_Angle 0 deg
+/Geometry/D7_Angle 0 deg
+/Geometry/D8_Angle 0 deg
+/Geometry/Catcher_Position_z 0 mm
+/Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Angle 0 deg
+/Geometry/Catcher_Thickness_Al1 85 nm
+/Geometry/Catcher_Thickness_Mylar 525 nm
+/Geometry/Catcher_Thickness_Al2 85 nm
+/run/reinitializeGeometry
+
+/Geometry/MCP false
+/Geometry/MCP_Position 0 0 -10
+
+#---------------------------------------------------------------
+#   Generate Events
+#---------------------------------------------------------------
+/run/printProgress 100000
+/Run/File %output
+/run/beamOn %events
+

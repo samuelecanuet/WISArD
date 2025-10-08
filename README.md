@@ -128,3 +128,10 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Collimator option in the macro
 - Geometry of 2025 added (beamline + collimator)
 - Full Magnetic field implementation as option in the macro
+
+### v4.4 
+- Fixing sensor code of dead layers
+- Adding "Visible" energy in the TTree (Birks) 
+- Replacing default Si02 by customized one 
+- Adding EventID leef to the Tree to keep the correspondances between CRADLE and Geant4
+- Final implementation of geometric interstrip (Al 480nm-28um / Si 12um / SiO2 730nm-48um / Si 12um / Al 480nm-28um)

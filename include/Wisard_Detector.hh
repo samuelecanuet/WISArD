@@ -58,7 +58,9 @@ public:
   G4double Magnetic_Field = 4*tesla;
   G4bool Magnetic_Field_Mapping_flag = false;
   G4bool Collimator_flag = true;
+  G4bool MCP_flag = false;
   G4double Catcher_Position_z = 0.*mm;
+  G4String string_MCP_position;
   G4String Catcher_Position = "catcher1";
   G4double Catcher_Angle = 0*deg;
   G4double Catcher_Thickness_Al1 = 50 * nm;
@@ -185,9 +187,12 @@ public:
   G4double spazio_tra_Strip;
   G4double thicknessSiDetector, length_x_SupportoRame_SiDetector, x_smallBox_daTagliare_SupportoRame_SiDetector, distanza_latoDxBoxTagliata_e_bordoDxSupportoRame_SiDetector, y_smallBox_daTagliare_SupportoRame_SiDetector, thetaInclinazione_SiDetector, pDy1, height_y_SupportoRame_SiDetector, pDz, thickness_z_SupportoRame_SiDetector;
   G4VSolid *supportSiliconDetector;
-  G4double thicknessSiDetectorGrid;
+  G4double thicknessSiDetector_InterstripGrid;
+  G4double thicknessSiDetector_InterstripSiO2;
   G4VSolid *AlFrameSiliconDetector;
-  G4double WidthSiDetectorGrid;
+  G4double WidthSiDetector_InterstripGrid;
+  G4double WidthSiDetector_InterstripSiO2;
+  G4double WidthSiDetector_InterstripSi;
   G4double xHigh_SiDet_Strip_5;
   G4double xLow_SiDet_Strip_5;
   G4double y_SiDet_Strip_5;
@@ -215,6 +220,7 @@ public:
   G4LogicalVolume *fLogic_AlSource1_side;
   G4LogicalVolume *fLogic_MylarSource_side;
   G4LogicalVolume *fLogic_AlSource2_side;
+  G4LogicalVolume *fLogic_MCP;
 
   G4Material *Material_Vacuum;
   G4Material *Material_Si;
@@ -416,7 +422,7 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeSt
 {
 
   G4ThreeVector position = get<1>(dic_strip[strip]);
-  position.setZ(position.z() + thicknessSiDetector / 2 + thicknessSiDetectorGrid / 2);
+  position.setZ(position.z() + thicknessSiDetector / 2 + thicknessSiDetector_InterstripGrid / 2);
 
   G4LogicalVolume *logicSiDet = new G4LogicalVolume(
       get<3>(dic_strip[strip]),
@@ -467,13 +473,13 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeIn
   G4LogicalVolume *logicSiDet = new G4LogicalVolume(
       get<0>(dic_interstrip[strip*10+strip+1]),
       interstripMat, // SiO2
-      ("D" + to_string(num) + "." + to_string(strip) + to_string(strip+1) + "_InterStrip" ).data());
+      ("D" + to_string(num) + "." + to_string(strip) + to_string(strip+1) + "_SiO2" ).data());
 
   G4VPhysicalVolume *physSiDet = new G4PVPlacement(
       0,
       position,
       logicSiDet,
-      ("D" + to_string(num) + "." + to_string(strip) + to_string(strip+1) + "_InterStrip" ).data(),
+      ("D" + to_string(num) + "." + to_string(strip) + to_string(strip+1) + "_SiO2" ).data(),
       videe,
       false,
       num*1000 + (2*strip+1)*100/2);

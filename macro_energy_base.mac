@@ -56,6 +56,9 @@
 /Geometry/Catcher_Thickness_Al2 85 nm
 /run/reinitializeGeometry
 
+/Geometry/MCP false
+/Geometry/MCP_Position 0 0 -10
+
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------

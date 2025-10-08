@@ -78,6 +78,17 @@
         "Fitting_B.C": "cpp",
         "script.C": "cpp",
         "test.C": "cpp",
-        "Resolution_Alpha.C": "cpp"
+        "Resolution_Alpha.C": "cpp",
+        "bit": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "format": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "span": "cpp",
+        "stop_token": "cpp",
+        "text_encoding": "cpp",
+        "variant": "cpp",
+        "*.hh_beforerbs": "cpp"
     }
 }
