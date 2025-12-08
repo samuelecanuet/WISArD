@@ -22,7 +22,7 @@ usage() {
   echo "  CTP=            Specify the value of CT'."
   echo "  a=              Specify the value of a."
   echo "  b=              Specify the value of b."
-  ehco "  sx=              Specify the value of sx."
+  echo "  sx=              Specify the value of sx."
   echo "  sy=              Specify the value of sy."
   echo "  y=              Specify the value of y."
   echo "  x=              Specify the value of x."
@@ -196,7 +196,7 @@ A=$(echo "$Nuclei" | sed 's/[^0-9]*//g')
 
 
 cp macro_beam_base.mac tempory/macro_${suffixe}_bis.mac  
-sed -e "s|%inputCRADLE|../${rootCRADLEfile}32Ar_IAS_${constants}.root|g; s|%sx|${sx}|g; s|%sy|${sy}|g; s|%x|${x}|g; s|%threads|${N}|g; s/%inputSRIM/AlMylar_2021_32Ar.txt/g; s|%output|${rootGeant4file}${Nuclei}${suffixe}_${constants}.root|g; s/%events/${events}/g;" tempory/macro_${suffixe}_bis.mac > tempory/macro_${suffixe}.mac
+sed -e "s|%inputCRADLE|../${rootCRADLEfile}32Ar_IAS_${constants}.root|g; s|%sx|${sx}|g; s|%sy|${sy}|g; s|%x|${x}|g; s|%y|${y}|g; s|%threads|${N}|g; s/%inputSRIM/AlMylar_2021_32Ar.txt/g; s|%output|${rootGeant4file}${Nuclei}${suffixe}_${constants}.root|g; s/%events/${events}/g;" tempory/macro_${suffixe}_bis.mac > tempory/macro_${suffixe}.mac
 rm tempory/macro_${suffixe}_bis.mac
 wisard tempory/macro_${suffixe}.mac 
 echo -e "$GREEN wisard tempory/macro_${suffixe}.mac $COLOR"

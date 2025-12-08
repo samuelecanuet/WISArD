@@ -67,7 +67,7 @@ public:
   vector<G4ThreeVector> PlasticScintillator_Hit_Position;
 
   // silicon detectors //
-  vector<vector<G4ThreeVector>> Silicon_Detector_Hit_Position;
+  vector<vector<G4ThreeVector>> Silicon_Detector_Hit_Position, Silicon_Detector_Hit_DistanceBoundary;
   vector<vector<G4double>> Silicon_Detector_Hit_Angle, Silicon_Detector_Energy_Deposit, Silicon_Detector_DL_Energy_Deposit, Silicon_Detector_Hit_Time;
   vector<vector<G4int>> Silicon_Detector_Code;
   ///////////////////////
@@ -78,7 +78,7 @@ public:
   ///////////////////////////
 
   vector<G4double> Silicon_Detector_Energy_Deposit_part, Silicon_Detector_DL_Energy_Deposit_part, Silicon_Detector_Hit_Angle_part, Silicon_Detector_Hit_Time_part;
-  vector<G4ThreeVector> Silicon_Detector_Hit_Position_part;
+  vector<G4ThreeVector> Silicon_Detector_Hit_Position_part, Silicon_Detector_Hit_DistanceBoundary_part;
   vector<G4int> Silicon_Detector_Code_part;
 
   void UpdateTree(ParticleInformation *Part_Info, G4int Event_ID);

@@ -39,7 +39,7 @@ void Wisard_RunAction::BeginOfRunAction(const G4Run *)
   G4String fn = filename.substr(0, filename.length() - 5);
   G4int thread = G4Threading::G4GetThreadId();
 
-  f = new TFile((fn + "_" + to_string(thread) + ".root").c_str(), "recreate");
+  f = new TFile((fn + "_" + to_string(thread) + ".root").c_str(), "RECREATE");
   ////////////// Construct Log /////////////////////////////////////
   std::ifstream macrofile(MacroFileName);
   std::string line;
@@ -75,6 +75,7 @@ void Wisard_RunAction::BeginOfRunAction(const G4Run *)
   Tree->Branch("PlasticScintillator_Hit_Time", &PlasticScintillator_Hit_Time);
   Tree->Branch("Silicon_Detector_Energy_Deposit", &Silicon_Detector_Energy_Deposit);
   Tree->Branch("Silicon_Detector_Hit_Position", &Silicon_Detector_Hit_Position);
+  Tree->Branch("Silicon_Detector_Hit_DistanceBoundary", &Silicon_Detector_Hit_DistanceBoundary);
   Tree->Branch("Silicon_Detector_Hit_Angle", &Silicon_Detector_Hit_Angle);
   Tree->Branch("Silicon_Detector_Hit_Time", &Silicon_Detector_Hit_Time);
   Tree->Branch("Silicon_Detector_Code", &Silicon_Detector_Code);
@@ -110,6 +111,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
   EventID = event_id;
 
   // TREE VARIABLES //
+  
   for (auto &pair : Part_Info->GetInfo())
   {
     Particle particle = pair.second;
@@ -146,6 +148,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
 
     // # Plastic Scintillator #//
     PlasticScintillator_Energy_Deposit.push_back(particle.Detectors[99].EnergyDeposit);
+    plastic_coinc->Fill(particle.Detectors[99].EnergyDeposit);
     PlasticScintillator_Visible_Energy_Deposit.push_back(particle.Detectors[99].VisibleEnergyDeposit);
     PlasticScintillator_Hit_Position.push_back(particle.Detectors[99].HitPosition);
     PlasticScintillator_Hit_Angle.push_back(particle.Detectors[99].HitAngle);
@@ -161,6 +164,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
         silicon_single[Det.first]->Fill(Det.second.EnergyDeposit);
         Silicon_Detector_Energy_Deposit_part.push_back(Det.second.EnergyDeposit);
         Silicon_Detector_Hit_Position_part.push_back(Det.second.HitPosition);
+        Silicon_Detector_Hit_DistanceBoundary_part.push_back(Det.second.DistanceBoundary);
         Silicon_Detector_Hit_Angle_part.push_back(Det.second.HitAngle);
         Silicon_Detector_Hit_Time_part.push_back(Det.second.HitTime);
       }
@@ -176,6 +180,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
     Silicon_Detector_Energy_Deposit.push_back(Silicon_Detector_Energy_Deposit_part);
     Silicon_Detector_DL_Energy_Deposit.push_back(Silicon_Detector_DL_Energy_Deposit_part);
     Silicon_Detector_Hit_Position.push_back(Silicon_Detector_Hit_Position_part);
+    Silicon_Detector_Hit_DistanceBoundary.push_back(Silicon_Detector_Hit_DistanceBoundary_part);
     Silicon_Detector_Hit_Angle.push_back(Silicon_Detector_Hit_Angle_part);
     Silicon_Detector_Hit_Time.push_back(Silicon_Detector_Hit_Time_part);
 
@@ -183,6 +188,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
     Silicon_Detector_Energy_Deposit_part.clear();
     Silicon_Detector_DL_Energy_Deposit_part.clear();
     Silicon_Detector_Hit_Position_part.clear();
+    Silicon_Detector_Hit_DistanceBoundary_part.clear();
     Silicon_Detector_Hit_Angle_part.clear();
     Silicon_Detector_Hit_Time_part.clear();
   }
@@ -201,6 +207,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
   Silicon_Detector_Energy_Deposit.clear();
   Silicon_Detector_DL_Energy_Deposit.clear();
   Silicon_Detector_Hit_Position.clear();
+  Silicon_Detector_Hit_DistanceBoundary.clear();
   Silicon_Detector_Hit_Angle.clear();
   Silicon_Detector_Hit_Time.clear();
   PlasticScintillator_Energy_Deposit.clear();
@@ -210,7 +217,6 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
   PlasticScintillator_Hit_Time.clear();
   Catcher_Central_Energy_Deposit.clear();
   Catcher_Side_Energy_Deposit.clear();
-
   
 
   /// HISTOGRAMS ///
@@ -257,6 +263,8 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
 
   // if (proton_index != -1 && positron_index != -1)
   // {
+
+  
   for (int i = 0; i < Wisard_Detector::nb_det; i++)
   {
     Detector Det = (Part_Info->GetInfo()[proton_index]).Detectors[Detector_Code[i]];
@@ -275,7 +283,9 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
     silicon_single[i]->Fill(Det.EnergyDeposit);
   }
   // }
-  */
+  */  
+
+  
 
   G4int divi = 100000;
   G4int EventProcessed = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
@@ -295,7 +305,8 @@ void Wisard_RunAction::WrittingTree()
   for (int i = 0; i < Wisard_Detector::nb_det; i++)
   {
     G4int detector_code = Detector_Code[i];
-    // G4cout<< Wisard_Detector::Detector_Name[i] << " : " << silicon_coinc[i]->GetEntries() << " " << silicon_nocoinc[i]->GetEntries() << " " << silicon_single[i]->GetEntries() <<G4endl;
+    // G4cout << "Writing Histograms for " << Detector_Name[i] << "  " << silicon_single[detector_code]->GetEntries() << G4endl;
+    // G4cout<< Detector_Name[i] << " : " << silicon_coinc[detector_code]->GetEntries() << " " << silicon_nocoinc[detector_code]->GetEntries() << " " << silicon_single[i]->GetEntries() <<G4endl;
     silicon_coinc[detector_code]->Write("", TObject::kOverwrite);
     silicon_nocoinc[detector_code]->Write("", TObject::kOverwrite);
     silicon_single[detector_code]->Write("", TObject::kOverwrite);

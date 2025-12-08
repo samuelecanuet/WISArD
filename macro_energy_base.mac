@@ -22,32 +22,32 @@
 /Run/Threshold_PlasticScintillator 100 keV
 /Run/Threads %threads
 
-/Beam/X 0. mm
-/Beam/Y 0. mm
-/Beam/Radius 2.5 mm
-/Beam/Sigma_X 0.75 mm
-/Beam/Sigma_Y 0.75 mm
+/Beam/X -0.05363 mm
+/Beam/Y 0.4103 mm
+/Beam/Radius 100 mm
+/Beam/Sigma_X 0.336411 mm
+/Beam/Sigma_Y 0.393268 mm
 
-/Geometry/Collimator true
+/Geometry/Collimator false
 /Geometry/Magnetic_Field_Value 4 tesla
 /Geometry/Magnetic_Field_Mapping false
 /Geometry/SiDeadLayer_Thickness 100 nm
-/Geometry/D1 %x %y %z
-/Geometry/D2 %x %y %z
-/Geometry/D3 %x %y %z
-/Geometry/D4 %x %y %z
-/Geometry/D5 %x %y %z
-/Geometry/D6 %x %y %z
-/Geometry/D7 %x %y %z
-/Geometry/D8 %x %y %z
-/Geometry/D1_Angle %theta deg
-/Geometry/D2_Angle %theta deg
-/Geometry/D3_Angle %theta deg
-/Geometry/D4_Angle %theta deg
-/Geometry/D5_Angle %theta deg
-/Geometry/D6_Angle %theta deg
-/Geometry/D7_Angle %theta deg
-/Geometry/D8_Angle %theta deg
+/Geometry/D1 0 0 0
+/Geometry/D2 0 0 0
+/Geometry/D3 0 0 0
+/Geometry/D4 0 0 0
+/Geometry/D5 0 0 0
+/Geometry/D6 0 0 0
+/Geometry/D7 0 0 0
+/Geometry/D8 0 0 0
+/Geometry/D1_Angle 0 deg
+/Geometry/D2_Angle 0 deg
+/Geometry/D3_Angle 0 deg
+/Geometry/D4_Angle 0 deg
+/Geometry/D5_Angle 0 deg
+/Geometry/D6_Angle 0 deg
+/Geometry/D7_Angle 0 deg
+/Geometry/D8_Angle 0 deg
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg

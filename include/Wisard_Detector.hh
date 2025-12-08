@@ -27,12 +27,24 @@
 #include "G4ChordFinder.hh"
 #include "G4FieldManager.hh"
 #include "G4Trap.hh"
+#include "G4Sphere.hh"
 #include "G4VSolid.hh"
 #include "G4UniformMagField.hh"
 #include "G4SDManager.hh"
 
 #include "Wisard_Global.hh"
 #include "G4GenericMessenger.hh"
+
+template <typename... Ts, typename... Us, std::size_t... Is>
+auto add_tuples_impl(const std::tuple<Ts...>& t1, const std::tuple<Us...>& t2, std::index_sequence<Is...>) {
+    return std::make_tuple((std::get<Is>(t1) + std::get<Is>(t2))...);
+}
+
+template <typename... Ts, typename... Us>
+auto add_tuples(const std::tuple<Ts...>& t1, const std::tuple<Us...>& t2) {
+    static_assert(sizeof...(Ts) == sizeof...(Us), "Tuples must have same size");
+    return add_tuples_impl(t1, t2, std::index_sequence_for<Ts...>{});
+}
 
 //----------------------------------------------------------------------
 
@@ -57,6 +69,7 @@ public:
   G4double spazio_tra_Scintillatore_e_BordoSiDetector;
   G4double Magnetic_Field = 4*tesla;
   G4bool Magnetic_Field_Mapping_flag = false;
+  G4bool CAD_MESH_flag = false;
   G4bool Collimator_flag = true;
   G4bool MCP_flag = false;
   G4double Catcher_Position_z = 0.*mm;
@@ -78,6 +91,9 @@ public:
   G4Tubs *fSolidWorld;
   G4LogicalVolume *fLogicWorld;
   G4VPhysicalVolume *fPhysiWorld;
+  G4Tubs *fSolidWorld_Detector;
+  G4LogicalVolume *fLogicWorld_Detector;
+  G4VPhysicalVolume *fPhysiWorld_Detector;
   G4Material *fDefaultMaterial;
 
   G4double fLength_PlasticScintillator = 5 * cm;
@@ -100,9 +116,12 @@ public:
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeAlFrame(int num, G4LogicalVolume *mother, G4Material *frame_mat);
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> MakeInterStrip(int strip, int num, G4LogicalVolume *videe, G4VisAttributes *strip_att, G4Material*);
   G4ThreeVector ConvertStringToG4ThreeVector(G4String str);
+  G4ThreeVector ConvertStringToG4ThreeVectorAngles(G4String str, G4double &Rx, G4double &Ry);
   G4ThreeVector Cylindrical_Convertion(G4String, G4ThreeVector);
   void CylindricalAngle_Convertion(G4String, G4double);
 
+  void Read_Config_File(G4String filename);
+  void DisplayPoints(G4String);
 
   std::unordered_map<int, std::tuple<G4Trap* , G4ThreeVector, G4Trap *, G4VSolid*>> dic_strip;
   std::unordered_map<int, std::tuple<G4Trap *, G4ThreeVector>> dic_interstrip;
@@ -110,6 +129,7 @@ public:
   std::unordered_map<std::string, G4ThreeVector> dic_positionvide;
   std::unordered_map<std::string, G4ThreeVector> dic_correction;
   std::unordered_map<std::string, std::tuple<G4double,G4double,G4double>> dic_rotate;
+
 
   std::vector<std::pair<G4LogicalVolume *, G4VPhysicalVolume *>>
       tab[8];
@@ -189,6 +209,7 @@ public:
   G4VSolid *supportSiliconDetector;
   G4double thicknessSiDetector_InterstripGrid;
   G4double thicknessSiDetector_InterstripSiO2;
+  G4double thicknessSiDetector_BackAl;
   G4VSolid *AlFrameSiliconDetector;
   G4double WidthSiDetector_InterstripGrid;
   G4double WidthSiDetector_InterstripSiO2;
@@ -244,8 +265,9 @@ public:
   G4VisAttributes *Vis_PEEK;
   G4VisAttributes *Vis_PCB;
 
-  G4String string_pos[9];
-  G4double Angle_Correction[9];
+  // G4String string_pos[9];
+  G4String Detectors_position_correction;
+  // G4double Angle_Correction[9];
 
   static const G4int nb_det = 40;
 
@@ -275,7 +297,7 @@ public:
 inline std::vector<std::pair<G4LogicalVolume *, G4VPhysicalVolume *>>
 Wisard_Detector::Make_Sidet(int num)
 {
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Support = MakeSupport(num, Vis_PCB, Material_PCB);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Support;// = MakeSupport(num, Vis_PCB, Material_PCB);
   // std::pair<G4LogicalVolume*, G4VPhysicalVolume*> Cooling = MakeCooling(num, dir, Support.first, Vis_Cu, Material_Cu);
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Vide = MakeVide(num, Vis_Vacuum, Material_Vacuum);
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> AlFrame = MakeAlFrame(num, Vide.first, Material_Al);
@@ -310,17 +332,18 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeSu
       support_mat,
       ("D" + to_string(num) + "_PCB").data());
 
-  G4RotationMatrix *rotate = new G4RotationMatrix();
+    G4RotationMatrix *rotate = new G4RotationMatrix();//get<0>(dic_rotate["D" + to_string(num)]), get<1>(dic_rotate["D" + to_string(num)]), get<2>(dic_rotate["D" + to_string(num)]));
+
   rotate->rotateX(get<0>(dic_rotate["D" + to_string(num)]));
   rotate->rotateY(get<1>(dic_rotate["D" + to_string(num)]));
   rotate->rotateZ(get<2>(dic_rotate["D" + to_string(num)]));
 
   G4VPhysicalVolume *physSupportSiliconDetector = new G4PVPlacement(
-      rotate,
+    rotate,
       dic_position["D" + to_string(num)],
       logicSupportSiliconDetector,
       ("D" + to_string(num) + "_PCB").data() ,
-      fLogicWorld,
+      fLogicWorld_Detector,
       false,
       0);
 
@@ -336,17 +359,18 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeVi
       vide_mat,
       ("D" + to_string(num) + "_Handler").data());
 
-  G4RotationMatrix *rotate = new G4RotationMatrix();
+  G4RotationMatrix *rotate = new G4RotationMatrix();//get<0>(dic_rotate["D" + to_string(num)]), get<1>(dic_rotate["D" + to_string(num)]), get<2>(dic_rotate["D" + to_string(num)]));
   rotate->rotateX(get<0>(dic_rotate["D" + to_string(num)]));
   rotate->rotateY(get<1>(dic_rotate["D" + to_string(num)]));
   rotate->rotateZ(get<2>(dic_rotate["D" + to_string(num)]));
   
   G4VPhysicalVolume *physSupportSiliconDetectorvide = new G4PVPlacement(
       rotate,
+      // dic_rot["D" + to_string(num)],
       dic_position["D" + to_string(num)] + dic_positionvide["D" + to_string(num)],
       logicSupportSiliconDetectorvide,
       ("D" + to_string(num) + "_Handler").data(),
-      fLogicWorld,
+      fLogicWorld_Detector,
       false,
       0);
   logicSupportSiliconDetectorvide->SetVisAttributes(vide_att);
@@ -508,6 +532,25 @@ inline G4ThreeVector Wisard_Detector::ConvertStringToG4ThreeVector(G4String str)
   }
 }
 
+inline G4ThreeVector Wisard_Detector::ConvertStringToG4ThreeVectorAngles(G4String str, G4double &Rx, G4double &Ry)
+{
+  if (str == "")
+  {
+    return G4ThreeVector(0, 0, 0);
+  }
+  std::istringstream iss(str);
+  G4double x0, y0, z0;
+  if (iss >> x0 >> y0 >> z0 >> Rx >> Ry)
+  {
+    return G4ThreeVector(x0, y0, z0);
+  }
+  else
+  {
+    G4Exception("Wisard_Detector::ConvertStringToG4ThreeVectorAngles", "Impossible to convert string to G4ThreeVector", JustWarning, "");
+    return G4ThreeVector(0, 0, 0);
+  }
+}
+
 inline G4ThreeVector Wisard_Detector::Cylindrical_Convertion(G4String detname, G4ThreeVector Init)
 {
   
@@ -552,7 +595,6 @@ inline G4ThreeVector Wisard_Detector::Cylindrical_Convertion(G4String detname, G
 
 inline void Wisard_Detector::CylindricalAngle_Convertion(G4String detname, G4double angle)
 {
-  // std::tuple<G4double,G4double,G4double> rotate = dic_rotate[detname];
   if (detname == "D1")
   {
     get<0>(dic_rotate[detname]) += angle;
@@ -599,5 +641,70 @@ inline void Wisard_Detector::CylindricalAngle_Convertion(G4String detname, G4dou
     return; 
   }
 }
+
+inline void Wisard_Detector::Read_Config_File(G4String filename)
+{
+  // Open the configuration file
+  ifstream configFile(filename);
+  if (!configFile.is_open())
+  {
+    G4Exception("Wisard_Detector::Read_Config_File", "Cannot open configuration file", FatalErrorInArgument, filename.data());
+    return;
+  }
+
+  G4String line;
+  while (getline(configFile, line))
+  {
+    // Skip comments and empty lines
+    if (line.empty() || line[0] == '#')
+      continue;
+
+    std::istringstream iss(line);
+    G4String name;
+    G4double px, py, pz, nx, ny, nz, theta1, theta2, theta3;
+    iss >> name >> px >> py >> pz >> theta1 >> theta2 >> theta3;
+
+    // cout << "Reading config for " << name << ": Position(" << px << ", " << py << ", " << pz << "), Normal(" << nx << ", " << ny << ", " << nz << ")" << endl;
+
+    
+    dic_position[name] = G4ThreeVector(px, py, pz+pz/abs(pz)*(thicknessSiDetector+thicknessSiDetector_InterstripSiO2)/2);
+    G4ThreeVector vn(nx, ny, nz);  // desired normal
+    dic_rotate[name] = std::make_tuple(theta1*deg, theta2*deg, theta3*deg);
+  }
+
+  configFile.close();
+}
+
+inline void Wisard_Detector::DisplayPoints(G4String filename)
+{
+  ifstream inputFile(filename);
+  if (!inputFile.is_open())
+  {
+    G4Exception("Wisard_Detector::DisplayPoints", "Cannot open input file", FatalErrorInArgument, filename.data());
+    return;
+  }
+
+  G4String line;
+  while (getline(inputFile, line))
+  {
+    // Skip comments and empty lines
+    if (line.empty() || line[0] == '#')
+      continue;
+
+    std::istringstream iss(line);
+    G4double px, py, pz;
+    iss >> px >> py >> pz;
+
+    G4cout << "Point: (" << px << ", " << py << ", " << pz << ")" << G4endl;
+
+    G4Sphere* pointSphere = new G4Sphere("PointSphere", 0, .2*mm, 0, 360*deg, 0, 180*deg);
+    G4LogicalVolume* pointLogic = new G4LogicalVolume(pointSphere, Material_Si, "PointLogic");
+    G4ThreeVector correction_macro = ConvertStringToG4ThreeVector(Detectors_position_correction);
+    new G4PVPlacement(0, correction_macro+G4ThreeVector(px, py, pz), pointLogic, "PointPhys", fLogicWorld_Detector, false, 0);
+  }
+
+  inputFile.close();
+}
+
 
 #endif

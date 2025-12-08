@@ -14,6 +14,7 @@ import subprocess
 # mu_x = -0.02 
 # u_mu_x = 0.08  
 
+##################################
 # new 
 #  double sigma_x = 0.336411; //+/- 0.0402;
 #     double sigma_y = 0.393268; //+/- 0.0447;
@@ -32,11 +33,11 @@ mu_x = -0.05363
 u_mu_x = 0.100
 mu_y = 0.4103
 u_mu_y = 0.07466
-
+##################################
 
 rho = 0.0
 
-N = 1000
+N = 3000
 
 # FOR MEAN UNCERTAINTY SAMPLING
 mu_cov = np.array([[u_mu_y**2, rho*u_mu_y*u_mu_y], [rho*u_mu_y*u_mu_y, u_mu_y**2]])
@@ -48,10 +49,10 @@ sigma_cov = np.array([[u_sigma_x**2, rho*u_sigma_x*u_sigma_y], [rho*u_sigma_x*u_
 sigma_mean = np.array([sigma_x, sigma_y])
 sigma_samples = np.random.multivariate_normal(sigma_mean, sigma_cov, N)
 
-THREAD = 60
-thread = 4
+THREAD = 80
+thread = 5
 
-if N % thread != 0:
+if THREAD % thread != 0:
     print("N must be multiple of thread")
     exit(1)
 

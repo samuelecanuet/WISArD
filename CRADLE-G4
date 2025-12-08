@@ -174,9 +174,11 @@ cd ../CRADLE/build &&
 cp ../config/config_base.txt config_${constants}_bis.txt &&
 sed -e "$replace" config_${constants}_bis.txt > ../config/config_${constants}.txt &&
 rm config_${constants}_bis.txt &&
+N=$((N*2))
 ./CRADLE++ nucleus --name ${Nuclei} -Z $Z -A $A -c ../config/config_${constants}.txt general -l ${events} -o ${rootCRADLEfile}${Nuclei}_${suffixe}_${constants}.root -t ${N} && 
 cd - && 
 
+N=$((N/2))
 cp macro_base.mac tempory/macro_${Nuclei}_${suffixe}_${constants}_bis.mac && 
 sed -e "s|%inputCRADLE|../${rootCRADLEfile}${Nuclei}_${suffixe}_${constants}.root|g; s|%threads|${N}|g; s/%inputSRIM/AlMylar_2021_${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}_${suffixe}_${constants}.root|g; s/%events/${events}/g" tempory/macro_${Nuclei}_${suffixe}_${constants}_bis.mac > tempory/macro_${Nuclei}_${suffixe}_${constants}.mac && rm tempory/macro_${Nuclei}_${suffixe}_${constants}_bis.mac && 
 #sed -e "s|%inputCRADLE|../../../../../../../mnt/hgfs/shared-2/2024_DATA/R-MATRIX/18N_RMATRIX.root|g; s/%inputSRIM/AlMylar_2021_${Nuclei}.txt/g; s|%output|${rootGeant4file}${Nuclei}_${suffixe}_${constants}.root|g; s/%events/${events}/g" tempory/macro_${Nuclei}_${suffixe}_${constants}_bis.mac > tempory/macro_${Nuclei}_${suffixe}_${constants}.mac && rm tempory/macro_${Nuclei}_${suffixe}_${constants}_bis.mac && 

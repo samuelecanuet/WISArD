@@ -22,8 +22,8 @@
 /Beam/X %x mm
 /Beam/Y %y mm
 /Beam/Radius 100 mm
-#/Beam/Sigma_X %sx mm
-#/Beam/Sigma_Y %sy mm
+/Beam/Sigma_X %sx mm
+/Beam/Sigma_Y %sy mm
 
 /Geometry/Collimator false
 /Geometry/Magnetic_Field_Value 4 tesla

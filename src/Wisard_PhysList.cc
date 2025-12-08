@@ -16,6 +16,8 @@
 
 #include "G4Scintillation.hh"
 #include "G4EmSaturation.hh"
+#include "G4TransportationParameters.hh"
+#include "G4Transportation.hh"
 
 //----------------------------------------------------------------------
 Wisard_PhysList::Wisard_PhysList()
@@ -91,6 +93,15 @@ void Wisard_PhysList::ConstructParticle()
 // Associate selected processes to the particles
 void Wisard_PhysList::ConstructProcess()
 {
+  // defin Transportation parameters
+  auto transportParams= G4TransportationParameters::Instance();
+
+  transportParams->SetWarningEnergy(  0.1 * keV );
+  // transportParams->SetThresholdWarningEnergy( 0.1 * keV );
+  transportParams->SetImportantEnergy( 1 * keV );
+  // transportParams->SetThresholdImportantEnergy(  1 * keV );
+  transportParams->SetNumberOfTrials( 1000000 );
+
   // define transportation process
   AddTransportation();
 
@@ -106,8 +117,8 @@ void Wisard_PhysList::ConstructProcess()
   G4StepLimiterPhysics *process = new G4StepLimiterPhysics();
   process->ConstructProcess();
 
-  // G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics();
-  // radioactiveDecay->ConstructProcess();
+  G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics();
+  radioactiveDecay->ConstructProcess();
 
 }
 

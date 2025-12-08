@@ -37,12 +37,15 @@ int SRIM2ROOT(string filename = "")
     std::string text;
     
     int x_max = 0, y_max = 0, z_max = 0;
-    while (std::getline(SRIMTXT, line)) {
-        
+    while (std::getline(SRIMTXT, line)) 
+    {
+       
         std::istringstream iss(line);
         std::string x_str, y_str, z_str;
         int num;
         std::string text_in_line;
+
+        
         
         if (iss >> num >> z_str >> y_str >> x_str) 
         {

@@ -553,6 +553,8 @@
  /usr/local/geant4.11.1.2/include/Geant4/G4FieldManager.icc \
  /usr/local/geant4.11.1.2/include/Geant4/G4Trap.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4Trap.icc \
+ /usr/local/geant4.11.1.2/include/Geant4/G4Sphere.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4Sphere.icc \
  /usr/local/geant4.11.1.2/include/Geant4/G4VSolid.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4UniformMagField.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4MagneticField.hh \

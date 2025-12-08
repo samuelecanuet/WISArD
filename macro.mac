@@ -9,49 +9,42 @@
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
-#/Input/SRIM SRIM_data/AlMylar_2021_32Ar.root
+/Input/SRIM SRIM_data/AlMylar_32Ar.root
 #/Input/Ion 207Bi
-#/Input/CRADLE ../../../../../../mnt/hgfs/shared-2/2024_DATA/SIMULATED_DATA/fe/files/32Ar_a1_b0_1.root
+/Input/CRADLE /data333/lecanuet/data/32Ar_IAS_a1.0_b0.0.root
 
-
-/process/inactivate ionIoni
-/Input/Ion 32Ar
-/Input/Energy 30 keV
-/Input/Direction 0 0 1 
-/Input/Position 0 0 -800
+#/process/inactivate ionIoni
+#/Input/Ion 32Ar
+#/Input/Energy 30 keV
+#/Input/Direction 0 0 1 
+#/Input/Position 0 0 -800
 
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
-/Run/Threads 6
+/Run/Threads 20
 
-/Beam/X 0. mm
-/Beam/Y 0. mm
-/Beam/Radius 50 mm
-/Beam/Sigma_X 0.1 mm
-/Beam/Sigma_Y 0.1 mm
+## 2024 ##
+#/Beam/X -0.1 mm
+#/Beam/Y 0.1 mm
+#/Beam/Radius 50 mm
+#/Beam/Sigma_X 0.7 mm
+#/Beam/Sigma_Y 0.8 mm
+
+## 2025 ##
+/Beam/X -0.05 mm
+/Beam/Y 0.41 mm
+/Beam/Radius 1000 mm
+/Beam/Sigma_X 0.34 mm
+/Beam/Sigma_Y 0.39 mm
 
 /Geometry/Collimator false
 /Geometry/Magnetic_Field_Value 4 tesla
-/Geometry/Magnetic_Field_Mapping true
+/Geometry/Magnetic_Field_Mapping false
+/Geometry/CAD_MESH false
 /Geometry/SiDeadLayer_Thickness 100 nm
-/Geometry/D1 0 0 0
-/Geometry/D2 0 0 0
-/Geometry/D3 0 0 0
-/Geometry/D4 0 0 0
-/Geometry/D5 0 0 0
-/Geometry/D6 0 0 0
-/Geometry/D7 0 0 0
-/Geometry/D8 0 0 0
-/Geometry/D1_Angle 0 deg
-/Geometry/D2_Angle 0 deg
-/Geometry/D3_Angle 0 deg
-/Geometry/D4_Angle 0 deg
-/Geometry/D5_Angle 0 deg
-/Geometry/D6_Angle 0 deg
-/Geometry/D7_Angle 0 deg
-/Geometry/D8_Angle 0 deg
+/Geometry/Detectors 0 0 0 0 0
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
@@ -59,7 +52,11 @@
 /Geometry/Catcher_Thickness_Mylar 525 nm
 /Geometry/Catcher_Thickness_Al2 85 nm
 
-/Geometry/MCP true
+#/Geometry/Catcher_Thickness_Al1 100 nm
+#/Geometry/Catcher_Thickness_Mylar 6100 nm
+#/Geometry/Catcher_Thickness_Al2 110 nm
+
+/Geometry/MCP false
 /Geometry/MCP_Position 0 0 -90
 
 /run/reinitializeGeometry
@@ -67,6 +64,6 @@
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 100
+/run/printProgress 10000
 /Run/File test0T.root
-/run/beamOn 1000
+/run/beamOn 500001

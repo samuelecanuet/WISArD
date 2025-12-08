@@ -646,4 +646,10 @@
  /usr/local/geant4.11.1.2/include/Geant4/G4IonTable.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4IonPhysics.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4Scintillation.hh \
- /usr/local/geant4.11.1.2/include/Geant4/G4EmSaturation.hh
+ /usr/local/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4TransportationParameters.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4Transportation.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4ParticleChangeForTransport.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4ParticleChangeForTransport.icc \
+ /usr/local/geant4.11.1.2/include/Geant4/G4Transportation.icc \
+ /usr/local/geant4.11.1.2/include/Geant4/G4TransportationLogger.hh

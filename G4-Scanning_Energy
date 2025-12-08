@@ -2,7 +2,7 @@
 
 
 rootCRADLEfile=../../../../data333/lecanuet/data/
-rootGeant4file=../../../data333/lecanuet/Result/
+rootGeant4file=../../../data333/lecanuet/Result/eloss/
 
 
 rm -rf tempory/*
@@ -13,10 +13,6 @@ usage() {
   echo "  nucleus=        Specify the nucleus (nucleus=32Ar)"
   echo "  N=              Specify the number of threads"
   echo "  events=         Specify the number of events"
-  ehco "  x=              Specify the value of x."
-  echo "  y=              Specify the value of y."
-  echo "  z=              Specify the value of z."
-  echo "  theta=          Specify the value of theta."
   echo "  energy=         Specify the value of energy."
   echo "  particle=       Specify the particle."
   echo "  --help          Show this help message."
@@ -72,21 +68,9 @@ suffixe="${particle}_${energy}MeV"
 
 ###default value
 DEFAULT_N=3
-
-DEFAULT_x=0
-DEFAULT_y=0
-DEFAULT_z=0
-DEFAULT_theta=0
-
-DEFAULT_events=1000000
-
+DEFAULT_events=10000000
 DEFAULT_particle=proton
-DEFAULT_energy=
-
-x=${x:-$DEFAULT_x}
-y=${y:-$DEFAULT_y}
-z=${z:-$DEFAULT_z}
-theta=${theta:-$DEFAULT_theta}
+DEFAULT_energy=3.0
 
 events=${events:-$DEFAULT_events}
 
@@ -94,7 +78,7 @@ particle=${particle:-DEFAULT_particle}
 energy=${energy:-DEFAULT_energy}
 
 cp macro_energy_base.mac tempory/macro_${suffixe}_bis.mac  
-sed -e "s|%Particle|${particle}|g; s|%Energy|${energy}|g; s|%threads|${N}|g; s/%inputSRIM/AlMylar_2021_32Ar.txt/g; s|%output|${rootGeant4file}${suffixe}.root|g; s/%events/${events}/g; s/%x/${x}/; s/%y/${y}/g; s/%z/${z}/g; s/%theta/${theta}/g;  " tempory/macro_${suffixe}_bis.mac > tempory/macro_${suffixe}.mac
+sed -e "s|%Particle|${particle}|g; s|%Energy|${energy}|g; s|%threads|${N}|g; s|%output|${rootGeant4file}${suffixe}.root|g; s/%events/${events}/g;  " tempory/macro_${suffixe}_bis.mac > tempory/macro_${suffixe}.mac
 rm tempory/macro_${suffixe}_bis.mac
 wisard tempory/macro_${suffixe}.mac 
 echo -e "$GREEN wisard tempory/macro_${suffixe}.mac $COLOR"

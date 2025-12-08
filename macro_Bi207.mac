@@ -1,0 +1,56 @@
+#---------------------------------------------------------------
+#   Verbosity
+#---------------------------------------------------------------
+#/run/initialize
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+#---------------------------------------------------------------
+#   Input Files
+#---------------------------------------------------------------
+/Input/SRIM SRIM_data/AlMylar_32Ar.root
+
+#/process/inactivate ionIoni
+/Input/Ion 207Bi
+/Input/Energy 0 keV
+/Input/Direction 0 0 0 
+/Input/Position 0 0 0.003750
+
+#---------------------------------------------------------------
+#   Simulation Parameters
+#---------------------------------------------------------------
+/Run/Threshold_PlasticScintillator 100 keV
+/Run/Threads 30
+
+## 2025 ##
+/Beam/X 0. mm
+/Beam/Y 0. mm
+/Beam/Radius 2.5 mm
+/Beam/Sigma_X 0.5 mm
+/Beam/Sigma_Y 0.5 mm
+
+/Geometry/Collimator false
+/Geometry/Magnetic_Field_Value 4 tesla
+/Geometry/Magnetic_Field_Mapping false
+/Geometry/CAD_MESH false
+/Geometry/SiDeadLayer_Thickness 100 nm
+/Geometry/Detectors 0 0 0 0 0
+/Geometry/Catcher_Position_z 10 mm
+/Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Angle 0 deg
+/Geometry/Catcher_Thickness_Al1 1 nm
+/Geometry/Catcher_Thickness_Mylar 7500 nm
+/Geometry/Catcher_Thickness_Al2 1 nm
+
+/Geometry/MCP false
+/Geometry/MCP_Position 0 0 -90
+
+/run/reinitializeGeometry
+
+#---------------------------------------------------------------
+#   Generate Events
+#---------------------------------------------------------------
+/run/printProgress 10000
+/Run/File /data333/lecanuet/Result/207Bi/207Bi_2025_7p5um_z10mm.root
+/run/beamOn 10000000

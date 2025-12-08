@@ -168,7 +168,7 @@ int main(int argc, char **argv)
   //------------------------------------------------------------
 
   // merge the ROOT files
-
+  
   G4String outputFile = ptr_act->GetFileName().substr(0, ptr_act->GetFileName().length() - 5);
   TChain chain("Tree");
   TTree *Tree_MCP = nullptr;

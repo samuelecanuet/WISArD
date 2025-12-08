@@ -1,13 +1,13 @@
 import numpy as np
 import subprocess
 
-N= 50
+N = 6
 
-CV = np.random.uniform(0, 1, 100)
-CS = np.sqrt(1 - CV*CV)
+al = [0.995, 0.985, 0.975, 0.965, 0.955, 1.0]
+bl = [0., 0., 0., 0., 0., 0.]
 
-THREAD = 60
-thread = 4
+THREAD = 36
+thread = 3
 
 if THREAD % thread != 0:
     print("THREAD must be multiple of thread for each sim")
@@ -19,15 +19,17 @@ for i in range(0, N, thread):
         n = i + j
         if n >= N:
             break
-        Cv = CV[n]
-        Cs = CS[n]
-        Csp = Cs
-        Cvp = Cv
+        # Cv = CV[n]
+        # Cs = CS[n]
+        # Csp = Cs
+        # Cvp = Cv
+        a = al[n]
+        b = bl[n]
         
         print("Runing G4-Scanning_Beam with parameters:")
-        print("CV={:.4f} CS={:.4f}".format(Cv, Cs))
+        # print("CV={:.4f} CS={:.4f}".format(Cv, Cs))
 
-        string += "CRADLE-G4 nucleus=32Ar CV={:.4f} CS={:.4f} CVP={:.4f} CSP={:.4f} events=100000000 N={}".format(Cv, Cs, Cvp, Csp, int(THREAD/thread))
+        string += "CRADLE-G4 nucleus=32Ar a={} b={} events=100000000 N={}".format(a, b, int(THREAD/thread))
         if j != thread - 1:
             string += " & "
     subprocess.run(string, shell=True)
