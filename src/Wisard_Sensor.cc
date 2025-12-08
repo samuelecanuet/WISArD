@@ -35,6 +35,8 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
 {
   // G4cout << "ProcessHits" << G4endl;
 
+  // cout << "ProcessHits in Wisard_Sensor for DetCode = " << DetCode << G4endl;
+
   G4EventManager *evtman = G4EventManager::GetEventManager();
   Wisard_EventAction *evtac = (Wisard_EventAction *)evtman->GetUserEventAction();
   ParticleInformation* PartInfo = (ParticleInformation *)evtac->GetParticleInformation();
@@ -53,7 +55,7 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     index = track->GetParentID();
   }
 
-  //new 
+  // new
   if (PartInfo->FirstHit(index, DetCode) && DetCode < 1000)
   {
     PartInfo->SetHitPosition(index, DetCode, step->GetPreStepPoint()->GetPosition() / mm);
@@ -62,25 +64,38 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
     {
       PartInfo->SetHitAngle(index, DetCode, std::acos(G4ThreeVector(0, 0, 1) * track->GetMomentumDirection()) / deg);
     }
+    else if (DetCode >= 11 && DetCode <= 85)
+    {
+      PartInfo->SetHitAngle(index, DetCode, std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg);
+
+      G4ThreeVector localPos = step->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(step->GetPreStepPoint()->GetPosition());
+      G4Trap *trap = (G4Trap *)(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid());
+      G4double min_x = std::min(trap->DistanceToOut(localPos, ex), trap->DistanceToOut(localPos, -ex));
+      G4double min_y = std::min(trap->DistanceToOut(localPos, ey), trap->DistanceToOut(localPos, -ey));
+      G4double min_z = std::min(trap->DistanceToOut(localPos, ez), trap->DistanceToOut(localPos, -ez));
+      G4ThreeVector DistanceBoundary = G4ThreeVector(min_x, min_y, min_z);
+      PartInfo->SetHitDistanceBoundary(index, DetCode, DistanceBoundary / mm);
+
+      // cout << "DetCode = " << DetCode << " localPos = " << localPos.x() / mm << " " << localPos.y() / mm << " " << localPos.z() / mm
+            // << " DistanceBoundary = " << DistanceBoundary.x() / mm << " " << DistanceBoundary.y() / mm << " " << DistanceBoundary.z() / mm << G4endl;
+    }
     else
     {
       PartInfo->SetHitAngle(index, DetCode, std::acos(step->GetPreStepPoint()->GetTouchableHandle()->GetSolid()->SurfaceNormal(step->GetPreStepPoint()->GetPosition()) * track->GetMomentumDirection()) / deg);
     }
   }
 
-  // PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV);
-  
-
-  // TODO : Add Birks law for scintillator
+  //Add Birks law for scintillator
   if (DetCode == 99)
   {
-    PartInfo->AddEnergyDeposit(index, DetCode, emSaturation->VisibleEnergyDepositionAtAStep(step) / keV);
+    PartInfo->AddEnergyDeposit(index, DetCode, step->GetTotalEnergyDeposit() / keV, emSaturation->VisibleEnergyDepositionAtAStep(step) / keV);
     // G4cout << "edep = " << step->GetTotalEnergyDeposit() / keV <<G4endl;
     // G4cout << "Vedep = " << emSaturation->VisibleEnergyDepositionAtAStep(step) / keV << G4endl;
+    // step->GetTrack()->SetTrackStatus(fStopAndKill);
   }
   else if (DetCode >= 11 && DetCode <= 85)
   {
-    PartInfo->AddEnergyDeposit(index, DetCode, (step->GetTotalEnergyDeposit()-step->GetNonIonizingEnergyDeposit()) / keV);
+    PartInfo->AddEnergyDeposit(index, DetCode, (step->GetTotalEnergyDeposit()-step->GetNonIonizingEnergyDeposit()) / keV);    
   }
   else
   {

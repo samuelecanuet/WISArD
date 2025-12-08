@@ -58,7 +58,9 @@ protected:
 
     G4GenericMessenger *BeamMessenger;
     G4GenericMessenger *InputMessenger;
-    G4double X, Y, Sigma_X, Sigma_Y, Q, Position_catcher_z, Radius;
+    G4GenericMessenger *GeometryMessenger;
+    G4double X, Y, Sigma_X, Sigma_Y, Q, Radius;
+    G4double Position_catcher_z = 0;
     G4int Z, A;
     G4double energy = 0;
     G4String particle_string;
@@ -102,10 +104,10 @@ private:
     TH1D *Energy_Hist;
 
     TF2 *Gauss2D;
-    TH2D *HGauss2D;
+    pair<TH1D*, TH1D*> HGauss2D;
 
 public:
-    Wisard_Generator();
+    Wisard_Generator(G4String);
     ~Wisard_Generator();
 
     void GeneratePrimaries(G4Event *event);
@@ -117,7 +119,7 @@ public:
 
     TH3D *GetSRIM_hist();
 
-    void SetCatcherPosition_z(G4double catcher_z);
+    void SetCatcherPosition_z(G4String);
     void ChooseGENERATOR();
     void InitBeam();
     G4ThreeVector ConvertStringToG4ThreeVector(G4String);
@@ -133,7 +135,6 @@ inline TH3D *Wisard_Generator::GetSRIM_hist()
 
     if (!output || output->IsZombie())
     {
-        G4Exception("Wisard_Generator::GetSRIM_hist", "Unable to open SRIM file", JustWarning, "");
         return nullptr;
     }
 
@@ -148,9 +149,38 @@ inline TH3D *Wisard_Generator::GetSRIM_hist()
     return histogram;
 }
 
-inline void Wisard_Generator::SetCatcherPosition_z(G4double catcher_z)
+inline void Wisard_Generator::SetCatcherPosition_z(G4String filename)
 {
+
+    ifstream file(filename.c_str());
+    if (file.fail())
+    {
+        G4Exception("Wisard_Generator::SetCatcherPosition_z", "Impossible to open Catcher Position file", JustWarning, "");
+    }
+    G4double catcher_z;
+    string line ;
+    while (getline(file, line))
+    {
+        if (line.find("Catcher_Position_z") != string::npos)
+        {
+            istringstream iss(line);
+            G4String macroline, unit;
+            iss >> macroline >> catcher_z >> unit;
+
+            if (unit == "mm")
+                catcher_z = catcher_z * mm;
+            else if (unit == "cm")
+                catcher_z = catcher_z * cm;
+            else if (unit == "um")
+                catcher_z = catcher_z * um;
+            else
+            {
+                G4Exception("Wisard_Generator::SetCatcherPosition_z", "Unknown unit for Catcher Position z", JustWarning, "");
+            }
+        }
+    }
     Position_catcher_z = catcher_z;
+
 }
 
 inline void Wisard_Generator::ChooseGENERATOR()
@@ -253,22 +283,26 @@ inline void Wisard_Generator::InitBeam()
 {
     if (Sigma_X == 0 || Sigma_Y == 0)
     {
-        HGauss2D = nullptr;
+        HGauss2D.first = nullptr;
+        HGauss2D.second = nullptr;
         return;
     }
-    Gauss2D = new TF2("Gauss2D", "exp(-0.5*((x-[0])/(sqrt(2)*[1]))**2)*exp(-0.5*((y-[2])/(sqrt(2)*[3]))**2)", -100, 100, -100, 100);
-    Gauss2D->SetParameters(X, Sigma_X, Y, Sigma_Y);
-    Gauss2D->SetNpx(10000);
-    Gauss2D->SetNpy(10000);
-    HGauss2D = (TH2D *)Gauss2D->GetHistogram();
+
+    TF1* Gauss1Dx = new TF1("Gauss2Dx", "exp(-0.5*((x-[0])/[1])**2)", -10, 10);
+    Gauss1Dx->SetParameters(X, Sigma_X);
+    Gauss1Dx->SetNpx(10000);
+    TF1* Gauss1Dy = new TF1("Gauss2Dx", "exp(-0.5*((x-[0])/[1])**2)", -10, 10);
+    Gauss1Dy->SetParameters(Y, Sigma_Y);
+    Gauss1Dy->SetNpx(10000);
+    HGauss2D = make_pair((TH1D*)Gauss1Dx->GetHistogram()->Clone("x"), (TH1D*)Gauss1Dy->GetHistogram()->Clone("y"));
 }
 
 inline G4ThreeVector Wisard_Generator::Beam()
 {
 
-    if (HGauss2D == nullptr)
+    if (HGauss2D.first == nullptr)
     {
-        return G4ThreeVector(X, Y, 0);
+        return G4ThreeVector(X, Y, Position_catcher_z);
     }
 
     G4double x, y;
@@ -276,13 +310,15 @@ inline G4ThreeVector Wisard_Generator::Beam()
     y = 0;
 
     // Shoot in Beam profile
-    HGauss2D->GetRandom2(x, y);
+    x = HGauss2D.first->GetRandom();
+    y = HGauss2D.second->GetRandom();
     while (sqrt(x * x + y * y) > Radius)
     {
-        HGauss2D->GetRandom2(x, y);
+        x = HGauss2D.first->GetRandom();
+        y = HGauss2D.second->GetRandom();
     }
 
-    return G4ThreeVector(x, y, 0);
+    return G4ThreeVector(x, y, Position_catcher_z);
 }
 
 inline G4ThreeVector Wisard_Generator::Catcher_Implementation()

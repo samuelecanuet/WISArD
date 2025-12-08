@@ -7,6 +7,9 @@
 
 #include "Wisard_Sensor.hh"
 #include "Wisard_Killer.hh"
+#include "Wisard_MCP.hh"
+
+#include "CADMesh.hh"
 
 //----------------------------------------------------------------------
 
@@ -17,34 +20,48 @@ Wisard_Detector::Wisard_Detector()
   pDz = 1.5 * mm;
 
   thicknessSiDetector = 300. * um;
-  thicknessSiDetectorGrid = 700. * nm;
-  WidthSiDetectorGrid = 30 * um;
-  spazio_tra_Bordo_e_strip5 = 2.0 * mm; // 1.29 * mm + 0.225 * mm;
-  spazio_tra_Strip = 70 * um;
+  
+  double scale = 1.;
+
+  // interstrip ///////
+  // Al Grid
+  thicknessSiDetector_InterstripGrid = 480. * nm * scale;
+  WidthSiDetector_InterstripGrid = 28 * um;
+  // SiO2
+  thicknessSiDetector_InterstripSiO2 = 730. * nm * scale;
+  WidthSiDetector_InterstripSiO2 = 48 * um;
+  // Si interstrip
+  WidthSiDetector_InterstripSi = 12 * um;
+  spazio_tra_Strip = WidthSiDetector_InterstripSiO2 + 2*WidthSiDetector_InterstripSi + 2*WidthSiDetector_InterstripGrid;
+  /////////////////////
+  // Back Al
+  thicknessSiDetector_BackAl = 500. * nm;
+
   thetaInclinazione_SiDetector = 52.64 * degree;
+  spazio_tra_Bordo_e_strip5 = 2.0 * mm; // 1.29 * mm + 0.225 * mm;
   spazio_tra_Scintillatore_e_BordoSiDetector = 3.745 * mm;
+  
 
-  G4double a = WidthSiDetectorGrid / cos(90 * degree - thetaInclinazione_SiDetector);
-  G4double b = spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector) + WidthSiDetectorGrid / tan(thetaInclinazione_SiDetector);
+  G4double UNDER_INTERSTRIP_SIDE = spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector);
 
-  xLow_SiDet_Strip_1 = 25.65 * mm + 2 * b - a + 15 * um;
-  y_SiDet_Strip_1 = 8.50 * mm + 2 * WidthSiDetectorGrid + spazio_tra_Strip;
+  xLow_SiDet_Strip_1 = 25.65 * mm + UNDER_INTERSTRIP_SIDE;
+  y_SiDet_Strip_1 = 8.50 * mm + spazio_tra_Strip;
   xHigh_SiDet_Strip_1 = xLow_SiDet_Strip_1 + 2 * ((y_SiDet_Strip_1) / tan(thetaInclinazione_SiDetector));
 
   xLow_SiDet_Strip_2 = xHigh_SiDet_Strip_1;
-  y_SiDet_Strip_2 = 6.22 * mm + 2 * WidthSiDetectorGrid + spazio_tra_Strip;
+  y_SiDet_Strip_2 = 6.22 * mm + spazio_tra_Strip;
   xHigh_SiDet_Strip_2 = xLow_SiDet_Strip_2 + 2 * ((y_SiDet_Strip_2) / tan(thetaInclinazione_SiDetector));
 
   xLow_SiDet_Strip_3 = xHigh_SiDet_Strip_2;
-  y_SiDet_Strip_3 = 5.15 * mm + 2 * WidthSiDetectorGrid + spazio_tra_Strip;
+  y_SiDet_Strip_3 = 5.15 * mm + spazio_tra_Strip;
   xHigh_SiDet_Strip_3 = xLow_SiDet_Strip_3 + 2 * ((y_SiDet_Strip_3) / tan(thetaInclinazione_SiDetector));
 
   xLow_SiDet_Strip_4 = xHigh_SiDet_Strip_3;
-  y_SiDet_Strip_4 = 4.49 * mm + 2 * WidthSiDetectorGrid + spazio_tra_Strip;
+  y_SiDet_Strip_4 = 4.49 * mm + spazio_tra_Strip;
   xHigh_SiDet_Strip_4 = xLow_SiDet_Strip_4 + 2 * ((y_SiDet_Strip_4) / tan(thetaInclinazione_SiDetector));
 
   xLow_SiDet_Strip_5 = xHigh_SiDet_Strip_4;
-  y_SiDet_Strip_5 = 4.05 * mm + 2 * WidthSiDetectorGrid + spazio_tra_Strip;
+  y_SiDet_Strip_5 = 4.05 * mm + spazio_tra_Strip;
   xHigh_SiDet_Strip_5 = xLow_SiDet_Strip_5 + 2 * ((y_SiDet_Strip_5) / tan(thetaInclinazione_SiDetector));
 
   y_Si_Bulk = y_SiDet_Strip_5 + y_SiDet_Strip_4 + y_SiDet_Strip_3 + y_SiDet_Strip_2 + y_SiDet_Strip_1;
@@ -56,8 +73,8 @@ Wisard_Detector::Wisard_Detector()
   theta = (40.2) * degree; ////40deg
   z_height_Source_biggerBaseSiDet_inVerticale = 24.92 * mm;
   r = fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1 / 2 - (pDy1 / 2 * (1 - cos(theta))) - 2.7 * mm;
-  r_vide = (pDz + thicknessSiDetector + thicknessSiDetectorGrid) / 2 * -sin(theta);
-  z_vide = -(pDz + thicknessSiDetector + thicknessSiDetectorGrid) / 2 * cos(theta);
+  r_vide = (pDz + thicknessSiDetector + thicknessSiDetector_InterstripSiO2) / 2 * -sin(theta);
+  z_vide = -(pDz + thicknessSiDetector + thicknessSiDetector_InterstripSiO2) / 2 * cos(theta);
   z = z_height_Source_biggerBaseSiDet_inVerticale + pDz / 2 + ((pDy1 / 2) * sin(thetaInclinazione_SiDetector)) - 4.525 * mm;
 
   length_x_SupportoRame_SiDetector = 56. * mm;
@@ -71,7 +88,6 @@ Wisard_Detector::Wisard_Detector()
   G4NistManager *man = G4NistManager::Instance();
   Material_Vacuum = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
   Material_Si = G4NistManager::Instance()->FindOrBuildMaterial("G4_Si");
-  Material_SiO2 = G4NistManager::Instance()->FindOrBuildMaterial("G4_SILICON_DIOXIDE");
   Material_Al = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
   Material_Mylar = G4NistManager::Instance()->FindOrBuildMaterial("G4_MYLAR");
   Material_Cu = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
@@ -86,6 +102,9 @@ Wisard_Detector::Wisard_Detector()
   Material_PCB->AddElement(man->FindOrBuildElement("C"), 8);
   Material_PCB->AddElement(man->FindOrBuildElement("O"), 2);
   Material_PCB->AddElement(man->FindOrBuildElement("Si"), 1);
+  Material_SiO2 = new G4Material("SiO2", 1.98 * g / cm3, 2);
+  Material_SiO2->AddElement(man->FindOrBuildElement("Si"), 1);
+  Material_SiO2->AddElement(man->FindOrBuildElement("O"), 2);
   //////////////
 
   // VISUALIZATION //
@@ -147,11 +166,20 @@ Wisard_Detector::Wisard_Detector()
       .SetGuidance("Set Magnetic Field map.")
       .SetParameterName("Magnetic_Field", false)
       .SetDefaultValue("false");
+    
+  GeometryMessenger->DeclareProperty("CAD_MESH", CAD_MESH_flag)
+      .SetGuidance("Set CAD MESH full geometry.")
+      .SetParameterName("CAD_MESH", false)
+      .SetDefaultValue("false");
 
   GeometryMessenger->DeclareProperty("Collimator", Collimator_flag)
       .SetGuidance("Set Collimator.")
       .SetParameterName("Collimator_flag", false)
       .SetDefaultValue("true");
+
+  GeometryMessenger->DeclareProperty("Detectors", Detectors_position_correction)
+      .SetGuidance("Set Detectors position correction.")
+      .SetDefaultValue("0 0 0");
 
   GeometryMessenger->DeclarePropertyWithUnit("Catcher_Position_z", "mm", Catcher_Position_z)
       .SetGuidance("Set Catcher Position z.")
@@ -183,6 +211,17 @@ Wisard_Detector::Wisard_Detector()
       .SetParameterName("Catcher_Thickness_Al2", false)
       .SetDefaultValue("50 nm");
 
+  GeometryMessenger->DeclareProperty("MCP", MCP_flag)
+      .SetGuidance("Set MCP.")
+      .SetParameterName("MCP", false)
+      .SetDefaultValue("false");
+
+  GeometryMessenger->DeclareProperty("MCP_Position", string_MCP_position)
+      .SetGuidance("Set MCP Position.")
+      .SetParameterName("MCP_Position", false)
+      .SetDefaultValue("0 0 -10");
+  
+
 
   G4double xc = 0 * cm;
   G4double yc = 0 * cm;
@@ -197,45 +236,41 @@ Wisard_Detector::Wisard_Detector()
   dic_correction["D7"] = G4ThreeVector(xc, -yc, -zc);
   dic_correction["D8"] = G4ThreeVector(-yc, -xc, -zc);
 
-  dic_position["D1"] = G4ThreeVector(0, r, z);
-  dic_position["D2"] = G4ThreeVector(r, 0, z);
-  dic_position["D3"] = G4ThreeVector(0, -r, z);
-  dic_position["D4"] = G4ThreeVector(-r, 0, z);
-  dic_position["D5"] = G4ThreeVector(0, r, -z);
-  dic_position["D6"] = G4ThreeVector(r, 0, -z);
-  dic_position["D7"] = G4ThreeVector(0, -r, -z);
-  dic_position["D8"] = G4ThreeVector(-r, 0, -z);
+  
+  Read_Config_File("POSITION_data/Silicon_G4Vector.cfg");
+  // dic_position["D1"] = G4ThreeVector(0, r, z);
+  // dic_position["D2"] = G4ThreeVector(r, 0, z); 
+  // dic_position["D3"] = G4ThreeVector(0, -r, z);
+  // dic_position["D4"] = G4ThreeVector(-r, 0, z);
+  // dic_position["D5"] = G4ThreeVector(0, r, -z);
+  // dic_position["D6"] = G4ThreeVector(r, 0, -z);
+  // dic_position["D7"] = G4ThreeVector(0, -r, -z);
+  // dic_position["D8"] = G4ThreeVector(-r, 0, -z);
 
-  dic_positionvide["D1"] = G4ThreeVector(0, r_vide, z_vide);
-  dic_positionvide["D2"] = G4ThreeVector(r_vide, 0, z_vide);
+  r_vide = 0;
+  z_vide = 0;
+
+  dic_positionvide["D2"] = G4ThreeVector(0, r_vide, z_vide);
+  dic_positionvide["D4"] = G4ThreeVector(r_vide, 0, z_vide);
   dic_positionvide["D3"] = G4ThreeVector(0, -r_vide, z_vide);
-  dic_positionvide["D4"] = G4ThreeVector(-r_vide, 0, z_vide);
+  dic_positionvide["D1"] = G4ThreeVector(-r_vide, 0, z_vide);
   dic_positionvide["D5"] = G4ThreeVector(0, r_vide, -z_vide);
   dic_positionvide["D6"] = G4ThreeVector(r_vide, 0, -z_vide);
   dic_positionvide["D7"] = G4ThreeVector(0, -r_vide, -z_vide);
   dic_positionvide["D8"] = G4ThreeVector(-r_vide, 0, -z_vide);
 
-  dic_rotate["D1"] = std::make_tuple(theta, 180. * deg, 180 * deg);
-  dic_rotate["D2"] = std::make_tuple(0, 180. * deg - theta, 90. * deg);
-  dic_rotate["D3"] = std::make_tuple(-theta, 180. * deg, 0. * deg);
-  dic_rotate["D4"] = std::make_tuple(0., 180. * deg + theta, -90. * deg);
-  dic_rotate["D5"] = std::make_tuple(-theta, 0. * deg, 180. * deg);
-  dic_rotate["D6"] = std::make_tuple(180 * deg, 180 * deg - theta, 90. * deg);
-  dic_rotate["D7"] = std::make_tuple(theta, 0., 0.);
-  dic_rotate["D8"] = std::make_tuple(180. * deg, 180. * deg + theta, -90. * deg);
-
-  for (int i = 1; i <= 8; i++)
-  {
-    GeometryMessenger->DeclareProperty(("D"+to_string(i)).c_str(), string_pos[i])
-      .SetGuidance("Set Detector position correction.")
-      .SetDefaultValue("0 0 0");
-
-    GeometryMessenger->DeclarePropertyWithUnit(("D"+to_string(i)+"_Angle").c_str(), "deg", Angle_Correction[i])
-      .SetGuidance("Set Detector angle correction.")
-      .SetDefaultValue("0 degree");
-  }
-
-  
+  dic_rotate["D2"] = make_tuple(get<0>(dic_rotate["D2"]), get<1>(dic_rotate["D2"]), -get<2>(dic_rotate["D2"]));
+  dic_rotate["D3"] = make_tuple(get<0>(dic_rotate["D3"]), get<1>(dic_rotate["D3"]), -get<2>(dic_rotate["D3"]));
+  dic_rotate["D1"] = make_tuple(get<0>(dic_rotate["D1"]), get<1>(dic_rotate["D1"]), -get<2>(dic_rotate["D1"]));
+  dic_rotate["D4"] = make_tuple(get<0>(dic_rotate["D4"]), get<1>(dic_rotate["D4"]), -get<2>(dic_rotate["D4"]));
+  dic_rotate["D2"] = add_tuples(dic_rotate["D2"], make_tuple(0, 180*deg, 180. * deg));
+  dic_rotate["D4"] = add_tuples(dic_rotate["D4"], make_tuple(0, 180*deg, 90. * deg));
+  dic_rotate["D3"] = add_tuples(dic_rotate["D3"], make_tuple(0, 180*deg, 0));
+  dic_rotate["D1"] = add_tuples(dic_rotate["D1"], make_tuple(0, 180*deg, -90*deg));
+  dic_rotate["D5"] = add_tuples(dic_rotate["D5"], make_tuple(0, 0, 180. * deg));
+  dic_rotate["D6"] = add_tuples(dic_rotate["D6"], make_tuple(0, 0, -90. * deg));
+  dic_rotate["D7"] = add_tuples(dic_rotate["D7"], make_tuple(0, 0., 0.));
+  dic_rotate["D8"] = add_tuples(dic_rotate["D8"], make_tuple(0, 0, 90. * deg));
 
   myStepLimit = new G4UserLimits();
   myStepLimit->SetMaxAllowedStep(10 * nm);
@@ -259,7 +294,7 @@ void Wisard_Detector::ConstructSDandField()
 
   pFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
   G4ChordFinder *pChordFinder = new G4ChordFinder(WisardMagField);
-  pChordFinder->SetDeltaChord(0.01 * mm);
+  pChordFinder->SetDeltaChord(0.001 *mm);
   pFieldMgr->SetChordFinder(pChordFinder);
   pFieldMgr->SetMinimumEpsilonStep(1e-5);
   pFieldMgr->SetMaximumEpsilonStep(1e-5);
@@ -268,6 +303,15 @@ void Wisard_Detector::ConstructSDandField()
 
   auto wisard_sensor_PlasticScintillator = new Wisard_Sensor(99, "PlasticScintillator");
   SetSensitiveDetector(fLogic_PlasticScintillator, wisard_sensor_PlasticScintillator);
+
+  G4double Rx = 0.;
+  G4double Ry = 0.;
+  G4ThreeVector correction_macro = ConvertStringToG4ThreeVectorAngles(Detectors_position_correction, Rx, Ry);
+  G4RotationMatrix * rot_correction = new G4RotationMatrix();
+  rot_correction->rotateX(Rx*deg);
+  rot_correction->rotateY(Ry*deg);
+  fPhysiWorld_Detector->SetRotation(rot_correction);
+  fPhysiWorld_Detector->SetTranslation(correction_macro);
 
   for (int i = 1; i <= 8; i++)
   {
@@ -281,32 +325,42 @@ void Wisard_Detector::ConstructSDandField()
           auto wisard_sensor_SiliconDetector = new Wisard_Sensor(detcode, Detector_Name[k]);
           SetSensitiveDetector(tab[i-1][1+j].first, wisard_sensor_SiliconDetector);
 
-          auto wisard_sensor_SiliconDetectordl = new Wisard_Sensor(detcode, Detector_Name[k] + "_DL");
+          auto wisard_sensor_SiliconDetectordl = new Wisard_Sensor(detcode*100, Detector_Name[k] + "_DL");
           SetSensitiveDetector(tab[i-1][6+j].first, wisard_sensor_SiliconDetectordl);
+
           break;
         }
       }
     }
   }
 
-  auto wisard_sensor_CatcherMylar_central = new Wisard_Sensor(1, "CatcherMylar_central");
-  SetSensitiveDetector(fLogic_MylarSource_central, wisard_sensor_CatcherMylar_central);
-  auto wisard_sensor_CatcherAl1_central = new Wisard_Sensor(2, "CatcherAl1_central");
-  SetSensitiveDetector(fLogic_AlSource1_central, wisard_sensor_CatcherAl1_central);
-  auto wisard_sensor_CatcherAl2_central = new Wisard_Sensor(3, "CatcherAl2_central");
-  SetSensitiveDetector(fLogic_AlSource2_central, wisard_sensor_CatcherAl2_central);
-  auto wisard_sensor_CatcherMylar_side = new Wisard_Sensor(4, "CatcherMylar_side");
-  SetSensitiveDetector(fLogic_MylarSource_side, wisard_sensor_CatcherMylar_side);
-  auto wisard_sensor_CatcherAl1_side = new Wisard_Sensor(5, "CatcherAl1_side");
-  SetSensitiveDetector(fLogic_AlSource1_side, wisard_sensor_CatcherAl1_side);
-  auto wisard_sensor_CatcherAl2_side = new Wisard_Sensor(6, "CatcherAl2_side");
-  SetSensitiveDetector(fLogic_AlSource2_side, wisard_sensor_CatcherAl2_side);
+  // DisplayPoints("POSITION_data/Silicon_G4Position.cfg");
+
+  // auto wisard_sensor_CatcherMylar_central = new Wisard_Sensor(1, "CatcherMylar_central");
+  // SetSensitiveDetector(fLogic_MylarSource_central, wisard_sensor_CatcherMylar_central);
+  // auto wisard_sensor_CatcherAl1_central = new Wisard_Sensor(2, "CatcherAl1_central");
+  // SetSensitiveDetector(fLogic_AlSource1_central, wisard_sensor_CatcherAl1_central);
+  // auto wisard_sensor_CatcherAl2_central = new Wisard_Sensor(3, "CatcherAl2_central");
+  // SetSensitiveDetector(fLogic_AlSource2_central, wisard_sensor_CatcherAl2_central);
+  // auto wisard_sensor_CatcherMylar_side = new Wisard_Sensor(4, "CatcherMylar_side");
+  // SetSensitiveDetector(fLogic_MylarSource_side, wisard_sensor_CatcherMylar_side);
+  // auto wisard_sensor_CatcherAl1_side = new Wisard_Sensor(5, "CatcherAl1_side");
+  // SetSensitiveDetector(fLogic_AlSource1_side, wisard_sensor_CatcherAl1_side);
+  // auto wisard_sensor_CatcherAl2_side = new Wisard_Sensor(6, "CatcherAl2_side");
+  // SetSensitiveDetector(fLogic_AlSource2_side, wisard_sensor_CatcherAl2_side);
 
   if (!Magnetic_Field_Mapping_flag)
   {
     auto wisard_killer = new Wisard_Killer();
     SetSensitiveDetector(fLogic_Killer, wisard_killer);
   }
+
+  if (MCP_flag)
+  {
+    auto wisard_sensor_MCP = new Wisard_MCP();
+    SetSensitiveDetector(fLogic_MCP, wisard_sensor_MCP);
+  }
+
 }
 //----------------------------------------------------------------------
 
@@ -317,18 +371,14 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4LogicalVolumeStore::GetInstance()->Clean();
   G4SolidStore::GetInstance()->Clean();
  
-  bool BeamLineVisibility = true;  
-
-  
-
-  
+  bool BeamLineVisibility = true;   
 
   //--------------------------------------------------------------------------------------
   //------------------------------------ World -------------------------------------------
   //--------------------------------------------------------------------------------------
   G4double innerRadius = 0 * cm;
   G4double outerRadius = 6.5 * cm; // réduit au raypon du Bore pour opti6.5
-  G4double length = 210. * cm;      // réduit pour opti21cm
+  G4double length = 150. * cm;      // réduit pour opti21cm
   G4double theta1 = 90.0 * deg;
   G4double phi = 360.0 * deg;
 
@@ -350,10 +400,26 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   visAtt_World->SetVisibility(false);
   fLogicWorld->SetVisAttributes(visAtt_World);
 
-  // G4double maxStep = 1*km;
-  // G4UserLimits *myStepLimit = new G4UserLimits();
-  // myStepLimit->SetUserMaxTrackLength(maxStep);
-  // fLogicWorld->SetUserLimits(myStepLimit);
+  //--------------------------------------------------------------------------------------
+  //------------------------------------ World detectors ---------------------------------
+  //--------------------------------------------------------------------------------------
+  fSolidWorld_Detector = new G4Tubs("World_Detector", innerRadius, outerRadius, 48*mm, theta1, phi);
+
+  fLogicWorld_Detector = new G4LogicalVolume(fSolidWorld_Detector, // its solid
+                                    Material_Vacuum,        // its material
+                                    "World_Detector");    // its name
+
+  fPhysiWorld_Detector = new G4PVPlacement(0,               // no rotation
+                                  G4ThreeVector(), // at (0,0,0)
+                                  fLogicWorld_Detector,     // its fLogical volume
+                                  "World_Detector",         // its name
+                                  fLogicWorld,               // its mother  volume
+                                  false,           // no boolean operation
+                                  0);              // copy number
+
+  visAtt_World->SetVisibility(false);
+  fLogicWorld->SetVisAttributes(visAtt_World);
+
 
   //==================================================================================================
   //========================================  WISArD MAGNET =========================================
@@ -394,15 +460,13 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //==================================================================================================
   //=======================================  BORE - MAGNET ==========================================
   //==================================================================================================
-  G4Material *materialAluminum = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
-
   G4Tubs *bore = new G4Tubs("Bore_Tube",
                             radius_bore,
                             radius_bore + radius_wall,
                             0.5L * (length_bore),
                             0.L, 360.L * deg);
   G4LogicalVolume *bore_logic = new G4LogicalVolume(bore,             // forme
-                                                    materialAluminum, // matiere
+                                                    Material_Al, // matiere
                                                     "BoreLogic",      // nom
                                                     0, 0, 0);
   // - physical volume
@@ -433,11 +497,10 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4double thetacylinder = 90.0 * deg;
   phi = 360.0 * deg;
 
-  G4Material *fMaterial_Al = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
   G4Tubs *fSolidMYCILINDER = new G4Tubs("MYCILINDER", innerRadius, outerRadius, length / 2, thetacylinder, phi);
 
   G4LogicalVolume *fLogicMYCILINDER = new G4LogicalVolume(fSolidMYCILINDER, // its solid
-                                                          fMaterial_Al,     // its material
+                                                          Material_Al,     // its material
                                                           "MYCILINDER");    // its name
 
   G4VPhysicalVolume *fPhysiMYCILINDER = new G4PVPlacement(0,                      // no rotation
@@ -467,7 +530,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4Tubs *fSolidMYCILINDER_B1 = new G4Tubs("MYCILINDER_B1", innerRadius, outerRadius, lengthB / 2, thetacylinder, phi);
 
   G4LogicalVolume *fLogicMYCILINDER_B1 = new G4LogicalVolume(fSolidMYCILINDER_B1, // its solid
-                                                             fMaterial_Al,        // its material
+                                                             Material_Al,        // its material
                                                              "MYCILINDER_B1");    // its name
 
   G4VPhysicalVolume *fPhysiMYCILINDER_B1 = new G4PVPlacement(0,                                                  // no rotation
@@ -491,7 +554,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4Tubs *fSolidMYCILINDER_B2 = new G4Tubs("MYCILINDER_B2", innerRadius, outerRadius, lengthB / 2, thetacylinder, phi);
 
   G4LogicalVolume *fLogicMYCILINDER_B2 = new G4LogicalVolume(fSolidMYCILINDER_B2, // its solid
-                                                             fMaterial_Al,        // its material
+                                                             Material_Al,        // its material
                                                              "MYCILINDER_B2");    // its name
 
   G4VPhysicalVolume *fPhysiMYCILINDER_B2 = new G4PVPlacement(0,                                                 // no rotation
@@ -511,9 +574,9 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   {
   }
 
-  // SUPPORT CATCHER 2024 //
+  
+  // SUPPORT CATCHER 2024-2025 //
   ///////////////ELEMENTS//////////////
-  // G4double outerRadius = 6.5 * cm;
   /////////// Position ///////////
   G4RotationMatrix *myRotation = new G4RotationMatrix();
   myRotation->rotateX(0. * deg);
@@ -661,6 +724,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   logic_SuppCatcher_Plate->SetVisAttributes(Vis_Al);
 
+  
   //// CATCHER //////
   /// CENTRAL
   Catcher_central_Position = Support_Position + Central_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2);
@@ -784,46 +848,16 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
     Logic_Garage2->SetVisAttributes(Vis_Al);
     Logic_Garage1->SetVisAttributes(Vis_Al);
-
+  
   //=========================================================================================================================
   //========================================== SILICON DETECTORS _ COMMON PARAMETERS ========================================
   //=========================================================================================================================
   
-  // Apply corrections from macro file //
-  for (int i = 1; i <= 8; i++)
-  {
-    r = fRadius_PlasticScintillator + spazio_tra_Scintillatore_e_BordoSiDetector + pDy1 / 2 - (pDy1 / 2 * (1 - cos(theta+ Angle_Correction[i]))); // -2.7mm
-    r_vide = (pDz + thicknessSiDetector + thicknessSiDetectorGrid) / 2 * -sin(theta + Angle_Correction[i]);
-    z_vide = -(pDz + thicknessSiDetector + thicknessSiDetectorGrid) / 2 * cos(theta + Angle_Correction[i]);
-    z = z_height_Source_biggerBaseSiDet_inVerticale + pDz / 2 + ((pDy1 / 2) * sin(theta+ Angle_Correction[i]));  // -4.525mm
-
-    G4String DetName = "D" + to_string(i);
-
-    // correction position from macro
-    dic_correction[DetName] = Cylindrical_Convertion(DetName, ConvertStringToG4ThreeVector(string_pos[i]) * mm);
-
-    // adding shift from the rotation of angle correction
-    G4ThreeVector vec_c;
-    vec_c = Cylindrical_Convertion(DetName, G4ThreeVector(0, 0, -((pDy1) * (sin(theta+ Angle_Correction[i]) - sin(theta)))));
-
-    // reset position with correction
-    G4ThreeVector vec = G4ThreeVector(0, r, z);
-    dic_position[DetName] = Cylindrical_Convertion(DetName, vec) + dic_correction[DetName] + vec_c;
-
-
-    // reset position vide
-    G4ThreeVector vec_vide = G4ThreeVector(0, r_vide, z_vide);
-    dic_positionvide[DetName] = Cylindrical_Convertion(DetName, vec_vide);
-
-    // reset angle with correction
-    CylindricalAngle_Convertion(DetName, Angle_Correction[i]);
-
-  }
   //////////////////////////////////////
 
   // Il materiale che compone il supporto dei detector al silicio é il PCB. Non esiste nella libreria di G4, occorre fabbricarselo  
 
-  // Common parameteres to all Si detectors
+  // Common parameteres for all Si detectors
   G4double pTheta = 0. * degree;
   G4double pPhi = 0. * degree;
   G4double pDx1 = xHigh_Si_Bulk + 2*(spazio_tra_Bordo_e_strip5/tan(thetaInclinazione_SiDetector) + spazio_tra_Bordo_e_strip5/ cos(90*degree - thetaInclinazione_SiDetector)); //83.3 * mm;   // Lunghezza (x) della base maggiore del trapezio sulla prima faccia. Se le facce non sono svasate é uguale a pDx3
@@ -857,13 +891,13 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // Si Bulk (for subtraction)
   G4VSolid *SiBulk = new G4Trap("SiBulk",
-                   (thicknessSiDetector+thicknessSiDetectorGrid), pTheta, pPhi, y_Si_Bulk / 2,
+                   (thicknessSiDetector+thicknessSiDetector_InterstripSiO2), pTheta, pPhi, y_Si_Bulk / 2,
                    xHigh_Si_Bulk / 2, xLow_Si_Bulk / 2, pAlp1, y_Si_Bulk / 2,
                    xHigh_Si_Bulk / 2, xLow_Si_Bulk / 2, pAlp2);
 
   // Mother volume
   supportSiliconDetectorvide = new G4Trap("supportSiliconDetectorvide",
-                                          (thicknessSiDetector+thicknessSiDetectorGrid) / 2, pTheta, pPhi, pDy1 / 2,
+                                          (thicknessSiDetector+thicknessSiDetector_InterstripSiO2) / 2, pTheta, pPhi, pDy1 / 2,
                                           pDx1 / 2, pDx2 / 2, pAlp1, pDy2 / 2,
                                           pDx3 / 2, pDx4 / 2, pAlp2);
 
@@ -872,6 +906,12 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                           supportSiliconDetectorvide, SiBulk,
                                           0,
                                           G4ThreeVector(0, 0, 0));
+
+  // // Back Al
+  // AlBackSiliconDetector = new G4Trap("AlBackSiliconDetector",
+  //                                     thicknessSiDetector_BackAl / 2, pTheta, pPhi, pDy1 / 2,
+  //                                         pDx1 / 2, pDx2 / 2, pAlp1, pDy2 / 2,
+  //                                         pDx3 / 2, pDx4 / 2, pAlp2);
 
   // Strip n. 5
   SiDet_Strip_5 = new G4Trap("SiDet_Strip_5",
@@ -936,18 +976,18 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                              xHigh_SiDet_Strip_1 / 2, xLow_SiDet_Strip_1 / 2, 0. * degree);
 
   //////////////////////////// Al Grid //////////////////////////////////
-  G4double xOffset_Grid = WidthSiDetectorGrid / cos(90*degree - thetaInclinazione_SiDetector);
-  G4double xOffset_Interstrip_And_Grid = spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector) + WidthSiDetectorGrid / tan(thetaInclinazione_SiDetector);
+  G4double xOffset_Grid = WidthSiDetector_InterstripGrid / cos(90*degree - thetaInclinazione_SiDetector);
+  G4double xOffset_Interstrip_And_Grid = spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector) + WidthSiDetector_InterstripGrid / tan(thetaInclinazione_SiDetector);
 
   // Strip n. 5
   G4Trap* SiDet_Strip_5_grid_in = new G4Trap("SiDet_Strip_5_grid_in",
-                                thicknessSiDetectorGrid, 0. * degree, 0. * degree, y_SiDet_Strip_5 / 2 - WidthSiDetectorGrid  - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_5 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_5 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_5 / 2 - WidthSiDetectorGrid  - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid, 0. * degree, 0. * degree, y_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2,
+                                xHigh_SiDet_Strip_5 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_5 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2,
                                 xHigh_SiDet_Strip_5 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_5 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree);
                           
   G4Trap* SiDet_Strip_5_grid_full= new G4Trap("SiDet_Strip_5_grid_full",
-                                thicknessSiDetectorGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
+                                xHigh_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
                                 xHigh_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
 
   SiDet_Strip_5_grid = new G4SubtractionSolid("SiDet_Strip_5_grid",
@@ -957,13 +997,13 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // Strip n. 4
   G4Trap* SiDet_Strip_4_grid_in = new G4Trap("SiDet_Strip_4_grid_in",
-                                thicknessSiDetectorGrid, 0. * degree, 0. * degree, y_SiDet_Strip_4 / 2 - WidthSiDetectorGrid  - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_4 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_4 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_4 / 2 - WidthSiDetectorGrid  - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid, 0. * degree, 0. * degree, y_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2,
+                                xHigh_SiDet_Strip_4 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_4 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2,
                                 xHigh_SiDet_Strip_4 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_4 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree);
 
   G4Trap* SiDet_Strip_4_grid_full= new G4Trap("SiDet_Strip_4_grid_full",
-                                thicknessSiDetectorGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
+                                xHigh_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
                                 xHigh_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);  
 
   SiDet_Strip_4_grid = new G4SubtractionSolid("SiDet_Strip_4_grid",
@@ -973,13 +1013,13 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                         
   // Strip n. 3
   G4Trap* SiDet_Strip_3_grid_in = new G4Trap("SiDet_Strip_3_grid_in",
-                                thicknessSiDetectorGrid, 0. * degree, 0. * degree, y_SiDet_Strip_3 / 2 - WidthSiDetectorGrid  - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_3 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_3 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_3 / 2 - WidthSiDetectorGrid  - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid, 0. * degree, 0. * degree, y_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2,
+                                xHigh_SiDet_Strip_3 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_3 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2,
                                 xHigh_SiDet_Strip_3 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_3 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree);
   
   G4Trap* SiDet_Strip_3_grid_full= new G4Trap("SiDet_Strip_3_grid_full",
-                                thicknessSiDetectorGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
+                                xHigh_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
                                 xHigh_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);  
   
   SiDet_Strip_3_grid = new G4SubtractionSolid("SiDet_Strip_3_grid",
@@ -989,13 +1029,13 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   
   // Strip n. 2
   G4Trap* SiDet_Strip_2_grid_in = new G4Trap("SiDet_Strip_2_grid_in",
-                                thicknessSiDetectorGrid, 0. * degree, 0. * degree, y_SiDet_Strip_2 / 2 - WidthSiDetectorGrid  - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_2 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_2 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_2 / 2 - WidthSiDetectorGrid  - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid, 0. * degree, 0. * degree, y_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2,
+                                xHigh_SiDet_Strip_2 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_2 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2,
                                 xHigh_SiDet_Strip_2 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_2 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree);
 
   G4Trap* SiDet_Strip_2_grid_full= new G4Trap("SiDet_Strip_2_grid_full",
-                                thicknessSiDetectorGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
+                                xHigh_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
                                 xHigh_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
 
   SiDet_Strip_2_grid = new G4SubtractionSolid("SiDet_Strip_2_grid",
@@ -1005,13 +1045,13 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // Strip n. 1
   G4Trap* SiDet_Strip_1_grid_in = new G4Trap("SiDet_Strip_1_grid_in",
-                                thicknessSiDetectorGrid, 0. * degree, 0. * degree, y_SiDet_Strip_1 / 2 - WidthSiDetectorGrid  - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_1 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_1 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_1 / 2 - WidthSiDetectorGrid - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid, 0. * degree, 0. * degree, y_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2,
+                                xHigh_SiDet_Strip_1 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_1 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree, y_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2,
                                 xHigh_SiDet_Strip_1 / 2 - xOffset_Interstrip_And_Grid - xOffset_Grid, xLow_SiDet_Strip_1 / 2 + xOffset_Interstrip_And_Grid - xOffset_Grid, 0. * degree);
 
   G4Trap* SiDet_Strip_1_grid_full= new G4Trap("SiDet_Strip_1_grid_full",
-                                thicknessSiDetectorGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2,
-                                xHigh_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_1 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2,
+                                thicknessSiDetector_InterstripGrid / 2, 0. * degree, 0. * degree, y_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
+                                xHigh_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_1 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, y_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2 + WidthSiDetector_InterstripGrid,
                                 xHigh_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_1 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
   
   SiDet_Strip_1_grid = new G4SubtractionSolid("SiDet_Strip_1_grid",
@@ -1023,77 +1063,45 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
 
   // InterStrip n. 5-
   G4Trap* SiDet_InterStrip_5 = new G4Trap("SiDet_InterStrip_5-",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 4,
-                             xHigh_SiDet_Strip_5 / 2, xHigh_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, spazio_tra_Strip / 4,
-                             xHigh_SiDet_Strip_5 / 2, xHigh_SiDet_Strip_5 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
+                             (thicknessSiDetector_InterstripSiO2) / 2, 0. * degree, 0. * degree, WidthSiDetector_InterstripSiO2 / 4,
+                             xHigh_SiDet_Strip_5 / 2, xHigh_SiDet_Strip_5 / 2 - WidthSiDetector_InterstripSiO2 / 4 / tan(thetaInclinazione_SiDetector), 0. * degree, WidthSiDetector_InterstripSiO2 / 4,
+                             xHigh_SiDet_Strip_5 / 2, xHigh_SiDet_Strip_5 / 2 - WidthSiDetector_InterstripSiO2 / 4 / tan(thetaInclinazione_SiDetector), 0. * degree);
 
   // InterStrip n. 4-5
   G4Trap* SiDet_InterStrip_45 = new G4Trap("SiDet_InterStrip_45",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
-                             xLow_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, spazio_tra_Strip / 2,
-                             xLow_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_4 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
+                             (thicknessSiDetector_InterstripSiO2) / 2, 0. * degree, 0. * degree, WidthSiDetector_InterstripSiO2 / 2,
+                             xLow_SiDet_Strip_5 / 2 + WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_4 / 2 - WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, WidthSiDetector_InterstripSiO2 / 2,
+                             xLow_SiDet_Strip_5 / 2 + WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_4 / 2 - WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
 
   // InterStrip n. 3-4
   G4Trap* SiDet_InterStrip_34 = new G4Trap("SiDet_InterStrip_34",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
-                             xLow_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, spazio_tra_Strip / 2,
-                             xLow_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_3 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
+                             (thicknessSiDetector_InterstripSiO2) / 2, 0. * degree, 0. * degree, WidthSiDetector_InterstripSiO2 / 2,
+                             xLow_SiDet_Strip_4 / 2 + WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_3 / 2 - WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, WidthSiDetector_InterstripSiO2 / 2,
+                             xLow_SiDet_Strip_4 / 2 + WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_3 / 2 - WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
 
   // InterStrip n. 2-3
   G4Trap* SiDet_InterStrip_23 = new G4Trap("SiDet_InterStrip_23",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
-                             xLow_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, spazio_tra_Strip / 2,
-                             xLow_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_2 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
+                             (thicknessSiDetector_InterstripSiO2) / 2, 0. * degree, 0. * degree, WidthSiDetector_InterstripSiO2 / 2,
+                             xLow_SiDet_Strip_3 / 2 + WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_2 / 2 - WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, WidthSiDetector_InterstripSiO2 / 2,
+                             xLow_SiDet_Strip_3 / 2 + WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_2 / 2 - WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
 
   // InterStrip n. 1-2
   G4Trap* SiDet_InterStrip_12 = new G4Trap("SiDet_InterStrip_12",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 2,
-                             xLow_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, spazio_tra_Strip / 2,
-                             xLow_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_1 / 2 - spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
+                             (thicknessSiDetector_InterstripSiO2) / 2, 0. * degree, 0. * degree, WidthSiDetector_InterstripSiO2 / 2,
+                             xLow_SiDet_Strip_2 / 2 + WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_1 / 2 - WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), 0. * degree, WidthSiDetector_InterstripSiO2 / 2,
+                             xLow_SiDet_Strip_2 / 2 + WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), xHigh_SiDet_Strip_1 / 2 - WidthSiDetector_InterstripSiO2 / 2 / tan(thetaInclinazione_SiDetector), 0. * degree);
 
   // // InterStrip n. -1
   G4Trap* SiDet_InterStrip_1 = new G4Trap("SiDet_InterStrip_-1",
-                             (thicknessSiDetectorGrid) / 2, 0. * degree, 0. * degree, spazio_tra_Strip / 4,
-                             xLow_SiDet_Strip_1 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_1 / 2, 0. * degree, spazio_tra_Strip / 4,
-                             xLow_SiDet_Strip_1 / 2 + spazio_tra_Strip / 2 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_1 / 2, 0. * degree);
+                             (thicknessSiDetector_InterstripSiO2) / 2, 0. * degree, 0. * degree, WidthSiDetector_InterstripSiO2 / 4,
+                             xLow_SiDet_Strip_1 / 2 + WidthSiDetector_InterstripSiO2 / 4 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_1 / 2, 0. * degree, WidthSiDetector_InterstripSiO2 / 4,
+                             xLow_SiDet_Strip_1 / 2 + WidthSiDetector_InterstripSiO2 / 4 / tan(thetaInclinazione_SiDetector), xLow_SiDet_Strip_1 / 2, 0. * degree);
 
-
-  //////////////////////////// Strip ////////////////////////////////// 
-  // // Strip n. 5 //
-  // G4Trap* SiDet_Strip_5_U = new G4Trap("SiDet_InterStrip_5_4side",
-  //                            (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2,
-  //                            xHigh_SiDet_Strip_5 / 2, ( xLow_SiDet_Strip_5 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, 0. * degree, y_SiDet_Strip_5 / 2 + spazio_tra_Strip / 2,
-  //                            xHigh_SiDet_Strip_5 / 2, ( xLow_SiDet_Strip_5 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, 0. * degree);
-  
-  // // Strip n. 4 //
-  // G4Trap* SiDet_Strip_4_U = new G4Trap("SiDet_InterStrip_4_5side",
-  //                            (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2,
-  //                            ( xHigh_SiDet_Strip_4 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, 0. * degree, y_SiDet_Strip_4 / 2 + spazio_tra_Strip / 2,
-  //                            ( xHigh_SiDet_Strip_4 + (xLow_SiDet_Strip_5-xHigh_SiDet_Strip_4) / 2 ) / 2, ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, 0. * degree);
-
-  // // Strip n. 3 //
-  // G4Trap* SiDet_Strip_3_U = new G4Trap("SiDet_InterStrip_3_4side",
-  //                            (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2,
-  //                            ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, 0. * degree, y_SiDet_Strip_3 / 2 + spazio_tra_Strip / 2,
-  //                            ( xHigh_SiDet_Strip_3 + (xLow_SiDet_Strip_4-xHigh_SiDet_Strip_3) / 2 ) / 2, ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, 0. * degree);
-  
-  // // Strip n. 2 //
-  // G4Trap* SiDet_Strip_2_U = new G4Trap("SiDet_InterStrip_2_3side",
-  //                            (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2,
-  //                            ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, 0. * degree, y_SiDet_Strip_2 / 2 + spazio_tra_Strip / 2,
-  //                            ( xHigh_SiDet_Strip_2 + (xLow_SiDet_Strip_3-xHigh_SiDet_Strip_2) / 2 ) / 2, ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, 0. * degree);
-  
-  // // Strip n. 1 //
-  // G4Trap* SiDet_Strip_1_U = new G4Trap("SiDet_InterStrip_1_2side",
-  //                            (thicknessSiDetector) / 2, 0. * degree, 0. * degree, y_SiDet_Strip_1 / 2 + spazio_tra_Strip / 2,
-  //                            ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, xLow_SiDet_Strip_1 / 2, 0. * degree, y_SiDet_Strip_1 / 2 +  spazio_tra_Strip / 2,
-  //                            ( xHigh_SiDet_Strip_1 + (xLow_SiDet_Strip_2-xHigh_SiDet_Strip_1) / 2 ) / 2, xLow_SiDet_Strip_1 / 2, 0. * degree);
-                
-  dic_strip[1] = std::make_tuple(SiDet_Strip_1, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 + y_SiDet_Strip_3 + y_SiDet_Strip_2 + y_SiDet_Strip_1 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_1_dl, SiDet_Strip_1_grid);
-  dic_strip[2] = std::make_tuple(SiDet_Strip_2, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 + y_SiDet_Strip_3 + y_SiDet_Strip_2 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_2_dl, SiDet_Strip_2_grid);
-  dic_strip[3] = std::make_tuple(SiDet_Strip_3, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 + y_SiDet_Strip_3 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_3_dl, SiDet_Strip_3_grid);
-  dic_strip[4] = std::make_tuple(SiDet_Strip_4, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_4_dl, SiDet_Strip_4_grid);
-  dic_strip[5] = std::make_tuple(SiDet_Strip_5, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 / 2, -thicknessSiDetectorGrid/2), SiDet_Strip_5_dl, SiDet_Strip_5_grid);
+  dic_strip[1] = std::make_tuple(SiDet_Strip_1, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 + y_SiDet_Strip_3 + y_SiDet_Strip_2 + y_SiDet_Strip_1 / 2, -thicknessSiDetector_InterstripSiO2/2), SiDet_Strip_1_dl, SiDet_Strip_1_grid);
+  dic_strip[2] = std::make_tuple(SiDet_Strip_2, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 + y_SiDet_Strip_3 + y_SiDet_Strip_2 / 2, -thicknessSiDetector_InterstripSiO2/2), SiDet_Strip_2_dl, SiDet_Strip_2_grid);
+  dic_strip[3] = std::make_tuple(SiDet_Strip_3, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 + y_SiDet_Strip_3 / 2, -thicknessSiDetector_InterstripSiO2/2), SiDet_Strip_3_dl, SiDet_Strip_3_grid);
+  dic_strip[4] = std::make_tuple(SiDet_Strip_4, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 / 2, -thicknessSiDetector_InterstripSiO2/2), SiDet_Strip_4_dl, SiDet_Strip_4_grid);
+  dic_strip[5] = std::make_tuple(SiDet_Strip_5, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 / 2, -thicknessSiDetector_InterstripSiO2/2), SiDet_Strip_5_dl, SiDet_Strip_5_grid);
 
   dic_interstrip[-10] = std::make_tuple(SiDet_InterStrip_1, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 + y_SiDet_Strip_3 + y_SiDet_Strip_2 + y_SiDet_Strip_1 - spazio_tra_Strip/4, 0));
   dic_interstrip[12] = std::make_tuple(SiDet_InterStrip_12, G4ThreeVector(0, -pDy1 / 2 + spazio_tra_Bordo_e_strip5 + y_SiDet_Strip_5 + y_SiDet_Strip_4 + y_SiDet_Strip_3 + y_SiDet_Strip_2, 0));
@@ -1115,7 +1123,8 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   //===================================================================================================================================================================
   // NB: per ogni dubbio sulle misure, consultare i disegni tecnici inviati da M. Roche (mail al mio indirizzo cenbg il 18/05/2021).
   G4double distanza_tra_BaseInfScintillatore_e_BordoSuperioreDeiSiDetector = 25.575 * mm;
-  G4double delta = 0 * cm;
+  G4double delta = 0.0 * cm;
+  // fRadius_PlasticScintillator = 25*mm;
 
   // TODO Add Birks Constant
   Material_Plastic->GetIonisation()->SetBirksConstant(0.126 * mm / MeV); 
@@ -1199,60 +1208,118 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
     fLogic_Killer->SetVisAttributes(Killer_att);
   }
 
+  if (!CAD_MESH_flag)
+  {
     /////// SET TUBE ENTRANCE /////////
-  G4double delta_entrance = -62 * mm;
-  G4double Tube_length = 27.5*mm;
-  G4Tubs *fSolid_TubeEntrance = new G4Tubs("TubeEntranceSolid", fRadius_PlasticScintillator, fRadius_PlasticScintillator+6*mm, Tube_length/2, 0., 360 * deg);
-  G4LogicalVolume *fLogic_TubeEntrance = new G4LogicalVolume(fSolid_TubeEntrance, Material_Cu, "TubeEntrance");                                                                                         // solid, material, name
-  G4PVPlacement *fPhys_TubeEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
-                                                               G4ThreeVector(0., 0., delta_entrance),
-                                                               fLogic_TubeEntrance, "TubeEntrance",                                                                                                                              // its fLogical volume
-                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
-                                                               false,                                                                                                                                                                          // no boolean op.
-                                                               -1);
-
-  if (fPhys_TubeEntrance == NULL)
-  {
-  }
-  fLogic_TubeEntrance->SetVisAttributes(Vis_Cu);
-
-  /////// SET PLAT ENTRANCE /////////
-  G4double Plate_tickness = 2.5*mm;
-  G4Tubs *fSolid_PlateEntrance = new G4Tubs("PlateEntranceSolid", fRadius_PlasticScintillator, 60*mm, Plate_tickness/2, 0., 360 * deg);
-  G4LogicalVolume *fLogic_PlateEntrance = new G4LogicalVolume(fSolid_PlateEntrance, Material_Cu, "PlateEntrance");                                                                                         // solid, material, name
-  G4PVPlacement *fPhys_PlateEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
-                                                               G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2),
-                                                               fLogic_PlateEntrance, "PlateEntrance",                                                                                                                              // its fLogical volume
-                                                               fLogicWorld,                                                                                                                                                                    // its mother volume
-                                                               false,                                                                                                                                                                          // no boolean op.
-                                                               -1); 
-
-  if (fPhys_PlateEntrance == NULL)
-  {
-  }
-
-  fLogic_PlateEntrance->SetVisAttributes(Vis_Al);                            
-
-
-  /////// SET COLLIMATOR ENTRANCE //////
-  if (Collimator_flag)
-  {
-    G4double Collimator_thickness = 2*mm;
-    G4Tubs *fSolid_CollimatorEntrance = new G4Tubs("CollimatorEntranceSolid", 2.5*mm, 2*fRadius_PlasticScintillator, Collimator_thickness/2, 0., 360 * deg);
-    G4LogicalVolume *fLogic_CollimatorEntrance = new G4LogicalVolume(fSolid_CollimatorEntrance, Material_Al, "CollimatorEntrance");                                                                                         // solid, material, name
-    G4PVPlacement *fPhys_CollimatorEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
-                                                                G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2-Collimator_thickness),
-                                                                fLogic_CollimatorEntrance, "CollimatorEntrance",                                                                                                                              // its fLogical volume
+    G4double delta_entrance = -62 * mm;
+    G4double Tube_length = 27.5*mm;
+    G4Tubs *fSolid_TubeEntrance = new G4Tubs("TubeEntranceSolid", fRadius_PlasticScintillator, fRadius_PlasticScintillator+6*mm, Tube_length/2, 0., 360 * deg);
+    G4LogicalVolume *fLogic_TubeEntrance = new G4LogicalVolume(fSolid_TubeEntrance, Material_Cu, "TubeEntrance");                                                                                         // solid, material, name
+    G4PVPlacement *fPhys_TubeEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                                G4ThreeVector(0., 0., delta_entrance),
+                                                                fLogic_TubeEntrance, "TubeEntrance",                                                                                                                              // its fLogical volume
                                                                 fLogicWorld,                                                                                                                                                                    // its mother volume
                                                                 false,                                                                                                                                                                          // no boolean op.
-                                                                -1);   
+                                                                -1);
 
-    if (fPhys_CollimatorEntrance == NULL)
+    if (fPhys_TubeEntrance == NULL)
+    {
+    }
+    fLogic_TubeEntrance->SetVisAttributes(Vis_Cu);
+
+    /////// SET PLAT ENTRANCE /////////
+    G4double Plate_tickness = 2.5*mm;
+    G4Tubs *fSolid_PlateEntrance = new G4Tubs("PlateEntranceSolid", fRadius_PlasticScintillator, 60*mm, Plate_tickness/2, 0., 360 * deg);
+    G4LogicalVolume *fLogic_PlateEntrance = new G4LogicalVolume(fSolid_PlateEntrance, Material_Cu, "PlateEntrance");                                                                                         // solid, material, name
+    G4PVPlacement *fPhys_PlateEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                                G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2),
+                                                                fLogic_PlateEntrance, "PlateEntrance",                                                                                                                              // its fLogical volume
+                                                                fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                                false,                                                                                                                                                                          // no boolean op.
+                                                                -1); 
+
+    if (fPhys_PlateEntrance == NULL)
     {
     }
 
-    fLogic_CollimatorEntrance->SetVisAttributes(Vis_Al);  
-  }                                                                                                                                                                        // copy nb.
+    fLogic_PlateEntrance->SetVisAttributes(Vis_Al);                            
+
+
+    /////// SET COLLIMATOR ENTRANCE //////
+    if (Collimator_flag)
+    {
+      G4double Collimator_thickness = 2*mm;
+      G4Tubs *fSolid_CollimatorEntrance = new G4Tubs("CollimatorEntranceSolid", 2.5*mm, 2*fRadius_PlasticScintillator, Collimator_thickness/2, 0., 360 * deg);
+      G4LogicalVolume *fLogic_CollimatorEntrance = new G4LogicalVolume(fSolid_CollimatorEntrance, Material_Al, "CollimatorEntrance");                                                                                         // solid, material, name
+      G4PVPlacement *fPhys_CollimatorEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
+                                                                  G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2-Collimator_thickness),
+                                                                  fLogic_CollimatorEntrance, "CollimatorEntrance",                                                                                                                              // its fLogical volume
+                                                                  fLogicWorld,                                                                                                                                                                    // its mother volume
+                                                                  false,                                                                                                                                                                          // no boolean op.
+                                                                  -1);   
+
+      if (fPhys_CollimatorEntrance == NULL)
+      {
+      }
+
+      fLogic_CollimatorEntrance->SetVisAttributes(Vis_Al);  
+    }       
+  }   
+  
+  
+  //==================================================================================================
+  //========================================  WISArD CADMESH =========================================
+  //==================================================================================================
+
+  if (CAD_MESH_flag)
+  {
+    auto mesh = CADMesh::TessellatedMesh::FromOBJ("POSITION_data/wisard_for_G4_light2.obj");
+    mesh->SetScale(1000.);
+    auto solids = mesh->GetSolids();
+    for (auto it = solids.begin(); it != solids.end(); ++it)
+    {
+      auto solid = *it;
+      G4String name = solid->GetName();
+      G4Material *Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+      G4VisAttributes *VisAtt = Vis_Al;
+      if (name.find("Support_v2") != string::npos || name.find("PreAmp hodler") != string::npos || name.find("SOLID.007") != string::npos || name.find("Scintilator_Distance") != string::npos || name.find("Detector_holder") != string::npos || name.find("SiPM_Am_Cooler") != string::npos)
+      {
+        Material = G4NistManager::Instance()->FindOrBuildMaterial("G4_Cu");
+        VisAtt = Vis_Cu;
+      }
+      else if (name.find("WISArD_SG-HV-B-Pcb_Bottom-A") != string::npos || name.find("Open_CASCADE_STEP") != string::npos)
+      {
+        Material = Material_PCB;
+        VisAtt = Vis_PCB;
+      }
+      else if (name.find("Anneau_MCP") != string::npos || name.find("Appui_Contacts_MCP") != string::npos || name.find("Support_MCP_Wisard") != string::npos || name.find("CF2tower_WISArD") != string::npos)
+      {
+        Material = PEEK;
+        VisAtt = Vis_PEEK;
+      }
+      else if (name.find("HPC") != string::npos)
+      {
+        Material = PEEK;
+        VisAtt = Vis_Si;
+      }
+      if (name.find("carteSiPM_WISArD") != string::npos)
+        continue;
+      if (!Collimator_flag && name.find("collimator") != string::npos)
+      {
+        continue; 
+      }
+      G4LogicalVolume *logic = new G4LogicalVolume(solid, Material, "[CAD](" + name + ")");
+      G4RotationMatrix *rotm = new G4RotationMatrix();
+      rotm->rotateX(90. * deg);
+      // rotm->rotateY(180. * deg);
+      rotm->rotateY(0. * deg);
+      // rotm->rotateZ(0. * deg);
+      rotm->rotateZ(180. * deg);
+      auto p = new G4PVPlacement(rotm, G4ThreeVector(0, 0, 0.3*cm), logic, "[CAD](" + name + ")", fLogicWorld, false, 0, false);
+      if (p==NULL){}
+      logic->SetVisAttributes(VisAtt);
+    }
+  }                                                                                                                                                  
 
   if (Magnetic_Field_Mapping_flag)
   {
@@ -1289,7 +1356,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
     //==================================================================================================
     //=============================  WISArD BEAMLINE COLLIMATOR ========================================
     //==================================================================================================
-    G4double radius_beamline_collimator = 10 * mm;
+    G4double radius_beamline_collimator = 20 * mm;
     G4double length_beamline_collimator = 5 * cm;
 
     G4Tubs *wisard_beamline_collimator = new G4Tubs("Wisard_beamline",
@@ -1298,7 +1365,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
                                                     0.5L * (length_beamline_collimator),
                                                     0.L, 360.L * deg);
     G4LogicalVolume *wisard_beamline_collimator_logic = new G4LogicalVolume(wisard_beamline_collimator, // forme
-                                                                            Material_Fe,               // matiere
+                                                                            Material_Fe,                // matiere
                                                                             "WisardLogic",              // nom
                                                                             0, 0, 0);
     // - physical volume
@@ -1314,6 +1381,51 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
     if (wisard_beamline_collimator_phys == NULL)
     {
     }
+
+    G4Tubs *fSolid_Killer = new G4Tubs("KillerSolid", 0., fRadius_PlasticScintillator, 0.1 * mm, 0., 360 * deg);
+    fLogic_Killer = new G4LogicalVolume(fSolid_Killer, Material_Vacuum, "Killer");   // solid, material, name
+    G4PVPlacement *fPhys_Killer = new G4PVPlacement(0,                               // rotationMatrix
+                                                    G4ThreeVector(0., 0., -450 * mm), // position
+                                                    fLogic_Killer, "Killer",         // its fLogical volume
+                                                    fLogicWorld,                     // its mother volume
+                                                    false,                           // no boolean op.
+                                                    -1);                             // copy nb.
+
+    if (fPhys_Killer == NULL)
+    {
+    }
+    G4VisAttributes *Killer_att = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6, 0.6)); // red
+    Killer_att->SetForceWireframe(false);
+    Killer_att->SetForceSolid(true);
+    Killer_att->SetVisibility(true);
+    fLogic_Killer->SetVisAttributes(Killer_att);
+  }
+
+
+  if (MCP_flag)
+  {
+    G4double Radius = 10 * mm;
+    G4double Length = 1 * mm;
+
+    G4Tubs *fSolid_MCP = new G4Tubs("MCP", 0., Radius, Length / 2, 0., 360 * deg);
+    fLogic_MCP = new G4LogicalVolume(fSolid_MCP, Material_Vacuum, "MCP"); // solid, material, name
+    G4PVPlacement *fPhys_MCP = new G4PVPlacement(0,                                                                 // rotationMatrix
+                                                ConvertStringToG4ThreeVector(string_MCP_position)* mm - G4ThreeVector(0., 0., -Length / 2), // position
+                                                fLogic_MCP, "MCP",                 // its fLogical volume
+                                                fLogicWorld,                       // its mother volume
+                                                false,                             // no boolean op.
+                                                -1);                               // copy nb.
+
+    if (fPhys_MCP == NULL)
+    {
+      G4Exception("BuildMCP", "MCP001", FatalException, "MCP not created");
+    }
+
+    G4VisAttributes *MCP_att = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6, 0.6)); // red
+    MCP_att->SetForceWireframe(false);
+    MCP_att->SetForceSolid(true);
+    MCP_att->SetVisibility(true);
+    fLogic_MCP->SetVisAttributes(MCP_att);
   }
 
   return fPhysiWorld;

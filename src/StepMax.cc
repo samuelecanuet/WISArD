@@ -78,12 +78,12 @@ G4double StepMax::PostStepGetPhysicalInteractionLength(
 /*! Apply the process at post-step.
  *  \param  track     (not documented in Geant4)
  */
-G4VParticleChange *StepMax::PostStepDoIt(const G4Track &track, const G4Step &step)
+G4VParticleChange *StepMax::PostStepDoIt(const G4Track &track, const G4Step &)
 {
-  if (track.GetCurrentStepNumber() > 100000)
-  {
-    step.GetTrack()->SetTrackStatus(fStopAndKill);
-  }
+  // if (track.GetCurrentStepNumber() > 100000)
+  // {
+  //   step.GetTrack()->SetTrackStatus(fStopAndKill);
+  // }
   // do nothing
   aParticleChange.Initialize(track);
   return (&aParticleChange);

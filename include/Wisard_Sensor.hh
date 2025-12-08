@@ -10,7 +10,6 @@
 
 #include "ParticleInformation.hh"
 
-
 class Wisard_Sensor : public G4VSensitiveDetector
 {
 public:
@@ -21,12 +20,12 @@ public:
 
   G4int DetCode;
 
+  const G4ThreeVector ex = G4ThreeVector(1., 0., 0.);
+  const G4ThreeVector ey = G4ThreeVector(0., 1., 0.);
+  const G4ThreeVector ez = G4ThreeVector(0., 0., 1.);
+
   void Initialize(G4HCofThisEvent *);
   G4bool ProcessHits(G4Step *, G4TouchableHistory *);
-
 };
-
-
-
 
 #endif

@@ -50,7 +50,7 @@ The Tree is update each 10 000 events and contains :
 - Gun Information (particle PDG, position, direction, energy, time)
 - Catchers Energy deposit
 - Plastic Scintillator (deposit energy, hit position, hit angle, hit time)
-- Silicon Detectors (deposit energy, hit position, hit angle, hit time, detector code)
+- Silicon Detectors (deposit energy, hit position, hit distance to boundary, hit angle, hit time, detector code)
 
 ### Histograms
 There are 2 for each strip, one for the β-p coincidence and an other one for the anti-coincidence. The β detection threashold is set in the macro file.
@@ -128,3 +128,18 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Collimator option in the macro
 - Geometry of 2025 added (beamline + collimator)
 - Full Magnetic field implementation as option in the macro
+
+### v4.4 
+- Fixing sensor code of dead layers
+- Adding "Visible" energy in the TTree (Birks) 
+- Replacing default Si02 by customized one 
+- Adding EventID leef to the Tree to keep the correspondances between CRADLE and Geant4
+- Final implementation of geometric interstrip (Al 480nm-28um / Si 12um / SiO2 730nm-48um / Si 12um / Al 480nm-28um)
+
+### v4.5 
+- Adding Distance To Boundary saving in the TTree for the first hit on a Silicon detector
+- Modifiying Beam profile implementation (from TH2D to 2 TH1Ds) for RAM optimization
+- Adding CERN measurement for silicon detector position and rotation (dependances in SILICON_data/)
+- Fixing Catcher position to influence also the vertex position
+- Adding looping limit for particle in B-field (1 keV and 1e5 trials)
+- Adding CADMESH as a parameter in the macro (adding also a light .obj file in /POSITION_data)

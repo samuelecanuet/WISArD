@@ -29,14 +29,16 @@ void ParticleInformation::AddParticle(G4int TrackID)
 bool ParticleInformation::FirstHit(G4int TrackID, G4int SensorID)
 {
 
+    // Particle not found: added to the dictionnary
     if (Particles.find(TrackID) == Particles.end())
     {
         AddParticle(TrackID);
     }
 
+    // Sensor not found for this particle: added to the dictionnary
     if (Particles[TrackID].Detectors.size() == 0)
     {
-        Particles[TrackID].Detectors[SensorID] = Detector{0, 0, G4ThreeVector(0, 0, 0)};
+        Particles[TrackID].Detectors[SensorID] = Detector{0, 0, 0, G4ThreeVector(0, 0, 0)};
         return true;
     }
     else
@@ -45,11 +47,12 @@ bool ParticleInformation::FirstHit(G4int TrackID, G4int SensorID)
         {
             if (pair.first == SensorID)
             {
+                // Sensor already hit by this particle
                 return false;
             }
         }
 
-        Particles[TrackID].Detectors[SensorID] = Detector{0, 0, G4ThreeVector(0, 0, 0)};
+        Particles[TrackID].Detectors[SensorID] = Detector{0, 0, 0, G4ThreeVector(0, 0, 0)};
         return true;
     }
 }
@@ -69,9 +72,15 @@ void ParticleInformation::SetHitTime(G4int TrackID, G4int SensorID, G4double Hit
     Particles[TrackID].Detectors[SensorID].HitTime = HitTime;
 }
 
-void ParticleInformation::AddEnergyDeposit(G4int TrackID, G4int SensorID, G4double EnergyDeposit)
+void ParticleInformation::AddEnergyDeposit(G4int TrackID, G4int SensorID, G4double EnergyDeposit, G4double VisibleEnergyDeposit)
 {
     Particles[TrackID].Detectors[SensorID].EnergyDeposit += EnergyDeposit;
+    Particles[TrackID].Detectors[SensorID].VisibleEnergyDeposit += VisibleEnergyDeposit;
+}
+
+void ParticleInformation::SetHitDistanceBoundary(G4int TrackID, G4int SensorID, G4ThreeVector Distance)
+{
+    Particles[TrackID].Detectors[SensorID].DistanceBoundary = Distance;
 }
 
 void ParticleInformation::Parse()

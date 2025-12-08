@@ -26,7 +26,7 @@ void Wisard_ActionInitialization::Build() const
     run = new Wisard_RunAction(MacroFileName);
 
     SetUserAction(run);
-    SetUserAction(new Wisard_Generator());
+    SetUserAction(new Wisard_Generator(MacroFileName));
     SetUserAction(new Wisard_Tracking());
     SetUserAction(new Wisard_EventAction());
 }

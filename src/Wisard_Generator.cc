@@ -7,7 +7,7 @@
 
 thread_local bool INIT = false;
 
-Wisard_Generator::Wisard_Generator()
+Wisard_Generator::Wisard_Generator(G4String macro_filename) 
 {
 
   G4cout << "\033[32m" << "Constructor Wisard_Generator" << "\033[0m" << G4endl;
@@ -22,6 +22,8 @@ Wisard_Generator::Wisard_Generator()
 
   BeamMessenger = new G4GenericMessenger(this, "/Beam/", "All Beam Settings");
   InputMessenger = new G4GenericMessenger(this, "/Input/", "All Input Settings");
+
+  SetCatcherPosition_z(macro_filename);
 
   BeamMessenger->DeclarePropertyWithUnit("X", "mm", X)
       .SetGuidance("Set Beam X offset.")
@@ -94,7 +96,6 @@ Wisard_Generator::~Wisard_Generator()
 
 void Wisard_Generator::GeneratePrimaries(G4Event *event)
 {
-
   if (!INIT)
   {
     SRIM_HISTOGRAM = Wisard_Generator::GetSRIM_hist();
@@ -177,16 +178,24 @@ void Wisard_Generator::ROOT_GENERATOR(G4Event *event)
   G4ThreeVector beam = Beam();
   G4ThreeVector catcher_implementation = Catcher_Implementation();
 
+  // G4ThreeVector beam = G4ThreeVector(0*mm, 3*mm, 0*mm);
+
   Reader->SetEntry(event->GetEventID());
 
   for (long unsigned int ipar = 0; ipar < (*code).GetSize(); ipar++)
   {
+
+    // if ((*code)[ipar] != 2212)
+    //   continue;
+    
     dir = G4ThreeVector((*px)[ipar], (*py)[ipar], (*pz)[ipar]);
     gun.SetParticleDefinition(particle_table->FindParticle((*code)[ipar]));
-    gun.SetParticlePosition(beam + catcher_implementation);
+    // gun.SetParticlePosition(beam);
+    gun.SetParticlePosition(beam+catcher_implementation);
     gun.SetParticleMomentumDirection(dir);
     gun.SetParticleEnergy((*ekin_)[ipar] * keV);
     gun.SetParticleTime((*time_)[ipar] * ns);
+    // gun.SetParticleCharge(0);
     gun.GeneratePrimaryVertex(event);
 
     // //////FOR TEST/////////
@@ -219,7 +228,7 @@ void Wisard_Generator::ROOT_DISTRIBUTION_GENERATOR(G4Event *event)
       G4double phi = G4UniformRand() * 2 * M_PI;
       G4double costheta = 2 * G4UniformRand() - 1;
       G4double theta = acos(costheta);
-      dir = G4ThreeVector(sin(theta) * cos(phi), sin(theta) * sin(phi), -abs(cos(theta)));
+      dir = G4ThreeVector(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
 
       position_array[i] = beam + catcher_implentation;
       direction_array[i] = dir;
@@ -240,11 +249,19 @@ void Wisard_Generator::ION_GENERATOR(G4Event *event)
 {
   // G4cout << "ION GENERATOR" << G4endl;
   G4ThreeVector beam = Beam();
-
-  gun.SetParticlePosition(pos + beam);
+  G4ThreeVector catcher_implementation = Catcher_Implementation();
+  // double s = 0.2;
+  // double ss = 0.05; 
+  // double t = 20*mm;
+  // dir = G4ThreeVector( ss + G4UniformRand() * 2*s - s, ss + G4UniformRand() * 2*s - s, 1); // Default direction along z-axis
+  // beam = G4ThreeVector(G4UniformRand() * 2*t - t, G4UniformRand() * 2*t - t, 0); // Add offsets
+  auto dirr = GetDirection(dir);
+  // auto dirr = G4ThreeVector(d.x(), 0.5, abs(d.z())); // Ensure z-component is positive
+  
+  gun.SetParticlePosition(pos + beam + catcher_implementation);
   gun.SetParticleDefinition(Gun_Particle);
   // gun.SetParticleCharge(0);
   gun.SetParticleEnergy(energy);
-  gun.SetParticleMomentumDirection(GetDirection(dir));
+  gun.SetParticleMomentumDirection(dirr);
   gun.GeneratePrimaryVertex(event);
 }

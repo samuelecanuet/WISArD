@@ -1,0 +1,54 @@
+#---------------------------------------------------------------
+#   Verbosity
+#---------------------------------------------------------------
+/run/initialize
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+#---------------------------------------------------------------
+#   Input Files
+#---------------------------------------------------------------
+#/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
+/Input/SRIM SRIM_data/AlMylar_32Ar.root
+#/Input/SRIM SRIM_data/AlMylar_20Mg.root
+/Input/CRADLE %inputCRADLE
+#/Input/CRADLE CRADLE_data/SAMPLE.root
+
+#---------------------------------------------------------------
+#   Simulation Parameters
+#---------------------------------------------------------------
+/Run/Threshold_PlasticScintillator 100 keV
+/Run/Threads %threads
+
+/Beam/X % mm
+/Beam/Y % mm
+/Beam/Radius 1000 mm
+/Beam/Sigma_X % mm
+/Beam/Sigma_Y % mm
+
+/Geometry/Collimator %
+/Geometry/Magnetic_Field_Value % tesla
+/Geometry/Magnetic_Field_Mapping %
+/Geometry/CAD_MESH %
+/Geometry/SiDeadLayer_Thickness % nm
+/Geometry/Detectors %
+/Geometry/Catcher_Position_z % mm
+/Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Angle 0 deg
+/Geometry/Catcher_Thickness_Al1 % nm
+/Geometry/Catcher_Thickness_Mylar % nm
+/Geometry/Catcher_Thickness_Al2 % nm
+
+/Geometry/MCP false
+/Geometry/MCP_Position 0 0 0
+
+/run/reinitializeGeometry
+
+#---------------------------------------------------------------
+#   Generate Events
+#---------------------------------------------------------------
+/run/printProgress 100000
+/Run/File %output
+/run/beamOn %events
+

@@ -16,6 +16,8 @@
 
 #include "G4Scintillation.hh"
 #include "G4EmSaturation.hh"
+#include "G4TransportationParameters.hh"
+#include "G4Transportation.hh"
 
 //----------------------------------------------------------------------
 Wisard_PhysList::Wisard_PhysList()
@@ -82,13 +84,24 @@ void Wisard_PhysList::ConstructParticle()
   G4Triton::TritonDefinition();
   G4Alpha::AlphaDefinition();
   G4GenericIon::GenericIonDefinition();
-  // AddStepMax(1 * cm, 0x2);
+
+  AddStepMax(0.1 * mm, 0x2);
+  
 }
 
 //----------------------------------------------------------------------
 // Associate selected processes to the particles
 void Wisard_PhysList::ConstructProcess()
 {
+  // defin Transportation parameters
+  auto transportParams= G4TransportationParameters::Instance();
+
+  transportParams->SetWarningEnergy(  0.1 * keV );
+  // transportParams->SetThresholdWarningEnergy( 0.1 * keV );
+  transportParams->SetImportantEnergy( 1 * keV );
+  // transportParams->SetThresholdImportantEnergy(  1 * keV );
+  transportParams->SetNumberOfTrials( 1000000 );
+
   // define transportation process
   AddTransportation();
 

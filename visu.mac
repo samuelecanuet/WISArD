@@ -10,17 +10,19 @@
 /run/verbose      0
 /event/verbose    0
 /tracking/verbose 1
-
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
-#/Input/SRIM SRIM_data/AlMylar_32Ar.root
+/Input/SRIM SRIM_data/AlMylar_32Ar.root
 #/Input/CRADLE CRADLE_data/SAMPLE.root
 
-/Input/Particle proton
-/Input/Energy 500 keV
-/Input/Direction iso 
+/process/inactivate ionIoni
+/Input/Ion 32Ar
+#/Input/Particle geantino
+#/Input/Energy 3352 keV
+#/Input/Direction 0 0 1
+#/Input/Position 0.0 0.0 0
 
 ### MEASURING SPACE BETWEEN DETECTORS IN PYRS ### (base)
 #/Input/Direction 1 0 0
@@ -42,44 +44,35 @@
 /Run/Threshold_PlasticScintillator 100 keV
 /Run/Threads 1
 
-#/Beam/X 0. mm
-#/Beam/Y 0. mm
-#/Beam/Radius 2.5 mm
-#/Beam/Sigma_X 0.3 mm
-#/Beam/Sigma_Y 0.3 mm
+/Beam/X 0. mm
+/Beam/Y 0. mm
+/Beam/Radius 1000 mm
+#/Beam/Sigma_X 0.5 mm
+#/Beam/Sigma_Y 0.5 mm
 
-/Geometry/Collimator true
+
+/Geometry/Collimator false
 /Geometry/Magnetic_Field_Value 4 tesla
 /Geometry/Magnetic_Field_Mapping false
+/Geometry/CAD_MESH true
 /Geometry/SiDeadLayer_Thickness 100 nm
-/Geometry/D1 0 0 0
-/Geometry/D2 0 0 0
-/Geometry/D3 0 0 0
-/Geometry/D4 0 0 0
-/Geometry/D5 0 0 0
-/Geometry/D6 0 0 0
-/Geometry/D7 0 0 0
-/Geometry/D8 0 0 0
-/Geometry/D1_Angle 0 deg
-/Geometry/D2_Angle 0 deg
-/Geometry/D3_Angle 0 deg
-/Geometry/D4_Angle 0 deg
-/Geometry/D5_Angle 0 deg
-/Geometry/D6_Angle 0 deg
-/Geometry/D7_Angle 0 deg
-/Geometry/D8_Angle 0 deg
+/Geometry/Detectors 0 2 0 0 0
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
 /Geometry/Catcher_Thickness_Al1 50 nm
 /Geometry/Catcher_Thickness_Mylar 500 nm
 /Geometry/Catcher_Thickness_Al2 50 nm
+
+/Geometry/MCP false
+/Geometry/MCP_Position 0 0 -90
+
 /run/reinitializeGeometry
 
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 200
+/run/printProgress 20
 /Run/File test.root
 #
 #
@@ -109,7 +102,7 @@
 #/vis/ogl/set/transparency True
 #
 # Draw coordinate axes:
-#/vis/scene/add/axes 0 0 0 10 cm
+#/vis/scene/add/axes 0 0 0 1 cm
 #
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:
@@ -125,7 +118,7 @@
 # To draw only gammas:
 #/vis/filtering/trajectories/create/particleFilter
 #/vis/filtering/trajectories/particleFilter-0/add gamma
-#/vis/filtering/trajectories/particleFilter-0/add e-
+#/vis/filtering/trajectories/particleFilter-0/add proton
 #
 # To invert the above, drawing all particles except gammas,
 # keep the above two lines but also add:
@@ -144,7 +137,7 @@
 /vis/modeling/trajectories/drawByParticleID-0/set GenericIon grey
 #
 # To superimpose all of the events from a given run:
-/vis/scene/endOfEventAction accumulate
+/vis/scene/endOfEventAction accumulate -1
 #
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
@@ -181,6 +174,6 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 10
+/run/beamOn 1
 #
 #
