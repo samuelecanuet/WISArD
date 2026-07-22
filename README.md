@@ -1,5 +1,10 @@
 # WISArD Geant4 Simulation
 
+<!-- ![logo](Logo/logo.svg) -->
+<img src="Logo/logo.svg" width="200" height="200"> 
+
+
+
 This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 
 ## Prerequisites
@@ -45,19 +50,15 @@ You end up a Tree, detectors histograms and simulation paramater in the ROOT TFi
 Located at the beginning of the TFile, you can find all the simulation variables chosen.
 
 ### Tree
-The Tree is update each 10 000 events and contains :
+The Tree is update each 10k events and contains :
 - Event Number
 - Gun Information (particle PDG, position, direction, energy, time)
 - Catchers Energy deposit
 - Plastic Scintillator (deposit energy, hit position, hit angle, hit time)
-- Silicon Detectors (deposit energy, hit position, hit distance to boundary, hit angle, hit time, detector code)
+- Silicon Detectors (deposit energy, hit position, hit angle, hit time, detector code)
 
 ### Histograms
 There are 2 for each strip, one for the β-p coincidence and an other one for the anti-coincidence. The β detection threashold is set in the macro file.
-
-## Analysis
-A very rapid analysis was made with PyROOT. To use it you have to indicate the filename in the main function.
-
 
 ## Version History
 
@@ -142,4 +143,9 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Adding CERN measurement for silicon detector position and rotation (dependances in SILICON_data/)
 - Fixing Catcher position to influence also the vertex position
 - Adding looping limit for particle in B-field (1 keV and 1e5 trials)
-- Adding CADMESH as a parameter in the macro (adding also a light .obj file in /POSITION_data)
+- Adding CADMESH as a parameter in the macro (adding also a light .obj file in POSITION_data/)
+
+### v4.6
+- Adding PhysicList options in the macro using the messenger (the initialization has been moved)
+- G4Region has been added for a special cut applied in the Silicon detectors
+- Fix of the catcher side thickness and placement

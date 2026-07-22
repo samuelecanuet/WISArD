@@ -72,6 +72,8 @@ public:
   G4bool CAD_MESH_flag = false;
   G4bool Collimator_flag = true;
   G4bool MCP_flag = false;
+  G4double Catcher_Position_x = 0.*mm;
+  G4double Catcher_Position_y = 0.*mm;
   G4double Catcher_Position_z = 0.*mm;
   G4String string_MCP_position;
   G4String Catcher_Position = "catcher1";
@@ -103,6 +105,9 @@ public:
   
 
   G4UserLimits *myStepLimit ;
+  G4double SiliconCuts = 0.001*mm;
+  G4double PlasticStep = 1*mm;
+  G4UserLimits* fPlasticStepLimit;
 
   std::vector<std::pair<G4LogicalVolume *, G4VPhysicalVolume *>>
   Make_Sidet(int num);

@@ -1,33 +1,35 @@
 import numpy as np
 import subprocess
-from parameters import *
+# from parameters import *
 import os
 
-Sampling_MC = 1000
+Sampling = 100
 VariableForSim = {}
 
 ########## PATHS ##########
 CRADLE_Path = "/home/lecanuet/CRADLE/"
 Geant4_Path = "/home/lecanuet/WISArD/"
-CRADLE_DATA_Path = "/data333/lecanuet/data/"
-Geant4_DATA_Path = "/data333/lecanuet/Result/Default/"
+CRADLE_DATA_Path = "/data333/lecanuet/data/ENSDF/Width0/"
+Geant4_DATA_Path = "/data333/lecanuet/Result/ENSDF/Width0/"
 
 ########## DATA ##########
+Catcher_type = ""
+
 ## --- Beam --- ##
 Beam = {
     "2024": {},
     "2025": {}
 }
 
-Beam["2024"]["x"] = (-0.1, 0.1)
-Beam["2024"]["y"] = (0.1, 0.1)
+Beam["2024"]["x"] = (0.1, 0.1)
+Beam["2024"]["y"] = (-0.1, 0.1)
 Beam["2024"]["sx"] = (0.7, 0.2)
 Beam["2024"]["sy"] = (0.8, 0.2)
 
-Beam["2025"]["x"] = (-0.05363, 0.100)
-Beam["2025"]["y"] = (0.4103, 0.07466)
-Beam["2025"]["sx"] = (0.336411, 0.0402)
-Beam["2025"]["sy"] = (0.393268, 0.0447)
+Beam["2025"]["x"] = (0.05363, 0.100)
+Beam["2025"]["y"] = (-0.4103, 0.07466) 
+Beam["2025"]["sx"] = (1.05, 0.07)
+Beam["2025"]["sy"] = (0.61, 0.08)
 
 ## --- DEAD LAYER --- ##
 DL = {}
@@ -35,7 +37,7 @@ DL = (100, 50)
 
 ## --- MAGNETIC FIELD --- ##
 B = {}
-B = (4.0, 0.5e-4)
+B = (4.0, 2.e-4)
 
 ## --- CATCHER THICKNESS --- ##
 Catcher_e = {
@@ -47,9 +49,25 @@ Catcher_e["THIN"]["Mylar"] = (525, 15)
 Catcher_e["THICK"]["Al"] = (110, 25)
 Catcher_e["THICK"]["Mylar"] = (6100, 35)
 
-## --- CATCHER Z --- ##
-Catcher_z = {}
-Catcher_z = (0.0, 0.3)
+## --- CATCHER POSITION --- ##
+Catcher_Position = {
+    "2024" : {},
+    "2025" : {}
+}
+
+Catcher_Position["2024"]["x"] = 0.0
+Catcher_Position["2024"]["y"] = 2.14
+Catcher_Position["2024"]["z"] = 0.0
+
+Catcher_Position["2025"]["x"] = 0.0
+Catcher_Position["2025"]["y"] = 2.14
+Catcher_Position["2025"]["z"] = 0.0
+
+## --- CATCHER ANGLE --- ##
+Catcher_Angle = {
+    "2024" : (0., 0.),
+    "2025" : (0., 0.)
+}
 
 ## --- DETECTORS POSITION --- ##
 # Detectors = {
@@ -73,17 +91,39 @@ Detectors = {
     "2024" : {},
     "2025" : {}
 }
-Detectors["2024"]["x"] = 1.05
-Detectors["2024"]["y"] = 2.7
-Detectors["2024"]["z"] = 0.5
+
+#old
+# Detectors["2024"]["x"] = 1.05
+# Detectors["2024"]["y"] = 2.7
+# Detectors["2024"]["z"] = 0.0
+# Detectors["2024"]["Rx"] = 0.0
+# Detectors["2024"]["Ry"] = 0.0
+
+Detectors["2024"]["x"] = -0.30
+Detectors["2024"]["y"] = 1.83
+Detectors["2024"]["z"] = -0.66
 Detectors["2024"]["Rx"] = 0.0
 Detectors["2024"]["Ry"] = 0.0
 
-Detectors["2025"]["x"] = -0.5
-Detectors["2025"]["y"] = 2.7
-Detectors["2025"]["z"] = -0.65
+#old
+# Detectors["2025"]["x"] = -0.5
+# Detectors["2025"]["y"] = 2.7
+# Detectors["2025"]["z"] = 0.0
+# Detectors["2025"]["Rx"] = 0.0
+# Detectors["2025"]["Ry"] = 0.0
+
+Detectors["2025"]["x"] = -0.30
+Detectors["2025"]["y"] = 1.83
+Detectors["2025"]["z"] = -0.66
 Detectors["2025"]["Rx"] = 0.0
 Detectors["2025"]["Ry"] = 0.0
+
+
+## --- Geant4 Cuts --- ##
+ProductionCuts = 1 # mm
+SiliconProductionCuts = 1e-6 # mm
+PlasticStep = 1 # mm
+StepMax = 1 # mm
 
 ## --- CRADLE PARAMETERS --- ##
 CRADLE = {}
@@ -95,6 +135,9 @@ CRADLE["CA"] = 1.27
 CRADLE["CAP"] = 1.27
 CRADLE["CT"] = 0.0
 CRADLE["CTP"] = 0.0
+
+CRADLE["a"] = 1.0
+CRADLE["b"] = 0.0
 
 def GetA(Nucleus):
     return int(''.join(filter(str.isdigit, Nucleus)))
@@ -168,16 +211,26 @@ def VerifyVariable(map, Var_Names):
     if type_ == list:
         length = None
         for key, value in map.items():
+            ##init length
             if length is None and not isinstance(value, dict):
                 length = len(value)
             elif length is None and isinstance(value, dict):
                 for subkey, subvalue in value.items():
                     length = len(subvalue)
                     break
+            ## compare length
             else:
-                if length != len(value):
-                    print("<VerifyVariable> All variable arrays must have the same length")
-                    exit(1)
+                if (not isinstance(value, dict)):
+                    if length != len(value):
+                        print("<VerifyVariable> All variable arrays must have the same length")
+                        print("Variable {} has length {}, expected {}".format(key, len(value), length))
+                        exit(1)
+                else:   
+                    for subkey, subvalue in value.items():
+                        if length != len(subvalue):
+                            print("<VerifyVariable> All variable arrays must have the same length")
+                            print("Variable {}.{} has length {}, expected {}".format(key, subkey, len(subvalue), length))
+                            exit(1)
 
     # check if variable exists
     for key, value in map.items():
@@ -191,12 +244,22 @@ def VerifyVariable(map, Var_Names):
     else:
         return length
 
-def SetParameters(Map_Variable, YEAR, Catcher_type, iter):
+def SetParameters(Map_Variable, YEAR, Catcher_type, abMode, iter):
     Parameters = {}
 
     # -- CRADLE PARAMETERS -- #
     for c in ["CV", "CVP", "CS", "CSP", "CA", "CAP", "CT", "CTP"]:
-        if c in Map_Variable.keys():
+        if c in Map_Variable.keys() and abMode == False:
+            if isinstance(Map_Variable[c], (list, np.ndarray)):
+                Parameters[c] = Map_Variable[c][iter]
+            else:
+                print("Error: CRADLE variable must be array/list of values")
+                exit(1)
+        else:
+            Parameters[c] = CRADLE[c]
+
+    for c in ["a", "b"]:
+        if c in Map_Variable.keys() and abMode == True:
             if isinstance(Map_Variable[c], (list, np.ndarray)):
                 Parameters[c] = Map_Variable[c][iter]
             else:
@@ -255,6 +318,28 @@ def SetParameters(Map_Variable, YEAR, Catcher_type, iter):
     else:
         Parameters["B"] = B[0]
 
+    
+    # -- Geant4 Cuts -- #
+    if "Cuts" in Map_Variable.keys():
+        Parameters["Cuts"] = Map_Variable["Cuts"][iter]
+    else:
+        Parameters["Cuts"] = ProductionCuts
+    
+    if "SiliconCuts" in Map_Variable.keys():
+        Parameters["SiliconCuts"] = Map_Variable["SiliconCuts"][iter]
+    else:
+        Parameters["SiliconCuts"] = SiliconProductionCuts
+    
+    if "StepMax" in Map_Variable.keys():
+        Parameters["StepMax"] = Map_Variable["StepMax"][iter]   
+    else:
+        Parameters["StepMax"] = StepMax
+
+    if "PlasticStep" in Map_Variable.keys():
+        Parameters["PlasticStep"] = Map_Variable["PlasticStep"][iter]
+    else:
+        Parameters["PlasticStep"] = PlasticStep
+
     # -- CATCHER -- #
     if "Catcher_e" in Map_Variable.keys():
         if Map_Variable["Catcher_e"] == True:
@@ -276,14 +361,35 @@ def SetParameters(Map_Variable, YEAR, Catcher_type, iter):
         }
 
     # -- CATCHER Z -- #
-    if "Catcher_z" in Map_Variable.keys():
-        if Map_Variable["Catcher_z"] == True:
-            z_pos = np.random.normal(Catcher_z[0], Catcher_z[1])
-            Parameters["Catcher_z"] = z_pos
-        else:
-            Parameters["Catcher_z"] = Map_Variable["Catcher_z"][iter]
+    # if "Catcher_z" in Map_Variable.keys():
+    #     if Map_Variable["Catcher_z"] == True:
+    #         z_pos = np.random.normal(Catcher_z[YEAR][0], Catcher_z[YEAR][1])
+    #         Parameters["Catcher_z"] = z_pos
+    #     else:
+    #         Parameters["Catcher_z"] = Map_Variable["Catcher_z"][iter]
+    # else:
+    #     Parameters["Catcher_z"] = Catcher_z[YEAR][0]
+
+    # -- CATCHER POSITION -- #
+    Parameters["Catcher_Position"] = {}
+    if "Catcher_Position" in Map_Variable.keys():
+        Parameters["Catcher_Position"] = {}
+        for param in Catcher_Position[YEAR].keys():
+            Parameters["Catcher_Position"][param] = Map_Variable["Catcher_Position"][param][iter]
     else:
-        Parameters["Catcher_z"] = Catcher_z[0]
+        Parameters["Catcher_Position"] = {}
+        for param in Catcher_Position[YEAR].keys():
+            Parameters["Catcher_Position"][param] = Catcher_Position[YEAR][param]
+
+    # -- CATCHER ANGLE -- #
+    if "Catcher_Angle" in Map_Variable.keys():
+        if Map_Variable["Catcher_Angle"] == True:
+            angle = np.random.normal(Catcher_Angle[YEAR][0], Catcher_Angle[YEAR][1])
+            Parameters["Catcher_Angle"] = angle
+        else:
+            Parameters["Catcher_Angle"] = Map_Variable["Catcher_Angle"][iter]
+    else:
+        Parameters["Catcher_Angle"] = Catcher_Angle[YEAR][0]
 
     # -- DETECTORS -- #
     Parameters["Detectors"] = {}
@@ -299,7 +405,7 @@ def SetParameters(Map_Variable, YEAR, Catcher_type, iter):
     return Parameters
 
 
-def Get_Suffixe(ParametersForSim, Map_Variable):
+def Get_Suffixe(ParametersForSim, Map_Variable, iter, mode_sampling=False):
     suffixe = ""
     for key, value in Map_Variable.items():
             if key == "Beam":
@@ -324,28 +430,53 @@ def Get_Suffixe(ParametersForSim, Map_Variable):
                 )
             elif key == "DL":
                 suffixe += "_DL{:.0f}".format(ParametersForSim["DL"])
+            # elif key == "Catcher_z":
+            #     suffixe += "_catcherz{:.2f}".format(ParametersForSim["Catcher_z"])
+            elif key == "Catcher_Position":
+                suffixe += "_catcherx{:.2f}_catchery{:.2f}_catcherz{:.2f}".format(
+                    ParametersForSim["Catcher_Position"]["x"],
+                    ParametersForSim["Catcher_Position"]["y"],
+                    ParametersForSim["Catcher_Position"]["z"]
+                )
+            elif key == "Catcher_Angle":
+                suffixe += "_catcher{:.1f}deg".format(ParametersForSim["Catcher_Angle"])
+            elif key == "B":
+                suffixe += "_B{:.5f}T".format(ParametersForSim["B"])
             else:
                 suffixe += "_{}{:.4f}".format(key, ParametersForSim[key])
     if suffixe == "":
         suffixe = "_Default"
+    if (mode_sampling):
+        suffixe += "_{:.0f}".format(iter)
     return suffixe
 
 
-def Check_CRADLE_File(Nucleus, ParametersForSim, PeakConfig, CreatingNewCRADLEFile, Events, N_simulatenous):
+def Check_CRADLE_File(Nucleus, ParametersForSim, PeakConfig, abMode, CreatingNewCRADLEFile, Events, N_simulatenous):
     
     # create filename from ParametersForSim concerning CRADLE
     filename = "{}_{}".format(Nucleus, PeakConfig)
     filename_add = ""
-    if CRADLE["CS"] != ParametersForSim["CS"] or CRADLE["CSP"] != ParametersForSim["CSP"]:
-        filename += "_CS{:.4f}_CSP{:.4f}".format(ParametersForSim["CS"], ParametersForSim["CSP"])
-    if CRADLE["CV"] != ParametersForSim["CV"] or CRADLE["CVP"] != ParametersForSim["CVP"]:
-        filename += "_CV{:.4f}_CVP{:.4f}".format(ParametersForSim["CV"], ParametersForSim["CVP"])
-    if CRADLE["CA"] != ParametersForSim["CA"] or CRADLE["CAP"] != ParametersForSim["CAP"]:
-        filename += "_CA{:.4f}_CAP{:.4f}".format(ParametersForSim["CA"], ParametersForSim["CAP"])
-    if CRADLE["CT"] != ParametersForSim["CT"] or CRADLE["CTP"] != ParametersForSim["CTP"]:
-        filename += "_CT{:.4f}_CTP{:.4f}".format(ParametersForSim["CT"], ParametersForSim["CTP"])
+    if not abMode:
+        if CRADLE["CS"] != ParametersForSim["CS"] or CRADLE["CSP"] != ParametersForSim["CSP"]:
+            filename_add += "_CS{:.4f}_CSP{:.4f}".format(ParametersForSim["CS"], ParametersForSim["CSP"])
+        if CRADLE["CV"] != ParametersForSim["CV"] or CRADLE["CVP"] != ParametersForSim["CVP"]:
+            filename_add += "_CV{:.4f}_CVP{:.4f}".format(ParametersForSim["CV"], ParametersForSim["CVP"])
+        if CRADLE["CA"] != ParametersForSim["CA"] or CRADLE["CAP"] != ParametersForSim["CAP"]:
+            filename_add += "_CA{:.4f}_CAP{:.4f}".format(ParametersForSim["CA"], ParametersForSim["CAP"])
+        if CRADLE["CT"] != ParametersForSim["CT"] or CRADLE["CTP"] != ParametersForSim["CTP"]:
+            filename_add += "_CT{:.4f}_CTP{:.4f}".format(ParametersForSim["CT"], ParametersForSim["CTP"])
+    else:
+        if CRADLE["a"] != ParametersForSim["a"]:
+            filename_add += "_a{:.4f}".format(ParametersForSim["a"])
+        if CRADLE["b"] != ParametersForSim["b"]:
+            filename_add += "_b{:.4f}".format(ParametersForSim["b"])
 
-    if (filename_add == ""):
+    # if (PeakConfig == "IAS"):
+    #     filename_add = "_a1.0_b0.0"
+    if (filename_add == "" and not (PeakConfig == "IAS")):
+        filename_add = "_CS0_CSP0_CV1_CVP1"
+            
+    if filename_add == "":
         filename_add = "_a1.0_b0.0"
     filename += filename_add + ".root"
 
@@ -357,25 +488,31 @@ def Check_CRADLE_File(Nucleus, ParametersForSim, PeakConfig, CreatingNewCRADLEFi
             print("CRADLE file check: {}".format(filepath))
             return filepath
     except FileNotFoundError:
-        print("CRADLE file not found: {}".format(filepath))
+        print('\033[31m', "CRADLE file not found: {}".format(filepath), "\033[0m")
         if CreatingNewCRADLEFile:
             print("Creating new CRADLE file: {}".format(filepath))
-            flagorfilename = Create_CRADLE_file(Nucleus, ParametersForSim, Events, N_simulatenous, filepath)
-            return flagorfilename
+            flagorfilename = Create_CRADLE_file(Nucleus, ParametersForSim, Events, N_simulatenous, filepath, abMode, PeakConfig)
+            return filepath
         else:
-            print("Creating new CRADLE file is disabled.")
+            print('\033[31m', "Creating new CRADLE file is disabled.", "\033[0m")
             exit(1)
 
 
-def CreateMacro_CRADLE(ParametersForSim):
+def CreateMacro_CRADLE(ParametersForSim, abMode):
     macro_base_filename = CRADLE_Path + "config/config_base.txt"
     ## copy the base macro to a new file
-    macro_filename = CRADLE_Path + "config/macro_CS{:.4f}_CSP{:.4f}_CV{:.4f}_CVP{:.4f}_CA{:.4f}_CAP{:.4f}_CT{:.4f}_CTP{:.4f}.txt".format(
-        ParametersForSim["CS"], ParametersForSim["CSP"],
-        ParametersForSim["CV"], ParametersForSim["CVP"],
-        ParametersForSim["CA"], ParametersForSim["CAP"],
-        ParametersForSim["CT"], ParametersForSim["CTP"]
-    )
+
+    if not abMode:
+        macro_filename = CRADLE_Path + "config/macro_CS{:.4f}_CSP{:.4f}_CV{:.4f}_CVP{:.4f}_CA{:.4f}_CAP{:.4f}_CT{:.4f}_CTP{:.4f}.txt".format(
+            ParametersForSim["CS"], ParametersForSim["CSP"],
+            ParametersForSim["CV"], ParametersForSim["CVP"],
+            ParametersForSim["CA"], ParametersForSim["CAP"],
+            ParametersForSim["CT"], ParametersForSim["CTP"]
+        )
+    else:
+        macro_filename = CRADLE_Path + "config/macro_a{:.4f}_b{:.4f}.txt".format(
+            ParametersForSim["a"], ParametersForSim["b"]
+        )
 
     ## rewrite and replace in the macro
     with open(macro_base_filename, 'r') as base_file:
@@ -398,32 +535,40 @@ def CreateMacro_CRADLE(ParametersForSim):
                         line = "CT={:.4f}\n".format(ParametersForSim["CT"])
                     elif "CTP" in line:
                         line = "CTP={:.4f}\n".format(ParametersForSim["CTP"])
-                    elif "a=" in line :
-                        line = "a=NaN\n"
-                    elif "b=" in line :
-                        line = "b=NaN\n"
+                    
+                    if not abMode:
+                        if "a=" in line :
+                            line = "a=NaN\n"
+                        elif "b=" in line :
+                            line = "b=NaN\n"
+                    else:       
+                        if "a=" in line :
+                            line = "a={:.4f}\n".format(ParametersForSim["a"])
+                        elif "b=" in line :
+                            line = "b={:.4f}\n".format(ParametersForSim["b"])                    
+
                 macro_file.write(line)
 
     return macro_filename   
 
 
-def Create_CRADLE_file(Nucleus, ParametersForSim, events, therad, CRADLE_filename):
+def Create_CRADLE_file(Nucleus, ParametersForSim, events, therad, CRADLE_filename, abMode, PeakConfig):
 
     ## CREATE the macro
-    macro_filename = CreateMacro_CRADLE(ParametersForSim)
+    macro_filename = CreateMacro_CRADLE(ParametersForSim, abMode)
 
     ## RUN CRADLE
     ## cd in CRADLE path
     os.chdir(CRADLE_Path+"build/")
-    command = f"CRADLE++ nucleus --name {Nucleus} -Z {GetZ(Nucleus)} -A {GetA(Nucleus)} -c {macro_filename} -l {events:.0f} -t {therad} -o {CRADLE_filename}"
+    command = f"CRADLE++ nucleus --name {Nucleus} -Z {GetZ(Nucleus)} -A {GetA(Nucleus)} -c {macro_filename} general -l {events:.0f} -t {therad} -o {CRADLE_filename} data --Radiationdata ../../CRADLE_FILES/{PeakConfig}"
     print("Running command: {}".format(command))
-    #os.system(command)
+    os.system(command)
     ## delete macro
     os.remove(macro_filename)
 
     return True
 
-def CreateMacro_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_MAP, CAD_MESH, events, N_simulatenous, Nucleus, PeakConfig):
+def CreateMacro_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_MAP, CAD_MESH, events, N_simulatenous, Nucleus, PeakConfig, Catcher_type):
     macro_base_filename = Geant4_Path + "macro_base_python.mac"
     ## copy the base macro to a new file
     macro_filename = Geant4_Path + f"tempory/macro{suffixe}" + ".mac"
@@ -437,6 +582,14 @@ def CreateMacro_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_M
                         line = f"/Input/CRADLE {CRADLE_filename}\n"
                     elif "/Run/Threads" in line:
                         line = f"/Run/Threads {N_simulatenous}\n"
+                    elif "/Phys/Cuts" in line:
+                        line = "/Phys/Cuts {:.5f} mm\n".format(ParametersForSim["Cuts"])
+                    elif "/Phys/SiliconCuts" in line:
+                        line = "/Phys/SiliconCuts {:.10f} mm\n".format(ParametersForSim["SiliconCuts"])
+                    elif "/Phys/PlasticStep" in line:
+                        line = "/Phys/PlasticStep {:.4f} mm\n".format(ParametersForSim["PlasticStep"])
+                    elif "/Phys/StepMax" in line:
+                        line = "/Phys/StepMax {:.4f} mm\n".format(ParametersForSim["StepMax"])
                     elif "/Beam/X" in line:
                         line = "/Beam/X {:.4f} mm\n".format(ParametersForSim["Beam"]["x"])
                     elif "/Beam/Y" in line:
@@ -450,6 +603,11 @@ def CreateMacro_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_M
                             line = f"/Geometry/Collimator true\n"
                         elif YEAR == "2025":
                             line = f"/Geometry/Collimator false\n"
+                    elif "/Beam/Radius" in line:
+                        if YEAR == "2024":
+                            line = f"/Beam/Radius 5.0 mm\n"
+                        elif YEAR == "2025":
+                            line = f"/Beam/Radius 1000 mm\n"
                     elif "/Geometry/Magnetic_Field_Value" in line:
                         line = "/Geometry/Magnetic_Field_Value {:.4f} tesla\n".format(ParametersForSim["B"])
                     elif "/Geometry/Magnetic_Field_Mapping" in line:
@@ -472,8 +630,14 @@ def CreateMacro_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_M
                                 ParametersForSim["Detectors"]["Rx"],
                                 ParametersForSim["Detectors"]["Ry"]
                             )
+                    elif "/Geometry/Catcher_Position_x" in line:
+                        line = "/Geometry/Catcher_Position_x {:.2f} mm\n".format(ParametersForSim["Catcher_Position"]["x"])
+                    elif "/Geometry/Catcher_Position_y" in line:
+                        line = "/Geometry/Catcher_Position_y {:.2f} mm\n".format(ParametersForSim["Catcher_Position"]["y"])
                     elif "/Geometry/Catcher_Position_z" in line:
-                        line = "/Geometry/Catcher_Position_z {:.2f} mm\n".format(ParametersForSim["Catcher_z"])
+                        line = "/Geometry/Catcher_Position_z {:.2f} mm\n".format(ParametersForSim["Catcher_Position"]["z"])
+                    elif "/Geometry/Catcher_Angle" in line:
+                        line = "/Geometry/Catcher_Angle {:.2f} deg\n".format(ParametersForSim["Catcher_Angle"])
                     elif "/Geometry/Catcher_Thickness_Al1" in line:
                         line = "/Geometry/Catcher_Thickness_Al1 {} nm\n".format(ParametersForSim["Catcher_e"]["Al"])
                     elif "/Geometry/Catcher_Thickness_Mylar" in line:
@@ -481,8 +645,17 @@ def CreateMacro_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_M
                     elif "/Geometry/Catcher_Thickness_Al2" in line:
                         line = "/Geometry/Catcher_Thickness_Al2 {} nm\n".format(ParametersForSim["Catcher_e"]["Al"])
                     elif "/Run/File" in line:
-                        output_filename = f"{Geant4_DATA_Path}{Nucleus}_{PeakConfig}_{YEAR}{suffixe}.root"
-                        line = f"/Run/File {Geant4_DATA_Path}{Nucleus}_{PeakConfig}_{YEAR}{suffixe}.root\n"                
+                        if (Catcher_type == "THIN"):
+                            if (CAD_MESH):
+                                output_filename = f"{Geant4_DATA_Path}{Nucleus}_{PeakConfig}_{YEAR}_CAD{suffixe}.root"
+                            else:
+                                output_filename = f"{Geant4_DATA_Path}{Nucleus}_{PeakConfig}_{YEAR}{suffixe}.root"
+                        else:
+                            if (CAD_MESH):
+                                output_filename = f"{Geant4_DATA_Path}{Nucleus}_{PeakConfig}_{YEAR}_CAD_{Catcher_type}{suffixe}.root"
+                            else:
+                                output_filename = f"{Geant4_DATA_Path}{Nucleus}_{PeakConfig}_{YEAR}_{Catcher_type}{suffixe}.root"
+                        line = f"/Run/File {output_filename}\n"                
                     elif "/run/beamOn" in line:
                         line = f"/run/beamOn {events:.0f}"
                     
@@ -490,19 +663,19 @@ def CreateMacro_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_M
 
     return macro_filename, output_filename
 
-def Running_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_MAP, CAD_MESH, Events, N_simulatenous, Nucleus, PeakConfig):
+def Running_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_MAP, CAD_MESH, Events, N_simulatenous, Nucleus, PeakConfig, Catcher_type):
     ## CREATE MACRO
-    macro_filename, output_filename = CreateMacro_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_MAP, CAD_MESH, Events, N_simulatenous, Nucleus, PeakConfig)
+    macro_filename, output_filename = CreateMacro_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_MAP, CAD_MESH, Events, N_simulatenous, Nucleus, PeakConfig, Catcher_type)
     
     #check if output file already exists
     try:
         with open(output_filename, 'r') as f:
             print("Output file already exists, skipping Geant4 simulation: {}".format(output_filename))
             #remove macro file
-            os.remove(macro_filename)
-            return
+            # os.remove(macro_filename)
+            return output_filename
     except FileNotFoundError:
-        None
+        print("Creating Geant4 output: {}".format(output_filename))
 
     ## RUN GEANT4
     ## cd in Geant4 path
@@ -512,14 +685,16 @@ def Running_Geant4(suffixe, ParametersForSim, CRADLE_filename, YEAR, FIELD_MAP, 
     os.system(command)
 
     ## REMOVE MACRO
-    os.remove(macro_filename)
+    # os.remove(macro_filename)
+
+    return output_filename
 
 def Parse(Variable, map_var):
     for key, value in map_var.items():
         prefix = ""
         suffix = "\033[0m"
         if key in Variable.keys():
-            prefix = '\033[1m'
+            prefix = '\033[31m'
         if key == "Beam":
             print(prefix, "Beam: x={:.4f} y={:.4f} sx={:.4f} sy={:.4f}".format(value["x"], value["y"], value["sx"], value["sy"]), suffix)
         elif key == "DL":
@@ -528,8 +703,10 @@ def Parse(Variable, map_var):
             print(prefix, "Magnetic Field: {:.4f} T".format(value), suffix)
         elif key == "Catcher_e":
             print(prefix, "Catcher Thickness: Al={:.2f} nm Mylar={:.2f} nm".format(value["Al"], value["Mylar"]), suffix)
-        elif key == "Catcher_z":
-            print(prefix, "Catcher Z Position: {:.2f} mm".format(value), suffix)
+        elif key == "Catcher_Position":
+            print(prefix, "Catcher Position: x={:.2f} mm y={:.2f} mm z={:.2f} mm".format(value["x"], value["y"], value["z"]), suffix)
+        elif key == "Catcher_Angle":
+            print(prefix, "Catcher Angle: {:.2f} deg".format(value), suffix)
         elif key == "Detectors":
             print(prefix, "Detectors : x={:.2f} y={:.2f} z={:.2f} Rx={:.2f} Ry={:.2f}".format(value["x"], value["y"], value["z"], value["Rx"], value["Ry"]), suffix)
         else:

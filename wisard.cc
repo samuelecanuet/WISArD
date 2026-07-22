@@ -109,9 +109,10 @@ int main(int argc, char **argv)
   Wisard_ActionInitialization *ptr_act = new Wisard_ActionInitialization(macroName);
   ptr_run->SetUserInitialization(ptr_act);
 
-  ptr_run->Initialize();
+  // ptr_run->Initialize();
 
-  ptr_phys->AddStepMax(0.1*mm, 0x2);
+  // ptr_phys->AddStepMax(0.1*mm, 0x2);
+  // ptr_phys->AddStepMax(0.1*m, 0x2);
 
   //------------------------------------------------------------
 
@@ -142,7 +143,7 @@ int main(int argc, char **argv)
     G4cout << "\033[34m" << "Number of Threads used : " << THREAD << "\033[0m" << G4endl;
     G4cout << "\033[34m" << "Reading macro file: " << fileName << "\033[0m" << G4endl;
     G4cout << G4endl;
-    UI->ApplyCommand("/control/alias currentMacro " + fileName);
+    // UI->ApplyCommand("/control/alias currentMacro " + fileName);
     UI->ApplyCommand(command + fileName);
   }
   else

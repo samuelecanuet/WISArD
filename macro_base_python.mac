@@ -1,6 +1,10 @@
 #---------------------------------------------------------------
 #   Verbosity
 #---------------------------------------------------------------
+/Phys/Cuts % m
+#/Phys/SiliconCuts % m
+/Phys/PlasticStep % m
+/Phys/StepMax % m
 /run/initialize
 /run/verbose      0
 /event/verbose    0
@@ -11,9 +15,7 @@
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /Input/SRIM SRIM_data/AlMylar_32Ar.root
-#/Input/SRIM SRIM_data/AlMylar_20Mg.root
 /Input/CRADLE %inputCRADLE
-#/Input/CRADLE CRADLE_data/SAMPLE.root
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -21,9 +23,11 @@
 /Run/Threshold_PlasticScintillator 100 keV
 /Run/Threads %threads
 
+
+
 /Beam/X % mm
 /Beam/Y % mm
-/Beam/Radius 1000 mm
+/Beam/Radius % mm
 /Beam/Sigma_X % mm
 /Beam/Sigma_Y % mm
 
@@ -33,9 +37,11 @@
 /Geometry/CAD_MESH %
 /Geometry/SiDeadLayer_Thickness % nm
 /Geometry/Detectors %
+/Geometry/Catcher_Position_x % mm
+/Geometry/Catcher_Position_y % mm
 /Geometry/Catcher_Position_z % mm
-/Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
-/Geometry/Catcher_Angle 0 deg
+/Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Angle % deg
 /Geometry/Catcher_Thickness_Al1 % nm
 /Geometry/Catcher_Thickness_Mylar % nm
 /Geometry/Catcher_Thickness_Al2 % nm

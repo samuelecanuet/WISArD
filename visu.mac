@@ -15,14 +15,28 @@
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /Input/SRIM SRIM_data/AlMylar_32Ar.root
-#/Input/CRADLE CRADLE_data/SAMPLE.root
+/Input/CRADLE /data333/lecanuet/data/Systematics/32Ar_IAS_a1.0_b0.0.root
 
-/process/inactivate ionIoni
-/Input/Ion 32Ar
+#/process/inactivate ionIoni
+#/Input/Ion 32Ar
 #/Input/Particle geantino
 #/Input/Energy 3352 keV
 #/Input/Direction 0 0 1
-#/Input/Position 0.0 0.0 0
+#/Input/Position 0.0 4.9 -200
+
+#/Input/Energy 5 MeV
+#/Input/Particle proton
+#/Input/Direction iso
+
+
+#/Input/Ion 32Ar
+#/process/had/rdm/setRadioactiveDecayFile 18 32 ./DECAY_data/z18.a32
+#/process/had/rdm/setRadioactiveDecayFile 17 32 ./DECAY_data/z17.a32
+#/process/had/rdm/setPhotoEvaporationFile 17 32 ./DECAY_data/z17.a32_gamma
+
+#/Input/Ion 18N
+#/process/had/rdm/setRadioactiveDecayFile 7 18 ./DECAY_data/z7.a18
+#/process/had/rdm/setRadioactiveDecayFile 8 18 ./DECAY_data/z8.a18
 
 ### MEASURING SPACE BETWEEN DETECTORS IN PYRS ### (base)
 #/Input/Direction 1 0 0
@@ -44,19 +58,24 @@
 /Run/Threshold_PlasticScintillator 100 keV
 /Run/Threads 1
 
+/Phys/Cuts 1 m
+/Phys/SiliconCuts 1 m
+/Phys/StepMax 1 m
+
 /Beam/X 0. mm
 /Beam/Y 0. mm
 /Beam/Radius 1000 mm
-#/Beam/Sigma_X 0.5 mm
-#/Beam/Sigma_Y 0.5 mm
-
+/Beam/Sigma_X 0.01 mm
+/Beam/Sigma_Y 0.01 mm
 
 /Geometry/Collimator false
 /Geometry/Magnetic_Field_Value 4 tesla
 /Geometry/Magnetic_Field_Mapping false
-/Geometry/CAD_MESH true
+/Geometry/CAD_MESH false
 /Geometry/SiDeadLayer_Thickness 100 nm
-/Geometry/Detectors 0 2 0 0 0
+/Geometry/Detectors 0 0 0 0 0
+/Geometry/Catcher_Position_x 0 mm
+/Geometry/Catcher_Position_y 5 mm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
@@ -68,6 +87,7 @@
 /Geometry/MCP_Position 0 0 -90
 
 /run/reinitializeGeometry
+/run/initialize 
 
 #---------------------------------------------------------------
 #   Generate Events
@@ -174,6 +194,6 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 1
+/run/beamOn 10
 #
 #

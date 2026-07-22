@@ -1,0 +1,62 @@
+#---------------------------------------------------------------
+#   Verbosity
+#---------------------------------------------------------------
+/run/initialize
+/run/verbose      0
+/event/verbose    0
+/tracking/verbose 0
+
+#---------------------------------------------------------------
+#   Input Files
+#---------------------------------------------------------------
+#/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
+/Input/SRIM SRIM_data/AlMylar_32Ar.root
+
+#/Input/Ion 32Ar
+#/process/had/rdm/setRadioactiveDecayFile 18 32 ./DECAY_data/z18.a32
+#/process/had/rdm/setRadioactiveDecayFile 17 32 ./DECAY_data/z17.a32
+
+/Input/Ion 18N
+/process/had/rdm/setRadioactiveDecayFile 7 18 ./DECAY_data/z7.a18
+/process/had/rdm/setRadioactiveDecayFile 8 18 ./DECAY_data/z8.a18
+/process/had/rdm/setRadioactiveDecayFile 6 14 ./DECAY_data/z6.a14
+
+#---------------------------------------------------------------
+#   Simulation Parameters
+#---------------------------------------------------------------
+/Run/Threshold_PlasticScintillator 100 keV
+/Run/Threads 60
+
+/Beam/X -0.05363 mm
+/Beam/Y 0.4103 mm
+/Beam/Radius 100 mm
+/Beam/Sigma_X 0.336411 mm
+/Beam/Sigma_Y 0.393268 mm
+
+/Geometry/Collimator false
+/Geometry/Magnetic_Field_Value 4 tesla
+/Geometry/Magnetic_Field_Mapping false
+/Geometry/CAD_MESH false
+/Geometry/SiDeadLayer_Thickness 100 nm
+/Geometry/Detectors 0 0 0 0 0
+/Geometry/Catcher_Position_x 0 mm
+/Geometry/Catcher_Position_y 0 mm
+/Geometry/Catcher_Position_z 0 mm
+/Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Angle 0 deg
+/Geometry/Catcher_Thickness_Al1 85 nm
+/Geometry/Catcher_Thickness_Mylar 525 nm
+/Geometry/Catcher_Thickness_Al2 85 nm
+
+/Geometry/MCP false
+/Geometry/MCP_Position 0 0 0
+
+/run/reinitializeGeometry
+
+#---------------------------------------------------------------
+#   Generate Events
+#---------------------------------------------------------------
+/run/printProgress 100000
+/Run/File /data333/lecanuet/Result/Default/Ion/18N_ION_2025_Default_0T.root
+/run/beamOn 10000000
+

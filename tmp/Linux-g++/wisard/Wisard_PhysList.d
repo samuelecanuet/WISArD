@@ -624,6 +624,15 @@
  /usr/local/geant4.11.1.2/include/Geant4/G4AtomicShell.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4AtomicShellEnumerator.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4EmParameters.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4GenericMessenger.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4UImessenger.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4UIdirectory.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4UIcommand.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4UIparameter.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4UItokenNum.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4ApplicationState.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4AnyType.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4AnyMethod.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4RadioactiveDecay.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4ParticleChangeForRadDecay.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4NucleusLimits.hh \
@@ -652,4 +661,10 @@
  /usr/local/geant4.11.1.2/include/Geant4/G4ParticleChangeForTransport.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4ParticleChangeForTransport.icc \
  /usr/local/geant4.11.1.2/include/Geant4/G4Transportation.icc \
- /usr/local/geant4.11.1.2/include/Geant4/G4TransportationLogger.hh
+ /usr/local/geant4.11.1.2/include/Geant4/G4TransportationLogger.hh \
+ include/MyG4RadioactiveDecay.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4VRestDiscreteProcess.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4ParticleChangeForRadDecay.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4NucleusLimits.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4Threading.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4RadioactiveDecayMode.hh

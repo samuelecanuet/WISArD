@@ -1,10 +1,14 @@
 #---------------------------------------------------------------
 #   Verbosity
 #---------------------------------------------------------------
-#/run/initialize
+/Phys/Cuts 1 mm
+/Phys/SiliconCuts 1e-6 mm
+/Phys/PlasticStep 1 mm
+/Phys/StepMax 1 mm
+/run/initialize
 /run/verbose      0
-/event/verbose    0
-/tracking/verbose 0
+/event/verbose    1
+/tracking/verbose 1
 
 #---------------------------------------------------------------
 #   Input Files
@@ -23,7 +27,7 @@
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
-/Run/Threads 20
+/Run/Threads 1
 
 ## 2024 ##
 #/Beam/X -0.1 mm
@@ -36,7 +40,7 @@
 /Beam/X -0.05 mm
 /Beam/Y 0.41 mm
 /Beam/Radius 1000 mm
-/Beam/Sigma_X 0.34 mm
+/Beam/Sigma_X 1.05 mm
 /Beam/Sigma_Y 0.39 mm
 
 /Geometry/Collimator false
@@ -44,9 +48,11 @@
 /Geometry/Magnetic_Field_Mapping false
 /Geometry/CAD_MESH false
 /Geometry/SiDeadLayer_Thickness 100 nm
-/Geometry/Detectors 0 0 0 0 0
+/Geometry/Detectors -0.33 1.82 -0.66 0 0
+/Geometry/Catcher_Position_x 0 mm
+/Geometry/Catcher_Position_y 2.14 mm
 /Geometry/Catcher_Position_z 0 mm
-/Geometry/Catcher_Position catcher2     #position:[source / catcher2 / catcher1]
+/Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
 /Geometry/Catcher_Thickness_Al1 85 nm
 /Geometry/Catcher_Thickness_Mylar 525 nm
@@ -66,4 +72,4 @@
 #---------------------------------------------------------------
 /run/printProgress 10000
 /Run/File test0T.root
-/run/beamOn 500001
+/run/beamOn 100

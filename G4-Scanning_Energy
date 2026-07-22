@@ -53,6 +53,9 @@ while [[ $# -gt 0 ]]; do
     particle=*)
       particle="${1#*=}"
       ;;
+    B=*)
+      B="${1#*=}"
+      ;;
     --help)
       usage
       ;;
@@ -64,22 +67,31 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-suffixe="${particle}_${energy}MeV"
+suffixe="${particle}_${energy}MeV_${B}T"
 
 ###default value
 DEFAULT_N=3
 DEFAULT_events=10000000
 DEFAULT_particle=proton
 DEFAULT_energy=3.0
+DEFAULT_B=4.0
 
 events=${events:-$DEFAULT_events}
 
 particle=${particle:-DEFAULT_particle}
 energy=${energy:-DEFAULT_energy}
+B=${B:-DEFAULT_B}
+
+## file file exist dont do it 
+if [ -f "${rootGeant4file}${suffixe}.root" ]; then
+    echo -e "$YELLOW File ${rootGeant4file}${suffixe}.root already exists. Skipping simulation. $COLOR"
+    exit 0
+fi
 
 cp macro_energy_base.mac tempory/macro_${suffixe}_bis.mac  
-sed -e "s|%Particle|${particle}|g; s|%Energy|${energy}|g; s|%threads|${N}|g; s|%output|${rootGeant4file}${suffixe}.root|g; s/%events/${events}/g;  " tempory/macro_${suffixe}_bis.mac > tempory/macro_${suffixe}.mac
-rm tempory/macro_${suffixe}_bis.mac
+
+sed -e "s|%Particle|${particle}|g; s|%Energy|${energy}|g; s|%threads|${N}|g; s|%output|${rootGeant4file}${suffixe}.root|g; s/%events/${events}/g; s/%B/${B}/g;  " tempory/macro_${suffixe}_bis.mac > tempory/macro_${suffixe}.mac
+#rm tempory/macro_${suffixe}_bis.mac
 wisard tempory/macro_${suffixe}.mac 
 echo -e "$GREEN wisard tempory/macro_${suffixe}.mac $COLOR"
 

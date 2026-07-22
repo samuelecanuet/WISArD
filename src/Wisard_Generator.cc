@@ -58,7 +58,7 @@ Wisard_Generator::Wisard_Generator(G4String macro_filename)
   InputMessenger->DeclareProperty("SRIM", SRIMFileName)
       .SetGuidance("Set SRIM input file.")
       .SetParameterName("SRIM", false)
-      .SetDefaultValue("SRIM_data/AlMylar_2021_32Ar.root");
+      .SetDefaultValue("SRIM_data/AlMylar_32Ar.root");
 
   InputMessenger->DeclareProperty("Ion", nucleus_string)
       .SetGuidance("Set Ion.")

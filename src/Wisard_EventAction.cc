@@ -29,6 +29,8 @@ void Wisard_EventAction::EndOfEventAction(const G4Event* event) {
     
     RunAction->UpdateTree(PartInfo, event->GetEventID());
 
+    // PartInfo->Parse();
+
     PartInfo->Clear();
 
     // AVOID LOOPING EVENT

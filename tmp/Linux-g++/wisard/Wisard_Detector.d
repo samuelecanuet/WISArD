@@ -743,4 +743,5 @@
  /usr/local/geant4.11.1.2/include/Geant4/G4TessellatedSolid.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4Tet.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4UIcommand.hh \
- /usr/local/geant4.11.1.2/include/Geant4/Randomize.hh
+ /usr/local/geant4.11.1.2/include/Geant4/Randomize.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4RegionStore.hh

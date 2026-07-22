@@ -57,6 +57,6 @@ void Wisard_Tracking::PostUserTrackingAction(const G4Track *track)
         {
             G4Track *tr = (*childrens)[index];
             tr->SetParentID(track->GetParentID());
-        }
+        }   
     }
 }
