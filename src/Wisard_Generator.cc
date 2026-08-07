@@ -256,7 +256,7 @@ void Wisard_Generator::ION_GENERATOR(G4Event *event)
   // dir = G4ThreeVector( ss + G4UniformRand() * 2*s - s, ss + G4UniformRand() * 2*s - s, 1); // Default direction along z-axis
   // beam = G4ThreeVector(G4UniformRand() * 2*t - t, G4UniformRand() * 2*t - t, 0); // Add offsets
   auto dirr = GetDirection(dir);
-  // auto dirr = G4ThreeVector(d.x(), 0.5, abs(d.z())); // Ensure z-component is positive
+  // dirr = G4ThreeVector(dirr.x(), dirr.y(), abs(dirr.z())); // Ensure z-component is positive
   
   gun.SetParticlePosition(pos + beam + catcher_implementation);
   gun.SetParticleDefinition(Gun_Particle);

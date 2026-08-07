@@ -645,8 +645,9 @@
  /usr/local/geant4.11.1.2/include/Geant4/G4EmFluoDirectory.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
- include/Wisard_Killer.hh include/Wisard_MCP.hh \
- include/Wisard_RunAction.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4ProcessType.hh \
+ include/Wisard_Killer.hh include/Wisard_Killer_Vacuum.hh \
+ include/Wisard_MCP.hh include/Wisard_RunAction.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4UserRunAction.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4Run.hh \
  /usr/local/root/6.26.04/include/TFile.h \

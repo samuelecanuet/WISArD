@@ -7,6 +7,7 @@
 
 #include "Wisard_Sensor.hh"
 #include "Wisard_Killer.hh"
+#include "Wisard_Killer_Vacuum.hh"
 #include "Wisard_MCP.hh"
 
 #include "CADMesh.hh"
@@ -322,10 +323,12 @@ void Wisard_Detector::ConstructSDandField()
   pFieldMgr->SetMaximumEpsilonStep(1e-5);
   pFieldMgr->SetDetectorField(WisardMagField);
   
-
+  // SENSITIVE DETECTORS //
+  // - Plastic Scintillator
   auto wisard_sensor_PlasticScintillator = new Wisard_Sensor(99, "PlasticScintillator");
   SetSensitiveDetector(fLogic_PlasticScintillator, wisard_sensor_PlasticScintillator);
 
+  // - Silicon Detectors
   G4double Rx = 0.;
   G4double Ry = 0.;
   G4ThreeVector correction_macro = ConvertStringToG4ThreeVectorAngles(Detectors_position_correction, Rx, Ry);
@@ -358,18 +361,33 @@ void Wisard_Detector::ConstructSDandField()
 
   // DisplayPoints("POSITION_data/Silicon_G4Position.cfg");
 
+
+  // - Catcher
   // auto wisard_sensor_CatcherMylar_central = new Wisard_Sensor(1, "CatcherMylar_central");
   // SetSensitiveDetector(fLogic_MylarSource_central, wisard_sensor_CatcherMylar_central);
   // auto wisard_sensor_CatcherAl1_central = new Wisard_Sensor(2, "CatcherAl1_central");
   // SetSensitiveDetector(fLogic_AlSource1_central, wisard_sensor_CatcherAl1_central);
   // auto wisard_sensor_CatcherAl2_central = new Wisard_Sensor(3, "CatcherAl2_central");
   // SetSensitiveDetector(fLogic_AlSource2_central, wisard_sensor_CatcherAl2_central);
-  // auto wisard_sensor_CatcherMylar_side = new Wisard_Sensor(4, "CatcherMylar_side");
-  // SetSensitiveDetector(fLogic_MylarSource_side, wisard_sensor_CatcherMylar_side);
-  // auto wisard_sensor_CatcherAl1_side = new Wisard_Sensor(5, "CatcherAl1_side");
-  // SetSensitiveDetector(fLogic_AlSource1_side, wisard_sensor_CatcherAl1_side);
-  // auto wisard_sensor_CatcherAl2_side = new Wisard_Sensor(6, "CatcherAl2_side");
-  // SetSensitiveDetector(fLogic_AlSource2_side, wisard_sensor_CatcherAl2_side);
+  auto wisard_sensor_CatcherMylar_side = new Wisard_Sensor(4, "CatcherMylar_side");
+  SetSensitiveDetector(fLogic_MylarSource_side, wisard_sensor_CatcherMylar_side);
+  auto wisard_sensor_CatcherAl1_side = new Wisard_Sensor(5, "CatcherAl1_side");
+  SetSensitiveDetector(fLogic_AlSource1_side, wisard_sensor_CatcherAl1_side);
+  auto wisard_sensor_CatcherAl2_side = new Wisard_Sensor(6, "CatcherAl2_side");
+  SetSensitiveDetector(fLogic_AlSource2_side, wisard_sensor_CatcherAl2_side);
+
+  // - Catcher Support (only used for backscattering scoring) // Peek ring, support al
+  auto wisard_sensor_CatcherSupport = new Wisard_Sensor(7, "CatcherSupport");
+  SetSensitiveDetector(logic_SuppCatcher_Plate, wisard_sensor_CatcherSupport);  
+  auto wisard_sensor_CatcherSupport_PEEK = new Wisard_Sensor(8, "CatcherSupport_PEEK");
+  SetSensitiveDetector(logic_sidePEEK_Ring, wisard_sensor_CatcherSupport_PEEK);  
+
+  // - Collimator
+  if (Collimator_flag)
+  {
+    auto wisard_sensor_CollimatorEntrance = new Wisard_Sensor(100, "CollimatorEntrance");
+    SetSensitiveDetector(fLogic_CollimatorEntrance, wisard_sensor_CollimatorEntrance);
+  }
 
   if (!Magnetic_Field_Mapping_flag)
   {
@@ -382,6 +400,10 @@ void Wisard_Detector::ConstructSDandField()
     auto wisard_sensor_MCP = new Wisard_MCP();
     SetSensitiveDetector(fLogic_MCP, wisard_sensor_MCP);
   }
+
+  // Vacuum Killer
+  auto wisard_killer_vacuum = new Wisard_Killer_Vacuum();
+  SetSensitiveDetector(fLogicWorld_Detector, wisard_killer_vacuum);
 
 }
 //----------------------------------------------------------------------
@@ -739,7 +761,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4VSolid *SuppCatcher_Plate_centralsideCatcher_inner = new G4SubtractionSolid("SuppCatcher_Plate-sideCatcher", SuppCatcher_Plate_centralCatcher, SuppCatcher_Catcher_inner, 0, Side_Hole_Position);
   G4VSolid *SuppCatcher_Plate_centralsideCatcher = new G4SubtractionSolid("SuppCatcher_Plate-sideCatcher", SuppCatcher_Plate_centralsideCatcher_inner, SuppCatcher_Catcher_outer, 0, Side_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness / 2));
 
-  G4LogicalVolume *logic_sidePEEK_Ring = new G4LogicalVolume(PEEK_Ring, PEEK, "logic_Supp_catcher");
+  logic_sidePEEK_Ring = new G4LogicalVolume(PEEK_Ring, PEEK, "logic_Supp_catcher");
   phys_sidePEEK_ring = new G4PVPlacement(0, // no rotation
                                          Support_Position + Side_Hole_Position + G4ThreeVector(0, 0, SuppCatcher_thikness / 2 - PEEK_thikness / 2),
                                          logic_sidePEEK_Ring,  // its fLogical volume
@@ -760,7 +782,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4UnionSolid *SuppCatcher_Plate_Tige = new G4UnionSolid("SuppCatcher_Plate_Tige", SuppCatcher_Plate_centralsidesourceCatcher, SuppCatcher_Tige, 0, Tige_Position);
 
   // Plate
-  G4LogicalVolume *logic_SuppCatcher_Plate = new G4LogicalVolume(SuppCatcher_Plate_Tige, Material_Al, "logic_Supp_catcher");
+  logic_SuppCatcher_Plate = new G4LogicalVolume(SuppCatcher_Plate_Tige, Material_Al, "logic_Supp_catcher");
   phys_Supp_catcher = new G4PVPlacement(0, // no rotation
                                         Support_Position,
                                         logic_SuppCatcher_Plate,  // its fLogical volume
@@ -1302,13 +1324,13 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
     {
       G4double Collimator_thickness = 2*mm;
       G4Tubs *fSolid_CollimatorEntrance = new G4Tubs("CollimatorEntranceSolid", 2.5*mm, 2*fRadius_PlasticScintillator, Collimator_thickness/2, 0., 360 * deg);
-      G4LogicalVolume *fLogic_CollimatorEntrance = new G4LogicalVolume(fSolid_CollimatorEntrance, Material_Al, "CollimatorEntrance");                                                                                         // solid, material, name
+      fLogic_CollimatorEntrance = new G4LogicalVolume(fSolid_CollimatorEntrance, Material_Al, "CollimatorEntrance");                                                                                         // solid, material, name
       G4PVPlacement *fPhys_CollimatorEntrance = new G4PVPlacement(0,                                                                                                                                                                              // rotationMatrix
                                                                   G4ThreeVector(0., 0., delta_entrance-Tube_length/2-Plate_tickness/2-Collimator_thickness),
                                                                   fLogic_CollimatorEntrance, "CollimatorEntrance",                                                                                                                              // its fLogical volume
                                                                   fLogicWorld,                                                                                                                                                                    // its mother volume
                                                                   false,                                                                                                                                                                          // no boolean op.
-                                                                  -1);   
+                                                                  100);   
 
       if (fPhys_CollimatorEntrance == NULL)
       {

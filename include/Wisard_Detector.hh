@@ -247,6 +247,9 @@ public:
   G4LogicalVolume *fLogic_MylarSource_side;
   G4LogicalVolume *fLogic_AlSource2_side;
   G4LogicalVolume *fLogic_MCP;
+  G4LogicalVolume *fLogic_CollimatorEntrance;
+  
+  // G4LogicalVolume *logic_sidePEEK_Ring;
 
   G4Material *Material_Vacuum;
   G4Material *Material_Si;
@@ -295,6 +298,10 @@ public:
       61, 62, 63, 64, 65,
       71, 72, 73, 74, 75,
       81, 82, 83, 84, 85};
+
+private:
+      G4LogicalVolume *logic_SuppCatcher_Plate = nullptr;
+      G4LogicalVolume* logic_sidePEEK_Ring;
 
 };
 

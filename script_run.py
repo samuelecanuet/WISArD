@@ -9,25 +9,25 @@ import multiprocessing as mp
 #how many
 
 ########## PARAMETERS ##########
-Events = 1e7
+Events = 1e8
 ## Geant4
 YEAR = "2025"
 FIELD_MAP = False
 CAD_MESH = False 
 Catcher_type = "THIN"
 ## CRADLE
-PeakConfig = "IASGT" # "ENSDF" / ENSDFP / IAS
+PeakConfig = "IAS" # "ENSDF" / ENSDFP / IAS
 Nucleus = "32Ar"
 CreatingNewCRADLEFile = True
-abMode = False
+abMode = True
 ## Names of variables
 Var_Names = ["Beam", "DL", "B", "Catcher_e", "Catcher_Position", "Catcher_Angle", "Detectors", "CV", "CS", "CA", "CT", "a", "b", "Cuts", "SiliconCuts", "StepMax", "PlasticStep"]
 ## MODE SAMPLING / ARRAY
 SAMPLING=False
 
 ########## RUNNING ##########
-THREAD = 60
-N_simulatenous = 1
+THREAD = 88
+N_simulatenous = 4
 
 if THREAD % N_simulatenous != 0:
     print("N must be multiple of thread")
@@ -54,8 +54,6 @@ Variable = {}
     # example 4:
 # Variable = {
 #     "Detectors" : True
-
-
 
 ########################################
 # Variable["Detectors"] = {}
@@ -275,12 +273,18 @@ Variable = {}
 # Variable["Catcher_Position"]["x"] = []
 # Variable["Catcher_Position"]["y"] = []
 # Variable["Catcher_Position"]["z"] = []
-# y = [-0.5, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.5, 1]
+# y = [-0.25, -0.15, -0.05, 0.0, 0.05, 0.15, 0.25]
 # y = sorted(y, key=lambda x: abs(x), reverse=True)
 # for yi in y:    
 #     Variable["Catcher_Position"]["x"].append(Catcher_Position[YEAR]["x"])
 #     Variable["Catcher_Position"]["y"].append(Catcher_Position[YEAR]["y"] + yi)
 #     Variable["Catcher_Position"]["z"].append(Catcher_Position[YEAR]["z"])
+
+# Variable["a"] = [0.9, 0.925, 0.95, 0.975, 0.98, 0.985, 0.99, 0.995, 1.0, 1.005, 1.01, 1.015, 1.02, 1.025, 1.05, 1.075, 1.1]
+# Variable["b"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+Variable["a"] = [0.91, 0.92, 0.93, 0.94, 0.96, 0.965, 0.97, 0.985, 0.9925, 0.9975, 1.0025, 1.0075, 1.03, 1.035, 1.04, 1.06, 1.07, 1.08, 1.09]
+Variable["b"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 CheckDirectory(Geant4_DATA_Path, True)
 CheckDirectory(CRADLE_DATA_Path, True)

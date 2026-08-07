@@ -15,7 +15,7 @@
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /Input/SRIM SRIM_data/AlMylar_32Ar.root
-/Input/CRADLE /data333/lecanuet/data/Systematics/32Ar_IAS_a1.0_b0.0.root
+#/Input/CRADLE /data333/lecanuet/data/Systematics/32Ar_IAS_a1.0_b0.0.root
 
 #/process/inactivate ionIoni
 #/Input/Ion 32Ar
@@ -24,9 +24,9 @@
 #/Input/Direction 0 0 1
 #/Input/Position 0.0 4.9 -200
 
-#/Input/Energy 5 MeV
-#/Input/Particle proton
-#/Input/Direction iso
+/Input/Energy 5 MeV
+/Input/Particle e-
+/Input/Direction iso
 
 
 #/Input/Ion 32Ar
@@ -75,10 +75,10 @@
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Detectors 0 0 0 0 0
 /Geometry/Catcher_Position_x 0 mm
-/Geometry/Catcher_Position_y 5 mm
+/Geometry/Catcher_Position_y 0 mm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
-/Geometry/Catcher_Angle 0 deg
+/Geometry/Catcher_Angle 180 deg
 /Geometry/Catcher_Thickness_Al1 50 nm
 /Geometry/Catcher_Thickness_Mylar 500 nm
 /Geometry/Catcher_Thickness_Al2 50 nm

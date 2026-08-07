@@ -149,3 +149,8 @@ There are 2 for each strip, one for the β-p coincidence and an other one for th
 - Adding PhysicList options in the macro using the messenger (the initialization has been moved)
 - G4Region has been added for a special cut applied in the Silicon detectors
 - Fix of the catcher side thickness and placement
+
+### v4.6
+- Adding BackScattering flag in the Sensor class
+- Adding the entrance collimator as a Sensor to flag the backscattering on it
+- Adding killer for for e-/e+ propagated in vacuum at pz < 1e-10

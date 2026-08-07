@@ -61,10 +61,18 @@ public:
 
   // catcher //
   vector<G4double> Catcher_Central_Energy_Deposit, Catcher_Side_Energy_Deposit;
+  vector<bool> Catcher_Side_BackScattering;
+
+  // catcher support //
+  vector<bool> Catcher_Support_BackScattering;
+
+  // collimator //
+  vector<bool> EntranceCollimator_BackScattering;
 
   // plastic scintillator //
   vector<G4double> PlasticScintillator_Hit_Angle, PlasticScintillator_Energy_Deposit, PlasticScintillator_Visible_Energy_Deposit, Energy_Deposit, PlasticScintillator_Hit_Time;
   vector<G4ThreeVector> PlasticScintillator_Hit_Position;
+  vector<bool> PlasticScintillator_BackScattering;
 
   // silicon detectors //
   vector<vector<G4ThreeVector>> Silicon_Detector_Hit_Position, Silicon_Detector_Hit_DistanceBoundary;

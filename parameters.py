@@ -9,8 +9,10 @@ VariableForSim = {}
 ########## PATHS ##########
 CRADLE_Path = "/home/lecanuet/CRADLE/"
 Geant4_Path = "/home/lecanuet/WISArD/"
-CRADLE_DATA_Path = "/data333/lecanuet/data/ENSDF/Width0/"
-Geant4_DATA_Path = "/data333/lecanuet/Result/ENSDF/Width0/"
+CRADLE_DATA_Path = "/data333/lecanuet/data/Final/"
+Geant4_DATA_Path = "/data333/lecanuet/Result/Final/a_Calibration/"
+# CRADLE_DATA_Path = "/data333/lecanuet/data/"
+# Geant4_DATA_Path = "/data333/lecanuet/Result/Systematics/Catcher_Position/"
 
 ########## DATA ##########
 Catcher_type = ""
@@ -56,11 +58,11 @@ Catcher_Position = {
 }
 
 Catcher_Position["2024"]["x"] = 0.0
-Catcher_Position["2024"]["y"] = 2.14
+Catcher_Position["2024"]["y"] = 2.18
 Catcher_Position["2024"]["z"] = 0.0
 
 Catcher_Position["2025"]["x"] = 0.0
-Catcher_Position["2025"]["y"] = 2.14
+Catcher_Position["2025"]["y"] = 2.18
 Catcher_Position["2025"]["z"] = 0.0
 
 ## --- CATCHER ANGLE --- ##
@@ -99,6 +101,7 @@ Detectors = {
 # Detectors["2024"]["Rx"] = 0.0
 # Detectors["2024"]["Ry"] = 0.0
 
+# new
 Detectors["2024"]["x"] = -0.30
 Detectors["2024"]["y"] = 1.83
 Detectors["2024"]["z"] = -0.66
@@ -107,11 +110,12 @@ Detectors["2024"]["Ry"] = 0.0
 
 #old
 # Detectors["2025"]["x"] = -0.5
-# Detectors["2025"]["y"] = 2.7
-# Detectors["2025"]["z"] = 0.0
+# Detectors["2025"]["y"] = 1.83
+# Detectors["2025"]["z"] = 0.7
 # Detectors["2025"]["Rx"] = 0.0
 # Detectors["2025"]["Ry"] = 0.0
 
+# new
 Detectors["2025"]["x"] = -0.30
 Detectors["2025"]["y"] = 1.83
 Detectors["2025"]["z"] = -0.66

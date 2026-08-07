@@ -68,11 +68,15 @@ void Wisard_RunAction::BeginOfRunAction(const G4Run *)
   Tree->Branch("Kinetic_Energy", &Kinetic_Energy);
   Tree->Branch("Catcher_Central_Energy_Deposit", &Catcher_Central_Energy_Deposit);
   Tree->Branch("Catcher_Side_Energy_Deposit", &Catcher_Side_Energy_Deposit);
+  Tree->Branch("Catcher_Side_BackScattering", &Catcher_Side_BackScattering);
+  Tree->Branch("Catcher_Support_BackScattering", &Catcher_Support_BackScattering);
+  Tree->Branch("EntranceCollimator_BackScattering", &EntranceCollimator_BackScattering);
   Tree->Branch("PlasticScintillator_Energy_Deposit", &PlasticScintillator_Energy_Deposit);
   Tree->Branch("PlasticScintillator_Visible_Energy_Deposit", &PlasticScintillator_Visible_Energy_Deposit);
   Tree->Branch("PlasticScintillator_Hit_Position", &PlasticScintillator_Hit_Position);
   Tree->Branch("PlasticScintillator_Hit_Angle", &PlasticScintillator_Hit_Angle);
   Tree->Branch("PlasticScintillator_Hit_Time", &PlasticScintillator_Hit_Time);
+  Tree->Branch("PlasticScintillator_BackScattering", &PlasticScintillator_BackScattering);
   Tree->Branch("Silicon_Detector_Energy_Deposit", &Silicon_Detector_Energy_Deposit);
   Tree->Branch("Silicon_Detector_Hit_Position", &Silicon_Detector_Hit_Position);
   Tree->Branch("Silicon_Detector_Hit_DistanceBoundary", &Silicon_Detector_Hit_DistanceBoundary);
@@ -127,24 +131,49 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
     Kinetic_Energy.push_back(particle.E0);
 
     // # Catcher Central #//
-    G4double catcher_central = 0;
-    if (particle.Detectors.find(1) != particle.Detectors.end())
-      catcher_central += particle.Detectors[1].EnergyDeposit;
-    if (particle.Detectors.find(2) != particle.Detectors.end())
-      catcher_central += particle.Detectors[2].EnergyDeposit;
-    if (particle.Detectors.find(3) != particle.Detectors.end())
-      catcher_central += particle.Detectors[3].EnergyDeposit;
-    Catcher_Central_Energy_Deposit.push_back(catcher_central);
+    // G4double catcher_central = 0;
+    // if (particle.Detectors.find(1) != particle.Detectors.end())
+    //   catcher_central += particle.Detectors[1].EnergyDeposit;
+    // if (particle.Detectors.find(2) != particle.Detectors.end())
+    //   catcher_central += particle.Detectors[2].EnergyDeposit;
+    // if (particle.Detectors.find(3) != particle.Detectors.end())
+    //   catcher_central += particle.Detectors[3].EnergyDeposit;
+    // Catcher_Central_Energy_Deposit.push_back(catcher_central);
 
     // # Catcher Side #//
     G4double catcher_side = 0;
+    G4bool catcher_side_backscattering = false;
     if (particle.Detectors.find(4) != particle.Detectors.end())
+    {
       catcher_side += particle.Detectors[4].EnergyDeposit;
+      catcher_side_backscattering = particle.Detectors[4].BackScattering;
+    }
     if (particle.Detectors.find(5) != particle.Detectors.end())
+    {
       catcher_side += particle.Detectors[5].EnergyDeposit;
+      catcher_side_backscattering = catcher_side_backscattering == true ? catcher_side_backscattering : particle.Detectors[5].BackScattering;
+    }
     if (particle.Detectors.find(6) != particle.Detectors.end())
+    {
       catcher_side += particle.Detectors[6].EnergyDeposit;
+      catcher_side_backscattering = catcher_side_backscattering == true ? catcher_side_backscattering : particle.Detectors[6].BackScattering;
+    }
     Catcher_Side_Energy_Deposit.push_back(catcher_side);
+    Catcher_Side_BackScattering.push_back(catcher_side_backscattering);
+
+    // # Collimator Entrance #//
+    bool collimator_backscattering = false;
+    if (particle.Detectors.find(100) != particle.Detectors.end())
+      collimator_backscattering = particle.Detectors[100].BackScattering;
+    EntranceCollimator_BackScattering.push_back(collimator_backscattering);
+
+    // # Catcher Support #//
+    bool catcher_support_backscattering = false;
+    if (particle.Detectors.find(7) != particle.Detectors.end())
+      catcher_support_backscattering = particle.Detectors[7].BackScattering;
+    if (particle.Detectors.find(8) != particle.Detectors.end())
+      catcher_support_backscattering = catcher_support_backscattering == true ? catcher_support_backscattering : particle.Detectors[8].BackScattering;
+    Catcher_Support_BackScattering.push_back(catcher_support_backscattering);
 
     // # Plastic Scintillator #//
     PlasticScintillator_Energy_Deposit.push_back(particle.Detectors[99].EnergyDeposit);
@@ -153,6 +182,7 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
     PlasticScintillator_Hit_Position.push_back(particle.Detectors[99].HitPosition);
     PlasticScintillator_Hit_Angle.push_back(particle.Detectors[99].HitAngle);
     PlasticScintillator_Hit_Time.push_back(particle.Detectors[99].HitTime);
+    PlasticScintillator_BackScattering.push_back(particle.Detectors[99].BackScattering);
 
     // # Silicon Detectors #//
     for (auto Det : particle.Detectors)
@@ -215,9 +245,12 @@ void Wisard_RunAction::UpdateTree(ParticleInformation *Part_Info, G4int event_id
   PlasticScintillator_Hit_Angle.clear();
   PlasticScintillator_Hit_Position.clear();
   PlasticScintillator_Hit_Time.clear();
+  PlasticScintillator_BackScattering.clear();
   Catcher_Central_Energy_Deposit.clear();
   Catcher_Side_Energy_Deposit.clear();
-  
+  Catcher_Side_BackScattering.clear();
+  EntranceCollimator_BackScattering.clear();
+  Catcher_Support_BackScattering.clear(); 
 
   /// HISTOGRAMS ///
   //  Init

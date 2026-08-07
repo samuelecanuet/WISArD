@@ -1,21 +1,21 @@
 #---------------------------------------------------------------
 #   Verbosity
 #---------------------------------------------------------------
-/Phys/Cuts 1 cm
-/Phys/SiliconCuts 1 cm
+/Phys/Cuts 1 mm
+/Phys/SiliconCuts 1 um
 /Phys/PlasticStep 1 mm
-/Phys/StepMax 1 cm
+/Phys/StepMax 1 mm
 /run/initialize
 /run/verbose      0
-/event/verbose    1
-/tracking/verbose 1
+/event/verbose    0
+/tracking/verbose 0
 
 #---------------------------------------------------------------
 #   Input Files
 #---------------------------------------------------------------
 /Input/SRIM SRIM_data/AlMylar_32Ar.root
 #/Input/Ion 207Bi
-/Input/CRADLE /data333/lecanuet/data/32Ar_IAS_a1.0_b0.0.root
+/Input/CRADLE /data333/lecanuet/data/Systematics/32Ar_IAS_a1.0_b0.0.root
 
 #/process/inactivate ionIoni
 #/Input/Ion 32Ar
@@ -23,11 +23,16 @@
 #/Input/Direction 0 0 1 
 #/Input/Position 0 0 -800
 
+#/process/inactivate eBrem
+#/Input/Particle e-
+#/Input/Energy 5 MeV
+#/Input/Direction iso
+
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
-/Run/Threads 1
+/Run/Threads 90
 
 ## 2024 ##
 #/Beam/X -0.1 mm
@@ -37,18 +42,18 @@
 #/Beam/Sigma_Y 0.8 mm
 
 ## 2025 ##
-/Beam/X -0.05 mm
-/Beam/Y 0.41 mm
+/Beam/X 0.05363 mm
+/Beam/Y -0.4103 mm
 /Beam/Radius 1000 mm
 /Beam/Sigma_X 1.05 mm
-/Beam/Sigma_Y 0.39 mm
+/Beam/Sigma_Y 0.61 mm
 
 /Geometry/Collimator false
 /Geometry/Magnetic_Field_Value 4 tesla
 /Geometry/Magnetic_Field_Mapping false
 /Geometry/CAD_MESH false
 /Geometry/SiDeadLayer_Thickness 100 nm
-/Geometry/Detectors -0.33 1.82 -0.66 0 0
+/Geometry/Detectors -0.5 1.83 0.7 0 0
 /Geometry/Catcher_Position_x 0 mm
 /Geometry/Catcher_Position_y 2.14 mm
 /Geometry/Catcher_Position_z 0 mm
@@ -71,5 +76,5 @@
 #   Generate Events
 #---------------------------------------------------------------
 /run/printProgress 10000
-/Run/File test0T.root
-/run/beamOn 100
+/Run/File /data333/lecanuet/Result/Systematics/beta-bs/32Ar_IAS_2025_a1.0_b0.0_BackScattering.root
+/run/beamOn 100000000

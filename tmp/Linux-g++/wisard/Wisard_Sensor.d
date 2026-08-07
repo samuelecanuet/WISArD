@@ -524,6 +524,7 @@
  /usr/local/geant4.11.1.2/include/Geant4/G4EmFluoDirectory.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4ProcessType.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4VProcess.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4TrackingManager.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4Event.hh \
