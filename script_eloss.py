@@ -6,10 +6,10 @@ mini = 0.1
 maxi = 10.0
 step = 0.05
 
-THREAD = 80
-thread = 4
+THREAD = 40
+thread = 1
 
-E = np.arange(mini, maxi + step, step)
+E = [3.35]
 N = len(E)
 
 def run_simulations(i, particle, B):
@@ -20,7 +20,7 @@ def run_simulations(i, particle, B):
    
 
 for particle in ["proton"]:
-    for B in [4.0, 1.5, 2.5, 6.0, 7.5, 9.0]:
+    for B in [4.0]:
         with mp.Pool(processes=thread) as pool:
             results = pool.starmap(run_simulations, [(i, particle, B) for i in range(N)])
 

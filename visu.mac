@@ -5,8 +5,11 @@
 #
 #---------------------------------------------------------------
 # verbose levels
-
-#/run/initialize
+/Phys/Cuts 1 mm
+/Phys/SiliconCuts 1 um
+/Phys/PlasticStep 1 mm
+/Phys/StepMax 1 mm
+/run/initialize
 /run/verbose      0
 /event/verbose    0
 /tracking/verbose 1
@@ -19,14 +22,14 @@
 
 #/process/inactivate ionIoni
 #/Input/Ion 32Ar
-#/Input/Particle geantino
-#/Input/Energy 3352 keV
-#/Input/Direction 0 0 1
-#/Input/Position 0.0 4.9 -200
+/Input/Particle geantino
+/Input/Energy 30 keV
+/Input/Direction 0 0 1
+/Input/Position 0.0 0 -5
 
-/Input/Energy 5 MeV
-/Input/Particle e-
-/Input/Direction iso
+#/Input/Energy 5 MeV
+#/Input/Particle geantino
+#/Input/Direction iso
 
 
 #/Input/Ion 32Ar
@@ -63,7 +66,7 @@
 /Phys/StepMax 1 m
 
 /Beam/X 0. mm
-/Beam/Y 0. mm
+/Beam/Y 0 mm
 /Beam/Radius 1000 mm
 /Beam/Sigma_X 0.01 mm
 /Beam/Sigma_Y 0.01 mm
@@ -75,10 +78,10 @@
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Detectors 0 0 0 0 0
 /Geometry/Catcher_Position_x 0 mm
-/Geometry/Catcher_Position_y 0 mm
+/Geometry/Catcher_Position_y 10 mm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
-/Geometry/Catcher_Angle 180 deg
+/Geometry/Catcher_Angle 0 deg
 /Geometry/Catcher_Thickness_Al1 50 nm
 /Geometry/Catcher_Thickness_Mylar 500 nm
 /Geometry/Catcher_Thickness_Al2 50 nm
@@ -194,6 +197,6 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 10
+/run/beamOn 1
 #
 #

@@ -2,7 +2,7 @@
 #   Verbosity
 #---------------------------------------------------------------
 /Phys/Cuts 1 mm
-/Phys/SiliconCuts 1e-6 mm
+/Phys/SiliconCuts 1 um
 /Phys/PlasticStep 1 mm
 /Phys/StepMax 1 mm
 /run/initialize
@@ -35,9 +35,9 @@
 /Geometry/Magnetic_Field_Mapping false
 /Geometry/CAD_MESH false
 /Geometry/SiDeadLayer_Thickness 100 nm
-/Geometry/Detectors -0.5 1.82 0.7 0 0
+/Geometry/Detectors -0.30 1.83 -0.66 0 0
 /Geometry/Catcher_Position_x 0 mm
-/Geometry/Catcher_Position_y 2.14 mm
+/Geometry/Catcher_Position_y 2.18 mm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg

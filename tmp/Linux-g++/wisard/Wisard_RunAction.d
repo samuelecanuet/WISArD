@@ -729,4 +729,20 @@
  /usr/local/geant4.11.1.2/include/Geant4/trkgdefs.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4TrackingMessenger.hh \
  /usr/local/geant4.11.1.2/include/Geant4/G4UserTrackingAction.hh \
- /usr/local/geant4.11.1.2/include/Geant4/G4RunManagerKernel.hh
+ /usr/local/geant4.11.1.2/include/Geant4/G4RunManagerKernel.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4Proton.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4Ions.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4EmCalculator.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4VAtomDeexcitation.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4EmParameters.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4MscStepLimitType.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4NuclearFormfactorType.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4DNAModelSubType.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4EmFluoDirectory.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4EmSaturation.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4AtomicShell.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4AtomicShellEnumerator.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4ProductionCutsTable.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4MaterialCutsCouple.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4ProductionCuts.hh \
+ /usr/local/geant4.11.1.2/include/Geant4/G4MCCIndexConversionTable.hh

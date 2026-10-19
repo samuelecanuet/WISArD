@@ -2,14 +2,13 @@
 
 
 rootCRADLEfile=/data333/lecanuet/data/Kinematics/
-rootGeant4file=/data333/lecanuet/Result/Kinematics/
-
+rootGeant4file=/data333/lecanuet/Result/Final/Systematics/Kinematics/
 
 rm -rf tempory/*
 
 usage() {
   echo "Usage: $0 [OPTIONS]"
-  echo "Options:"
+  # echo "Options:"
   echo "  nucleus=        Specify the nucleus (nucleus=32Ar)"
   echo "  N=              Specify the number of threads"
   echo "  events=         Specify the number of events"

@@ -676,7 +676,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4Tubs *mother_catcher = new G4Tubs("mother", 0., outerRadius * 5, 5 * mm, 0., 360. * deg);
   G4LogicalVolume *logic_mother_catcher = new G4LogicalVolume(mother_catcher, Material_Vacuum, "logic_mother_catcher");
   phys_mother_catcher = new G4PVPlacement(myRotation, // no rotation
-                                          G4ThreeVector(Catcher_Position_x, -Radius_Rotation + Catcher_Position_y, Catcher_Position_z),
+                                          G4ThreeVector(Catcher_Position_x, -Radius_Rotation, Catcher_Position_z),
                                           logic_mother_catcher, // its fLogical volume
                                           "mothercatcher",      // its name
                                           fLogicWorld,          // its mother  volume
@@ -739,7 +739,7 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   G4Box *SuppCatcher_Tige = new G4Box("SuppCatcher_Tige", SuppCatcher_Tige_width / 2, SuppCatcher_Tige_height / 2, SuppCatcher_thikness / 2);
 
   ///////////ASSEMBLY////////////
-  Support_Position = G4ThreeVector(0, -Radius_Rotation * (1 - cos(22.5 * deg)) + Radius_Rotation, -SuppCatcher_thikness / 2);
+  Support_Position = G4ThreeVector(0, -Radius_Rotation * (1 - cos(22.5 * deg)) + Radius_Rotation + Catcher_Position_y, -SuppCatcher_thikness / 2);
   // Central Catcher Hole
   Central_Hole_Position = G4ThreeVector(0, Radius_Rotation * (1 - cos(22.5 * deg)), 0);
   G4VSolid *SuppCatcher_Plate_centralCatcher_inner = new G4SubtractionSolid("SuppCatcher_Plate-centralCatcher", SuppCatcher_Plate, SuppCatcher_Catcher_inner, 0, Central_Hole_Position);

@@ -9,16 +9,16 @@ import multiprocessing as mp
 #how many
 
 ########## PARAMETERS ##########
-Events = 1e8
+Events = 1e7
 ## Geant4
 YEAR = "2025"
 FIELD_MAP = False
-CAD_MESH = False 
+CAD_MESH = False
 Catcher_type = "THIN"
 ## CRADLE
 PeakConfig = "IAS" # "ENSDF" / ENSDFP / IAS
 Nucleus = "32Ar"
-CreatingNewCRADLEFile = True
+CreatingNewCRADLEFile = False
 abMode = True
 ## Names of variables
 Var_Names = ["Beam", "DL", "B", "Catcher_e", "Catcher_Position", "Catcher_Angle", "Detectors", "CV", "CS", "CA", "CT", "a", "b", "Cuts", "SiliconCuts", "StepMax", "PlasticStep"]
@@ -26,8 +26,8 @@ Var_Names = ["Beam", "DL", "B", "Catcher_e", "Catcher_Position", "Catcher_Angle"
 SAMPLING=False
 
 ########## RUNNING ##########
-THREAD = 88
-N_simulatenous = 4
+THREAD = 69
+N_simulatenous = 3
 
 if THREAD % N_simulatenous != 0:
     print("N must be multiple of thread")
@@ -69,6 +69,20 @@ Variable = {}
 # Variable["Beam"]["y"] = []
 # Variable["Beam"]["sx"] = []
 # Variable["Beam"]["sy"] = []
+
+# ########### BEAM 1D #########
+# X = [-0.3, -0.2, -0.1, 0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4]
+# for xi in X:
+#     Variable["Beam"]["x"].append(xi)
+#     Variable["Beam"]["y"].append(Beam[YEAR]["y"][0])
+#     Variable["Beam"]["sx"].append(Beam[YEAR]["sx"][0])
+#     Variable["Beam"]["sy"].append(Beam[YEAR]["sy"][0])
+# Y = [-0.7, -0.6, -0.5, -0.45, -0.4, -0.35, -0.3, -0.2, -0.1]
+# for yi in Y:
+#     Variable["Beam"]["x"].append(Beam[YEAR]["x"][0])
+#     Variable["Beam"]["y"].append(yi)
+#     Variable["Beam"]["sx"].append(Beam[YEAR]["sx"][0])
+#     Variable["Beam"]["sy"].append(Beam[YEAR]["sy"][0])
 
 ## 2024 with 2024 beam
 # x = [1.05]
@@ -212,19 +226,19 @@ Variable = {}
 ### Catcher thickness
 
 # Variable["Catcher_e"] = {
-#     "Al" : [Catcher_e["THIN"]["Al"][0] - Catcher_e["THIN"]["Al"][1], 
-#             Catcher_e["THIN"]["Al"][0] + Catcher_e["THIN"]["Al"][1], 
-#             Catcher_e["THIN"]["Al"][0] - 2*Catcher_e["THIN"]["Al"][1], 
-#             Catcher_e["THIN"]["Al"][0] + 2*Catcher_e["THIN"]["Al"][1], 
-#             Catcher_e["THIN"]["Al"][0] - 3*Catcher_e["THIN"]["Al"][1], 
-#             Catcher_e["THIN"]["Al"][0] + 3*Catcher_e["THIN"]["Al"][1]
-#             ],
-#     "Mylar" : [Catcher_e["THIN"]["Mylar"][0] - Catcher_e["THIN"]["Mylar"][1],
-#                 Catcher_e["THIN"]["Mylar"][0] + Catcher_e["THIN"]["Mylar"][1], 
-#                 Catcher_e["THIN"]["Mylar"][0] - 2*Catcher_e["THIN"]["Mylar"][1], 
-#                 Catcher_e["THIN"]["Mylar"][0] + 2*Catcher_e["THIN"]["Mylar"][1], 
-#                 Catcher_e["THIN"]["Mylar"][0] - 3*Catcher_e["THIN"]["Mylar"][1], 
-#                 Catcher_e["THIN"]["Mylar"][0] + 3*Catcher_e["THIN"]["Mylar"][1]
+    # "Al" : [Catcher_e["THIN"]["Al"][0] - 1*Catcher_e["THIN"]["Al"][1], 
+            # Catcher_e["THIN"]["Al"][0] + 1*Catcher_e["THIN"]["Al"][1], 
+            # Catcher_e["THIN"]["Al"][0] - 2*Catcher_e["THIN"]["Al"][1], 
+            # Catcher_e["THIN"]["Al"][0] + 2*Catcher_e["THIN"]["Al"][1], 
+            # Catcher_e["THIN"]["Al"][0] - 3*Catcher_e["THIN"]["Al"][1], 
+            # Catcher_e["THIN"]["Al"][0] + 3*Catcher_e["THIN"]["Al"][1],
+            # ],
+    # "Mylar" : [Catcher_e["THIN"]["Mylar"][0] - 1*Catcher_e["THIN"]["Mylar"][1],
+                # Catcher_e["THIN"]["Mylar"][0] + 1*Catcher_e["THIN"]["Mylar"][1], 
+                # Catcher_e["THIN"]["Mylar"][0] - 2*Catcher_e["THIN"]["Mylar"][1], 
+                # Catcher_e["THIN"]["Mylar"][0] + 2*Catcher_e["THIN"]["Mylar"][1], 
+                # Catcher_e["THIN"]["Mylar"][0] - 3*Catcher_e["THIN"]["Mylar"][1], 
+                # Catcher_e["THIN"]["Mylar"][0] + 3*Catcher_e["THIN"]["Mylar"][1],
 #                 ]
 # }
 
@@ -236,31 +250,52 @@ Variable = {}
 # Variable["Detectors"]["Rx"] = []
 # Variable["Detectors"]["Ry"] = []
 
+# Variable["Catcher_Position"] = {}
+# Variable["Catcher_Position"]["x"] = []
+# Variable["Catcher_Position"]["y"] = []
+# Variable["Catcher_Position"]["z"] = []
+
+# Variable["Beam"] = {}
+# Variable["Beam"]["x"] = []
+# Variable["Beam"]["y"] = []
+# Variable["Beam"]["sx"] = []
+# Variable["Beam"]["sy"] = []
+
 # x = [-5, 5]
 # y = [-5, 5]
-# z = [-5, 5]
 
-# for yi in y:
-#     Variable["Detectors"]["x"].append(Detectors[YEAR]["x"])
-#     Variable["Detectors"]["y"].append(yi)
-#     Variable["Detectors"]["z"].append(Detectors[YEAR]["z"])
-#     Variable["Detectors"]["Rx"].append(Detectors[YEAR]["Rx"])
-#     Variable["Detectors"]["Ry"].append(Detectors[YEAR]["Ry"])
+# x0 = 1.15
+# y0 = 1.83
+# z0 = 0.5
 
-# for xi in x:
-#     Variable["Detectors"]["x"].append(xi)
-#     Variable["Detectors"]["y"].append(Detectors[YEAR]["y"])
-#     Variable["Detectors"]["z"].append(Detectors[YEAR]["z"])
-#     Variable["Detectors"]["Rx"].append(Detectors[YEAR]["Rx"])
-#     Variable["Detectors"]["Ry"].append(Detectors[YEAR]["Ry"])
+# for zi in [-2, -1, 1]:
+#             Variable["Detectors"]["x"].append(Detectors["2025"]["x"])
+#             Variable["Detectors"]["y"].append(Detectors["2025"]["y"])
+#             Variable["Detectors"]["z"].append(Detectors["2025"]["z"] + zi)
+#             Variable["Detectors"]["Rx"].append(0)
+#             Variable["Detectors"]["Ry"].append(0)
 
-# for zi in z:
-#     Variable["Detectors"]["x"].append(Detectors[YEAR]["x"])
-#     Variable["Detectors"]["y"].append(Detectors[YEAR]["y"])
-#     Variable["Detectors"]["z"].append(zi)
-#     Variable["Detectors"]["Rx"].append(Detectors[YEAR]["Rx"])
-#     Variable["Detectors"]["Ry"].append(Detectors[YEAR]["Ry"])
+# for yi in [-1, -0.5, -0.25, 0, 0.25, 0.5, 1]:
+#             Variable["Detectors"]["x"].append(x0)
+#             Variable["Detectors"]["y"].append(y0 + yi)
+#             Variable["Detectors"]["z"].append(z0)
+#             Variable["Detectors"]["Rx"].append(0)
+#             Variable["Detectors"]["Ry"].append(0)
+# for xi in [-1, -0.5, -0.25, 0, 0.25, 0.5, 1]:
+#             Variable["Detectors"]["x"].append(x0 + xi)
+#             Variable["Detectors"]["y"].append(y0)
+#             Variable["Detectors"]["z"].append(z0)
+#             Variable["Detectors"]["Rx"].append(0)
+#             Variable["Detectors"]["Ry"].append(0)
 
+# Variable["Catcher_Position"] = {}
+# Variable["Catcher_Position"]["x"] = []
+# Variable["Catcher_Position"]["y"] = []
+# Variable["Catcher_Position"]["z"] = []
+# for yi in [4.5, 5.0, 5.5, 6.0]:
+#     Variable["Catcher_Position"]["x"].append(0)
+#     Variable["Catcher_Position"]["y"].append(yi)
+#     Variable["Catcher_Position"]["z"].append(0)
 
 
 ## CUTS ##
@@ -273,18 +308,43 @@ Variable = {}
 # Variable["Catcher_Position"]["x"] = []
 # Variable["Catcher_Position"]["y"] = []
 # Variable["Catcher_Position"]["z"] = []
-# y = [-0.25, -0.15, -0.05, 0.0, 0.05, 0.15, 0.25]
+# y = [-0.5, 0, 0.5]
 # y = sorted(y, key=lambda x: abs(x), reverse=True)
 # for yi in y:    
-#     Variable["Catcher_Position"]["x"].append(Catcher_Position[YEAR]["x"])
-#     Variable["Catcher_Position"]["y"].append(Catcher_Position[YEAR]["y"] + yi)
-#     Variable["Catcher_Position"]["z"].append(Catcher_Position[YEAR]["z"])
+    
+#         Variable["Catcher_Position"]["x"].append(Catcher_Position[YEAR]["x"])
+#         Variable["Catcher_Position"]["y"].append(Catcher_Position[YEAR]["y"] + yi)
+#         Variable["Catcher_Position"]["z"].append(Catcher_Position[YEAR]["z"])
+
+Variable["Catcher_Angle"] = []
+Variable["Catcher_Position"] = {}
+Variable["Catcher_Position"]["x"] = []
+Variable["Catcher_Position"]["y"] = []
+Variable["Catcher_Position"]["z"] = []
+y = [-0.5, -0.25, 0, 0.25, 0.5]
+for t in [-5, -3, -2, -1, 0, 1, 2, 3, 5]:
+    for yi in y:  
+        Variable["Catcher_Angle"].append(Catcher_Angle[YEAR][0] + t)
+        Variable["Catcher_Position"]["x"].append(Catcher_Position[YEAR]["x"])
+        Variable["Catcher_Position"]["y"].append(Catcher_Position[YEAR]["y"] + yi)
+        Variable["Catcher_Position"]["z"].append(Catcher_Position[YEAR]["z"])
+
+
+############# PRODUCTION ############
+# Variable["a"] = [0.9, 0.95, 0.98, 1.0, 1.02, 1.05, 1.1]
+# Variable["b"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+# Variable["a"] = [0.925, 0.975, 0.985, 0.99, 0.995, 1.005, 1.01, 1.015, 1.025, 1.075]
+# Variable["b"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 # Variable["a"] = [0.9, 0.925, 0.95, 0.975, 0.98, 0.985, 0.99, 0.995, 1.0, 1.005, 1.01, 1.015, 1.02, 1.025, 1.05, 1.075, 1.1]
 # Variable["b"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-Variable["a"] = [0.91, 0.92, 0.93, 0.94, 0.96, 0.965, 0.97, 0.985, 0.9925, 0.9975, 1.0025, 1.0075, 1.03, 1.035, 1.04, 1.06, 1.07, 1.08, 1.09]
-Variable["b"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+# Variable["a"] = [0.91, 0.92, 0.93, 0.94, 0.96, 0.965, 0.97, 0.985, 0.9925, 0.9975, 1.0025, 1.0075, 1.03, 1.035, 1.04, 1.06, 1.07, 1.08, 1.09]
+# Variable["b"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+# Variable["a"] = [0.5, 0.6, 0.7, 0.8, 1.2, 1.3]
+# Variable["b"] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 CheckDirectory(Geant4_DATA_Path, True)
 CheckDirectory(CRADLE_DATA_Path, True)

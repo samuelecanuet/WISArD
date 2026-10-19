@@ -4,6 +4,12 @@
 #include "G4SystemOfUnits.hh"
 #include "G4RunManager.hh"
 
+#include "G4Proton.hh"
+#include "G4EmCalculator.hh"
+#include "G4ios.hh"
+
+#include <fstream>
+
 atomic<int> Wisard_RunAction::fAcceptedEvents{0};
 
 Wisard_RunAction::Wisard_RunAction(G4String macrofilename) : G4UserRunAction(), MacroFileName(macrofilename)
@@ -32,7 +38,6 @@ Wisard_RunAction::~Wisard_RunAction() {}
 void Wisard_RunAction::BeginOfRunAction(const G4Run *)
 {
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
-
   NumberThreads_int = stoi(NumberThreads);
   NumberEvents_int = G4RunManager::GetRunManager()->GetCurrentRun()->GetNumberOfEventToBeProcessed();
 

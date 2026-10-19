@@ -176,7 +176,7 @@ int main(int argc, char **argv)
   map<G4String, TH1D *> H = {};
   map<G4String, TH2D *> H2 = {};
   map<G4String, TObject *> O = {};
-  vector<TFile*> f(THREAD, nullptr);
+  map<int, TFile*> f = {};
   for (int i = -1; i < THREAD; i++)
   {
     G4String filename = outputFile + "_" + to_string(i) + ".root";

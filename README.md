@@ -150,7 +150,10 @@ There are 2 for each strip, one for the β-p coincidence and an other one for th
 - G4Region has been added for a special cut applied in the Silicon detectors
 - Fix of the catcher side thickness and placement
 
-### v4.6
+### v4.7
 - Adding BackScattering flag in the Sensor class
 - Adding the entrance collimator as a Sensor to flag the backscattering on it
 - Adding killer for for e-/e+ propagated in vacuum at pz < 1e-10
+
+### v4.8
+- Changing the behavior of Catcher_y to change the length of the mechanic instead of its placement 

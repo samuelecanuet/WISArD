@@ -16,6 +16,7 @@
 
 #include "G4Scintillation.hh"
 #include "G4EmSaturation.hh"
+#include "G4EmCalculator.hh"
 #include "G4TransportationParameters.hh"
 #include "G4Transportation.hh"
 
@@ -124,16 +125,16 @@ void Wisard_PhysList::ConstructProcess()
 
   G4EmParameters *emParams = G4EmParameters::Instance();
   emParams->SetNumberOfBinsPerDecade(200);
-  
+
   G4StepLimiterPhysics *process = new G4StepLimiterPhysics();
   process->ConstructProcess();
 
   // G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics(0);
   // radioactiveDecay->ConstructProcess();
 
-  // MyG4RadioactiveDecay* decay = new MyG4RadioactiveDecay("RadioactiveDecay");
-  // G4PhysicsListHelper::GetPhysicsListHelper()->
-  //   RegisterProcess(decay, G4GenericIon::GenericIon());
+  MyG4RadioactiveDecay* decay = new MyG4RadioactiveDecay("RadioactiveDecay");
+  G4PhysicsListHelper::GetPhysicsListHelper()->
+    RegisterProcess(decay, G4GenericIon::GenericIon());
 
   AddStepMax(StepMaxValue, 0x2);
 }
@@ -155,7 +156,6 @@ void Wisard_PhysList::SetCuts()
 
   // DumpCutValuesTable();
   
-
   G4cout << "\033[34m" << "Cuts set to : " << G4BestUnit(Cuts, "Length") << "\033[0m" << G4endl;
 
   // SetCutValue(1*m, "gamma");

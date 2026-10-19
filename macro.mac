@@ -7,7 +7,7 @@
 /Phys/StepMax 1 cm
 /run/initialize
 /run/verbose      0
-/event/verbose    1
+/event/verbose    0
 /tracking/verbose 1
 
 #---------------------------------------------------------------
@@ -15,13 +15,13 @@
 #---------------------------------------------------------------
 /Input/SRIM SRIM_data/AlMylar_32Ar.root
 #/Input/Ion 207Bi
-/Input/CRADLE /data333/lecanuet/data/32Ar_IAS_a1.0_b0.0.root
+#/Input/CRADLE /data333/lecanuet/4body/32Ar_scan_t40_1e8_a1p000_radiative_on_new_noBetaSpectrumCorrections.root
 
 #/process/inactivate ionIoni
-#/Input/Ion 32Ar
-#/Input/Energy 30 keV
-#/Input/Direction 0 0 1 
-#/Input/Position 0 0 -800
+/Input/Particle geantino
+/Input/Energy 30 keV
+/Input/Direction 0 0 1 
+/Input/Position 0 0 -800
 
 #---------------------------------------------------------------
 #   Simulation Parameters
@@ -37,8 +37,8 @@
 #/Beam/Sigma_Y 0.8 mm
 
 ## 2025 ##
-/Beam/X -0.05 mm
-/Beam/Y 0.41 mm
+/Beam/X 0.05 mm
+/Beam/Y -0.41 mm
 /Beam/Radius 1000 mm
 /Beam/Sigma_X 1.05 mm
 /Beam/Sigma_Y 0.39 mm
@@ -48,9 +48,9 @@
 /Geometry/Magnetic_Field_Mapping false
 /Geometry/CAD_MESH false
 /Geometry/SiDeadLayer_Thickness 100 nm
-/Geometry/Detectors -0.33 1.82 -0.66 0 0
+/Geometry/Detectors -0.30 1.82 -0.66 0 0
 /Geometry/Catcher_Position_x 0 mm
-/Geometry/Catcher_Position_y 2.14 mm
+/Geometry/Catcher_Position_y 2.18 mm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
@@ -70,6 +70,6 @@
 #---------------------------------------------------------------
 #   Generate Events
 #---------------------------------------------------------------
-/run/printProgress 10000
-/Run/File test0T.root
-/run/beamOn 100
+/run/printProgress 100000
+/Run/File test.root
+/run/beamOn 10

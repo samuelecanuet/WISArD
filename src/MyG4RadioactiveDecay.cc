@@ -540,9 +540,9 @@ MyG4RadioactiveDecay::LoadDecayTable(const G4ParticleDefinition& theParentNucleu
   G4int Z = ((const G4Ions*)(&theParentNucleus))->GetAtomicNumber();
 
   G4double levelEnergy = ((const G4Ions*)(&theParentNucleus))->GetExcitationEnergy();
-  G4cout << "\033[1;32m" <<"Loading decay table for " << theParentNucleus.GetParticleName()
-         << ", A = " << A << ", Z = " << Z
-         << ", excitation energy = " << levelEnergy << " keV" << "\033[0m" << G4endl;
+  // G4cout << "\033[1;32m" <<"Loading decay table for " << theParentNucleus.GetParticleName()
+  //        << ", A = " << A << ", Z = " << Z
+  //        << ", excitation energy = " << levelEnergy << " keV" << "\033[0m" << G4endl;
   G4Ions::G4FloatLevelBase floatingLevel =
     ((const G4Ions*)(&theParentNucleus))->GetFloatLevelBase();
 
@@ -646,8 +646,8 @@ MyG4RadioactiveDecay::LoadDecayTable(const G4ParticleDefinition& theParentNucleu
           // Store for later the total decay probability for each decay mode 
           if (inputLine.length() < 72) {
             tmpStream >> theDecayMode >> dummy >> decayModeTotal;
-            G4cout << "\033[1;32m" <<"Decay mode: " << theDecayMode
-                   << ", total BR: " << decayModeTotal << "\033[0m" << G4endl;
+            // G4cout << "\033[1;32m" <<"Decay mode: " << theDecayMode
+            //        << ", total BR: " << decayModeTotal << "\033[0m" << G4endl;
             switch (theDecayMode) {
               case IT:
                 {
@@ -704,10 +704,10 @@ MyG4RadioactiveDecay::LoadDecayTable(const G4ParticleDefinition& theParentNucleu
             if (inputLine.length() < 84) {
               tmpStream >> theDecayMode >> a >> daughterFloatFlag >> b >> c;
               betaType = allowed;
-              G4cout << "\033[1;32m" <<"Decay mode: " << theDecayMode
-                     << ", a: " << a << ", b: " << b << ", c: " << c
-                     << ", daughter float flag: " << daughterFloatFlag
-                     << "\033[0m" << G4endl;
+              // G4cout << "\033[1;32m" <<"Decay mode: " << theDecayMode
+              //        << ", a: " << a << ", b: " << b << ", c: " << c
+              //        << ", daughter float flag: " << daughterFloatFlag
+              //        << "\033[0m" << G4endl;
             } else {
               tmpStream >> theDecayMode >> a >> daughterFloatFlag >> b >> c >> betaType;
             }

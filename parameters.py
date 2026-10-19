@@ -10,10 +10,9 @@ VariableForSim = {}
 CRADLE_Path = "/home/lecanuet/CRADLE/"
 Geant4_Path = "/home/lecanuet/WISArD/"
 CRADLE_DATA_Path = "/data333/lecanuet/data/Final/"
-Geant4_DATA_Path = "/data333/lecanuet/Result/Final/a_Calibration/"
+Geant4_DATA_Path = "/data333/lecanuet/Result/Final/Catcher_NewAnglePosition/"
 # CRADLE_DATA_Path = "/data333/lecanuet/data/"
-# Geant4_DATA_Path = "/data333/lecanuet/Result/Systematics/Catcher_Position/"
-
+# Geant4_DATA_Path = "/data333/lecanuet/Result/Final/a_Calibration/"
 ########## DATA ##########
 Catcher_type = ""
 
@@ -102,9 +101,9 @@ Detectors = {
 # Detectors["2024"]["Ry"] = 0.0
 
 # new
-Detectors["2024"]["x"] = -0.30
+Detectors["2024"]["x"] = 1.15
 Detectors["2024"]["y"] = 1.83
-Detectors["2024"]["z"] = -0.66
+Detectors["2024"]["z"] = 0.5
 Detectors["2024"]["Rx"] = 0.0
 Detectors["2024"]["Ry"] = 0.0
 
