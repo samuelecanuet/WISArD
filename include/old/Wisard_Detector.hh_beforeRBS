@@ -58,9 +58,7 @@ public:
   G4double Magnetic_Field = 4*tesla;
   G4bool Magnetic_Field_Mapping_flag = false;
   G4bool Collimator_flag = true;
-  G4bool MCP_flag = false;
   G4double Catcher_Position_z = 0.*mm;
-  G4String string_MCP_position;
   G4String Catcher_Position = "catcher1";
   G4double Catcher_Angle = 0*deg;
   G4double Catcher_Thickness_Al1 = 50 * nm;
@@ -218,7 +216,6 @@ public:
   G4LogicalVolume *fLogic_AlSource1_side;
   G4LogicalVolume *fLogic_MylarSource_side;
   G4LogicalVolume *fLogic_AlSource2_side;
-  G4LogicalVolume *fLogic_MCP;
 
   G4Material *Material_Vacuum;
   G4Material *Material_Si;

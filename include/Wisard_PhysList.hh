@@ -20,7 +20,7 @@
 #include "G4LossTableManager.hh"
 #include "G4UAtomicDeexcitation.hh"
 #include "G4EmParameters.hh"
-
+#include "G4GenericMessenger.hh"
 //----------------------------------------------------------------------
 
 class Wisard_PhysList: public G4VUserPhysicsList
@@ -36,6 +36,10 @@ class Wisard_PhysList: public G4VUserPhysicsList
     G4VPhysicsConstructor *emPhysicsList;
     G4VPhysicsConstructor *decayPhysicList;
     G4VPhysicsConstructor *decayPhysicList1;
+
+    G4double Cuts = 0.001 * mm;
+    G4double StepMaxValue = 0.1 * mm;
+    G4GenericMessenger *PhysMessenger = nullptr;
 
   protected:
     void ConstructParticle();

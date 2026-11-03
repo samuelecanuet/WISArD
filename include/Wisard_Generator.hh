@@ -180,7 +180,6 @@ inline void Wisard_Generator::SetCatcherPosition_z(G4String filename)
         }
     }
     Position_catcher_z = catcher_z;
-
 }
 
 inline void Wisard_Generator::ChooseGENERATOR()
@@ -291,7 +290,7 @@ inline void Wisard_Generator::InitBeam()
     TF1* Gauss1Dx = new TF1("Gauss2Dx", "exp(-0.5*((x-[0])/[1])**2)", -10, 10);
     Gauss1Dx->SetParameters(X, Sigma_X);
     Gauss1Dx->SetNpx(10000);
-    TF1* Gauss1Dy = new TF1("Gauss2Dx", "exp(-0.5*((x-[0])/[1])**2)", -10, 10);
+    TF1* Gauss1Dy = new TF1("Gauss2Dy", "exp(-0.5*((x-[0])/[1])**2)", -10, 10);
     Gauss1Dy->SetParameters(Y, Sigma_Y);
     Gauss1Dy->SetNpx(10000);
     HGauss2D = make_pair((TH1D*)Gauss1Dx->GetHistogram()->Clone("x"), (TH1D*)Gauss1Dy->GetHistogram()->Clone("y"));

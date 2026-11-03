@@ -16,6 +16,8 @@ struct Detector
     G4ThreeVector HitPosition = G4ThreeVector(0, 0, 0);
     G4double HitTime = 0;
     G4ThreeVector DistanceBoundary = G4ThreeVector(0, 0, 0);
+    G4bool BackScattering = false;
+    G4double LastEntryInVolume = 0;
 };
 
 struct Particle
@@ -50,6 +52,8 @@ public:
     void SetHitPosition(G4int TrackID, G4int SensorID, G4ThreeVector HitPosition);
     bool FirstHit(G4int TrackID, G4int SensorID);
     void SetHitTime(G4int TrackID, G4int SensorID, G4double HitTime);
+    void SetBackScattering(G4int TrackID, G4int SensorID);
+    void UpdateLastEntryInVolume(G4int TrackID, G4int SensorID, G4double z_momentum);
 
     map<int, Particle> GetInfo();
     void Parse();

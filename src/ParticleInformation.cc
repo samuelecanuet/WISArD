@@ -52,6 +52,7 @@ bool ParticleInformation::FirstHit(G4int TrackID, G4int SensorID)
             }
         }
 
+        // if not found in the dictionnary, added to the dictionnary
         Particles[TrackID].Detectors[SensorID] = Detector{0, 0, 0, G4ThreeVector(0, 0, 0)};
         return true;
     }
@@ -76,6 +77,16 @@ void ParticleInformation::AddEnergyDeposit(G4int TrackID, G4int SensorID, G4doub
 {
     Particles[TrackID].Detectors[SensorID].EnergyDeposit += EnergyDeposit;
     Particles[TrackID].Detectors[SensorID].VisibleEnergyDeposit += VisibleEnergyDeposit;
+}
+
+void ParticleInformation::SetBackScattering(G4int TrackID, G4int SensorID)
+{
+    Particles[TrackID].Detectors[SensorID].BackScattering = true;
+}
+
+void ParticleInformation::UpdateLastEntryInVolume(G4int TrackID, G4int SensorID, G4double z_momentum)
+{
+    Particles[TrackID].Detectors[SensorID].LastEntryInVolume = z_momentum;
 }
 
 void ParticleInformation::SetHitDistanceBoundary(G4int TrackID, G4int SensorID, G4ThreeVector Distance)

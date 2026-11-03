@@ -33,7 +33,11 @@
 #include "G4SDManager.hh"
 
 #include "Wisard_Global.hh"
+#include "Wisard_Materials.hh"
 #include "G4GenericMessenger.hh"
+
+class G4GlobalMagFieldMessenger;
+class UniformFieldFastGeometry;
 
 template <typename... Ts, typename... Us, std::size_t... Is>
 auto add_tuples_impl(const std::tuple<Ts...>& t1, const std::tuple<Us...>& t2, std::index_sequence<Is...>) {
@@ -71,9 +75,9 @@ public:
   G4bool Magnetic_Field_Mapping_flag = false;
   G4bool CAD_MESH_flag = false;
   G4bool Collimator_flag = true;
-  G4bool MCP_flag = false;
+  G4double Catcher_Position_x = 0.*mm;
+  G4double Catcher_Position_y = 0.*mm;
   G4double Catcher_Position_z = 0.*mm;
-  G4String string_MCP_position;
   G4String Catcher_Position = "catcher1";
   G4double Catcher_Angle = 0*deg;
   G4double Catcher_Thickness_Al1 = 50 * nm;
@@ -103,6 +107,9 @@ public:
   
 
   G4UserLimits *myStepLimit ;
+  G4double SiliconCuts = 0.001*mm;
+  G4double PlasticStep = 1*mm;
+  G4UserLimits* fPlasticStepLimit;
 
   std::vector<std::pair<G4LogicalVolume *, G4VPhysicalVolume *>>
   Make_Sidet(int num);
@@ -241,7 +248,9 @@ public:
   G4LogicalVolume *fLogic_AlSource1_side;
   G4LogicalVolume *fLogic_MylarSource_side;
   G4LogicalVolume *fLogic_AlSource2_side;
-  G4LogicalVolume *fLogic_MCP;
+  G4LogicalVolume *fLogic_CollimatorEntrance;
+  
+  // G4LogicalVolume *logic_sidePEEK_Ring;
 
   G4Material *Material_Vacuum;
   G4Material *Material_Si;
@@ -252,18 +261,10 @@ public:
   G4Material *Material_Fe;
   G4Material *Material_Plastic;
   G4Material *PEEK;
+  G4Material *Material_Teflon; 
   G4Material* Material_PCB;
 
-  G4VisAttributes *Vis_Vacuum;
-  G4VisAttributes *Vis_Si ;
-  G4VisAttributes *Vis_SiO2;
-  G4VisAttributes *Vis_Al;
-  G4VisAttributes *Vis_Mylar;
-  G4VisAttributes *Vis_Cu;
-  G4VisAttributes *Vis_Fe;
-  G4VisAttributes *Vis_Plastic;
-  G4VisAttributes *Vis_PEEK;
-  G4VisAttributes *Vis_PCB;
+  Wisard_Materials fMaterials;
 
   // G4String string_pos[9];
   G4String Detectors_position_correction;
@@ -291,26 +292,33 @@ public:
       71, 72, 73, 74, 75,
       81, 82, 83, 84, 85};
 
+private:
+      G4LogicalVolume *logic_SuppCatcher_Plate = nullptr;
+      G4LogicalVolume* logic_sidePEEK_Ring;
+
+      std::unique_ptr<UniformFieldFastGeometry> fFastGeometryUpper;
+      std::unique_ptr<UniformFieldFastGeometry> fFastGeometryLower;
+
 };
 
 
 inline std::vector<std::pair<G4LogicalVolume *, G4VPhysicalVolume *>>
 Wisard_Detector::Make_Sidet(int num)
 {
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Support;// = MakeSupport(num, Vis_PCB, Material_PCB);
-  // std::pair<G4LogicalVolume*, G4VPhysicalVolume*> Cooling = MakeCooling(num, dir, Support.first, Vis_Cu, Material_Cu);
-  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Vide = MakeVide(num, Vis_Vacuum, Material_Vacuum);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Support;// = MakeSupport(num, fMaterials.GetPCBVisAttributes(), Material_PCB);
+  // std::pair<G4LogicalVolume*, G4VPhysicalVolume*> Cooling = MakeCooling(num, dir, Support.first, fMaterials.GetCopperVisAttributes(), Material_Cu);
+  std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Vide = MakeVide(num, fMaterials.GetVacuumVisAttributes(), Material_Vacuum);
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> AlFrame = MakeAlFrame(num, Vide.first, Material_Al);
   std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Strips[21];
 
   for (int i = 1; i <= 5; i++)
   {
-    Strips[i - 1] = MakeStrip(i, num, Vide.first, Vis_Si, Material_Si);
-    Strips[i + 4] = MakeDL(i, num, Strips[i - 1].first, Vis_Si, Material_Si);
-    Strips[i + 9] = MakeStripGrid(i, num, Vide.first, Vis_Al, Material_Al);
+    Strips[i - 1] = MakeStrip(i, num, Vide.first, fMaterials.GetSiliconVisAttributes(), Material_Si);
+    Strips[i + 4] = MakeDL(i, num, Strips[i - 1].first, fMaterials.GetSiliconVisAttributes(), Material_Si);
+    Strips[i + 9] = MakeStripGrid(i, num, Vide.first, fMaterials.GetAluminiumVisAttributes(), Material_Al);
     if (i != 5)
     {
-      Strips[i + 14] = MakeInterStrip(i, num, Vide.first, Vis_SiO2, Material_SiO2);
+      Strips[i + 14] = MakeInterStrip(i, num, Vide.first, fMaterials.GetSiliconDioxideVisAttributes(), Material_SiO2);
     }
 
     // Strips[i - 1].first->SetSensitiveDetector(manager_ptr->GetWisardSensor_Detector( ("D"+ to_string(num) + "." + to_string(i))) );
@@ -319,8 +327,8 @@ Wisard_Detector::Make_Sidet(int num)
   } 
 
   // boder inetrstrip
-  Strips[19] = MakeInterStrip(-1, 0, Vide.first, Vis_SiO2, Material_SiO2);
-  Strips[20] = MakeInterStrip(-4, 0, Vide.first, Vis_SiO2, Material_SiO2);
+  Strips[19] = MakeInterStrip(-1, 0, Vide.first, fMaterials.GetSiliconDioxideVisAttributes(), Material_SiO2);
+  Strips[20] = MakeInterStrip(-4, 0, Vide.first, fMaterials.GetSiliconDioxideVisAttributes(), Material_SiO2);
 
   return {Support, Vide, Strips[0], Strips[1], Strips[2], Strips[3], Strips[4], Strips[5], Strips[6], Strips[7], Strips[8], Strips[9], Strips[10], Strips[11], Strips[12], Strips[13], Strips[14], Strips[15], Strips[16], Strips[17], Strips[18], AlFrame};
 }
@@ -484,7 +492,7 @@ inline std::pair<G4LogicalVolume *, G4VPhysicalVolume *> Wisard_Detector::MakeAl
       false,
       0);
 
-  logicSiDet->SetVisAttributes(Vis_Al);
+  logicSiDet->SetVisAttributes(fMaterials.GetAluminiumVisAttributes());
 
   return std::make_pair(logicSiDet, physSiDet);
 }

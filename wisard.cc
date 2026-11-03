@@ -5,9 +5,10 @@
 #include "Wisard_ActionInitialization.hh"
 #include "ParticleInformation.hh"
 
+#include "UniformFieldFastMessenger.hh"
+
 #include <cstdlib>
 #include <iostream>
-#include <sys/stat.h>
 
 #include "G4UImanager.hh"
 #include "G4UIterminal.hh"
@@ -17,7 +18,6 @@
 #include "G4MTRunManager.hh"
 
 #include "TSystem.h"
-#include "TInterpreter.h"
 #include "TChain.h"
 #include "TTree.h"
 #include "TH1D.h"
@@ -37,32 +37,6 @@ int main(int argc, char **argv)
   t1 = clock();
 
   //------------------------------------------------------------
-
-  G4cout << "Generating Dictionnaries" << G4endl;
-
-  G4String clheppath;
-  std::string paths[] = {
-      "/softs/clhep/2.4.6.2/include/",
-      "/admin/local/clhep/2.4.6.2/include/"};
-
-  for (const auto &path : paths)
-  {
-    struct stat info;
-    if ((stat(path.c_str(), &info) == 0 && S_ISDIR(info.st_mode)))
-    {
-      clheppath = path;
-    }
-  }
-
-  std::string clhepVectorPath = clheppath + "/CLHEP/Vector/";
-  gSystem->AddIncludePath(("-I" + clheppath).c_str());
-  gSystem->AddIncludePath(("-I" + clhepVectorPath).c_str());
-
-  gInterpreter->GenerateDictionary("vector<vector<int> >", "vector");
-  gInterpreter->GenerateDictionary("vector<vector<vector<double> > >", "vector");
-  gInterpreter->GenerateDictionary("vector<CLHEP::Hep3Vector>", "vector;ThreeVector.h");
-  gInterpreter->GenerateDictionary("vector<vector<CLHEP::Hep3Vector>>", "vector;ThreeVector.h");
-  gInterpreter->GenerateDictionary("vector<vector<vector<CLHEP::Hep3Vector>>>", "vector;ThreeVector.h");
 
   //------------------------------------------------------------
 
@@ -89,6 +63,7 @@ int main(int argc, char **argv)
     }
   }
 
+  UniformFieldFastMessenger::Instance();
   G4RunManager *ptr_run;
   if (THREAD == 1)
   {
@@ -108,10 +83,6 @@ int main(int argc, char **argv)
 
   Wisard_ActionInitialization *ptr_act = new Wisard_ActionInitialization(macroName);
   ptr_run->SetUserInitialization(ptr_act);
-
-  ptr_run->Initialize();
-
-  ptr_phys->AddStepMax(0.1*mm, 0x2);
 
   //------------------------------------------------------------
 
@@ -142,7 +113,7 @@ int main(int argc, char **argv)
     G4cout << "\033[34m" << "Number of Threads used : " << THREAD << "\033[0m" << G4endl;
     G4cout << "\033[34m" << "Reading macro file: " << fileName << "\033[0m" << G4endl;
     G4cout << G4endl;
-    UI->ApplyCommand("/control/alias currentMacro " + fileName);
+    // UI->ApplyCommand("/control/alias currentMacro " + fileName);
     UI->ApplyCommand(command + fileName);
   }
   else
@@ -171,11 +142,10 @@ int main(int argc, char **argv)
   
   G4String outputFile = ptr_act->GetFileName().substr(0, ptr_act->GetFileName().length() - 5);
   TChain chain("Tree");
-  TTree *Tree_MCP = nullptr;
   map<G4String, TH1D *> H = {};
   map<G4String, TH2D *> H2 = {};
   map<G4String, TObject *> O = {};
-  vector<TFile*> f(THREAD, nullptr);
+  map<int, TFile*> f = {};
   for (int i = -1; i < THREAD; i++)
   {
     G4String filename = outputFile + "_" + to_string(i) + ".root";
@@ -185,15 +155,6 @@ int main(int argc, char **argv)
       if (!f[THREAD]->IsZombie())
       {
         chain.Add(filename);
-
-        TTree *Tree = (TTree *)f[THREAD]->Get("Tree_MCP");
-        if (Tree != nullptr)
-        {
-          if (Tree_MCP == nullptr)
-            Tree_MCP = (TTree *)Tree->CloneTree();
-          else
-            Tree_MCP->AddClone(Tree);
-        }
 
         // loop on all the TH1D of the file
         TList *list = f[THREAD]->GetListOfKeys();
@@ -238,12 +199,6 @@ int main(int argc, char **argv)
   chain.Merge(outputFile, "fast");
 
   TFile final(outputFile, "UPDATE");
-  if (Tree_MCP != nullptr)
-  {
-    final.cd();
-    Tree_MCP->Write();
-  }
-
   for (auto &o : O)
   {
     o.second->Write();

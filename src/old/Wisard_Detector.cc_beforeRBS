@@ -7,7 +7,6 @@
 
 #include "Wisard_Sensor.hh"
 #include "Wisard_Killer.hh"
-#include "Wisard_MCP.hh"
 
 //----------------------------------------------------------------------
 
@@ -190,15 +189,7 @@ Wisard_Detector::Wisard_Detector()
       .SetParameterName("Catcher_Thickness_Al2", false)
       .SetDefaultValue("50 nm");
 
-  GeometryMessenger->DeclareProperty("MCP", MCP_flag)
-      .SetGuidance("Set MCP.")
-      .SetParameterName("MCP", false)
-      .SetDefaultValue("false");
 
-  GeometryMessenger->DeclareProperty("MCP_Position", string_MCP_position)
-      .SetGuidance("Set MCP Position.")
-      .SetParameterName("MCP_Position", false)
-      .SetDefaultValue("0 0 -10");
 
 
   G4double xc = 0 * cm;
@@ -326,11 +317,6 @@ void Wisard_Detector::ConstructSDandField()
     SetSensitiveDetector(fLogic_Killer, wisard_killer);
   }
 
-  if (MCP_flag)
-  {
-    auto wisard_sensor_MCP = new Wisard_MCP();
-    SetSensitiveDetector(fLogic_MCP, wisard_sensor_MCP);
-  }
 
 }
 //----------------------------------------------------------------------
@@ -1361,31 +1347,6 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   }
 
 
-  if (MCP_flag)
-  {
-    G4double Radius = 10 * mm;
-    G4double Length = 1 * mm;
-
-    G4Tubs *fSolid_MCP = new G4Tubs("MCP", 0., Radius, Length / 2, 0., 360 * deg);
-    fLogic_MCP = new G4LogicalVolume(fSolid_MCP, Material_Vacuum, "MCP"); // solid, material, name
-    G4PVPlacement *fPhys_MCP = new G4PVPlacement(0,                                                                 // rotationMatrix
-                                                ConvertStringToG4ThreeVector(string_MCP_position)* mm - G4ThreeVector(0., 0., -Length / 2), // position
-                                                fLogic_MCP, "MCP",                 // its fLogical volume
-                                                fLogicWorld,                       // its mother volume
-                                                false,                             // no boolean op.
-                                                -1);                               // copy nb.
-
-    if (fPhys_MCP == NULL)
-    {
-      G4Exception("BuildMCP", "MCP001", FatalException, "MCP not created");
-    }
-
-    G4VisAttributes *MCP_att = new G4VisAttributes(G4Colour(0.6, 0.6, 0.6, 0.6)); // red
-    MCP_att->SetForceWireframe(false);
-    MCP_att->SetForceSolid(true);
-    MCP_att->SetVisibility(true);
-    fLogic_MCP->SetVisAttributes(MCP_att);
-  }
 
   return fPhysiWorld;
 }

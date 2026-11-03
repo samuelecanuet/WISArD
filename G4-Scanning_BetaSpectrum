@@ -1,0 +1,94 @@
+#!/bin/bash
+
+
+rootCRADLEfile=/data333/lecanuet/data/Qbeta/
+rootGeant4file=/data333/lecanuet/Result/Qbeta/
+
+
+rm -rf tempory/*
+
+usage() {
+  echo "Usage: $0 [OPTIONS]"
+  echo "Options:"
+  echo "  nucleus=        Specify the nucleus (nucleus=32Ar)"
+  echo "  N=              Specify the number of threads"
+  echo "  events=         Specify the number of events"
+  echo "  energy=         Specify the value of energy."
+  echo "  --help          Show this help message."
+  exit 1
+}
+
+RED="\e[1;31m"
+GREEN="\e[1;32m"
+YELLOW="\e[1;33m"
+COLOR="\e[0m"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    nucleus=*)
+      Nuclei="${1#*=}"
+      ;;
+    N=*)
+      N="${1#*=}"
+      ;;
+    events=*)
+      events="${1#*=}"
+      ;;
+    x=*)
+      x="${1#*=}"
+      ;;
+    y=*)
+      y="${1#*=}"
+      ;;
+    z=*)
+      z="${1#*=}"
+      ;;
+    theta=*)
+      theta="${1#*=}"
+      ;;
+    energy=*)
+      energy="${1#*=}"
+      ;;
+    --help)
+      usage
+      ;;
+    *)
+      echo "Argument inconnu : $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+suffixe="_Qbeta${energy}"
+
+###default value
+DEFAULT_N=3
+DEFAULT_events=10000000
+DEFAULT_energy=3.0
+
+events=${events:-$DEFAULT_events}
+energy=${energy:-DEFAULT_energy}
+
+## file file exist dont do it 
+if [ -f "${rootGeant4file}${suffixe}.root" ]; then
+    echo -e "$YELLOW File ${rootGeant4file}${suffixe}.root already exists. Skipping simulation. $COLOR"
+    exit 0
+fi
+
+## CRADLE ##
+cd ../CRADLE/build &&
+./CRADLE++ nucleus --name 32Ar -Z 18 -A 32 -c ../config/config.txt general -l ${events} -o ${rootCRADLEfile}32Ar${suffixe}.root -t ${N} && 
+cd - && 
+
+cp macro_base.mac tempory/macro_${suffixe}_bis.mac  
+sed -e "s|%threads|${N}|g; s|%output|${rootGeant4file}32Ar${suffixe}.root|g; s|%inputCRADLE|${rootCRADLEfile}32Ar${suffixe}.root|g; s/%events/${events}/g;" tempory/macro_${suffixe}_bis.mac > tempory/macro_${suffixe}.mac
+wisard tempory/macro_${suffixe}.mac 
+echo -e "$GREEN wisard tempory/macro_${suffixe}.mac $COLOR"
+
+Duree=$(($TimeEnd-$TimeStart))
+Second=$(printf "%02d" "$(($Duree%60))")
+Minute=$(printf "%02d" "$((($Duree/60)%60))")
+Heure=$(printf "%02d" "$((($Duree/3600)%24))")
+Jour=$(printf "%d" "$((($Duree/(3600*24))))")
+echo -e "$RED Duree total : ${Jour}"

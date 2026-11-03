@@ -7,6 +7,7 @@
 #include "ParticleInformation.hh"
 #include "G4LossTableManager.hh"
 #include "G4EmSaturation.hh"
+#include "G4ProcessType.hh"
 
 #include "ParticleInformation.hh"
 
@@ -26,6 +27,9 @@ public:
 
   void Initialize(G4HCofThisEvent *);
   G4bool ProcessHits(G4Step *, G4TouchableHistory *);
+
+private:
+  G4Material *Material_Vacuum = G4Material::GetMaterial("G4_Galactic");
 };
 
 #endif

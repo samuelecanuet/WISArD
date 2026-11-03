@@ -2,7 +2,7 @@
 
 
 rootCRADLEfile=../../../../data333/lecanuet/data/
-rootGeant4file=../../../data333/lecanuet/Result/Sampling_MCP_2025/
+rootGeant4file=../../../data333/lecanuet/Result/Sampling_Beam_2025/
 
 rm -rf tempory/*
 

@@ -16,8 +16,17 @@
 
 #include "G4Scintillation.hh"
 #include "G4EmSaturation.hh"
+#include "G4EmCalculator.hh"
 #include "G4TransportationParameters.hh"
 #include "G4Transportation.hh"
+
+#include "MyG4RadioactiveDecay.hh"
+
+#include "UniformFieldFastSimulationModel.hh"
+
+#include "G4OpticalPhoton.hh"
+#include "G4OpticalPhysics.hh"
+#include "G4OpticalParameters.hh"
 
 //----------------------------------------------------------------------
 Wisard_PhysList::Wisard_PhysList()
@@ -25,6 +34,18 @@ Wisard_PhysList::Wisard_PhysList()
   step_max = NULL;
   G4cout << "\033[32m" << "Constructor Wisard_PhysList" << "\033[0m" << G4endl;
   // defaultCutValue = 0.001 * um;
+
+  PhysMessenger = new G4GenericMessenger(this, "/Phys/", "All Physic List Settings");
+
+  PhysMessenger->DeclarePropertyWithUnit("Cuts", "mm", Cuts)
+      .SetGuidance("Set particle production cuts.")
+      .SetParameterName("Cuts", false)
+      .SetDefaultValue("1 mm");
+
+  PhysMessenger->DeclarePropertyWithUnit("StepMax", "mm", StepMaxValue)
+      .SetGuidance("Set StepMax.")
+      .SetParameterName("StepMax", false)
+      .SetDefaultValue("1 mm");
 }
 
 Wisard_PhysList::~Wisard_PhysList()
@@ -50,7 +71,7 @@ void Wisard_PhysList::ConstructParticle()
   G4Gamma::GammaDefinition();
 
   // optical photon
-  // G4OpticalPhoton::OpticalPhotonDefinition();
+  G4OpticalPhoton::OpticalPhotonDefinition();
 
   // leptons
   G4Electron::ElectronDefinition();
@@ -83,59 +104,77 @@ void Wisard_PhysList::ConstructParticle()
   G4Deuteron::DeuteronDefinition();
   G4Triton::TritonDefinition();
   G4Alpha::AlphaDefinition();
-  G4GenericIon::GenericIonDefinition();
-
-  AddStepMax(0.1 * mm, 0x2);
-  
+  G4GenericIon::GenericIonDefinition();  
 }
 
 //----------------------------------------------------------------------
 // Associate selected processes to the particles
 void Wisard_PhysList::ConstructProcess()
 {
-  // defin Transportation parameters
+  // ============================================================
+  // Transportation process:
+  // ============================================================
   auto transportParams= G4TransportationParameters::Instance();
-
-  transportParams->SetWarningEnergy(  0.1 * keV );
-  // transportParams->SetThresholdWarningEnergy( 0.1 * keV );
+  transportParams->SetWarningEnergy(  1 * keV );
   transportParams->SetImportantEnergy( 1 * keV );
-  // transportParams->SetThresholdImportantEnergy(  1 * keV );
   transportParams->SetNumberOfTrials( 1000000 );
-
-  // define transportation process
   AddTransportation();
 
-  // G4VPhysicsConstructor * emPhysicsList = new G4EmPenelopePhysics(0);
-  // G4VPhysicsConstructor * emPhysicsList = new G4EmLivermorePhysics();
-  // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics(1);
+  // ============================================================
+  // EM physics process:
+  // ============================================================
   emPhysicsList = new G4EmStandardPhysics_option4(0);
   emPhysicsList->ConstructProcess();
 
   G4EmParameters *emParams = G4EmParameters::Instance();
   emParams->SetNumberOfBinsPerDecade(200);
 
-  G4StepLimiterPhysics *process = new G4StepLimiterPhysics();
-  process->ConstructProcess();
+  // ============================================================
+  // Optical physics: Scintillation
+  // ============================================================
 
-  G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics();
-  radioactiveDecay->ConstructProcess();
+  // auto opticalParams = G4OpticalParameters::Instance();
 
+  // opticalParams->SetProcessActivation("Scintillation", true);
+  // opticalParams->SetProcessActivation("Cerenkov", false);
+  // opticalParams->SetScintTrackSecondariesFirst(false);
+  // G4VPhysicsConstructor* opticalPhysics = new G4OpticalPhysics();
+  // opticalPhysics->ConstructProcess();
+
+  // ============================================================
+  // Decay physics:
+  // ============================================================
+
+  // G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics(0);
+  // radioactiveDecay->ConstructProcess();
+
+  MyG4RadioactiveDecay* decay = new MyG4RadioactiveDecay("RadioactiveDecay");
+  G4PhysicsListHelper::GetPhysicsListHelper()->
+    RegisterProcess(decay, G4GenericIon::GenericIon());
+
+  // ============================================================
+  // Magnetic field related:
+  // ============================================================
+  // AddStepMax(StepMaxValue, 0x2);
+
+  UniformFieldFastSimulationModel::ActivateForChargedParticles();
 }
 
 //----------------------------------------------------------------------
 
 void Wisard_PhysList::SetCuts()
 {
-
-  //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
-  //   the default cut value for all particle types
+  defaultCutValue = Cuts;
   SetCutsWithDefault();
 
-  // SetCutValue(0.001 * um, "gamma");
-  // SetCutValue(0.001 * um, "proton");
-  // SetCutValue(0.001 * um, "e-");
-  // SetCutValue(0.001 * um, "e+");
-  // defaultCutValue = 0.001 * um;
+  SetCutValue(Cuts, "gamma");
+  SetCutValue(Cuts, "proton");
+  SetCutValue(Cuts, "e-");
+  SetCutValue(Cuts, "e+");
+
+  // DumpCutValuesTable();
+  
+  G4cout << "\033[34m" << "Cuts set to : " << G4BestUnit(Cuts, "Length") << "\033[0m" << G4endl;
 }
 
 //----------------------------------------------------------------------
@@ -148,59 +187,103 @@ void Wisard_PhysList::SetCuts()
  *                  - bit 1 (=2) for Q>0
  *                  - bit 2 (=4) for Q<0
  */
+// void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
+// {
+//   if (step_max == NULL)
+//   {
+//     // Step limitation seen as a process
+//     step_max = new StepMax;
+
+//     auto theParticleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+//     theParticleIterator->reset();
+
+//     while ((*theParticleIterator)())
+//     {
+//       G4ParticleDefinition *particle = theParticleIterator->value();
+//       G4ProcessManager *pmanager = particle->GetProcessManager();
+
+//       // (note that with this condition, it will not be applied
+//       //  to particles with Q=0 anyway...)
+//       if (step_max->IsApplicable(*particle) && (pmanager != NULL))
+//       {
+//         bool apply = false;
+//         G4double qtest = fabs(0.01 * electron_charge);
+
+//         if (particle->GetPDGCharge() > qtest) // Q > 0
+//         {
+//           if ((flag & 2) != 0)
+//             apply = true;
+//         }
+//         else if (particle->GetPDGCharge() < -qtest) // Q < 0
+//         {
+//           if ((flag & 4) != 0)
+//             apply = true;
+//         }
+//         else // Q = 0
+//         {
+//           if ((flag & 1) != 0)
+//             apply = true;
+//         }
+
+//         if (apply)
+//         {
+//           // G4cout<< "- step max for " << particle->GetParticleName() <<G4endl;
+//           pmanager->AddDiscreteProcess(step_max);
+//         }
+//       }
+//     }
+
+//     if (step > 1. * nm)
+//       SetStepMax(step);
+//   }
+//   else
+//   {
+//     cerr << "<W> Wisard_PhysList::AddStepMax(): StepMax process already defined" << G4endl;
+//   }
+// }
+
 void Wisard_PhysList::AddStepMax(G4double step, u_short flag)
 {
-  if (step_max == NULL)
+  StepMax* localStepMax = new StepMax;
+  localStepMax->SetMaxStep(step);
+
+  auto particleIterator = GetParticleIterator();
+  particleIterator->reset();
+
+  while ((*particleIterator)())
   {
-    // Step limitation seen as a process
-    step_max = new StepMax;
+    G4ParticleDefinition* particle = particleIterator->value();
+    G4ProcessManager* pmanager = particle->GetProcessManager();
 
-    auto theParticleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
-    theParticleIterator->reset();
+    if (!pmanager) continue;
+    if (!localStepMax->IsApplicable(*particle)) continue;
 
-    while ((*theParticleIterator)())
+    bool apply = false;
+    G4double qtest = std::fabs(0.01 * electron_charge);
+
+    if (particle->GetPDGCharge() > qtest)
     {
-      G4ParticleDefinition *particle = theParticleIterator->value();
-      G4ProcessManager *pmanager = particle->GetProcessManager();
-
-      // (note that with this condition, it will not be applied
-      //  to particles with Q=0 anyway...)
-      if (step_max->IsApplicable(*particle) && (pmanager != NULL))
-      {
-        bool apply = false;
-        G4double qtest = fabs(0.01 * electron_charge);
-
-        if (particle->GetPDGCharge() > qtest) // Q > 0
-        {
-          if ((flag & 2) != 0)
-            apply = true;
-        }
-        else if (particle->GetPDGCharge() < -qtest) // Q < 0
-        {
-          if ((flag & 4) != 0)
-            apply = true;
-        }
-        else // Q = 0
-        {
-          if ((flag & 1) != 0)
-            apply = true;
-        }
-
-        if (apply)
-        {
-          // G4cout<< "- step max for " << particle->GetParticleName() <<G4endl;
-          pmanager->AddDiscreteProcess(step_max);
-        }
-      }
+      apply = (flag & 2);
+    }
+    else if (particle->GetPDGCharge() < -qtest)
+    {
+      apply = (flag & 4);
+    }
+    else
+    {
+      apply = (flag & 1);
     }
 
-    if (step > 1. * nm)
-      SetStepMax(step);
+    if (apply)
+    {
+      pmanager->AddDiscreteProcess(localStepMax);
+    }
   }
-  else
-  {
-    cerr << "<W> Wisard_PhysList::AddStepMax(): StepMax process already defined" << G4endl;
-  }
+
+  step_max = localStepMax;
+
+  G4cout << "StepMax process added with value "
+         << G4BestUnit(step, "Length") << G4endl;
 }
 
 /*! This function sets the maximum step value for the StepMax process.

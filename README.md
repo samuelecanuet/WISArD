@@ -1,29 +1,83 @@
 # WISArD Geant4 Simulation
 
+<!-- ![logo](Logo/logo.svg) -->
+<img src="Logo/logo.svg" width="200" height="200"> 
+
+
+
 This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 
 ## Prerequisites
 - **Geant4 11.1.2**
-- **CLHELP**
-- **ROOT** 
+- **CLHEP** (provided through Geant4)
+- **ROOT**
+- **CMake 3.16 or newer**
 - **PyROOT** (only for *Analyze.py*)
-- **Environement variables :**
+
+Load the Geant4 and ROOT environment before configuring. CMake also uses the
+`G4INSTALL` and `ROOTSYS` environment variables when they are set.
+
+## Build with CMake
+
+From the WISArD project directory:
+
 ```bash
-source $G4INSTALL/share/Geant4/geant4make/geant4make.csh $G4INSTALL/share/Geant4/geant4make/
-setenv PATH ${PATH}:$WhereGitIs/WISArD/bin/Linux-g++
+cmake -S . -B build
+cmake --build build -j2
 ```
+
+This creates `wisard` in the project directory. It also updates the legacy
+`bin/Linux-g++/wisard` path used by existing scripts. Run from the project
+directory so relative paths to macros, geometry data, and ROOT input files
+resolve correctly. ROOT collection dictionaries are generated and linked by
+CMake, so the simulation no longer compiles them at startup.
+
+```bash
+./wisard
+./wisard macro.mac
+```
+
+Add the project directory to `PATH` to run `wisard` without `./`.
 
 - Only 8B, 8Li, 14O, 20Mg, 24Si, 26S and 32Ar at 30 keV can be use in the simulation because there is a SRIM file for them. But you can generate a file for an other nucleus or energy with SRIM. You have to rename a *RANGE_3D.txt* SRIM file and place it in the SRIM_data folder.
 
 ## Usage
 ### To run the simulation in visualisation mode :
 ```bash
-wisard 
+./wisard
 ```
 ### To run the simulation in test mode :
 ```bash
-wisard macro.mac
+./wisard macro.mac
 ```
+
+### FastField option
+
+FastField is an optional analytic propagator for charged particles travelling
+through the configured uniform-field vacuum fast volumes. It is disabled by
+default. To enable it, set the UI command in a macro before
+`/run/initialize`:
+
+```text
+/fastModel/enable true
+/run/initialize
+/run/beamOn 1000
+```
+
+Use `/fastModel/enable false` to run with ordinary Geant4 transport. The
+setting is only available before initialization. FastField requires the fast
+volumes and the global uniform magnetic field to be configured; particles that
+do not meet the model's trigger conditions use ordinary transport. Physics
+processes are skipped during an analytic fast step, so review the limitations
+before using it where processes such as decay in flight matter. See
+[FastModel/README.md](FastModel/README.md) for setup and details.
+
+### Materials
+
+`Wisard_Materials` centralizes the simulation's material definitions and
+visualization attributes. `Wisard_Detector` obtains materials and their visual
+styles from this class, including vacuum, silicon, silicon dioxide, aluminium,
+Mylar, copper, iron, plastic scintillator, Teflon, PEEK, and PCB.
 
 ### To generate the CRADLE file and run the Geant4 simulation :
 *Exemple for 32Ar with 10 threads in Standard Model case*
@@ -45,19 +99,15 @@ You end up a Tree, detectors histograms and simulation paramater in the ROOT TFi
 Located at the beginning of the TFile, you can find all the simulation variables chosen.
 
 ### Tree
-The Tree is update each 10 000 events and contains :
+The Tree is update each 10k events and contains :
 - Event Number
 - Gun Information (particle PDG, position, direction, energy, time)
 - Catchers Energy deposit
 - Plastic Scintillator (deposit energy, hit position, hit angle, hit time)
-- Silicon Detectors (deposit energy, hit position, hit distance to boundary, hit angle, hit time, detector code)
+- Silicon Detectors (deposit energy, hit position, hit angle, hit time, detector code)
 
 ### Histograms
 There are 2 for each strip, one for the β-p coincidence and an other one for the anti-coincidence. The β detection threashold is set in the macro file.
-
-## Analysis
-A very rapid analysis was made with PyROOT. To use it you have to indicate the filename in the main function.
-
 
 ## Version History
 
@@ -142,4 +192,22 @@ A very rapid analysis was made with PyROOT. To use it you have to indicate the f
 - Adding CERN measurement for silicon detector position and rotation (dependances in SILICON_data/)
 - Fixing Catcher position to influence also the vertex position
 - Adding looping limit for particle in B-field (1 keV and 1e5 trials)
-- Adding CADMESH as a parameter in the macro (adding also a light .obj file in /POSITION_data)
+- Adding CADMESH as a parameter in the macro (adding also a light .obj file in POSITION_data/)
+
+### v4.6
+- Adding PhysicList options in the macro using the messenger (the initialization has been moved)
+- G4Region has been added for a special cut applied in the Silicon detectors
+- Fix of the catcher side thickness and placement
+
+### v4.7
+- Adding BackScattering flag in the Sensor class
+- Adding the entrance collimator as a Sensor to flag the backscattering on it
+- Adding killer for for e-/e+ propagated in vacuum at pz < 1e-10
+
+### v4.8
+- Changing the behavior of Catcher_yx to change the length of the mechanic instead of its placement 
+
+### v5.0
+- Replaced the legacy GNUmakefile build with CMake.
+- Added `Wisard_Materials` to centralize material definitions and visualization attributes.
+- Added the optional FastField mode, configurable with `/fastModel/enable` in a macro before `/run/initialize`; it is disabled by default.
