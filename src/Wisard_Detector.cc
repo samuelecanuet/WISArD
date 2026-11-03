@@ -1488,12 +1488,12 @@ G4VPhysicalVolume *Wisard_Detector::Construct()
   }
 
   fFastGeometryUpper = std::make_unique<UniformFieldFastGeometry>(
-      "FastTransportVacuumLower", fLogicWorld_Detector,
+      "FastTransportVacuumUpper", fLogicWorld_Detector,
       G4ThreeVector(0, 0, 0.5 * (upperFastStartZ + upperFastEndZ)),
       1.5 * cm, 0.5 * upperFastLengthZ);
 
   fFastGeometryLower = std::make_unique<UniformFieldFastGeometry>(
-      "FastTransportVacuumUpper", fLogicWorld_Detector,
+      "FastTransportVacuumLower", fLogicWorld_Detector,
       G4ThreeVector(0, 0, 0.5 * (lowerFastStartZ + lowerFastEndZ)),
       1.5 * cm, 0.5 * lowerFastLengthZ);
 

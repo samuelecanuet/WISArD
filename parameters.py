@@ -11,7 +11,7 @@ CRADLE_Path = "/home/lecanuet/CRADLE/"
 Geant4_Path = "/home/lecanuet/WISArD/"
 CRADLE_DATA_Path = "/data333/lecanuet/data/Final/"
 # Geant4_DATA_Path = "/data333/lecanuet/Result/Final/Systematics/DL/"
-Geant4_DATA_Path = "/data333/lecanuet/Result/Final/2024/Systematics/Silicon_Position/"
+Geant4_DATA_Path = "/data333/lecanuet/Result/Final/FieldFast/False/"
 # CRADLE_DATA_Path = "/data333/lecanuet/data/"
 # Geant4_DATA_Path = "/data333/lecanuet/Result/Final/a_Calibration/"
 ########## DATA ##########

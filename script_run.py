@@ -9,9 +9,9 @@ import multiprocessing as mp
 #how many
 
 ########## PARAMETERS ##########
-Events = 1e7
+Events = 1e8
 ## Geant4
-YEAR = "2024"
+YEAR = "2025"
 FIELD_MAP = False
 CAD_MESH = False
 Catcher_type = "THIN"
@@ -26,8 +26,8 @@ Var_Names = ["Beam", "DL", "B", "Catcher_e", "Catcher_Position", "Catcher_Angle"
 SAMPLING=False
 
 ########## RUNNING ##########
-THREAD = 81
-N_simulatenous = 3
+THREAD = 40
+N_simulatenous = 1
 
 if THREAD % N_simulatenous != 0:
     print("N must be multiple of thread")
@@ -243,12 +243,12 @@ Variable = {}
 # }
 
 ### Plotting
-Variable["Detectors"] = {}
-Variable["Detectors"]["x"] = []
-Variable["Detectors"]["y"] = []
-Variable["Detectors"]["z"] = []
-Variable["Detectors"]["Rx"] = []
-Variable["Detectors"]["Ry"] = []
+# Variable["Detectors"] = {}
+# Variable["Detectors"]["x"] = []
+# Variable["Detectors"]["y"] = []
+# Variable["Detectors"]["z"] = []
+# Variable["Detectors"]["Rx"] = []
+# Variable["Detectors"]["Ry"] = []
 # Variable["Catcher_Position"] = {}
 # Variable["Catcher_Position"]["x"] = []
 # Variable["Catcher_Position"]["y"] = []
@@ -403,15 +403,15 @@ Variable["Detectors"]["Ry"] = []
 # Variable["DL"] = [0, 30, 60, 90, 120, 150, 180, 210]
 
 ######## 2024 new position ########
-y = [2.5, 3, 3.5, 4.0]
-x = [-0.5, -0.25, 0, 0.25, 0.5]
-for yi in y:    
-        for xi in x:
-            Variable["Detectors"]["x"].append(xi)
-            Variable["Detectors"]["y"].append(yi)
-            Variable["Detectors"]["z"].append(1.0)
-            Variable["Detectors"]["Rx"].append(0.0)
-            Variable["Detectors"]["Ry"].append(0.0)
+# y = [2.5, 3, 3.5, 4.0]
+# x = [-0.5, -0.25, 0, 0.25, 0.5]
+# for yi in y:    
+#         for xi in x:
+#             Variable["Detectors"]["x"].append(xi)
+#             Variable["Detectors"]["y"].append(yi)
+#             Variable["Detectors"]["z"].append(1.0)
+#             Variable["Detectors"]["Rx"].append(0.0)
+#             Variable["Detectors"]["Ry"].append(0.0)
 
 ############# PRODUCTION ############
 # Variable["a"] = [0.9, 0.95, 0.98, 1.0, 1.02, 1.05, 1.1]

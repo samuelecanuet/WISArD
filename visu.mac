@@ -59,7 +59,7 @@
 #   Simulation Parameters
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
-/Run/Threads 1
+/Run/Threads 7
 
 /Phys/Cuts 1 m
 /Phys/SiliconCuts 1 m
@@ -74,7 +74,7 @@
 /Geometry/Collimator false
 /Geometry/Magnetic_Field_Value 4 tesla
 /Geometry/Magnetic_Field_Mapping false
-/Geometry/CAD_MESH true
+/Geometry/CAD_MESH false
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Detectors 0 0 0 0 0
 /Geometry/Catcher_Position_x 0 mm
@@ -88,7 +88,7 @@
 
 
 /run/reinitializeGeometry
-/run/initialize 
+#/run/initialize 
 
 #---------------------------------------------------------------
 #   Generate Events

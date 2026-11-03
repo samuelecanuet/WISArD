@@ -5,6 +5,7 @@
 #/Phys/SiliconCuts % m
 /Phys/PlasticStep % m
 /Phys/StepMax % m
+/fastModel/enable false
 /run/initialize
 /run/verbose      0
 /event/verbose    0
@@ -22,8 +23,6 @@
 #---------------------------------------------------------------
 /Run/Threshold_PlasticScintillator 100 keV
 /Run/Threads %threads
-
-
 
 /Beam/X % mm
 /Beam/Y % mm
