@@ -69,26 +69,26 @@ void Wisard_RunAction::BeginOfRunAction(const G4Run *)
   Tree->Branch("px", &px);
   Tree->Branch("py", &py);
   Tree->Branch("pz", &pz);
-  Tree->Branch("T0", &T0);
+  // Tree->Branch("T0", &T0);
   Tree->Branch("Kinetic_Energy", &Kinetic_Energy);
-  Tree->Branch("Catcher_Central_Energy_Deposit", &Catcher_Central_Energy_Deposit);
-  Tree->Branch("Catcher_Side_Energy_Deposit", &Catcher_Side_Energy_Deposit);
+  // Tree->Branch("Catcher_Central_Energy_Deposit", &Catcher_Central_Energy_Deposit);
+  // Tree->Branch("Catcher_Side_Energy_Deposit", &Catcher_Side_Energy_Deposit);
   Tree->Branch("Catcher_Side_BackScattering", &Catcher_Side_BackScattering);
   Tree->Branch("Catcher_Support_BackScattering", &Catcher_Support_BackScattering);
   Tree->Branch("EntranceCollimator_BackScattering", &EntranceCollimator_BackScattering);
   Tree->Branch("PlasticScintillator_Energy_Deposit", &PlasticScintillator_Energy_Deposit);
   Tree->Branch("PlasticScintillator_Visible_Energy_Deposit", &PlasticScintillator_Visible_Energy_Deposit);
-  Tree->Branch("PlasticScintillator_Hit_Position", &PlasticScintillator_Hit_Position);
-  Tree->Branch("PlasticScintillator_Hit_Angle", &PlasticScintillator_Hit_Angle);
+  // Tree->Branch("PlasticScintillator_Hit_Position", &PlasticScintillator_Hit_Position);
+  // Tree->Branch("PlasticScintillator_Hit_Angle", &PlasticScintillator_Hit_Angle);
   Tree->Branch("PlasticScintillator_Hit_Time", &PlasticScintillator_Hit_Time);
   Tree->Branch("PlasticScintillator_BackScattering", &PlasticScintillator_BackScattering);
   Tree->Branch("Silicon_Detector_Energy_Deposit", &Silicon_Detector_Energy_Deposit);
-  Tree->Branch("Silicon_Detector_Hit_Position", &Silicon_Detector_Hit_Position);
-  Tree->Branch("Silicon_Detector_Hit_DistanceBoundary", &Silicon_Detector_Hit_DistanceBoundary);
-  Tree->Branch("Silicon_Detector_Hit_Angle", &Silicon_Detector_Hit_Angle);
+  // Tree->Branch("Silicon_Detector_Hit_Position", &Silicon_Detector_Hit_Position);
+  // Tree->Branch("Silicon_Detector_Hit_DistanceBoundary", &Silicon_Detector_Hit_DistanceBoundary);
+  // Tree->Branch("Silicon_Detector_Hit_Angle", &Silicon_Detector_Hit_Angle);
   Tree->Branch("Silicon_Detector_Hit_Time", &Silicon_Detector_Hit_Time);
   Tree->Branch("Silicon_Detector_Code", &Silicon_Detector_Code);
-  Tree->Branch("Silicon_Detector_DL_Energy_Deposit", &Silicon_Detector_DL_Energy_Deposit);
+  // Tree->Branch("Silicon_Detector_DL_Energy_Deposit", &Silicon_Detector_DL_Energy_Deposit);
 
   ////////////// Construct Histograms ////////////////////////////
   for (int i = 0; i < Wisard_Detector::nb_det; i++)
@@ -105,11 +105,6 @@ void Wisard_RunAction::BeginOfRunAction(const G4Run *)
 void Wisard_RunAction::EndOfRunAction(const G4Run *)
 {
   WrittingTree();
-  if (Tree_MCP != nullptr)
-  {
-    Tree_MCP->Write();
-    H_MCP->Write();
-  }
   f->Close();
 }
 
@@ -361,27 +356,6 @@ G4String Wisard_RunAction::GetFileName()
 {
   return filename;
 }
-
-void Wisard_RunAction::FillMCP(G4double x_tree, G4double y_tree)
-{
-
-  if (Tree_MCP == nullptr)
-  {
-    Tree_MCP = new TTree("Tree_MCP", "MCP Positions");
-    Tree_MCP->Branch("x_MCP", &x_MCP, "x/D");
-    Tree_MCP->Branch("y_MCP", &y_MCP, "y/D");
-
-    H_MCP = new TH2D("H_MCP", "MCP Positions", 1000, -10 * mm, 10 * mm, 1000, -10 * mm, 10 * mm);
-    H_MCP->SetXTitle("x (mm)");
-    H_MCP->SetYTitle("y (mm)");
-  }
-
-  x_MCP = x_tree;
-  y_MCP = y_tree;
-  Tree_MCP->Fill();
-  H_MCP->Fill(x_tree, y_tree);  
-}
-
 
 G4int Wisard_RunAction::GetNumberOfThreads()
 {

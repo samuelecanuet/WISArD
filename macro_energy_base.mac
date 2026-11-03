@@ -45,13 +45,11 @@
 /Geometry/Catcher_Position_z 0.00 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0.00 deg
-/Geometry/Catcher_Thickness_Al1 85 nm
-/Geometry/Catcher_Thickness_Mylar 525 nm
-/Geometry/Catcher_Thickness_Al2 85 nm
+/Geometry/Catcher_Thickness_Al1 75 nm
+/Geometry/Catcher_Thickness_Mylar 510 nm
+/Geometry/Catcher_Thickness_Al2 75 nm
 /run/reinitializeGeometry
 
-/Geometry/MCP false
-/Geometry/MCP_Position 0 0 -10
 
 #---------------------------------------------------------------
 #   Generate Events

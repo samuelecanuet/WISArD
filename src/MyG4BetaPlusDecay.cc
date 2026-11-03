@@ -167,12 +167,12 @@ G4DecayProducts* MyG4BetaPlusDecay::DecayIt(G4double)
   return products;
 }
 
-void MyG4BetaPlusDecay::SetUpBetaSpectrumSampler(const G4int &daughterZ,
-                                                 const G4int &daughterA,
+void MyG4BetaPlusDecay::SetUpBetaSpectrumSampler(const G4int &daughterAtomicNumber,
+                                                 const G4int &daughterMassNumber,
                                                  const G4BetaDecayType &betaType)
 {
   G4double e0 = endpointEnergy_New / CLHEP::electron_mass_c2;
-  G4BetaDecayCorrections corrections(-daughterZ, daughterA);
+  G4BetaDecayCorrections corrections(-daughterAtomicNumber, daughterMassNumber);
   spectrumSampler = 0;
 
   // Check for cases in which Q < 2Me (e.g. z67.a162)
@@ -258,8 +258,8 @@ G4double MyG4BetaPlusDecay::ConvertingHalflifeToWidth(G4double halflife)
 
 G4double MyG4BetaPlusDecay::ShootBreitWigner(G4double gamma)
 {
-  double a = gamma / 2;
+  const double halfWidth = gamma / 2;
   double r = rand() / (double)RAND_MAX;
-  double x = a * tan(M_PI * (r - 0.5));
+  double x = halfWidth * tan(M_PI * (r - 0.5));
   return x;
 }

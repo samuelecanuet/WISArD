@@ -4,31 +4,31 @@ import numpy as np
 import subprocess
 import multiprocessing as mp
 
-THREAD = 88
-thread = 4
+THREAD = 81
+thread = 3
 DATA = [
-    {"name": "mAr-10"},
-    {"name": "mAr-8"},
-    {"name": "mAr-6"},
-    {"name": "mAr-5"},
-    {"name": "mAr-3"},
-    {"name": "mAr-1"},
-    {"name": "mAr0"},
-    {"name": "mAr1"},
-    {"name": "mAr3"},
-    {"name": "mAr5"},
-    {"name": "mAr6"},
-    {"name": "mAr8"},
-    {"name": "mAr10"},
+    # {"name": "mAr-10"},
+    # {"name": "mAr-8"},
+    # # {"name": "mAr-6"},
+    # {"name": "mAr-5"},
+    # {"name": "mAr-3"},
+    # {"name": "mAr-1"},
+    # {"name": "mAr0"},
+    # {"name": "mAr1"},
+    # {"name": "mAr3"},
+    # {"name": "mAr5"},
+    # # {"name": "mAr6"},
+    # {"name": "mAr8"},
+    # {"name": "mAr10"},
 
-    # {"name": "mCl-100"},
-    # {"name": "mCl-50"},
+    {"name": "mCl-100"},
+    {"name": "mCl-50"},
     # {"name": "mCl-10"},
-    # {"name": "mCl-5"},
-    # {"name": "mCl5"},
+    {"name": "mCl-5"},
+    {"name": "mCl5"},
     # {"name": "mCl10"},
-    # {"name": "mCl50"},
-    # {"name": "mCl100"},
+    {"name": "mCl50"},
+    {"name": "mCl100"},
 
     # {"name": "mS-100"},
     # {"name": "mS-50"},

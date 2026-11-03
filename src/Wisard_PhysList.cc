@@ -22,6 +22,12 @@
 
 #include "MyG4RadioactiveDecay.hh"
 
+#include "UniformFieldFastSimulationModel.hh"
+
+#include "G4OpticalPhoton.hh"
+#include "G4OpticalPhysics.hh"
+#include "G4OpticalParameters.hh"
+
 //----------------------------------------------------------------------
 Wisard_PhysList::Wisard_PhysList()
 {
@@ -65,7 +71,7 @@ void Wisard_PhysList::ConstructParticle()
   G4Gamma::GammaDefinition();
 
   // optical photon
-  // G4OpticalPhoton::OpticalPhotonDefinition();
+  G4OpticalPhoton::OpticalPhotonDefinition();
 
   // leptons
   G4Electron::ElectronDefinition();
@@ -105,29 +111,39 @@ void Wisard_PhysList::ConstructParticle()
 // Associate selected processes to the particles
 void Wisard_PhysList::ConstructProcess()
 {
-  // defin Transportation parameters
+  // ============================================================
+  // Transportation process:
+  // ============================================================
   auto transportParams= G4TransportationParameters::Instance();
-
   transportParams->SetWarningEnergy(  1 * keV );
-  // transportParams->SetThresholdWarningEnergy( 0.1 * keV );
   transportParams->SetImportantEnergy( 1 * keV );
-  // transportParams->SetThresholdImportantEnergy(  1 * keV );
   transportParams->SetNumberOfTrials( 1000000 );
-
-  // define transportation process
   AddTransportation();
 
-  // G4VPhysicsConstructor * emPhysicsList = new G4EmPenelopePhysics(0);
-  // G4VPhysicsConstructor * emPhysicsList = new G4EmLivermorePhysics();
-  // G4VPhysicsConstructor * emPhysicsList = new G4EmStandardPhysics(1);
+  // ============================================================
+  // EM physics process:
+  // ============================================================
   emPhysicsList = new G4EmStandardPhysics_option4(0);
   emPhysicsList->ConstructProcess();
 
   G4EmParameters *emParams = G4EmParameters::Instance();
   emParams->SetNumberOfBinsPerDecade(200);
 
-  G4StepLimiterPhysics *process = new G4StepLimiterPhysics();
-  process->ConstructProcess();
+  // ============================================================
+  // Optical physics: Scintillation
+  // ============================================================
+
+  // auto opticalParams = G4OpticalParameters::Instance();
+
+  // opticalParams->SetProcessActivation("Scintillation", true);
+  // opticalParams->SetProcessActivation("Cerenkov", false);
+  // opticalParams->SetScintTrackSecondariesFirst(false);
+  // G4VPhysicsConstructor* opticalPhysics = new G4OpticalPhysics();
+  // opticalPhysics->ConstructProcess();
+
+  // ============================================================
+  // Decay physics:
+  // ============================================================
 
   // G4RadioactiveDecayPhysics *radioactiveDecay = new G4RadioactiveDecayPhysics(0);
   // radioactiveDecay->ConstructProcess();
@@ -136,16 +152,18 @@ void Wisard_PhysList::ConstructProcess()
   G4PhysicsListHelper::GetPhysicsListHelper()->
     RegisterProcess(decay, G4GenericIon::GenericIon());
 
-  AddStepMax(StepMaxValue, 0x2);
+  // ============================================================
+  // Magnetic field related:
+  // ============================================================
+  // AddStepMax(StepMaxValue, 0x2);
+
+  UniformFieldFastSimulationModel::ActivateForChargedParticles();
 }
 
 //----------------------------------------------------------------------
 
 void Wisard_PhysList::SetCuts()
 {
-
-  //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
-  //   the default cut value for all particle types
   defaultCutValue = Cuts;
   SetCutsWithDefault();
 
@@ -157,11 +175,6 @@ void Wisard_PhysList::SetCuts()
   // DumpCutValuesTable();
   
   G4cout << "\033[34m" << "Cuts set to : " << G4BestUnit(Cuts, "Length") << "\033[0m" << G4endl;
-
-  // SetCutValue(1*m, "gamma");
-  // SetCutValue(1*m, "proton");
-  // SetCutValue(1*m, "e-");
-  // SetCutValue(1*m, "e+");
 }
 
 //----------------------------------------------------------------------

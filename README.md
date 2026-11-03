@@ -9,26 +9,75 @@ This code is a Geant4 simulation for the WISArD experiment at ISOLDE CERN.
 
 ## Prerequisites
 - **Geant4 11.1.2**
-- **CLHELP**
-- **ROOT** 
+- **CLHEP** (provided through Geant4)
+- **ROOT**
+- **CMake 3.16 or newer**
 - **PyROOT** (only for *Analyze.py*)
-- **Environement variables :**
+
+Load the Geant4 and ROOT environment before configuring. CMake also uses the
+`G4INSTALL` and `ROOTSYS` environment variables when they are set.
+
+## Build with CMake
+
+From the WISArD project directory:
+
 ```bash
-source $G4INSTALL/share/Geant4/geant4make/geant4make.csh $G4INSTALL/share/Geant4/geant4make/
-setenv PATH ${PATH}:$WhereGitIs/WISArD/bin/Linux-g++
+cmake -S . -B build
+cmake --build build -j2
 ```
+
+This creates `wisard` in the project directory. It also updates the legacy
+`bin/Linux-g++/wisard` path used by existing scripts. Run from the project
+directory so relative paths to macros, geometry data, and ROOT input files
+resolve correctly. ROOT collection dictionaries are generated and linked by
+CMake, so the simulation no longer compiles them at startup.
+
+```bash
+./wisard
+./wisard macro.mac
+```
+
+Add the project directory to `PATH` to run `wisard` without `./`.
 
 - Only 8B, 8Li, 14O, 20Mg, 24Si, 26S and 32Ar at 30 keV can be use in the simulation because there is a SRIM file for them. But you can generate a file for an other nucleus or energy with SRIM. You have to rename a *RANGE_3D.txt* SRIM file and place it in the SRIM_data folder.
 
 ## Usage
 ### To run the simulation in visualisation mode :
 ```bash
-wisard 
+./wisard
 ```
 ### To run the simulation in test mode :
 ```bash
-wisard macro.mac
+./wisard macro.mac
 ```
+
+### FastField option
+
+FastField is an optional analytic propagator for charged particles travelling
+through the configured uniform-field vacuum fast volumes. It is disabled by
+default. To enable it, set the UI command in a macro before
+`/run/initialize`:
+
+```text
+/fastModel/enable true
+/run/initialize
+/run/beamOn 1000
+```
+
+Use `/fastModel/enable false` to run with ordinary Geant4 transport. The
+setting is only available before initialization. FastField requires the fast
+volumes and the global uniform magnetic field to be configured; particles that
+do not meet the model's trigger conditions use ordinary transport. Physics
+processes are skipped during an analytic fast step, so review the limitations
+before using it where processes such as decay in flight matter. See
+[FastModel/README.md](FastModel/README.md) for setup and details.
+
+### Materials
+
+`Wisard_Materials` centralizes the simulation's material definitions and
+visualization attributes. `Wisard_Detector` obtains materials and their visual
+styles from this class, including vacuum, silicon, silicon dioxide, aluminium,
+Mylar, copper, iron, plastic scintillator, Teflon, PEEK, and PCB.
 
 ### To generate the CRADLE file and run the Geant4 simulation :
 *Exemple for 32Ar with 10 threads in Standard Model case*
@@ -156,4 +205,9 @@ There are 2 for each strip, one for the β-p coincidence and an other one for th
 - Adding killer for for e-/e+ propagated in vacuum at pz < 1e-10
 
 ### v4.8
-- Changing the behavior of Catcher_y to change the length of the mechanic instead of its placement 
+- Changing the behavior of Catcher_yx to change the length of the mechanic instead of its placement 
+
+### v5.0
+- Replaced the legacy GNUmakefile build with CMake.
+- Added `Wisard_Materials` to centralize material definitions and visualization attributes.
+- Added the optional FastField mode, configurable with `/fastModel/enable` in a macro before `/run/initialize`; it is disabled by default.

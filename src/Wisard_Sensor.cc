@@ -14,6 +14,9 @@
 #include "Wisard_EventAction.hh"
 #include "G4Track.hh"
 
+#include "G4OpAbsorption.hh"
+#include "G4OpticalPhoton.hh"
+#include "G4OpProcessSubType.hh"
 
 Wisard_Sensor::Wisard_Sensor(G4int code, G4String DetName = "Sensor") : G4VSensitiveDetector(DetName), DetCode(code)
 {
@@ -128,6 +131,16 @@ G4bool Wisard_Sensor::ProcessHits(G4Step *step, G4TouchableHistory *)
   else if (DetCode >= 11 && DetCode <= 85)
   {
     PartInfo->AddEnergyDeposit(index, DetCode, (step->GetTotalEnergyDeposit()-step->GetNonIonizingEnergyDeposit()) / keV);    
+
+    // All about particle info 
+    // auto process = step->GetPostStepPoint()->GetProcessDefinedStep();
+
+    // if (process && process->GetProcessSubType() == fOpAbsorption)
+    // {
+    //   G4cout << "Particle Info for DetCode = " << DetCode << G4endl;
+    //   G4cout << "Total Energy Deposit = " << step->GetTotalEnergyDeposit() / eV << " eV" << G4endl;
+    //   G4cout << "-----------------------------------------" << G4endl;
+    // }
   }
   else if (DetCode == 100)
   {

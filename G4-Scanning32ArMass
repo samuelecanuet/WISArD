@@ -76,7 +76,7 @@ if [ -f "${rootGeant4file}${suffixe}.root" ]; then
 fi
 
 ## CRADLE ##
-cd ../CRADLE/build &&
+cd ../newnewCRADLE/build &&
 ./CRADLE++ nucleus --name 32Ar -Z 18 -A 32 -c ../config/config.txt general -l ${events} -o ${rootCRADLEfile}32Ar${suffixe}.root -t ${N} data --Radiationdata ../../Kinematics/${name} --AMEdata ../../Kinematics/${name}/AMEdata.txt && 
 cd - && 
 

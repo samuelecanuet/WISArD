@@ -3,3 +3,8 @@
 tempory/*
 analyze
 AutoDict*
+/build/
+/bin/Linux-g++/
+/wisard
+/tmp/
+/FastModelBuild/

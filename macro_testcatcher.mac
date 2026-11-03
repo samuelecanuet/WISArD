@@ -40,8 +40,6 @@
 /Geometry/Catcher_Thickness_Mylar 510 nm
 /Geometry/Catcher_Thickness_Al2 300 nm
 
-/Geometry/MCP false
-/Geometry/MCP_Position 0 0 0
 
 /run/reinitializeGeometry
 

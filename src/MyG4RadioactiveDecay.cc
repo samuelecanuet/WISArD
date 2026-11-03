@@ -114,7 +114,7 @@ G4int& MyG4RadioactiveDecay::NumberOfInstances()
 MyG4RadioactiveDecay::MyG4RadioactiveDecay(const G4String& processName)
  : G4VRestDiscreteProcess(processName, fDecay), isInitialised(false),
    forceDecayDirection(0.,0.,0.), forceDecayHalfAngle(0.*deg), dirPath(""),
-   verboseLevel(1),
+   verboseLevel(0),
    fThresholdForVeryLongDecayTime( 1.0e+27*CLHEP::nanosecond )  // Longer than twice Universe's age
 {
   // G4cout << "\033[1;32m" << "My custom radioactive decay process is being used" << "\033[0m" << G4endl; 

@@ -11,7 +11,7 @@ import multiprocessing as mp
 ########## PARAMETERS ##########
 Events = 1e7
 ## Geant4
-YEAR = "2025"
+YEAR = "2024"
 FIELD_MAP = False
 CAD_MESH = False
 Catcher_type = "THIN"
@@ -26,7 +26,7 @@ Var_Names = ["Beam", "DL", "B", "Catcher_e", "Catcher_Position", "Catcher_Angle"
 SAMPLING=False
 
 ########## RUNNING ##########
-THREAD = 69
+THREAD = 81
 N_simulatenous = 3
 
 if THREAD % N_simulatenous != 0:
@@ -242,14 +242,13 @@ Variable = {}
 #                 ]
 # }
 
-
-# Variable["Detectors"] = {}
-# Variable["Detectors"]["x"] = []
-# Variable["Detectors"]["y"] = []
-# Variable["Detectors"]["z"] = []
-# Variable["Detectors"]["Rx"] = []
-# Variable["Detectors"]["Ry"] = []
-
+### Plotting
+Variable["Detectors"] = {}
+Variable["Detectors"]["x"] = []
+Variable["Detectors"]["y"] = []
+Variable["Detectors"]["z"] = []
+Variable["Detectors"]["Rx"] = []
+Variable["Detectors"]["Ry"] = []
 # Variable["Catcher_Position"] = {}
 # Variable["Catcher_Position"]["x"] = []
 # Variable["Catcher_Position"]["y"] = []
@@ -260,6 +259,62 @@ Variable = {}
 # Variable["Beam"]["y"] = []
 # Variable["Beam"]["sx"] = []
 # Variable["Beam"]["sy"] = []
+
+# centered 
+# Variable["Detectors"]["x"].append(0)
+# Variable["Detectors"]["y"].append(0)
+# Variable["Detectors"]["z"].append(0)
+# Variable["Detectors"]["Rx"].append(0)
+# Variable["Detectors"]["Ry"].append(0)   
+# Variable["Catcher_Position"]["x"].append(0)
+# Variable["Catcher_Position"]["y"].append(0)
+# Variable["Catcher_Position"]["z"].append(0)
+# Variable["Beam"]["x"].append(0)
+# Variable["Beam"]["y"].append(0)
+# Variable["Beam"]["sx"].append(0)
+# Variable["Beam"]["sy"].append(0)
+
+# Detector position (X, Y)
+# Variable["Detectors"]["x"].append(Detectors[YEAR]["x"])
+# Variable["Detectors"]["y"].append(Detectors[YEAR]["y"])
+# Variable["Detectors"]["z"].append(0)
+# Variable["Detectors"]["Rx"].append(0)
+# Variable["Detectors"]["Ry"].append(0)
+# Variable["Catcher_Position"]["x"].append(0)
+# Variable["Catcher_Position"]["y"].append(0)
+# Variable["Catcher_Position"]["z"].append(0)
+# Variable["Beam"]["x"].append(0)
+# Variable["Beam"]["y"].append(0)
+# Variable["Beam"]["sx"].append(0)
+# Variable["Beam"]["sy"].append(0)
+
+# Catcher position z
+# Variable["Detectors"]["x"].append(Detectors[YEAR]["x"])
+# Variable["Detectors"]["y"].append(Detectors[YEAR]["y"])
+# Variable["Detectors"]["z"].append(4)
+# Variable["Detectors"]["Rx"].append(0)
+# Variable["Detectors"]["Ry"].append(0)
+# Variable["Catcher_Position"]["x"].append(0)
+# Variable["Catcher_Position"]["y"].append(0)
+# Variable["Catcher_Position"]["z"].append(0)
+# Variable["Beam"]["x"].append(0)
+# Variable["Beam"]["y"].append(0)
+# Variable["Beam"]["sx"].append(0)
+# Variable["Beam"]["sy"].append(0)
+
+# Catcher Position (x, y)
+# Variable["Detectors"]["x"].append(0)
+# Variable["Detectors"]["y"].append(0)
+# Variable["Detectors"]["z"].append(0)
+# Variable["Detectors"]["Rx"].append(0)
+# Variable["Detectors"]["Ry"].append(0)   
+# Variable["Catcher_Position"]["x"].append(Catcher_Position[YEAR]["x"])
+# Variable["Catcher_Position"]["y"].append(Catcher_Position[YEAR]["y"])
+# Variable["Catcher_Position"]["z"].append(Catcher_Position[YEAR]["z"])
+# Variable["Beam"]["x"].append(Beam[YEAR]["x"][0])
+# Variable["Beam"]["y"].append(Beam[YEAR]["y"][0])
+# Variable["Beam"]["sx"].append(Beam[YEAR]["sx"][0])
+# Variable["Beam"]["sy"].append(Beam[YEAR]["sy"][0])
 
 # x = [-5, 5]
 # y = [-5, 5]
@@ -316,19 +371,47 @@ Variable = {}
 #         Variable["Catcher_Position"]["y"].append(Catcher_Position[YEAR]["y"] + yi)
 #         Variable["Catcher_Position"]["z"].append(Catcher_Position[YEAR]["z"])
 
-Variable["Catcher_Angle"] = []
-Variable["Catcher_Position"] = {}
-Variable["Catcher_Position"]["x"] = []
-Variable["Catcher_Position"]["y"] = []
-Variable["Catcher_Position"]["z"] = []
-y = [-0.5, -0.25, 0, 0.25, 0.5]
-for t in [-5, -3, -2, -1, 0, 1, 2, 3, 5]:
-    for yi in y:  
-        Variable["Catcher_Angle"].append(Catcher_Angle[YEAR][0] + t)
-        Variable["Catcher_Position"]["x"].append(Catcher_Position[YEAR]["x"])
-        Variable["Catcher_Position"]["y"].append(Catcher_Position[YEAR]["y"] + yi)
-        Variable["Catcher_Position"]["z"].append(Catcher_Position[YEAR]["z"])
+# Variable["Catcher_Angle"] = []
+# Variable["Catcher_Position"] = {}
+# Variable["Catcher_Position"]["x"] = []
+# Variable["Catcher_Position"]["y"] = []
+# Variable["Catcher_Position"]["z"] = []
+# y = [-2, -1, -0.5, -0.25, 0, 0.25]
+# for t in [-5, -3, -2, -1, 0, 1, 2, 3, 5]:
+#     for yi in y:  
+#         Variable["Catcher_Angle"].append(Catcher_Angle[YEAR][0] + t)
+#         Variable["Catcher_Position"]["x"].append(Catcher_Position[YEAR]["x"])
+#         Variable["Catcher_Position"]["y"].append(Catcher_Position[YEAR]["y"] + yi)
+#         Variable["Catcher_Position"]["z"].append(Catcher_Position[YEAR]["z"])
 
+# Variable["Catcher_Position"] = {}
+# Variable["Catcher_Position"]["x"] = []
+# Variable["Catcher_Position"]["y"] = []
+# Variable["Catcher_Position"]["z"] = []
+# for zi in z:
+#     for yi in y:  
+#         Variable["Catcher_Position"]["x"].append(Catcher_Position[YEAR]["x"])
+#         Variable["Catcher_Position"]["y"].append(Catcher_Position[YEAR]["y"] + yi)
+#         Variable["Catcher_Position"]["z"].append(Catcher_Position[YEAR]["z"])
+#         Variable["Detectors"]["x"].append(Detectors[YEAR]["x"])
+#         Variable["Detectors"]["y"].append(Detectors[YEAR]["y"])
+#         Variable["Detectors"]["z"].append(Detectors[YEAR]["z"] + zi)
+#         Variable["Detectors"]["Rx"].append(0)
+#         Variable["Detectors"]["Ry"].append(0)
+
+######## Dead layer
+# Variable["DL"] = [0, 30, 60, 90, 120, 150, 180, 210]
+
+######## 2024 new position ########
+y = [2.5, 3, 3.5, 4.0]
+x = [-0.5, -0.25, 0, 0.25, 0.5]
+for yi in y:    
+        for xi in x:
+            Variable["Detectors"]["x"].append(xi)
+            Variable["Detectors"]["y"].append(yi)
+            Variable["Detectors"]["z"].append(1.0)
+            Variable["Detectors"]["Rx"].append(0.0)
+            Variable["Detectors"]["Ry"].append(0.0)
 
 ############# PRODUCTION ############
 # Variable["a"] = [0.9, 0.95, 0.98, 1.0, 1.02, 1.05, 1.1]

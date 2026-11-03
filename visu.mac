@@ -8,7 +8,8 @@
 /Phys/Cuts 1 mm
 /Phys/SiliconCuts 1 um
 /Phys/PlasticStep 1 mm
-/Phys/StepMax 1 mm
+/Phys/StepMax 0.1 mm
+/fastModel/enable true
 /run/initialize
 /run/verbose      0
 /event/verbose    0
@@ -18,18 +19,18 @@
 #---------------------------------------------------------------
 #/input/Open_B MAGNETIC_FIELD_data/wisard_field.txt
 /Input/SRIM SRIM_data/AlMylar_32Ar.root
-#/Input/CRADLE /data333/lecanuet/data/Systematics/32Ar_IAS_a1.0_b0.0.root
+#/Input/CRADLE /data333/lecanuet/data/Systematics/32Ar_IAS_a1.0000.root
 
 #/process/inactivate ionIoni
 #/Input/Ion 32Ar
-/Input/Particle geantino
-/Input/Energy 30 keV
-/Input/Direction 0 0 1
-/Input/Position 0.0 0 -5
-
-#/Input/Energy 5 MeV
 #/Input/Particle geantino
-#/Input/Direction iso
+#/Input/Energy 30 keV
+#/Input/Direction 0 0 1
+/Input/Position 0.0 0 0
+
+/Input/Energy 5 MeV
+/Input/Particle proton
+/Input/Direction iso
 
 
 #/Input/Ion 32Ar
@@ -54,7 +55,6 @@
 #/Input/Position 0 42.7 -46.5
 #################################################
 
-
 #---------------------------------------------------------------
 #   Simulation Parameters
 #---------------------------------------------------------------
@@ -65,20 +65,20 @@
 /Phys/SiliconCuts 1 m
 /Phys/StepMax 1 m
 
-/Beam/X 0. mm
+/Beam/X 0 mm
 /Beam/Y 0 mm
 /Beam/Radius 1000 mm
-/Beam/Sigma_X 0.01 mm
-/Beam/Sigma_Y 0.01 mm
+/Beam/Sigma_X 1 mm
+/Beam/Sigma_Y 1 mm
 
 /Geometry/Collimator false
 /Geometry/Magnetic_Field_Value 4 tesla
 /Geometry/Magnetic_Field_Mapping false
-/Geometry/CAD_MESH false
+/Geometry/CAD_MESH true
 /Geometry/SiDeadLayer_Thickness 100 nm
 /Geometry/Detectors 0 0 0 0 0
 /Geometry/Catcher_Position_x 0 mm
-/Geometry/Catcher_Position_y 10 mm
+/Geometry/Catcher_Position_y 0 mm
 /Geometry/Catcher_Position_z 0 mm
 /Geometry/Catcher_Position catcher1     #position:[source / catcher2 / catcher1]
 /Geometry/Catcher_Angle 0 deg
@@ -86,8 +86,6 @@
 /Geometry/Catcher_Thickness_Mylar 500 nm
 /Geometry/Catcher_Thickness_Al2 50 nm
 
-/Geometry/MCP false
-/Geometry/MCP_Position 0 0 -90
 
 /run/reinitializeGeometry
 /run/initialize 
@@ -158,6 +156,7 @@
 /vis/modeling/trajectories/drawByParticleID-0/set gamma green
 /vis/modeling/trajectories/drawByParticleID-0/set alpha yellow
 /vis/modeling/trajectories/drawByParticleID-0/set GenericIon grey
+/vis/modeling/trajectories/drawByParticleID-0/set opticalphoton green
 #
 # To superimpose all of the events from a given run:
 /vis/scene/endOfEventAction accumulate -1
@@ -197,6 +196,5 @@
 #---------------------------------------------------------------
 #
 #
-/run/beamOn 1
-#
+/run/beamOn 5
 #

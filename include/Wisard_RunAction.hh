@@ -8,7 +8,6 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1D.h"
-#include "TH2D.h"
 #include "TObjString.h"
 #include "TTreeReader.h"
 #include "TDirectory.h"
@@ -44,7 +43,6 @@ public:
   map<int, TH1D *>silicon_nocoinc;
   map<int, TH1D *>silicon_single;
   TH1D *plastic_coinc;
-  TH2D *H_MCP = nullptr;
   map<G4int, TH1D*> H_E0 = {};
 
   /// TREE VARIABLES ////
@@ -80,19 +78,12 @@ public:
   vector<vector<G4int>> Silicon_Detector_Code;
   ///////////////////////
 
-  /// MCP TREE VARIABLES ////
-  TTree* Tree_MCP = nullptr;
-  G4double x_MCP, y_MCP;
-  ///////////////////////////
-
   vector<G4double> Silicon_Detector_Energy_Deposit_part, Silicon_Detector_DL_Energy_Deposit_part, Silicon_Detector_Hit_Angle_part, Silicon_Detector_Hit_Time_part;
   vector<G4ThreeVector> Silicon_Detector_Hit_Position_part, Silicon_Detector_Hit_DistanceBoundary_part;
   vector<G4int> Silicon_Detector_Code_part;
 
   void UpdateTree(ParticleInformation *Part_Info, G4int Event_ID);
   void WrittingTree();
-  void FillMCP(G4double, G4double);
-
   G4int GetNumberOfThreads();
   G4int GetNumberofEvents();
 
